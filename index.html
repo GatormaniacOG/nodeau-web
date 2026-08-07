@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Nodeau turns the GPUs you already own into a private, developer-friendly AI platform." />
+  <meta name="theme-color" content="#07090c" />
+  <title>Nodeau — Your hardware. One private AI cloud.</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <header class="site-header" data-header>
+    <a class="brand" href="#top" aria-label="Nodeau home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-word">nodeau</span>
+    </a>
+
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#product">Product</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#why">Why Nodeau</a>
+      <a href="#early-access">Early access</a>
+    </nav>
+
+    <a class="nav-cta" href="#early-access">Join private alpha <span>↗</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span class="status-dot"></span> PRIVATE AI INFRASTRUCTURE · BUILDING NOW</div>
+        <h1>Your GPUs.<br><span>One private AI cloud.</span></h1>
+        <p class="hero-lede">Nodeau turns the compute you already own into a developer-friendly AI platform — with model-aware placement, fast local deployment, intelligent routing, and cloud overflow when you need it.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#early-access">Join private alpha <span>→</span></a>
+          <a class="button ghost" href="#architecture">See how it works</a>
+        </div>
+        <div class="hero-meta" role="list" aria-label="Platform characteristics">
+          <span role="listitem">Local-first</span>
+          <span role="listitem">OpenAI-compatible</span>
+          <span role="listitem">GPU-aware</span>
+          <span role="listitem">Built on Kubernetes</span>
+        </div>
+      </div>
+
+      <div class="hero-console reveal delay-1" aria-label="Nodeau deployment preview">
+        <div class="console-bar">
+          <div class="console-dots"><span></span><span></span><span></span></div>
+          <div class="console-title">nodeau / local-cluster</div>
+          <div class="console-live"><span></span> live</div>
+        </div>
+        <div class="console-body">
+          <div class="terminal">
+            <div><span class="muted">$</span> <span class="cmd">nodeau deploy</span></div>
+            <div class="term-gap"></div>
+            <div><span class="ok">✓</span> detected <b>Python</b> service</div>
+            <div><span class="ok">✓</span> model <b>qwen3-8b-q4</b></div>
+            <div><span class="ok">✓</span> runtime <b>llama.cpp</b></div>
+            <div><span class="ok">✓</span> predicted VRAM <b>6.4 GiB</b></div>
+            <div><span class="ok">✓</span> model cached on <b>worker-01</b></div>
+            <div><span class="ok">✓</span> deployment healthy</div>
+            <div class="term-gap"></div>
+            <div class="endpoint"><span class="muted">endpoint</span> <b>https://api.nodeau.local/v1</b></div>
+          </div>
+
+          <div class="topology">
+            <div class="topology-label">LIVE PLACEMENT</div>
+            <svg viewBox="0 0 520 225" role="img" aria-label="Local GPU topology diagram">
+              <defs>
+                <linearGradient id="lineGradient" x1="0" x2="1">
+                  <stop offset="0" stop-color="#b8ff5a" stop-opacity="0.15" />
+                  <stop offset="0.5" stop-color="#b8ff5a" stop-opacity="0.95" />
+                  <stop offset="1" stop-color="#75d9ff" stop-opacity="0.2" />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <path class="mesh-line line-a" d="M84 113 C155 113, 167 58, 246 58 S353 112, 425 112" />
+              <path class="mesh-line line-b" d="M84 113 C154 113, 170 170, 247 170 S356 112, 425 112" />
+              <path class="mesh-line line-c" d="M247 58 L247 170" />
+
+              <g class="node source" transform="translate(44 84)">
+                <rect width="80" height="58" rx="14" />
+                <circle cx="16" cy="17" r="4" />
+                <text x="16" y="39">request</text>
+              </g>
+              <g class="node worker active" transform="translate(198 30)">
+                <rect width="98" height="58" rx="14" />
+                <circle cx="16" cy="17" r="4" />
+                <text x="16" y="39">worker-01</text>
+              </g>
+              <g class="node worker" transform="translate(198 142)">
+                <rect width="98" height="58" rx="14" />
+                <circle cx="16" cy="17" r="4" />
+                <text x="16" y="39">worker-02</text>
+              </g>
+              <g class="node endpoint-node" transform="translate(384 84)">
+                <rect width="92" height="58" rx="14" />
+                <circle cx="16" cy="17" r="4" />
+                <text x="16" y="39">endpoint</text>
+              </g>
+              <circle class="packet packet-1" cx="84" cy="113" r="4" />
+              <circle class="packet packet-2" cx="247" cy="58" r="4" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="signal-strip" aria-label="Nodeau philosophy">
+      <div class="ticker">
+        <span>OWN THE HARDWARE</span><i>◆</i><span>SKIP THE INFRASTRUCTURE TAX</span><i>◆</i><span>DEPLOY LIKE CLOUD</span><i>◆</i><span>KEEP DATA CLOSE</span><i>◆</i><span>BURST WHEN NEEDED</span><i>◆</i>
+        <span>OWN THE HARDWARE</span><i>◆</i><span>SKIP THE INFRASTRUCTURE TAX</span><i>◆</i><span>DEPLOY LIKE CLOUD</span><i>◆</i><span>KEEP DATA CLOSE</span><i>◆</i><span>BURST WHEN NEEDED</span><i>◆</i>
+      </div>
+    </section>
+
+    <section id="product" class="section-shell section-block">
+      <div class="section-heading reveal">
+        <div class="eyebrow">THE PLATFORM</div>
+        <h2>Cloud ergonomics.<br><span>On hardware you control.</span></h2>
+        <p>Nodeau is being built for teams with real GPU hardware and no desire to become full-time infrastructure operators.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card feature-large reveal">
+          <div class="feature-index">01</div>
+          <div class="feature-icon">⌁</div>
+          <h3>Model-aware placement</h3>
+          <p>Schedule workloads using VRAM, model size, runtime compatibility, cache locality, queue depth, and node health — not just <code>nvidia.com/gpu: 1</code>.</p>
+          <div class="mini-scheduler">
+            <div class="mini-row"><span>qwen3-8b-q4</span><strong>6.4 GiB</strong></div>
+            <div class="mini-row"><span>worker-01</span><strong class="green">READY</strong></div>
+            <div class="mini-meter"><span style="width:66%"></span></div>
+            <small>6.4 / 9.7 GiB predicted</small>
+          </div>
+        </article>
+
+        <article class="feature-card reveal delay-1">
+          <div class="feature-index">02</div>
+          <div class="feature-icon">◇</div>
+          <h3>Model locality</h3>
+          <p>Prefer the node where model weights are already warm or cached. Spend less time moving gigabytes before the first token.</p>
+          <div class="cache-stack" aria-hidden="true">
+            <span>GPU memory <b>HOT</b></span>
+            <span>System RAM <b>WARM</b></span>
+            <span>Local NVMe <b>CACHED</b></span>
+          </div>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="feature-index">03</div>
+          <div class="feature-icon">↗</div>
+          <h3>Local-first overflow</h3>
+          <p>Keep normal traffic on your own cluster. Route bursts to external capacity only when queue time, health, or policy says you should.</p>
+          <div class="overflow-visual" aria-hidden="true">
+            <span class="local-pill">LOCAL</span><span class="arrow">→</span><span class="cloud-pill">CLOUD</span>
+          </div>
+        </article>
+
+        <article class="feature-card feature-large reveal delay-1">
+          <div class="feature-index">04</div>
+          <div class="feature-icon">◎</div>
+          <h3>Explainable admission</h3>
+          <p>When a deployment won't fit, Nodeau should tell you why — and what to change — before a GPU workload crashes.</p>
+          <div class="admission-card">
+            <div class="admission-status"><span>!</span> Deployment prevented</div>
+            <div class="admission-copy">Expected VRAM <b>12.7 GiB</b> · Available <b>9.1 GiB</b></div>
+            <div class="suggestion">Try Q4 quantization + 8K context <span>→ 8.8 GiB</span></div>
+          </div>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="feature-index">05</div>
+          <div class="feature-icon">∿</div>
+          <h3>Power-aware by design</h3>
+          <p>Small clusters live in offices, labs and homes. Nodeau is designed to understand thermals, power ceilings and quiet-hour policies.</p>
+        </article>
+
+        <article class="feature-card reveal delay-1">
+          <div class="feature-index">06</div>
+          <div class="feature-icon">↻</div>
+          <h3>Fast lifecycle</h3>
+          <p>Build toward scale-to-zero, cached restarts, model prefetch and predictable recovery without turning every team into a Kubernetes team.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="architecture" class="architecture-section section-shell section-block">
+      <div class="section-heading compact reveal">
+        <div class="eyebrow">ARCHITECTURE</div>
+        <h2>A thin control plane.<br><span>A fast data path.</span></h2>
+        <p>The control plane decides desired state and policy. It stays out of the synchronous inference path so your requests don't pay for orchestration.</p>
+      </div>
+
+      <div class="architecture-panel reveal delay-1">
+        <div class="arch-column">
+          <div class="arch-kicker">DEVELOPER</div>
+          <div class="arch-box highlight">
+            <span class="arch-dot"></span>
+            <strong>nodeau deploy</strong>
+            <small>CLI / API / Git</small>
+          </div>
+        </div>
+
+        <div class="arch-flow"><span>→</span></div>
+
+        <div class="arch-column wide">
+          <div class="arch-kicker">CONTROL PLANE</div>
+          <div class="arch-grid">
+            <div class="arch-box"><strong>Planner</strong><small>runtime + resources</small></div>
+            <div class="arch-box"><strong>Admission</strong><small>fit before launch</small></div>
+            <div class="arch-box"><strong>Placement</strong><small>best worker</small></div>
+            <div class="arch-box"><strong>Lifecycle</strong><small>deploy + recover</small></div>
+          </div>
+          <div class="arch-note">Policy and desired state — not request-by-request orchestration.</div>
+        </div>
+
+        <div class="arch-flow"><span>→</span></div>
+
+        <div class="arch-column wide">
+          <div class="arch-kicker">DATA PLANE</div>
+          <div class="arch-grid">
+            <div class="arch-box"><strong>Gateway</strong><small>OpenAI-compatible</small></div>
+            <div class="arch-box"><strong>Router</strong><small>health + queue aware</small></div>
+            <div class="arch-box"><strong>Runtime</strong><small>llama.cpp / vLLM</small></div>
+            <div class="arch-box accent"><strong>GPU</strong><small>local worker</small></div>
+          </div>
+          <div class="arch-note accent-note">Target: single-digit millisecond platform overhead.</div>
+        </div>
+      </div>
+
+      <div class="architecture-caption reveal">
+        <span>01</span> Start with one workstation. <span>02</span> Add workers when you need them. <span>03</span> Burst to external capacity only by policy.
+      </div>
+    </section>
+
+    <section class="developer-section section-shell section-block">
+      <div class="developer-copy reveal">
+        <div class="eyebrow">DEVELOPER EXPERIENCE</div>
+        <h2>Infrastructure should disappear.<br><span>Not your hardware.</span></h2>
+        <p>Keep ownership of the machines. Lose the driver matrices, runtime flags, brittle YAML, manual health checks and mystery GPU OOMs.</p>
+        <div class="dev-points">
+          <div><span>01</span><p><strong>Describe intent.</strong> Pick a model and performance goal — not twenty infrastructure knobs.</p></div>
+          <div><span>02</span><p><strong>Get a plan.</strong> Nodeau explains runtime, placement, predicted VRAM and fallbacks before launch.</p></div>
+          <div><span>03</span><p><strong>Get an endpoint.</strong> Standard APIs make local inference feel like any other managed service.</p></div>
+        </div>
+      </div>
+
+      <div class="code-card reveal delay-1">
+        <div class="code-tabs"><span class="active">terminal</span><span>nodeau.yaml</span></div>
+        <pre><code><span class="c-dim">$</span> nodeau init
+<span class="c-green">✓</span> detected Python service
+<span class="c-green">✓</span> found model declaration
+
+<span class="c-dim">$</span> nodeau deploy
+<span class="c-blue">→</span> planning qwen3-8b-q4
+<span class="c-blue">→</span> checking 1 local GPU
+<span class="c-green">✓</span> model cached on worker-01
+<span class="c-green">✓</span> predicted headroom 2.8 GiB
+<span class="c-green">✓</span> endpoint ready in 4.8s
+
+<span class="c-dim">$</span> nodeau status
+NAME          STATE   GPU        TTFT
+chat-api      <span class="c-green">ready</span>   RTX 3080   312ms</code></pre>
+        <button class="copy-code" type="button" data-copy="nodeau deploy">copy command</button>
+      </div>
+    </section>
+
+    <section id="why" class="why-section section-shell section-block">
+      <div class="section-heading reveal">
+        <div class="eyebrow">WHY NODEAU</div>
+        <h2>Kubernetes sees a GPU.<br><span>Nodeau sees the workload.</span></h2>
+      </div>
+
+      <div class="compare-table reveal delay-1" role="table" aria-label="Kubernetes and Nodeau comparison">
+        <div class="compare-row compare-head" role="row">
+          <div role="columnheader"></div>
+          <div role="columnheader">GENERIC SCHEDULER</div>
+          <div role="columnheader" class="nodeau-col">NODEAU</div>
+        </div>
+        <div class="compare-row" role="row"><div role="cell">GPU awareness</div><div role="cell">Device count</div><div role="cell" class="nodeau-col">VRAM + runtime + model fit</div></div>
+        <div class="compare-row" role="row"><div role="cell">Placement</div><div role="cell">Resource availability</div><div role="cell" class="nodeau-col">Cache + queue + health + policy</div></div>
+        <div class="compare-row" role="row"><div role="cell">Failed deployment</div><div role="cell">Pending / OOM</div><div role="cell" class="nodeau-col">Reason + recommended fix</div></div>
+        <div class="compare-row" role="row"><div role="cell">Idle workload</div><div role="cell">Keeps running</div><div role="cell" class="nodeau-col">Lifecycle policy + cached restart</div></div>
+        <div class="compare-row" role="row"><div role="cell">Burst traffic</div><div role="cell">More cluster engineering</div><div role="cell" class="nodeau-col">Policy-driven overflow</div></div>
+      </div>
+    </section>
+
+    <section class="principles-section section-shell section-block">
+      <div class="principles-grid">
+        <div class="principles-title reveal">
+          <div class="eyebrow">THE IDEA</div>
+          <h2>Own compute.<br><span>Operate less.</span></h2>
+        </div>
+        <div class="principles-list">
+          <article class="principle reveal"><span>01</span><h3>Local by default.</h3><p>Your steady-state workloads should run where your hardware and data already live.</p></article>
+          <article class="principle reveal"><span>02</span><h3>Cloud when useful.</h3><p>External capacity should be an overflow valve, not the only place your application can exist.</p></article>
+          <article class="principle reveal"><span>03</span><h3>Explain the machine.</h3><p>Developers should understand why a workload was placed, blocked, slowed down or moved.</p></article>
+          <article class="principle reveal"><span>04</span><h3>Measure the overhead.</h3><p>Every Nodeau layer should justify its latency. The hot path stays intentionally thin.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="early-access" class="cta-section section-shell section-block">
+      <div class="cta-panel reveal">
+        <div class="cta-grid" aria-hidden="true"></div>
+        <div class="eyebrow"><span class="status-dot"></span> PRIVATE ALPHA</div>
+        <h2>Have a GPU box sitting around?</h2>
+        <p>Nodeau is being built for developers, labs and small teams that want cloud-like deployment on hardware they already own.</p>
+        <div class="cta-actions">
+          <a class="button primary" href="mailto:hello@nodeau.ai?subject=Nodeau%20Private%20Alpha">Request early access <span>→</span></a>
+          <button class="button ghost" type="button" data-copy="hello@nodeau.ai">Copy email</button>
+        </div>
+        <small class="cta-note">Early prototype · no production SLA yet · feedback welcome</small>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="footer-brand">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-word">nodeau</span>
+      </a>
+      <p>Your hardware. One private AI cloud.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#product">Product</a>
+      <a href="#architecture">Architecture</a>
+      <a href="mailto:hello@nodeau.ai">Contact</a>
+      <a href="#top">Back to top ↑</a>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year></span> Nodeau</span>
+      <span>nodeau.ai</span>
+      <span class="built-status"><i></i> Building in public</span>
+    </div>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite" data-toast>Copied</div>
+  <script src="./script.js"></script>
+</body>
+</html>
