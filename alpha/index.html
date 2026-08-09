@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install the Nodeau Alpha — Run Your First Local AI Model</title>
+<meta name="description" content="Turn a compatible Linux/NVIDIA PC into a private, OpenAI-compatible local AI endpoint. Requirements, the exact install commands, and what to do if it fails.">
+<link rel="canonical" href="https://nodeau.ai/alpha/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/alpha/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Install the Nodeau Alpha">
+<meta property="og:description" content="Run your first local AI model on a compatible Linux/NVIDIA PC. Experimental Self-Hosted Alpha.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/alpha/" aria-current="page">Alpha</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="/contact/">Talk to us</a>
+      <a class="btn btn-primary btn-sm" href="#step-1">Install</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" style="padding-bottom:2rem">
+    <div class="wrap">
+      <span class="pill pill-alpha" style="margin-bottom:1.25rem">Experimental Alpha</span>
+      <h1 style="font-size:var(--step-3)">Run your first local AI model with Nodeau.</h1>
+      <p class="lede" style="margin-top:1.15rem">
+        Turn a compatible Linux/NVIDIA PC into a private, OpenAI-compatible
+        local AI endpoint. Three commands, then a request.
+      </p>
+
+      <div class="callout callout-warn" style="margin-top:2rem;max-width:64ch">
+        <h3>This is early software</h3>
+        <p style="margin:0">
+          Nodeau has been proven on the machine it was built on. You may be
+          among the first people running it anywhere else. Please use a
+          computer you don’t mind experimenting on — and if it fails, that is
+          a useful result, not a wasted evening.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ before you start ======== -->
+  <section class="tight divider">
+    <div class="wrap">
+      <p class="eyebrow">Before you start</p>
+      <h2 style="font-size:var(--step-2)">What you need</h2>
+
+      <div class="grid grid-2" style="margin-top:1.75rem;align-items:start">
+        <div>
+          <ul class="checks">
+            <li><strong>Ubuntu 24.04 LTS</strong>, installed normally (not in a virtual machine without GPU passthrough)</li>
+            <li><strong>x86_64</strong></li>
+            <li>An <strong>NVIDIA GPU</strong> with a <strong>working driver already installed</strong></li>
+            <li>About <strong>20&nbsp;GB free disk</strong> — Nodeau is under 100&nbsp;MB, but the container images are ~3&nbsp;GB and the starter model is 4.7&nbsp;GB</li>
+            <li>An internet connection during installation and the model download</li>
+            <li><strong>sudo</strong>, for the setup step only</li>
+          </ul>
+        </div>
+        <div class="panel panel-quiet">
+          <h3 style="font-size:1rem;margin-bottom:0.6rem">Current limits</h3>
+          <ul class="checks checks-future" style="margin-bottom:0">
+            <li>NVIDIA only — no AMD, Intel or Apple GPUs</li>
+            <li>One machine, one GPU</li>
+            <li>llama.cpp runtime</li>
+            <li>A small set of measured model profiles</li>
+            <li>No Windows, and no WSL yet</li>
+          </ul>
+          <p style="color:var(--text-3);font-size:0.85rem;margin:1rem 0 0">
+            Ubuntu 24.04 on an RTX 3080 is the configuration Nodeau has actually
+            been measured on. Other NVIDIA cards are untested rather than
+            known-broken. <a href="/roadmap/">See the roadmap</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== step 0 ========== -->
+  <section class="tight divider">
+    <div class="wrap">
+      <div class="steps">
+
+        <div class="step">
+          <h3>Check your graphics driver</h3>
+          <p>Open a terminal and run this. It is the one thing Nodeau needs you to have working already.</p>
+          <div class="code">
+            <div class="code-head">
+              <span>bash</span>
+              <button class="copy-btn" data-copy="#c0" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c0"><code>nvidia-smi</code></pre>
+          </div>
+          <p style="margin-top:0.85rem">
+            If you see a table with your graphics card in it, you are ready.
+          </p>
+          <div class="note note-warn" style="margin-top:0.75rem">
+            If it prints an error, stop here. Nodeau Alpha expects a working
+            NVIDIA driver and will not install, replace or repair one — that
+            decision affects whether your computer boots to a desktop, so it
+            stays yours. Install your distribution’s driver first, or
+            <a href="/contact/?type=alpha">ask us</a>.
+          </div>
+        </div>
+
+        <div class="step" id="step-1">
+          <h3>Install the Nodeau CLI</h3>
+          <p>This downloads one small program, verifies its checksum, and puts it in a directory you own. It does not use sudo and changes nothing else.</p>
+          <div class="code">
+            <div class="code-head">
+              <span>bash</span>
+              <button class="copy-btn" data-copy="#c1" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c1"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash</code></pre>
+          </div>
+
+          <details class="qa" style="margin-top:1rem;border-bottom:0">
+            <summary style="padding:0.6rem 0">Want to read the installer first?</summary>
+            <div class="answer">
+              <p>A good habit, and the script is short enough to make it practical.</p>
+              <div class="code">
+                <div class="code-head">
+                  <span>bash</span>
+                  <button class="copy-btn" data-copy="#c1b" type="button"><span data-copy-label>Copy</span></button>
+                </div>
+<pre id="c1b"><code>curl -fsSL https://get.nodeau.ai/install.sh -o install-nodeau.sh
+less install-nodeau.sh
+bash install-nodeau.sh</code></pre>
+              </div>
+            </div>
+          </details>
+
+          <p style="margin-top:0.85rem;color:var(--text-2)">
+            If your shell then says <code>nodeau: command not found</code>, close
+            the terminal, open a new one, and carry on.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>Prepare the machine</h3>
+          <p>Nodeau checks the computer and sets up the local infrastructure it needs to run models.</p>
+          <div class="code">
+            <div class="code-head">
+              <span>bash</span>
+              <button class="copy-btn" data-copy="#c2" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c2"><code>nodeau install</code></pre>
+          </div>
+          <p style="margin-top:0.85rem;color:var(--text-2)">
+            It shows you what it found and what it plans to do, lists every
+            command that needs your password, and waits for you to agree. Ubuntu
+            will ask for your password once or twice. This part can take several
+            minutes.
+          </p>
+          <p style="color:var(--text-2)">
+            Want to see the plan without doing anything? Run
+            <code>nodeau install --dry-run</code>.
+          </p>
+          <div class="note" style="margin-top:0.75rem">
+            Nodeau will not replace your NVIDIA driver, disable Secure Boot,
+            change how your computer starts up, touch your partitions or any
+            Windows files, or delete a Kubernetes cluster it did not create. If
+            it cannot proceed safely, it stops and says why.
+          </div>
+        </div>
+
+        <div class="step">
+          <h3>Download a model and start it</h3>
+          <div class="code">
+            <div class="code-head">
+              <span>bash</span>
+              <button class="copy-btn" data-copy="#c3" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c3"><code>nodeau quickstart</code></pre>
+          </div>
+          <p style="margin-top:0.85rem;color:var(--text-2)">Nodeau will:</p>
+          <ul class="checks">
+            <li>offer the starter model — <strong>Qwen3-8B Q4_K_M</strong>, Apache-2.0, about a 4.7&nbsp;GB download</li>
+            <li>tell you the size and licence, and ask before downloading anything</li>
+            <li>verify the file against a known SHA-256</li>
+            <li>check the model fits safely in your GPU’s memory</li>
+            <li>start it, and bring up the local API</li>
+          </ul>
+          <p style="color:var(--text-2)">On a slow connection, the download is the long part.</p>
+        </div>
+
+        <div class="step">
+          <h3>Talk to it</h3>
+          <p>Nodeau prints a working command when it finishes. It looks like this — and the key is unique to your machine.</p>
+          <div class="code">
+            <div class="code-head">
+              <span>bash</span>
+              <button class="copy-btn" data-copy="#c4" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c4"><code>export NODEAU_API_KEY="$(nodeau auth show --quiet)"</code></pre>
+          </div>
+          <div class="code" style="margin-top:0.75rem">
+            <div class="code-head">
+              <span>bash</span>
+              <button class="copy-btn" data-copy="#c5" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c5"><code>curl http://127.0.0.1:8080/v1/chat/completions \
+  -H "Authorization: Bearer $NODEAU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen3-8b-q4km",
+    "messages": [{"role": "user", "content": "Say hello from my local GPU."}],
+    "max_tokens": 64
+  }'</code></pre>
+          </div>
+          <p style="margin-top:0.85rem">
+            If text comes back, <strong>it worked</strong> — your own graphics
+            card generated it. The first reply can take a few seconds while the
+            model warms up. Streaming works too: add <code>"stream": true</code>
+            and use <code>curl -N</code>.
+          </p>
+
+          <details class="qa" style="margin-top:1rem;border-bottom:0">
+            <summary style="padding:0.6rem 0">Use it from Python</summary>
+            <div class="answer">
+              <p>It is an ordinary OpenAI-compatible endpoint, so the official client works by changing the base URL.</p>
+              <div class="code">
+                <div class="code-head">
+                  <span>python</span>
+                  <button class="copy-btn" data-copy="#c6" type="button"><span data-copy-label>Copy</span></button>
+                </div>
+<pre id="c6"><code>import os
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://127.0.0.1:8080/v1",
+    api_key=os.environ["NODEAU_API_KEY"],
+)
+
+reply = client.chat.completions.create(
+    model="qwen3-8b-q4km",
+    messages=[{"role": "user", "content": "Say hello from my local GPU."}],
+    max_tokens=64,
+)
+print(reply.choices[0].message.content)</code></pre>
+              </div>
+              <p style="margin-bottom:0">Set <code>NODEAU_API_KEY</code> first, as in the step above.</p>
+            </div>
+          </details>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== day to day ============ -->
+  <section class="tight divider">
+    <div class="wrap">
+      <p class="eyebrow">Afterwards</p>
+      <h2 style="font-size:var(--step-2)">Day-to-day commands</h2>
+      <div class="grid grid-2" style="margin-top:1.5rem;align-items:start">
+        <div class="grid" style="gap:1.1rem">
+          <div class="feature"><h3><code>nodeau status</code></h3><p>What is running, and whether the endpoint is answering.</p></div>
+          <div class="feature"><h3><code>nodeau doctor</code></h3><p>Read-only check of the machine. Changes nothing.</p></div>
+          <div class="feature"><h3><code>nodeau stop qwen-local</code></h3><p>Stop the endpoint. Your downloaded model stays.</p></div>
+        </div>
+        <div class="grid" style="gap:1.1rem">
+          <div class="feature"><h3><code>nodeau run qwen-local</code></h3><p>Start it again.</p></div>
+          <div class="feature"><h3><code>nodeau model list</code></h3><p>Which models Nodeau can serve, and what you have downloaded.</p></div>
+          <div class="feature"><h3><code>nodeau uninstall</code></h3><p>Shows exactly what it will remove and asks first. Keeps your models, your driver, and anything that was on the machine before Nodeau.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================== troubleshooting ========== -->
+  <section class="tight divider">
+    <div class="wrap">
+      <p class="eyebrow">If something goes wrong</p>
+      <h2 style="font-size:var(--step-2)">Send us one file. Please don’t repair it by hand.</h2>
+      <p style="color:var(--text-2);margin-top:0.9rem;max-width:60ch">
+        If you have to fix something manually, that is a bug we need to know
+        about — and fixing it hides the problem. This is Alpha; failing is a
+        legitimate outcome.
+      </p>
+
+      <div class="grid grid-2" style="margin-top:1.75rem;align-items:start">
+        <div>
+          <h3 style="font-size:1rem;margin-bottom:0.5rem">If the CLI works</h3>
+          <div class="code">
+            <div class="code-head">
+              <span>bash</span>
+              <button class="copy-btn" data-copy="#c7" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c7"><code>nodeau support bundle</code></pre>
+          </div>
+          <p style="color:var(--text-2);margin-top:0.85rem">
+            Writes one <code>.tar.gz</code> into the current folder. It contains
+            no API keys, no credentials, no prompts and no model output, and it
+            is sent nowhere — you attach it yourself. It is an ordinary archive,
+            so you are very welcome to open it and look first.
+          </p>
+        </div>
+        <div>
+          <h3 style="font-size:1rem;margin-bottom:0.5rem">If it failed before that</h3>
+          <div class="code">
+            <div class="code-head">
+              <span>path</span>
+              <button class="copy-btn" data-copy="#c8" type="button"><span data-copy-label>Copy</span></button>
+            </div>
+<pre id="c8"><code>~/.local/state/nodeau/install.log</code></pre>
+          </div>
+          <p style="color:var(--text-2);margin-top:0.85rem">
+            Everything <code>nodeau install</code> prints is also written there.
+            Send that file — or simply copy and paste whatever the terminal
+            showed. Anything is better than nothing.
+          </p>
+        </div>
+      </div>
+
+      <p style="margin-top:1.75rem">
+        Either way: <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>,
+        or use the <a href="/contact/?type=alpha">contact form</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="tight divider cta">
+    <div class="wrap">
+      <h2 style="font-size:var(--step-2)">Ready?</h2>
+      <p class="lede" style="margin:1rem auto 1.75rem;max-width:40ch">
+        Start at the driver check, then work down. It should take about ten
+        minutes plus the download.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#main">Back to step one</a>
+        <a class="btn btn-ghost" href="/faq/">Read the FAQ</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+            <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+          </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="/alpha/">Alpha guide</a></li>
+          <li><a href="https://get.nodeau.ai/">Installer</a></li>
+          <li><a href="https://get.nodeau.ai/docs/requirements.md">Requirements</a></li>
+          <li><a href="https://get.nodeau.ai/docs/troubleshooting.md">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Nodeau</span>
+      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+</body>
+</html>

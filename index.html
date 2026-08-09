@@ -1,355 +1,464 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Nodeau turns the GPU in your PC — or a small fleet of GPUs — into a private, easy-to-run AI platform." />
-  <meta name="theme-color" content="#07090c" />
-  <meta property="og:title" content="Nodeau — Your GPU. Your AI cloud." />
-  <meta property="og:description" content="Private AI for home users, developers, startups and small teams — on hardware you already own." />
-  <title>Nodeau — Your GPU. Your AI cloud.</title>
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./styles.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nodeau — Turn Your GPU Into Local AI Infrastructure</title>
+<meta name="description" content="Run AI models on GPUs you already own. Nodeau checks hardware compatibility, deploys supported models, and gives you a local OpenAI-compatible API.">
+<link rel="canonical" href="https://nodeau.ai/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nodeau.ai/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Nodeau — Turn Your GPU Into Local AI Infrastructure">
+<meta property="og:description" content="Nodeau checks your machine, works out whether a supported model fits safely, and gives you a local OpenAI-compatible API.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
 </head>
 <body>
-  <div class="grain" aria-hidden="true"></div>
-  <div class="cursor-glow" aria-hidden="true"></div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header" data-header>
-    <a class="brand" href="#top" aria-label="Nodeau home">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="brand-word">nodeau</span>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
     </a>
-
-    <nav class="nav" aria-label="Main navigation">
-      <a href="#home">For home</a>
-      <a href="#teams">For teams</a>
-      <a href="#platform">Platform</a>
-      <a href="#early-access">Early access</a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="#home">For home</a></li>
+        <li><a href="#business">For business</a></li>
+        <li><a href="/alpha/">Alpha</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+      </ul>
     </nav>
-
-    <a class="nav-cta" href="#early-access">Join the alpha <span>↗</span></a>
-  </header>
-
-  <main id="top">
-    <section class="hero section-shell">
-      <div class="hero-grid" aria-hidden="true"></div>
-      <div class="hero-copy reveal">
-        <div class="eyebrow"><span class="status-dot"></span> PRIVATE AI ON HARDWARE YOU ALREADY OWN</div>
-        <h1>Your GPU.<br><span>Your AI cloud.</span></h1>
-        <p class="hero-lede">Nodeau makes a gaming PC, workstation, or small GPU fleet feel like a private AI service. Start with one machine at home. Grow into a team without rebuilding everything.</p>
-        <div class="hero-actions">
-          <a class="button primary" href="#home">I’m using it at home <span>→</span></a>
-          <a class="button ghost" href="#teams">I’m building for a team</a>
-        </div>
-        <div class="hero-meta" role="list" aria-label="Platform status">
-          <span role="listitem">Linux alpha</span>
-          <span role="listitem">WSL coming soon</span>
-          <span role="listitem">OpenAI-compatible</span>
-          <span role="listitem">1 GPU → small fleet</span>
-        </div>
-      </div>
-
-      <div class="hero-console reveal delay-1" aria-label="Nodeau home deployment preview">
-        <div class="console-bar">
-          <div class="console-dots"><span></span><span></span><span></span></div>
-          <div class="console-title">nodeau / home-pc</div>
-          <div class="console-live"><span></span> private</div>
-        </div>
-        <div class="console-body">
-          <div class="terminal">
-            <div><span class="muted">$</span> <span class="cmd">nodeau up</span></div>
-            <div class="term-gap"></div>
-            <div><span class="ok">✓</span> found <b>RTX 3080 · 10 GB</b></div>
-            <div><span class="ok">✓</span> usable GPU memory <b>9.1 GiB</b></div>
-            <div><span class="ok">✓</span> recommended <b>Qwen3 8B · Q4</b></div>
-            <div><span class="ok">✓</span> model cached locally</div>
-            <div><span class="ok">✓</span> private endpoint ready</div>
-            <div class="term-gap"></div>
-            <div class="endpoint"><span class="muted">endpoint</span> <b>http://nodeau.local/v1</b></div>
-          </div>
-
-          <div class="home-status-panel">
-            <div class="status-line"><span>GPU</span><strong>RTX 3080</strong><i class="status-good">READY</i></div>
-            <div class="status-line"><span>Model</span><strong>Qwen3 8B</strong><i>LOCAL</i></div>
-            <div class="status-line"><span>Privacy</span><strong>LAN only</strong><i class="status-good">PRIVATE</i></div>
-            <div class="status-line"><span>Windows</span><strong>WSL</strong><i class="status-soon">COMING SOON</i></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="signal-strip" aria-label="Nodeau highlights">
-      <div class="ticker">
-        <span>GAMING PC → AI SERVER</span><i>◆</i><span>PRIVATE BY DEFAULT</span><i>◆</i><span>NO KUBERNETES REQUIRED</span><i>◆</i><span>WSL COMING SOON</span><i>◆</i><span>ADD MACHINES WHEN YOU NEED THEM</span><i>◆</i>
-        <span>GAMING PC → AI SERVER</span><i>◆</i><span>PRIVATE BY DEFAULT</span><i>◆</i><span>NO KUBERNETES REQUIRED</span><i>◆</i><span>WSL COMING SOON</span><i>◆</i><span>ADD MACHINES WHEN YOU NEED THEM</span><i>◆</i>
-      </div>
-    </section>
-
-    <section class="audience-section section-shell section-block" id="audiences">
-      <div class="section-heading reveal">
-        <div class="eyebrow">ONE PLATFORM · TWO STARTING POINTS</div>
-        <h2>Use the machine on your desk.<br><span>Or the machines across your team.</span></h2>
-        <p>Nodeau is designed to be approachable enough for a first home server, while keeping the scheduling and control features that matter when a small company grows.</p>
-      </div>
-      <div class="audience-grid">
-        <a class="audience-card home-audience reveal" href="#home">
-          <div class="audience-top"><span class="audience-icon">⌂</span><span class="audience-label">FOR HOME</span></div>
-          <h3>Your personal GPU, made useful.</h3>
-          <p>Run private AI on the PC you already own without learning containers, CUDA flags, reverse proxies, or Kubernetes.</p>
-          <div class="audience-points"><span>Privacy</span><span>Easy model setup</span><span>Power controls</span><span>WSL soon</span></div>
-          <div class="audience-link">Explore home use <span>→</span></div>
-        </a>
-        <a class="audience-card team-audience reveal delay-1" href="#teams">
-          <div class="audience-top"><span class="audience-icon">⌘</span><span class="audience-label">FOR STARTUPS & SMALL TEAMS</span></div>
-          <h3>A tiny AI platform without a platform team.</h3>
-          <p>Pool a few workstations or GPU boxes, apply policy, keep workloads private, and add cloud capacity only when it is actually useful.</p>
-          <div class="audience-points"><span>Fleet placement</span><span>Policies</span><span>Audit & access</span><span>Cloud overflow</span></div>
-          <div class="audience-link">Explore team use <span>→</span></div>
-        </a>
-      </div>
-    </section>
-
-    <section id="home" class="home-section section-shell section-block">
-      <div class="section-heading reveal">
-        <div class="eyebrow">FOR HOME · PERSONAL USE</div>
-        <h2>Put that GPU to work.<br><span>Keep the cloud optional.</span></h2>
-        <p>Have a gaming PC or workstation with a capable NVIDIA GPU? Nodeau is being built to turn it into a private AI box you can actually live with.</p>
-      </div>
-
-      <div class="feature-grid home-feature-grid">
-        <article class="feature-card feature-large reveal">
-          <div class="feature-index">01</div>
-          <div class="feature-icon">◈</div>
-          <h3>Pick a model. Nodeau figures out the fit.</h3>
-          <p>Instead of guessing quantization, context size, GPU memory and runtime flags, Nodeau can explain what will fit on your machine and recommend a configuration before it crashes.</p>
-          <div class="mini-scheduler">
-            <div class="mini-row"><span>Your GPU</span><strong>RTX 3080 · 10 GB</strong></div>
-            <div class="mini-row"><span>Qwen3 8B Q4</span><strong class="green">GOOD FIT</strong></div>
-            <div class="mini-meter"><span style="width:68%"></span></div>
-            <small>room left for context + desktop use</small>
-          </div>
-        </article>
-
-        <article class="feature-card reveal delay-1">
-          <div class="feature-index">02</div>
-          <div class="feature-icon">⌁</div>
-          <h3>Private by default</h3>
-          <p>Keep your model and requests on your machine or home network. Public exposure should be something you choose, not something the platform assumes.</p>
-          <div class="privacy-stack"><span>Internet <b>OFF</b></span><span>LAN <b>ON</b></span><span>Model cache <b>LOCAL</b></span></div>
-        </article>
-
-        <article class="feature-card reveal">
-          <div class="feature-index">03</div>
-          <div class="feature-icon">⚡</div>
-          <h3>Use the apps you already like</h3>
-          <p>Expose an OpenAI-compatible endpoint locally so chat UIs, coding tools and your own projects can talk to the model without special client code.</p>
-          <div class="api-chip"><span>base URL</span><code>http://nodeau.local/v1</code></div>
-        </article>
-
-        <article class="feature-card reveal delay-1">
-          <div class="feature-index">04</div>
-          <div class="feature-icon">◐</div>
-          <h3>Built for a PC you still use</h3>
-          <p>Nodeau is designed around real home constraints: desktop VRAM usage, thermals, fan noise, power limits and workloads that should get out of the way when you need your PC back.</p>
-          <div class="home-policy"><span>quiet hours</span><strong>10 PM → 7 AM</strong><span>power target</span><strong>220 W</strong></div>
-        </article>
-
-        <article class="feature-card feature-large wsl-card reveal">
-          <div class="feature-index">05</div>
-          <div class="feature-icon windows-mark">⊞</div>
-          <div class="coming-badge">COMING SOON</div>
-          <h3>Windows via WSL</h3>
-          <p>Linux is the first alpha target. WSL support is planned so a Windows gaming PC can become a Nodeau worker without requiring a dedicated Linux installation.</p>
-          <div class="wsl-flow" aria-label="Windows WSL Nodeau flow">
-            <span>Windows PC</span><i>→</i><span>WSL</span><i>→</i><span>Nodeau</span><i>→</i><span>GPU</span>
-          </div>
-          <small class="roadmap-note">Roadmap feature — not available in the current alpha.</small>
-        </article>
-
-        <article class="feature-card reveal">
-          <div class="feature-index">06</div>
-          <div class="feature-icon">＋</div>
-          <h3>Start with one. Add another later.</h3>
-          <p>Your first Nodeau setup can be one GPU. If you add another PC later, the same platform can grow toward model-aware placement instead of becoming a second hand-built server.</p>
-        </article>
-      </div>
-
-      <div class="home-demo developer-section home-demo-section">
-        <div class="developer-copy reveal">
-          <div class="eyebrow">THE HOME EXPERIENCE</div>
-          <h2>From spare GPU<br><span>to private endpoint.</span></h2>
-          <p>The long-term goal is simple: install Nodeau, let it inspect the hardware, pick a model, and get a local endpoint. The hard infrastructure stays underneath.</p>
-          <div class="dev-points">
-            <div><span>01</span><p><strong>Inspect.</strong> Understand available VRAM, driver compatibility and what the desktop is already using.</p></div>
-            <div><span>02</span><p><strong>Recommend.</strong> Suggest model formats and context sizes that make sense for your hardware.</p></div>
-            <div><span>03</span><p><strong>Serve.</strong> Keep the model warm locally and expose a familiar API to your apps.</p></div>
-          </div>
-        </div>
-        <div class="code-card reveal delay-1">
-          <div class="code-tabs"><span class="active">home terminal</span><span>preview</span></div>
-          <pre><code><span class="c-dim">$</span> nodeau doctor
-<span class="c-green">✓</span> RTX 3080 detected
-<span class="c-green">✓</span> 9.1 GiB safely available
-<span class="c-green">✓</span> local storage ready
-
-<span class="c-dim">$</span> nodeau model recommend
-<span class="c-blue">→</span> qwen3-8b-q4       great fit
-<span class="c-blue">→</span> llama-3.2-3b-q4   fastest
-
-<span class="c-dim">$</span> nodeau up qwen3-8b-q4
-<span class="c-green">✓</span> endpoint ready
-  http://nodeau.local/v1</code></pre>
-          <button class="copy-code" type="button" data-copy="nodeau up">copy preview command</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="teams" class="teams-section section-block">
-      <div class="section-shell">
-        <div class="section-heading reveal">
-          <div class="eyebrow">FOR STARTUPS · LABS · SMALL COMPANIES</div>
-          <h2>Your own AI infrastructure.<br><span>Without hiring a platform team.</span></h2>
-          <p>Nodeau grows the same local-first idea into a small fleet: placement, policy, visibility and recovery on top of hardware your team already owns.</p>
-        </div>
-
-        <div class="business-banner reveal">
-          <div><span class="business-kicker">START SMALL</span><strong>1 workstation</strong></div><i>→</i>
-          <div><span class="business-kicker">ADD CAPACITY</span><strong>2–8 GPU nodes</strong></div><i>→</i>
-          <div><span class="business-kicker">BURST BY POLICY</span><strong>External GPU cloud</strong></div>
-        </div>
-
-        <div class="business-grid">
-          <article class="business-feature reveal">
-            <div class="business-number">01</div><div><h3>Model-aware fleet placement</h3><p>Choose a worker using VRAM headroom, runtime compatibility, model locality, queue depth, thermals and health — not simply whether a GPU exists.</p></div>
-          </article>
-          <article class="business-feature reveal delay-1">
-            <div class="business-number">02</div><div><h3>Policy-driven cloud overflow</h3><p>Keep steady workloads on owned hardware, then spill to external capacity when queue delay, availability or a spending policy says to.</p></div>
-          </article>
-          <article class="business-feature reveal">
-            <div class="business-number">03</div><div><h3>Team access & workload policy <span class="roadmap-pill">roadmap</span></h3><p>Role-aware access, project boundaries, quotas and workload priorities for teams that need more than a shared shell account.</p></div>
-          </article>
-          <article class="business-feature reveal delay-1">
-            <div class="business-number">04</div><div><h3>Audit & deployment history <span class="roadmap-pill">roadmap</span></h3><p>Know who changed a deployment, which model/runtime revision ran, where it was placed and what configuration can be rolled back.</p></div>
-          </article>
-          <article class="business-feature reveal">
-            <div class="business-number">05</div><div><h3>Health, utilization & performance</h3><p>See queue time, TTFT, tokens per second, VRAM, temperature and power together so the team understands both AI performance and the hardware underneath it.</p></div>
-          </article>
-          <article class="business-feature reveal delay-1">
-            <div class="business-number">06</div><div><h3>Explainable admission</h3><p>Reject a deployment before it OOMs and explain the reason: not enough VRAM, context too large, incompatible runtime, unhealthy node, or policy limit.</p></div>
-          </article>
-        </div>
-
-        <div class="business-extra reveal">
-          <div class="business-extra-copy">
-            <div class="eyebrow">THE STUFF A HOME USER SHOULDN’T HAVE TO CARE ABOUT</div>
-            <h3>Useful when you become a team.</h3>
-            <p>Nodeau can keep the home experience simple while layering in controls that matter once GPUs are shared across people, projects and environments.</p>
-          </div>
-          <div class="business-chip-grid">
-            <span>RBAC <i>roadmap</i></span><span>Audit trail <i>roadmap</i></span><span>Project quotas <i>roadmap</i></span><span>Priority classes</span><span>Deployment history</span><span>Fleet health</span><span>Cloud overflow</span><span>Cost / perf insights</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="platform" class="architecture-section section-shell section-block">
-      <div class="section-heading compact reveal">
-        <div class="eyebrow">THE SAME ENGINE UNDERNEATH</div>
-        <h2>Easy at home.<br><span>Serious when it needs to be.</span></h2>
-        <p>A thin control plane handles desired state and placement. The request path stays lean so your inference latency is spent on the model, not the platform.</p>
-      </div>
-
-      <div class="architecture-panel reveal delay-1">
-        <div class="arch-column">
-          <div class="arch-kicker">YOU</div>
-          <div class="arch-box highlight"><span class="arch-dot"></span><strong>Nodeau</strong><small>simple local experience</small></div>
-        </div>
-        <div class="arch-flow"><span>→</span></div>
-        <div class="arch-column wide">
-          <div class="arch-kicker">CONTROL PLANE</div>
-          <div class="arch-grid">
-            <div class="arch-box"><strong>Planner</strong><small>runtime + resources</small></div>
-            <div class="arch-box"><strong>Admission</strong><small>fit before launch</small></div>
-            <div class="arch-box"><strong>Placement</strong><small>best local worker</small></div>
-            <div class="arch-box"><strong>Lifecycle</strong><small>start + recover</small></div>
-          </div>
-          <div class="arch-note">For one PC, most of this should simply disappear.</div>
-        </div>
-        <div class="arch-flow"><span>→</span></div>
-        <div class="arch-column wide">
-          <div class="arch-kicker">DATA PLANE</div>
-          <div class="arch-grid">
-            <div class="arch-box"><strong>Gateway</strong><small>OpenAI-compatible</small></div>
-            <div class="arch-box"><strong>Router</strong><small>health + queue aware</small></div>
-            <div class="arch-box"><strong>Runtime</strong><small>llama.cpp / vLLM</small></div>
-            <div class="arch-box accent"><strong>GPU</strong><small>your hardware</small></div>
-          </div>
-          <div class="arch-note accent-note">Design goal: single-digit millisecond platform overhead.</div>
-        </div>
-      </div>
-
-      <div class="architecture-caption reveal"><span>01</span> One machine is a valid cluster. <span>02</span> More workers are additive. <span>03</span> Cloud remains optional.</div>
-    </section>
-
-    <section class="why-section section-shell section-block">
-      <div class="section-heading reveal">
-        <div class="eyebrow">WHY NODEAU</div>
-        <h2>Local AI without<br><span>the local-AI homework.</span></h2>
-        <p>Today, getting a model running is often the easy part. Keeping it reliable, understandable and usable by other apps is where the infrastructure starts piling up.</p>
-      </div>
-
-      <div class="compare-table reveal delay-1" role="table" aria-label="Manual local AI and Nodeau comparison">
-        <div class="compare-row compare-head" role="row">
-          <div role="columnheader"></div><div role="columnheader">DIY LOCAL STACK</div><div role="columnheader" class="nodeau-col">NODEAU</div>
-        </div>
-        <div class="compare-row" role="row"><div role="cell">Model fit</div><div role="cell">Trial, error, OOM</div><div role="cell" class="nodeau-col">Hardware-aware recommendation</div></div>
-        <div class="compare-row" role="row"><div role="cell">Runtime setup</div><div role="cell">Flags + drivers + containers</div><div role="cell" class="nodeau-col">Opinionated runtime selection</div></div>
-        <div class="compare-row" role="row"><div role="cell">Using it from apps</div><div role="cell">Wire up servers yourself</div><div role="cell" class="nodeau-col">Standard local endpoint</div></div>
-        <div class="compare-row" role="row"><div role="cell">Second machine</div><div role="cell">Build another stack</div><div role="cell" class="nodeau-col">Join it as another worker</div></div>
-        <div class="compare-row" role="row"><div role="cell">Team growth</div><div role="cell">Re-architect later</div><div role="cell" class="nodeau-col">Add policy + fleet controls</div></div>
-      </div>
-    </section>
-
-    <section id="early-access" class="cta-section section-shell section-block">
-      <div class="cta-panel reveal">
-        <div class="cta-grid" aria-hidden="true"></div>
-        <div class="eyebrow"><span class="status-dot"></span> PRIVATE ALPHA</div>
-        <h2>One GPU or a small fleet?</h2>
-        <p>Both are useful to us. Nodeau is currently Linux-first and early. We’re looking for home GPU owners as well as startups and small teams willing to help shape the product.</p>
-        <div class="dual-cta-grid">
-          <div class="cta-choice">
-            <span>HOME USER</span>
-            <strong>I want to run Nodeau on my PC.</strong>
-            <p>Great for gaming rigs, workstations and homelabs. WSL support is on the roadmap.</p>
-            <a class="button primary" href="mailto:hello@nodeau.ai?subject=Nodeau%20Home%20Alpha">Join home alpha <span>→</span></a>
-          </div>
-          <div class="cta-choice">
-            <span>STARTUP / SMALL TEAM</span>
-            <strong>I want to test Nodeau with a team.</strong>
-            <p>Especially useful if you already own GPU hardware and want a simpler private inference layer.</p>
-            <a class="button ghost" href="mailto:hello@nodeau.ai?subject=Nodeau%20Team%20Design%20Partner">Become a design partner <span>→</span></a>
-          </div>
-        </div>
-        <small class="cta-note">Early prototype · Linux alpha · WSL planned · no production SLA yet</small>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer section-shell">
-    <div class="footer-brand">
-      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand-word">nodeau</span></a>
-      <p>Your GPU. Your AI cloud.</p>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="/contact/">Talk to us</a>
+      <a class="btn btn-primary btn-sm" href="/alpha/">Install Alpha</a>
     </div>
-    <div class="footer-links">
-      <a href="#home">For home</a><a href="#teams">For teams</a><a href="#platform">Platform</a><a href="mailto:hello@nodeau.ai">Contact</a><a href="#top">Back to top ↑</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===================================================== hero =========== -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <a class="release-tag" href="/alpha/">
+            <span class="dot" aria-hidden="true"></span>
+            Self-Hosted Alpha v0.1.0-alpha.1 — experimental
+          </a>
+          <h1>Turn the GPU you already own into local AI infrastructure.</h1>
+          <p class="lede" style="margin-top:1.25rem">
+            Nodeau checks your machine, works out whether a supported model can
+            fit safely, and gives you an OpenAI-compatible API on your own
+            computer — without you becoming a GPU infrastructure expert.
+          </p>
+          <div class="btn-row" style="margin-top:2rem">
+            <a class="btn btn-primary" href="/alpha/">Install Alpha</a>
+            <a class="btn btn-ghost" href="#business">Nodeau for Business</a>
+          </div>
+        </div>
+
+        <div class="code" aria-label="Example terminal session">
+          <div class="code-head"><span>terminal</span></div>
+<pre><code><span class="prompt">$</span> <span class="cmd">nodeau quickstart</span>
+
+<span class="dim">==&gt;</span> model ready      <span class="str">Qwen3-8B Q4_K_M</span>
+<span class="dim">==&gt;</span> admission        <span class="ok">Admit · FitsWithHeadroom</span>
+<span class="dim">==&gt;</span> endpoint         <span class="str">http://127.0.0.1:8080/v1</span>
+
+<span class="ok">Nodeau is ready.</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================= proof bar ========== -->
+  <div class="wrap">
+    <div class="proof">
+      <div class="proof-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 19v2M16 19v2"/></svg>
+        <div><strong>Runs on hardware you own</strong><span>Your GPU does the work.</span></div>
+      </div>
+      <div class="proof-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 4v6c0 4.5-3.4 7.3-8 8-4.6-.7-8-3.5-8-8V7z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div><strong>Checks model and GPU fit</strong><span>Before starting, not after it crashes.</span></div>
+      </div>
+      <div class="proof-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3"/></svg>
+        <div><strong>OpenAI-compatible API</strong><span>Point existing clients at it.</span></div>
+      </div>
+      <div class="proof-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+        <div><strong>Localhost-only by default</strong><span>Bound to 127.0.0.1, with a key.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== nodeau home =========== -->
+  <section id="home" class="reveal">
+    <div class="wrap">
+      <div class="grid grid-2" style="align-items:start">
+        <div>
+          <p class="eyebrow">Nodeau Home</p>
+          <h2>Put the GPU you already have to work.</h2>
+          <p class="lede" style="margin-top:1rem">
+            If your PC has a compatible NVIDIA GPU, Nodeau handles the
+            infrastructure that turns it into a usable local AI endpoint.
+          </p>
+          <p style="color:var(--text-2);margin-top:1rem;max-width:56ch">
+            Owning a GPU is not the same as having AI infrastructure. Drivers,
+            runtimes, model formats, quantisation, memory limits, containers,
+            model servers, authentication — none of that is why you wanted to
+            run a model. Nodeau does that part.
+          </p>
+          <div class="btn-row" style="margin-top:1.75rem">
+            <a class="btn btn-primary" href="/alpha/">Install Alpha</a>
+            <a class="link-arrow" href="/faq/" style="align-self:center">Read the FAQ</a>
+          </div>
+        </div>
+
+        <div class="grid" style="gap:1.4rem">
+          <div class="feature">
+            <h3>It checks the machine first</h3>
+            <p>Operating system, GPU, driver, disk. If something is missing it says what, and stops before changing anything.</p>
+          </div>
+          <div class="feature">
+            <h3>It works out whether the model fits</h3>
+            <p>Nodeau compares what your GPU can actually give a workload against what the model needs — and refuses, with the arithmetic, rather than letting it fail at load time.</p>
+          </div>
+          <div class="feature">
+            <h3>It downloads and verifies the model</h3>
+            <p>Fetched from the publisher over HTTPS and checked against a known SHA-256 before anything runs it. Cached locally, so it is fetched once.</p>
+          </div>
+          <div class="feature">
+            <h3>It gives you an ordinary API</h3>
+            <p>OpenAI-compatible, on <code>127.0.0.1</code>, with a locally generated key. Existing SDKs work by changing the base URL.</p>
+          </div>
+          <div class="feature">
+            <h3>And it can undo itself</h3>
+            <p>Nodeau records what it installed as distinct from what was already there, so uninstall removes only its own work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================== simple flow ========== -->
+  <section class="tight divider reveal">
+    <div class="wrap">
+      <div class="grid grid-2" style="align-items:start;gap:clamp(2rem,5vw,4rem)">
+        <div>
+          <p class="eyebrow">Four steps</p>
+          <h2 style="font-size:var(--step-2)">From a spare GPU to a local endpoint.</h2>
+          <p style="color:var(--text-2);margin-top:0.9rem;max-width:44ch">
+            The whole flow is three commands and a request. The long part is
+            downloading the model.
+          </p>
+          <a class="link-arrow" href="/alpha/" style="margin-top:1.25rem">Full Alpha guide</a>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <h3>Install the CLI</h3>
+            <div class="code">
+              <div class="code-head">
+                <span>bash</span>
+                <button class="copy-btn" data-copy="#cmd-install" type="button"><span data-copy-label>Copy</span></button>
+              </div>
+<pre id="cmd-install"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash</code></pre>
+            </div>
+          </div>
+
+          <div class="step">
+            <h3>Prepare the machine</h3>
+            <div class="code">
+              <div class="code-head">
+                <span>bash</span>
+                <button class="copy-btn" data-copy="#cmd-prepare" type="button"><span data-copy-label>Copy</span></button>
+              </div>
+<pre id="cmd-prepare"><code>nodeau install</code></pre>
+            </div>
+          </div>
+
+          <div class="step">
+            <h3>Start a model</h3>
+            <div class="code">
+              <div class="code-head">
+                <span>bash</span>
+                <button class="copy-btn" data-copy="#cmd-quickstart" type="button"><span data-copy-label>Copy</span></button>
+              </div>
+<pre id="cmd-quickstart"><code>nodeau quickstart</code></pre>
+            </div>
+          </div>
+
+          <div class="step">
+            <h3>Use it</h3>
+            <p style="margin-bottom:0">
+              Nodeau prints a working <code>curl</code> command with your local
+              key. Or point any OpenAI client at
+              <code>http://127.0.0.1:8080/v1</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ nodeau business ========= -->
+  <section id="business" class="divider reveal">
+    <div class="wrap">
+      <p class="eyebrow">Nodeau Business</p>
+      <h2>GPU infrastructure for teams that own the hardware.</h2>
+      <p class="lede" style="margin-top:1rem">
+        Make the GPUs your organisation already owns easier to operate as
+        shared AI infrastructure.
+      </p>
+
+      <div class="grid grid-2" style="margin-top:2.5rem;align-items:start;gap:clamp(2rem,5vw,3.5rem)">
+        <div class="prose">
+          <p style="color:var(--text-2)">
+            Organisations accumulate GPUs faster than they accumulate ways to
+            run them: developer workstations, a lab server, an edge box, three
+            generations of hardware. Owning them does not produce scheduling,
+            capacity awareness, placement, or any view of what is running
+            where.
+          </p>
+          <p style="color:var(--text-2)">
+            That control plane is the direction Nodeau Business is built
+            towards. The foundation exists today on a single node; the
+            fleet-level work is deliberately labelled as roadmap rather than
+            described as shipping.
+          </p>
+          <div class="btn-row" style="margin-top:1.5rem">
+            <a class="btn btn-primary" href="/contact/?type=business">Become a design partner</a>
+            <a class="btn btn-ghost" href="/roadmap/">See the roadmap</a>
+          </div>
+        </div>
+
+        <div class="grid" style="gap:1.25rem">
+          <div class="panel">
+            <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.9rem">
+              <span class="pill pill-available">Available now</span>
+            </div>
+            <ul class="checks" style="margin:0">
+              <li><strong>GPUService</strong> — declare a workload, not a pod spec</li>
+              <li><strong>GPUNode</strong> — observed hardware state per machine</li>
+              <li><strong>Model and hardware profiles</strong> — measured, not estimated</li>
+              <li><strong>VRAM-aware admission</strong> with an explainable decision</li>
+              <li><strong>Reservation accounting</strong> across Nodeau workloads</li>
+              <li><strong>Kubernetes reconciliation</strong> and pinned artifacts</li>
+              <li><strong>Authenticated OpenAI-compatible endpoint</strong></li>
+            </ul>
+            <p style="color:var(--text-3);font-size:0.85rem;margin-top:1rem;margin-bottom:0">
+              Running today on a single node with a single GPU.
+            </p>
+          </div>
+
+          <div class="panel panel-quiet">
+            <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.9rem">
+              <span class="pill pill-planned">Roadmap</span>
+            </div>
+            <ul class="checks checks-future" style="margin:0">
+              <li>Multi-node discovery and explainable placement</li>
+              <li>Heterogeneous GPU fleets</li>
+              <li>Fleet inventory, health and workload visibility</li>
+              <li>Team access, organisation RBAC, quotas and policy</li>
+              <li>Audit history and observability</li>
+              <li>Failover and health-aware rescheduling</li>
+              <li>Policy-controlled cloud overflow</li>
+            </ul>
+            <p style="color:var(--text-3);font-size:0.85rem;margin-top:1rem;margin-bottom:0">
+              Not available in the current Alpha.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================= technical differentiator ===== -->
+  <section class="divider reveal">
+    <div class="wrap">
+      <div class="grid grid-2" style="align-items:center;gap:clamp(2rem,5vw,4rem)">
+        <div>
+          <p class="eyebrow">How it decides</p>
+          <h2>A scheduler should know more than “GPU: 1”.</h2>
+          <p style="color:var(--text-2);margin-top:1rem;max-width:52ch">
+            Generic infrastructure mostly knows that a GPU exists. That is
+            enough to place a workload and not enough to know it will survive.
+          </p>
+          <p style="color:var(--text-2);max-width:52ch">
+            Nodeau reasons about what the card can actually give this workload:
+            the memory CUDA can address, what is already in use outside Nodeau,
+            what Nodeau has itself reserved, a safety reserve, and what the
+            model has been measured to need. Then it admits the workload — or
+            explains why it will not.
+          </p>
+          <p style="color:var(--text-2);max-width:52ch">
+            The control plane is deliberately not in the inference path. It
+            decides placement and manages lifecycle; requests go straight to
+            the model runtime. Restarting the control plane does not interrupt
+            inference.
+          </p>
+          <a class="link-arrow" href="/about/" style="margin-top:0.5rem">How this works</a>
+        </div>
+
+        <div class="admit" aria-label="How an admission decision is made">
+          <div class="admit-row"><span class="tag">GPU profile</span> <span class="val">CUDA-addressable VRAM</span></div>
+          <div class="admit-row"><span class="tag">Current usage</span> <span class="val">desktop + other processes</span></div>
+          <div class="admit-row"><span class="tag">Reservations</span> <span class="val">other Nodeau workloads</span></div>
+          <div class="admit-row"><span class="tag">Model profile</span> <span class="val">measured peak + margin</span></div>
+          <div class="admit-arrow" aria-hidden="true">↓</div>
+          <div class="admit-out">
+            <div class="yes">Admit — run it</div>
+            <div class="no">Refuse — and say why</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================== pricing ========== -->
+  <section class="divider reveal">
+    <div class="wrap">
+      <p class="eyebrow">Pricing</p>
+      <h2 style="font-size:var(--step-2)">Priced for infrastructure, not for tokens.</h2>
+      <p style="color:var(--text-2);margin-top:0.9rem;max-width:56ch">
+        Your hardware does the inference. Nodeau’s value is managing it, so
+        there is nothing metered per prompt, per token or per request.
+      </p>
+
+      <div class="split" style="margin-top:2rem">
+        <div class="panel panel-home">
+          <h3>Nodeau Home</h3>
+          <p class="kicker">For individuals running local AI on a personal GPU.</p>
+          <div class="price">Coming soon</div>
+          <p class="price-note">Self-Hosted Alpha available now — no card required.</p>
+          <a class="btn btn-primary btn-sm" href="/alpha/">Try Alpha</a>
+        </div>
+        <div class="panel">
+          <h3>Nodeau Business</h3>
+          <p class="kicker">For teams and organisations with shared GPU hardware.</p>
+          <div class="price">Contact us</div>
+          <p class="price-note">Design partners welcome while multi-node is built.</p>
+          <a class="btn btn-ghost btn-sm" href="/contact/?type=business">Contact us</a>
+        </div>
+      </div>
+      <p style="margin-top:1.25rem"><a class="link-arrow" href="/pricing/">Pricing detail</a></p>
+    </div>
+  </section>
+
+  <!-- =================================================== roadmap ========== -->
+  <section class="divider reveal">
+    <div class="wrap">
+      <p class="eyebrow">Roadmap</p>
+      <h2 style="font-size:var(--step-2)">Single GPU today. Fleet intelligence next.</h2>
+
+      <div class="grid grid-4" style="margin-top:2rem">
+        <div>
+          <span class="pill pill-alpha">Available</span>
+          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Self-Hosted Alpha</h3>
+          <p style="color:var(--text-2);font-size:0.9rem;margin:0">One Linux machine, one NVIDIA GPU, working end to end.</p>
+        </div>
+        <div>
+          <span class="pill pill-next">Next</span>
+          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Harden and expand</h3>
+          <p style="color:var(--text-2);font-size:0.9rem;margin:0">More hardware, more models, WSL, better diagnostics.</p>
+        </div>
+        <div>
+          <span class="pill pill-planned">Planned</span>
+          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Business multi-node</h3>
+          <p style="color:var(--text-2);font-size:0.9rem;margin:0">Placement across machines, heterogeneous GPUs.</p>
+        </div>
+        <div>
+          <span class="pill pill-exploring">Exploring</span>
+          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Fleet and hybrid</h3>
+          <p style="color:var(--text-2);font-size:0.9rem;margin:0">Policy, quotas, audit, cloud overflow.</p>
+        </div>
+      </div>
+      <p style="margin-top:1.75rem"><a class="link-arrow" href="/roadmap/">Full roadmap</a></p>
+    </div>
+  </section>
+
+  <!-- ======================================================= cta ========== -->
+  <section class="divider cta reveal">
+    <div class="wrap">
+      <h2 style="font-size:var(--step-2)">One GPU, or a rack of them.</h2>
+      <p class="lede" style="margin:1rem auto 2rem;max-width:44ch">
+        Install the Alpha on a machine you don’t mind experimenting on, or talk
+        to us about the hardware your team already has.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/alpha/">Install Alpha</a>
+        <a class="btn btn-ghost" href="/contact/">Talk to us</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+            <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+          </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="/alpha/">Alpha guide</a></li>
+          <li><a href="https://get.nodeau.ai/">Installer</a></li>
+          <li><a href="https://get.nodeau.ai/docs/requirements.md">Requirements</a></li>
+          <li><a href="https://get.nodeau.ai/docs/troubleshooting.md">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span data-year></span> Nodeau</span><span>nodeau.ai</span><span>Linux alpha · WSL coming soon</span><span class="built-status"><i></i> Building now</span>
+      <span>© <span data-year>2026</span> Nodeau</span>
+      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
     </div>
-  </footer>
+  </div>
+</footer>
 
-  <div class="toast" role="status" aria-live="polite" data-toast>Copied</div>
-  <script src="./script.js"></script>
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
 </body>
 </html>
