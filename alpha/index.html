@@ -10,7 +10,7 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://nodeau.ai/alpha/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Install the Nodeau Alpha">
+<meta property="og:title" content="Install the Nodeau Alpha — Run Your First Local AI Model">
 <meta property="og:description" content="Run your first local AI model on a compatible Linux/NVIDIA PC. Experimental Self-Hosted Alpha.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -62,10 +62,10 @@
       <div class="callout callout-warn" style="margin-top:2rem;max-width:64ch">
         <h3>This is early software</h3>
         <p style="margin:0">
-          Nodeau has been proven on the machine it was built on. You may be
-          among the first people running it anywhere else. Please use a
-          computer you don’t mind experimenting on — and if it fails, that is
-          a useful result, not a wasted evening.
+          Nodeau works, but it is an Alpha, and your machine may well be the
+          first of its kind to run it. Use a computer you don’t mind tinkering
+          with. And if it does fall over, please tell us — that is genuinely
+          useful, not a wasted evening.
         </p>
       </div>
     </div>
@@ -92,15 +92,18 @@
           <h3 style="font-size:1rem;margin-bottom:0.6rem">Current limits</h3>
           <ul class="checks checks-future" style="margin-bottom:0">
             <li>NVIDIA only — no AMD, Intel or Apple GPUs</li>
-            <li>One machine, one GPU</li>
+            <li>One GPU per machine</li>
+            <li>The installer sets up one machine</li>
             <li>llama.cpp runtime</li>
-            <li>A small set of measured model profiles</li>
             <li>No Windows, and no WSL yet</li>
           </ul>
           <p style="color:var(--text-3);font-size:0.85rem;margin:1rem 0 0">
-            Ubuntu 24.04 on an RTX 3080 is the configuration Nodeau has actually
-            been measured on. Other NVIDIA cards are untested rather than
-            known-broken. <a href="/roadmap/">See the roadmap</a>.
+            Nodeau has been run on an <strong>RTX 3080</strong> and an
+            <strong>RTX 2080</strong> under Ubuntu 24.04. On a card it has not
+            measured directly it works out a cautious estimate and tells you
+            that is what it did, instead of guessing quietly. Other NVIDIA cards
+            are not known to be a problem — they simply have not been measured
+            yet. <a href="/roadmap/">See the roadmap</a>.
           </p>
         </div>
       </div>
@@ -293,7 +296,53 @@ print(reply.choices[0].message.content)</code></pre>
         <div class="grid" style="gap:1.1rem">
           <div class="feature"><h3><code>nodeau run qwen-local</code></h3><p>Start it again.</p></div>
           <div class="feature"><h3><code>nodeau model list</code></h3><p>Which models Nodeau can serve, and what you have downloaded.</p></div>
-          <div class="feature"><h3><code>nodeau uninstall</code></h3><p>Shows exactly what it will remove and asks first. Keeps your models, your driver, and anything that was on the machine before Nodeau.</p></div>
+          <div class="feature"><h3><code>nodeau uninstall</code></h3><p>Shows an uninstall plan and asks before changing anything. Keeps your models, your driver, and what was on the machine before Nodeau.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ more than one box ======= -->
+  <section class="tight divider">
+    <div class="wrap">
+      <p class="eyebrow">More than one machine</p>
+      <h2 style="font-size:var(--step-2)">This guide sets up one machine — on purpose.</h2>
+
+      <div class="grid grid-2" style="margin-top:1.5rem;align-items:start;gap:clamp(2rem,5vw,3.5rem)">
+        <div>
+          <p style="color:var(--text-2)">
+            Nodeau’s control plane already spans more than one GPU machine, on
+            mixed NVIDIA hardware. Each machine reports what it has, checks its
+            own copy of the model, and gets considered on its own merits when
+            Nodeau decides where something should run.
+          </p>
+          <p style="color:var(--text-2)">
+            What there is not yet is a command for it. Adding a machine today
+            means driving the cluster underneath by hand, and that is a
+            development procedure rather than something we would ask you to
+            follow — so it is not written up here. Turning it into one safe
+            command is the next job.
+          </p>
+          <div class="btn-row" style="margin-top:1.5rem">
+            <a class="btn btn-ghost btn-sm" href="/#business">What works across machines</a>
+            <a class="btn btn-ghost btn-sm" href="/contact/?type=business">Talk to us about a fleet</a>
+          </div>
+        </div>
+
+        <div class="panel panel-quiet">
+          <span class="pill pill-inalpha" style="margin-bottom:0.9rem">In Alpha</span>
+          <p style="color:var(--text-2);font-size:0.95rem;margin-bottom:0.9rem">
+            Running on real hardware, not in this installer:
+          </p>
+          <ul class="checks" style="margin:0">
+            <li>More than one GPU machine under one control plane</li>
+            <li>Mixed NVIDIA generations, judged individually</li>
+            <li>Every machine considered, and the reasoning kept</li>
+          </ul>
+          <p style="color:var(--text-3);font-size:0.85rem;margin:1.1rem 0 0">
+            One thing Nodeau still will not do anywhere: fail over on its own.
+            See the <a href="/roadmap/">roadmap</a>.
+          </p>
         </div>
       </div>
     </div>
@@ -378,7 +427,7 @@ print(reply.choices[0].message.content)</code></pre>
           </svg>
           Nodeau
         </a>
-        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -410,7 +459,7 @@ print(reply.choices[0].message.content)</code></pre>
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
+      <span>Self-Hosted Alpha <span data-release></span> · experimental · Linux-first</span>
     </div>
   </div>
 </footer>

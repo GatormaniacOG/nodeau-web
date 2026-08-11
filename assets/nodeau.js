@@ -164,6 +164,24 @@
     el.textContent = String(new Date().getFullYear());
   });
 
+  /* --------------------------------------------------------------- release */
+
+  // The single place the published version is written down. Every page carries
+  // an empty <span data-release></span>; no page hard-codes the number, so a
+  // release bump is one edit instead of nine files that drift apart.
+  //
+  // This is the version on the PUBLIC alpha channel at get.nodeau.ai. It is
+  // deliberately not whatever the development build happens to be running —
+  // the site describes what a visitor can install, not what is on a branch.
+  //
+  // With JavaScript disabled the span stays empty and the surrounding
+  // whitespace collapses, so the sentence still reads correctly without it.
+  const RELEASE = "v0.1.0-alpha.5";
+
+  document.querySelectorAll("[data-release]").forEach((el) => {
+    el.textContent = RELEASE;
+  });
+
   /* -------------------------------------------------- contact preselection */
 
   // /contact?type=business deep-links from every Business call to action.

@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About Nodeau — Making Owned GPUs Usable Infrastructure</title>
-<meta name="description" content="Why owning a GPU is not the same as having AI infrastructure, how Nodeau decides whether a model fits, and where the project is today.">
+<meta name="description" content="Why owning a GPU is not the same as having AI infrastructure, why “GPU: 1” is not enough to schedule on, and how Nodeau decides where a model can safely run.">
 <link rel="canonical" href="https://nodeau.ai/about/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/about/">
 <meta property="og:site_name" content="Nodeau">
 <meta property="og:title" content="About Nodeau — Making Owned GPUs Usable Infrastructure">
-<meta property="og:description" content="Why owning a GPU is not the same as having AI infrastructure, how Nodeau decides whether a model fits, and where the project is today.">
+<meta property="og:description" content="Why owning a GPU is not the same as having AI infrastructure, why “GPU: 1” is not enough to schedule on, and how Nodeau decides where a model can safely run.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/nodeau.css">
@@ -53,10 +53,11 @@
   <section class="hero" style="padding-bottom:2rem">
     <div class="wrap">
       <p class="eyebrow">About</p>
-      <h1 style="font-size:var(--step-3)">You own the GPU. Nodeau makes it usable infrastructure.</h1>
+      <h1 style="font-size:var(--step-3)">You own the GPUs. Nodeau makes them usable AI infrastructure.</h1>
       <p class="lede" style="margin-top:1.15rem">
         A short explanation of what sits between a graphics card and a working
-        AI endpoint, and which parts Nodeau takes on.
+        AI endpoint, why a second machine changes the question, and which parts
+        Nodeau takes on.
       </p>
     </div>
   </section>
@@ -66,11 +67,12 @@
       <div>
         <h2 style="font-size:var(--step-2)">A GPU is not infrastructure</h2>
         <p style="color:var(--text-2)">
-          A modern graphics card is an enormous amount of compute sitting in a
-          desktop case. Using it to run an AI model is a different problem from
-          owning it. Between the two sit drivers, runtime libraries, model file
-          formats, quantisation, container plumbing, a model server, an API,
-          authentication, and something to keep it all running.
+          A modern graphics card is an extraordinary amount of compute sitting in a
+          desktop case. Actually using it to run an AI model is a completely
+          different problem from owning it. In between sit drivers, runtime
+          libraries, model file formats, quantisation, container plumbing, a
+          model server, an API, authentication, and something to keep the whole
+          lot running.
         </p>
         <p style="color:var(--text-2)">
           None of that is why anyone wanted to run a model. It is the tax.
@@ -86,9 +88,17 @@
           honest way to know what a configuration costs is to measure it.
         </p>
         <p style="color:var(--text-2)">
-          Nodeau ships measured profiles rather than formulas. If a
-          configuration has not been measured on hardware like yours, Nodeau
-          says so instead of inventing a number.
+          So Nodeau prefers a measurement, and when it hasn’t got one it says so.
+          On hardware it has measured, it uses the measurement. On hardware it
+          hasn’t, it works out a deliberately pessimistic figure from the
+          model’s own shape, keeps extra room back, and marks the decision as
+          an estimate.
+        </p>
+        <p style="color:var(--text-2)">
+          That second path matters more than it sounds. Refusing everything it
+          hasn’t measured would not be caution — it would be a product that
+          works on exactly one graphics card. The honest position isn’t “we
+          never estimate”. It’s <em>you can always see which one you got</em>.
         </p>
       </div>
 
@@ -102,80 +112,110 @@
           spare will fail the moment anything else asks for memory.
         </p>
         <p style="color:var(--text-2)">
-          On the machine Nodeau was built on, the difference between the
-          nameplate figure and what a workload can actually plan against is
-          several hundred megabytes before the desktop is even considered. That
-          gap is the difference between a model that runs and one that dies
-          part-way through loading.
+          On a typical 10&nbsp;GB card the gap between the number on the box and
+          what a workload can actually plan against runs to several hundred
+          megabytes, before your desktop is even counted. That gap is the
+          difference between a model that runs and one that dies part-way
+          through loading.
         </p>
       </div>
 
       <div>
         <h2 style="font-size:var(--step-2)">So Nodeau understands both sides</h2>
         <p style="color:var(--text-2)">
-          It observes the machine: which GPU, what the compute API can actually
-          address, what is already in use, what Nodeau itself has committed
-          elsewhere. It knows the model: measured peak memory for a specific
-          configuration, plus a margin.
+          It watches the machine: which GPU, how much memory that GPU can really
+          address, what is already in use, what Nodeau has promised elsewhere.
+          And it knows the model: what this exact configuration needs, measured
+          or carefully estimated, plus a margin on top.
         </p>
         <p style="color:var(--text-2)">
-          Then it decides. If the workload fits, Nodeau prepares everything it
-          needs and starts it. If it does not, Nodeau refuses <em>before</em>
-          scheduling it and shows the arithmetic — which is far more useful
+          Then it decides. If the workload fits, Nodeau sets everything up and
+          starts it. If it does not, Nodeau says no <em>before</em> scheduling
+          anything and shows you the numbers, which is considerably more useful
           than a crash several seconds into loading.
         </p>
         <p style="color:var(--text-2)">
-          That is the whole idea, and it is the part that makes this more than
-          a wrapper around existing tools: decisions are made before scheduling,
-          and every decision can be explained.
+          That is the whole idea, and it is what makes this more than a wrapper
+          around existing tools. The decision comes first, and you can always
+          see how it was reached.
         </p>
       </div>
 
       <div>
-        <h2 style="font-size:var(--step-2)">One machine, then many</h2>
+        <h2 style="font-size:var(--step-2)">One GPU needs admission. Several need placement.</h2>
         <p style="color:var(--text-2)">
-          For an individual, that turns one PC into a private AI endpoint: a
-          local, OpenAI-compatible API on a machine you already own, reachable
-          only from that machine by default.
+          For an individual, all of that turns one PC into a private AI
+          endpoint: a local, OpenAI-compatible API on a machine you already own,
+          reachable only from that machine by default. The only question is
+          <em>does this fit here</em>.
         </p>
         <p style="color:var(--text-2)">
-          For an organisation, the same foundation is what a fleet needs. The
-          hard part of scheduling across many GPUs is knowing what each one can
-          actually take — which is exactly what Nodeau already computes for
-          one. Extending that across machines is the next major piece of work,
-          and it is on the <a href="/roadmap/">roadmap</a> rather than in the
-          product today.
+          Add a second machine and a new question turns up: <em>which of these
+          should run it, and why not the other one?</em> The tempting shortcut
+          is to answer with a count. Most infrastructure knows only that a
+          machine has a GPU, which is enough to start something somewhere and
+          nowhere near enough to know it will survive.
+        </p>
+        <p style="color:var(--text-2)">
+          <strong style="color:var(--text)">“GPU: 1” is not enough
+          information.</strong> Two machines can both report one GPU and be
+          nothing alike: different usable memory, different amounts already
+          taken by whatever is on screen, a different copy of the model on disk
+          that may or may not be the file it claims to be. Treat them as
+          interchangeable and sooner or later something lands where it cannot
+          run.
+        </p>
+        <p style="color:var(--text-2)">
+          So Nodeau doesn’t invent a looser second rule for picking a machine. It
+          runs the same check once for each one, keeps the reason every machine
+          won or lost, and prefers the snuggest safe fit, so a big card is not
+          swallowed by work a small one could have handled. And anything already
+          running happily stays put. A better score elsewhere is not a good
+          reason to restart something that is working.
+        </p>
+        <p style="color:var(--text-2)">
+          That runs today, on mixed NVIDIA hardware. It is not yet in the public
+          installer — the <a href="/roadmap/">roadmap</a> says where everything
+          stands.
         </p>
       </div>
 
       <div>
         <h2 style="font-size:var(--step-2)">Why owned hardware</h2>
         <p style="color:var(--text-2)">
-          Running on hardware you control gives you locality, predictable
-          capacity, and use of machines that already exist and are frequently
-          idle. Data stays on the machine unless something you connect chooses
-          to send it elsewhere.
+          Running on hardware you control gives you locality, capacity you can
+          predict, and a use for machines that already exist and mostly sit
+          idle. Your data stays on the machine unless something you plug in
+          decides to send it elsewhere.
         </p>
         <p style="color:var(--text-2)">
-          It is not automatically cheaper. A GPU that runs a few hours a week
-          is usually more expensive than paying per request, and anyone telling
-          you otherwise is selling something. The case for owned hardware is
-          control and predictability — and, often, that you already bought the
-          card for something else.
+          It is not automatically cheaper. A GPU that runs a few hours a week is
+          usually dearer than paying per request, and anyone telling you
+          otherwise is selling something. The case for owning the hardware is
+          control and predictability — and, quite often, that you already bought
+          the card for something else entirely.
         </p>
       </div>
 
       <div>
         <h2 style="font-size:var(--step-2)">Where it is today</h2>
         <p style="color:var(--text-2)">
-          Nodeau is a Self-Hosted Alpha: one Linux machine, one NVIDIA GPU, one
-          runtime, a small set of measured models. It works end to end on the
-          hardware it was built on, and it is being published so other people
-          can find out whether it works on theirs.
+          What you can install right now is a Self-Hosted Alpha: one Linux
+          machine, one NVIDIA GPU, one runtime, a handful of models. It is real,
+          it works, and it takes about ten minutes.
         </p>
         <p style="color:var(--text-2)">
-          It is not production infrastructure. It has no uptime guarantee, no
-          failover, and it is not hardened for hostile multi-tenancy.
+          What runs but is not yet packaged is the multi-machine control plane
+          described above, on mixed NVIDIA hardware. We label that
+          <strong>In&nbsp;Alpha</strong> everywhere on this site rather than
+          quietly folding it in with what ships, because the gap between a claim
+          and a download is the whole difference.
+        </p>
+        <p style="color:var(--text-2)">
+          It is not production infrastructure. There is no uptime guarantee, it
+          will not fail over to another machine on its own, and it is not
+          hardened against hostile users sharing the same box. If any of those
+          matter to you today, Nodeau is not ready for you yet.
         </p>
       </div>
 
@@ -223,7 +263,7 @@
       </svg>
           Nodeau
         </a>
-        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -255,7 +295,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
+      <span>Self-Hosted Alpha <span data-release></span> · experimental · Linux-first</span>
     </div>
   </div>
 </footer>
