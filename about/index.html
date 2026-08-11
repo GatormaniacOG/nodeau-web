@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About Nodeau — Making Owned GPUs Usable Infrastructure</title>
-<meta name="description" content="Why owning a GPU is not the same as having AI infrastructure, how Nodeau decides whether a model fits, and where the project is today.">
+<meta name="description" content="Why owning a GPU is not the same as having AI infrastructure, why “GPU: 1” is not enough to schedule on, and how Nodeau decides where a model can safely run.">
 <link rel="canonical" href="https://nodeau.ai/about/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/about/">
 <meta property="og:site_name" content="Nodeau">
 <meta property="og:title" content="About Nodeau — Making Owned GPUs Usable Infrastructure">
-<meta property="og:description" content="Why owning a GPU is not the same as having AI infrastructure, how Nodeau decides whether a model fits, and where the project is today.">
+<meta property="og:description" content="Why owning a GPU is not the same as having AI infrastructure, why “GPU: 1” is not enough to schedule on, and how Nodeau decides where a model can safely run.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/nodeau.css">
@@ -53,10 +53,11 @@
   <section class="hero" style="padding-bottom:2rem">
     <div class="wrap">
       <p class="eyebrow">About</p>
-      <h1 style="font-size:var(--step-3)">You own the GPU. Nodeau makes it usable infrastructure.</h1>
+      <h1 style="font-size:var(--step-3)">You own the GPUs. Nodeau makes them usable AI infrastructure.</h1>
       <p class="lede" style="margin-top:1.15rem">
         A short explanation of what sits between a graphics card and a working
-        AI endpoint, and which parts Nodeau takes on.
+        AI endpoint, why a second machine changes the question, and which parts
+        Nodeau takes on.
       </p>
     </div>
   </section>
@@ -86,9 +87,17 @@
           honest way to know what a configuration costs is to measure it.
         </p>
         <p style="color:var(--text-2)">
-          Nodeau ships measured profiles rather than formulas. If a
-          configuration has not been measured on hardware like yours, Nodeau
-          says so instead of inventing a number.
+          So Nodeau prefers a measurement, and when it does not have one it says
+          so. On hardware it has measured, it uses the measurement. On hardware
+          it has not, it derives a deliberately pessimistic figure from the
+          model’s own architecture, keeps an extra margin back, and marks the
+          decision as estimated.
+        </p>
+        <p style="color:var(--text-2)">
+          That second path matters more than it sounds. The alternative —
+          refusing everything unmeasured — is not caution, it is a platform that
+          works on one graphics card. The honest position is not “we never
+          estimate”; it is <em>you can always see which one you got</em>.
         </p>
       </div>
 
@@ -132,19 +141,41 @@
       </div>
 
       <div>
-        <h2 style="font-size:var(--step-2)">One machine, then many</h2>
+        <h2 style="font-size:var(--step-2)">One GPU needs admission. Several need placement.</h2>
         <p style="color:var(--text-2)">
-          For an individual, that turns one PC into a private AI endpoint: a
-          local, OpenAI-compatible API on a machine you already own, reachable
-          only from that machine by default.
+          For an individual, all of that turns one PC into a private AI
+          endpoint: a local, OpenAI-compatible API on a machine you already own,
+          reachable only from that machine by default. The only question is
+          <em>does this fit here</em>.
         </p>
         <p style="color:var(--text-2)">
-          For an organisation, the same foundation is what a fleet needs. The
-          hard part of scheduling across many GPUs is knowing what each one can
-          actually take — which is exactly what Nodeau already computes for
-          one. Extending that across machines is the next major piece of work,
-          and it is on the <a href="/roadmap/">roadmap</a> rather than in the
-          product today.
+          Add a second machine and a new question appears — <em>which of these
+          should run it, and why not the other one</em> — and the tempting
+          shortcut is to answer it with a count. Most infrastructure knows that
+          a machine has a GPU. That is enough to place a workload and not nearly
+          enough to know it will survive.
+        </p>
+        <p style="color:var(--text-2)">
+          <strong style="color:var(--text)">“GPU: 1” is not enough
+          information.</strong> Two machines can both report one GPU and be
+          nothing alike: different addressable memory, different amounts already
+          spoken for by a desktop, a different copy of the model on disk that
+          may or may not be the file it claims to be. Treating them as
+          interchangeable is how a workload lands somewhere it cannot run.
+        </p>
+        <p style="color:var(--text-2)">
+          So Nodeau does not add a second, looser rule for choosing a machine.
+          It runs the same fit calculation once per candidate, keeps the reason
+          each one won or lost, and prefers the tightest safe fit so a large
+          card is not consumed by work a small one could hold. A workload that
+          is already running and healthy stays where it is — a better score
+          somewhere else is not a reason to restart something that is working.
+        </p>
+        <p style="color:var(--text-2)">
+          That runs today across two machines with different NVIDIA
+          generations. It is not yet in the public installer — see the
+          <a href="/roadmap/">roadmap</a>, which labels every capability by what
+          state it is actually in.
         </p>
       </div>
 
@@ -168,14 +199,24 @@
       <div>
         <h2 style="font-size:var(--step-2)">Where it is today</h2>
         <p style="color:var(--text-2)">
-          Nodeau is a Self-Hosted Alpha: one Linux machine, one NVIDIA GPU, one
-          runtime, a small set of measured models. It works end to end on the
-          hardware it was built on, and it is being published so other people
-          can find out whether it works on theirs.
+          What you can install is a Self-Hosted Alpha: one Linux machine, one
+          NVIDIA GPU, one runtime, a small set of models. It has been installed
+          from the published release onto a second machine with a different
+          card, and it served a model there.
         </p>
         <p style="color:var(--text-2)">
-          It is not production infrastructure. It has no uptime guarantee, no
-          failover, and it is not hardened for hostile multi-tenancy.
+          What runs but is not yet packaged is the multi-node control plane
+          above — validated on those two machines together, with each observing
+          its own hardware and verifying its own copy of the model. The site
+          marks that <strong>In&nbsp;Alpha</strong> everywhere rather than
+          folding it into what ships, because the difference is the whole
+          difference between a claim and a download.
+        </p>
+        <p style="color:var(--text-2)">
+          It is not production infrastructure. It has no uptime guarantee, it
+          does not fail over to another machine, and it is not hardened for
+          hostile multi-tenancy. Two machines is also not a fleet — it is two
+          machines, and they belong to the same person.
         </p>
       </div>
 
@@ -223,7 +264,7 @@
       </svg>
           Nodeau
         </a>
-        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -255,7 +296,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
+      <span>Self-Hosted Alpha <span data-release></span> · experimental · Linux-first</span>
     </div>
   </div>
 </footer>

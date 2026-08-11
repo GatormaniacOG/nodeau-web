@@ -8,19 +8,42 @@ without a working toolchain is a site that breaks when the toolchain moves.
 
 ## Positioning
 
-The site describes Nodeau as it exists today — a working Self-Hosted Alpha —
-and keeps a hard line between what ships and what is intended.
+The site describes Nodeau as it exists today and keeps a hard line between what
+ships, what runs, and what is intended.
 
 - **Nodeau Home** — one person, one machine, one GPU. Local inference, model
   and GPU fit checks, an OpenAI-compatible endpoint on `127.0.0.1`. Multi-node
   is deliberately *not* part of Home.
 - **Nodeau Business** — teams and organisations with shared GPU hardware. The
-  single-node foundation exists today; fleet capability is labelled roadmap.
+  multi-node control plane is real and validated on two machines with different
+  NVIDIA generations; it is labelled `In Alpha`, not `Available`, because the
+  public installer sets up one machine.
 
-Every roadmap item carries a status pill (`Available`, `In Alpha`, `Next`,
-`Planned`, `Exploring`) and the colour system reinforces it: green means it
-exists or it is the thing to click, slate blue means roadmap. Nothing is
-silently promoted from intent to fact.
+### The three-state rule
+
+This is the site's central editorial constraint. Every capability carries a
+status pill, and the colour system reinforces it:
+
+| pill | colour | meaning |
+|---|---|---|
+| `Available` | green | ships in the public Self-Hosted Alpha |
+| `In Alpha` | amber | built and physically validated, **not** in the public installer |
+| `Next` | slate | being worked on, or the immediate next priority |
+| `Planned` | slate | intended, designed for, not built |
+| `Exploring` | slate | intent, not plan |
+
+`In Alpha` exists because without it a capability that genuinely runs on
+hardware has to be mislabelled as either unbuilt or fully shipped, and both are
+wrong. Do not collapse it, and do not use it for something that has only been
+tested synthetically.
+
+### Claims that are deliberately NOT made
+
+Nodeau's control plane spans two machines, but a workload has never been
+*started* on the second GPU, no machine has been removed to see what happens,
+and failover does not exist. The site therefore says Nodeau **reasons across**
+and **decides between** machines. It must never say workloads run across mixed
+GPUs, that failover works, or that any kind of fleet scale has been tested.
 
 The installer at **get.nodeau.ai** is a separate deployment. This site links to
 it and must never duplicate or reimplement it.
@@ -55,14 +78,44 @@ trade was made knowingly.
 ## Content rules
 
 1. **Never publish a command that does not exist.** Every command shown was
-   verified against the shipped CLI before publication.
-2. **Label roadmap items.** If something is not in the current Alpha, say so
-   next to it, not in a footnote.
+   verified against the shipped CLI before publication. In particular, do not
+   document raw Kubernetes join procedures as a Nodeau workflow — development
+   plumbing is not product UX.
+2. **Label every capability.** Use the three-state rule above. If something is
+   not in the public installer, say so next to it, not in a footnote.
 3. **No absolute privacy claims.** The endpoint is localhost-only and
    authenticated, and Nodeau collects nothing — but a third-party app you point
    at it can do what it likes, and the site says so.
-4. **No production-readiness claims.** It is an experimental Alpha.
+4. **No production-readiness claims.** It is an experimental Alpha, and it does
+   not fail over.
 5. **No invented prices.** Home is "coming soon", Business is "contact us".
+6. **Name the hardware actually tested.** "Validated on RTX 3080 + RTX 2080" is
+   both stronger and truer than "heterogeneous GPUs supported". Never imply
+   every NVIDIA card works.
+7. **Say where a number came from.** Nodeau measures where it can and estimates
+   conservatively where it cannot; the site must not claim it never estimates.
+
+### The version string
+
+`v0.1.0-alpha.5` — the **public** channel version — is written down in exactly
+one place: `RELEASE` in `assets/nodeau.js`. Pages carry an empty
+`<span data-release></span>` that it fills. Do not hard-code the version into a
+page, and do not put a development build number (`0.6.0-…`) on the site at all.
+
+With JavaScript off the span stays empty and surrounding whitespace collapses,
+so every sentence still reads correctly.
+
+## Checking the site
+
+```bash
+python3 tools/check-site.py
+```
+
+Standard library only, no dependencies. It verifies structure (one `<title>`,
+canonical, OG tags, no stray `<!doctype>`), that internal links and in-page
+anchors resolve, that every CSS class used in the HTML is defined, that no page
+hard-codes a version string, and that a list of retired phrases has not crept
+back in. Run it before pushing.
 
 ## Local preview
 

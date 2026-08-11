@@ -9,12 +9,17 @@
    gaming overlay rather than as infrastructure software. Everything that is
    merely information is white or grey.
 
-   Two accents, and they carry meaning rather than decoration:
-     --accent   green   this exists today, or this is the thing to click
+   Three accents, and they carry meaning rather than decoration:
+     --accent   green   this ships in the public Alpha, or this is the thing
+                        to click
+     --warn     amber   this is built and physically validated, but it is not
+                        the supported public install path yet
      --future   slate   this is roadmap
-   That pairing is doing real work: the site has to distinguish shipping
-   capability from intent on almost every page, and colour does it faster than
-   a caption can.
+   That trio is doing real work. The site has to distinguish three states on
+   almost every page — shipping, proven-but-unpackaged, and intent — and colour
+   does it faster than a caption can. The amber state is the one that did not
+   exist before multi-node worked: without it a capability that runs on real
+   hardware has to be mislabelled as either unbuilt or fully shipped.
    ========================================================================== */
 
 :root {
@@ -383,11 +388,22 @@ section.tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
   flex: none;
 }
 .pill-available { color: var(--accent-text); border-color: var(--accent-line); background: var(--accent-quiet); }
-.pill-alpha { color: var(--warn); border-color: rgba(240, 198, 116, 0.3); background: var(--warn-quiet); }
+/* pill-alpha marks the release itself as experimental; pill-inalpha marks a
+   capability that runs and has been validated on hardware but is not in the
+   public installer. Same amber deliberately — both mean "real, not supported". */
+.pill-alpha,
+.pill-inalpha { color: var(--warn); border-color: rgba(240, 198, 116, 0.3); background: var(--warn-quiet); }
 .pill-next,
 .pill-planned,
 .pill-exploring { color: var(--future); border-color: var(--future-line); background: var(--future-quiet); }
 .pill-exploring { opacity: 0.82; }
+
+/* The vocabulary legend. Used once per page that labels anything, so a reader
+   meeting "In Alpha" for the first time does not have to infer it. */
+.key { display: grid; gap: 1rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+.key-item { display: flex; gap: 0.75rem; align-items: flex-start; }
+.key-item .pill { flex: none; margin-top: 0.15rem; }
+.key-item p { margin: 0; color: var(--text-2); font-size: 0.88rem; }
 
 /* --------------------------------------------------------------------------
    Panels — used sparingly
@@ -400,6 +416,16 @@ section.tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
   padding: clamp(1.25rem, 3vw, 1.75rem);
 }
 .panel-quiet { background: var(--bg-raised); }
+
+/* A row of status panels compared side by side must share a bottom edge, and
+   the closing note must sit on it. Otherwise a list one item longer makes its
+   panel look more important than the others. */
+.panels-even > .panel { display: flex; flex-direction: column; }
+.panels-even > .panel > :last-child { margin-top: auto; padding-top: 1rem; }
+/* A flex column stretches its children across the cross axis, which turns a
+   status chip into a full-width bar. Lists and paragraphs do want the width;
+   the pill does not. */
+.panels-even > .panel > .pill { align-self: flex-start; }
 
 /* Feature lists replace the old wall of cards: same information, a third of
    the visual weight. */
@@ -632,6 +658,163 @@ code {
 }
 .admit-out .yes { border-color: var(--accent-line); color: var(--accent-text); background: var(--accent-quiet); }
 .admit-out .no { color: var(--text-2); }
+
+/* --------------------------------------------------------------------------
+   Reality strip — what is actually working, with its status attached
+   --------------------------------------------------------------------------
+   Deliberately not cards. Each column is a rule, a status pill and two short
+   lines, because the whole point of the section is that the claims are small
+   and checkable. A boxed panel would make them read as marketing.
+   -------------------------------------------------------------------------- */
+
+.reality {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+.reality-item { border-top: 1px solid var(--line-strong); padding-top: 1.15rem; }
+.reality-item .pill { margin-bottom: 0.85rem; }
+.reality-item h3 { font-size: 1.02rem; font-weight: 600; margin-bottom: 0.4rem; }
+.reality-item p { color: var(--text-2); font-size: 0.93rem; margin: 0; }
+.reality-item .ev {
+  display: block;
+  margin-top: 0.7rem;
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Fleet diagram — unlike GPUs, one control plane
+   --------------------------------------------------------------------------
+   Two machine blocks joined into one decision. No gauges, no utilisation bars,
+   no invented numbers: every figure shown here is a property of the card or of
+   the decision, not a live reading the page cannot actually have.
+
+   The connector is drawn with borders on pseudo-elements rather than an SVG so
+   it reflows with the grid instead of being a fixed drawing that stops lining
+   up the moment the text wraps.
+   -------------------------------------------------------------------------- */
+
+.fleet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+}
+
+.fleet-nodes { display: grid; gap: 0.75rem; }
+
+.fleet-node,
+.fleet-brain {
+  position: relative;
+  padding: 0.9rem 1.05rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+.fleet-brain { border-color: var(--accent-line); background: var(--accent-quiet); }
+
+.fleet-kind {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 0.3rem;
+}
+.fleet-node strong,
+.fleet-brain strong { display: block; font-size: 1rem; font-weight: 600; }
+.fleet-fact {
+  display: block;
+  color: var(--text-2);
+  font-size: 0.83rem;
+  line-height: 1.55;
+  margin-top: 0.2rem;
+}
+.fleet-brain .fleet-fact { color: var(--text-2); }
+
+/* The stub out of each machine, reaching exactly half the connector column. */
+.fleet-node::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 1.25rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.fleet-join { position: relative; align-self: stretch; }
+/* The spine: joins the two stubs. 25%–75% puts its ends on the machine centres
+   when there are two equal blocks. */
+.fleet-join::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  bottom: 25%;
+  border-left: 1px solid var(--line-strong);
+}
+/* The single line out of the spine into the control plane. */
+.fleet-join::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid var(--line-strong);
+}
+.fleet-arrow {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 0.36rem;
+  height: 0.36rem;
+  border-top: 1px solid var(--line-strong);
+  border-right: 1px solid var(--line-strong);
+  transform: translate(1px, -50%) rotate(45deg);
+}
+
+.fleet-out {
+  list-style: none;
+  margin: 0.55rem 0 0;
+  padding: 0;
+}
+.fleet-out li {
+  position: relative;
+  margin: 0.3rem 0;
+  padding-left: 0.95rem;
+  color: var(--text-2);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.fleet-out li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.4rem;
+  border-top: 1px solid var(--accent-line);
+}
+
+/* Stacked: the bracket becomes a single vertical line pointing down. Rotating
+   the existing arrow keeps one definition rather than two drawings. */
+@media (max-width: 720px) {
+  .fleet { grid-template-columns: 1fr; }
+  .fleet-node::after { display: none; }
+  .fleet-join { height: 2.25rem; align-self: auto; }
+  .fleet-join::before { top: 0; bottom: 0; }
+  .fleet-join::after { display: none; }
+  .fleet-arrow {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: 0;
+    transform: translate(-50%, 1px) rotate(135deg);
+  }
+}
 
 /* --------------------------------------------------------------------------
    Roadmap

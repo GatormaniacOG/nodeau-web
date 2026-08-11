@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nodeau — Turn Your GPU Into Local AI Infrastructure</title>
-<meta name="description" content="Run AI models on GPUs you already own. Nodeau checks hardware compatibility, deploys supported models, and gives you a local OpenAI-compatible API.">
+<title>Nodeau — Turn the GPUs You Own Into Private AI Infrastructure</title>
+<meta name="description" content="Run AI models on NVIDIA GPUs you already own. Nodeau checks that a model will actually fit, verifies it, and serves a private OpenAI-compatible API — on one machine or several.">
 <link rel="canonical" href="https://nodeau.ai/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Nodeau — Turn Your GPU Into Local AI Infrastructure">
-<meta property="og:description" content="Nodeau checks your machine, works out whether a supported model fits safely, and gives you a local OpenAI-compatible API.">
+<meta property="og:title" content="Nodeau — Turn the GPUs You Own Into Private AI Infrastructure">
+<meta property="og:description" content="Start with one GPU and a private, self-hosted AI endpoint. Nodeau's control plane now reasons across multiple GPU machines, including mixed NVIDIA generations — validated on real hardware.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/nodeau.css">
@@ -57,13 +57,17 @@
         <div>
           <a class="release-tag" href="/alpha/">
             <span class="dot" aria-hidden="true"></span>
-            Self-Hosted Alpha v0.1.0-alpha.1 — experimental
+            Self-Hosted Alpha <span data-release></span> — experimental
           </a>
-          <h1>Turn the GPU you already own into local AI infrastructure.</h1>
+          <h1>Turn the GPUs you already own into private AI infrastructure.</h1>
           <p class="lede" style="margin-top:1.25rem">
-            Nodeau checks your machine, works out whether a supported model can
-            fit safely, and gives you an OpenAI-compatible API on your own
-            computer — without you becoming a GPU infrastructure expert.
+            Nodeau checks your hardware, works out whether a model will actually
+            fit on it, and gives you a private OpenAI-compatible API — without
+            you becoming a GPU infrastructure expert.
+          </p>
+          <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
+            Start with one machine. The control plane is built to reason across
+            several.
           </p>
           <div class="btn-row" style="margin-top:2rem">
             <a class="btn btn-primary" href="/alpha/">Install Alpha</a>
@@ -107,8 +111,63 @@
     </div>
   </div>
 
+  <!-- ============================================ proof of reality ======== -->
+  <section class="tight reveal">
+    <div class="wrap">
+      <p class="eyebrow">Where Nodeau actually is</p>
+      <h2 style="font-size:var(--step-2)">A working Alpha, and an honest line around it.</h2>
+      <p style="color:var(--text-2);margin-top:0.9rem;max-width:60ch">
+        Three things are true at once, and they are not equally finished. The
+        labels below are used consistently across the whole site.
+      </p>
+
+      <div class="reality" style="margin-top:2.5rem">
+        <div class="reality-item">
+          <span class="pill pill-available">Available</span>
+          <h3>One GPU, end to end</h3>
+          <p>
+            Three commands on a Linux machine with an NVIDIA GPU, and you have a
+            private, authenticated, OpenAI-compatible endpoint running on your
+            own hardware.
+          </p>
+          <span class="ev">public Alpha · <span data-release></span></span>
+        </div>
+
+        <div class="reality-item">
+          <span class="pill pill-inalpha">In Alpha</span>
+          <h3>Two machines, one control plane</h3>
+          <p>
+            Each machine reports its own GPU and independently verifies its own
+            copy of the model. Nodeau evaluates both as candidates for a
+            workload and records why it chose the one it did.
+          </p>
+          <span class="ev">validated on a two-machine cluster</span>
+        </div>
+
+        <div class="reality-item">
+          <span class="pill pill-inalpha">In Alpha</span>
+          <h3>Mixed NVIDIA generations</h3>
+          <p>
+            Unlike cards are judged by what each one can actually give a
+            workload, rather than counted as interchangeable units of “a GPU”.
+          </p>
+          <span class="ev">physically tested on RTX&nbsp;3080 + RTX&nbsp;2080</span>
+        </div>
+      </div>
+
+      <p class="note" style="margin-top:2.25rem;max-width:66ch">
+        <strong style="color:var(--text)">In Alpha</strong> means built and
+        running on real hardware, but not yet packaged into the public
+        installer — which sets up a single machine. Nodeau does not do automatic
+        failover, and it does not move workloads between machines on its own.
+        <a href="/roadmap/">The roadmap</a> labels every capability with one of
+        these states.
+      </p>
+    </div>
+  </section>
+
   <!-- ============================================== nodeau home =========== -->
-  <section id="home" class="reveal">
+  <section id="home" class="divider reveal">
     <div class="wrap">
       <div class="grid grid-2" style="align-items:start">
         <div>
@@ -148,8 +207,8 @@
             <p>OpenAI-compatible, on <code>127.0.0.1</code>, with a locally generated key. Existing SDKs work by changing the base URL.</p>
           </div>
           <div class="feature">
-            <h3>And it can undo itself</h3>
-            <p>Nodeau records what it installed as distinct from what was already there, so uninstall removes only its own work.</p>
+            <h3>And it keeps track of what it changed</h3>
+            <p>Nodeau records what it installed as distinct from what it found, and shows you an uninstall plan before touching anything. It leaves your driver, your models and anything that was there before Nodeau alone.</p>
           </div>
         </div>
       </div>
@@ -221,26 +280,32 @@
   <section id="business" class="divider reveal">
     <div class="wrap">
       <p class="eyebrow">Nodeau Business</p>
-      <h2>GPU infrastructure for teams that own the hardware.</h2>
+      <h2>Different machines, different cards, one set of decisions.</h2>
       <p class="lede" style="margin-top:1rem">
-        Make the GPUs your organisation already owns easier to operate as
-        shared AI infrastructure.
+        Your organisation already owns GPU compute. The hard part is turning
+        unlike machines into infrastructure that can decide, safely, where a
+        workload should run.
       </p>
 
-      <div class="grid grid-2" style="margin-top:2.5rem;align-items:start;gap:clamp(2rem,5vw,3.5rem)">
+      <div class="grid grid-2" style="margin-top:2.75rem;align-items:center;gap:clamp(2rem,5vw,3.5rem)">
         <div class="prose">
           <p style="color:var(--text-2)">
             Organisations accumulate GPUs faster than they accumulate ways to
             run them: developer workstations, a lab server, an edge box, three
-            generations of hardware. Owning them does not produce scheduling,
-            capacity awareness, placement, or any view of what is running
-            where.
+            generations of hardware. Owning them does not produce capacity
+            awareness, placement, or any view of what could run where.
           </p>
           <p style="color:var(--text-2)">
-            That control plane is the direction Nodeau Business is built
-            towards. The foundation exists today on a single node; the
-            fleet-level work is deliberately labelled as roadmap rather than
-            described as shipping.
+            Nodeau’s control plane now spans more than one machine. Each machine
+            reports its own hardware and independently proves its own copy of a
+            model. The control plane then treats every machine as a candidate,
+            applies the same fit arithmetic to each one, and keeps a reason for
+            the ones it did not choose.
+          </p>
+          <p style="color:var(--text-2)">
+            That runs on two machines with different NVIDIA generations today.
+            It is not yet packaged behind a supported Nodeau command — which is
+            exactly the part design partners can shape.
           </p>
           <div class="btn-row" style="margin-top:1.5rem">
             <a class="btn btn-primary" href="/contact/?type=business">Become a design partner</a>
@@ -248,42 +313,77 @@
           </div>
         </div>
 
-        <div class="grid" style="gap:1.25rem">
-          <div class="panel">
-            <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.9rem">
-              <span class="pill pill-available">Available now</span>
+        <div class="fleet" aria-label="Two unlike GPU machines evaluated by one control plane">
+          <div class="fleet-nodes">
+            <div class="fleet-node">
+              <span class="fleet-kind">GPU machine</span>
+              <strong>RTX 3080</strong>
+              <span class="fleet-fact">own hardware report</span>
+              <span class="fleet-fact">own verified model copy</span>
             </div>
-            <ul class="checks" style="margin:0">
-              <li><strong>GPUService</strong> — declare a workload, not a pod spec</li>
-              <li><strong>GPUNode</strong> — observed hardware state per machine</li>
-              <li><strong>Model and hardware profiles</strong> — measured, not estimated</li>
-              <li><strong>VRAM-aware admission</strong> with an explainable decision</li>
-              <li><strong>Reservation accounting</strong> across Nodeau workloads</li>
-              <li><strong>Kubernetes reconciliation</strong> and pinned artifacts</li>
-              <li><strong>Authenticated OpenAI-compatible endpoint</strong></li>
-            </ul>
-            <p style="color:var(--text-3);font-size:0.85rem;margin-top:1rem;margin-bottom:0">
-              Running today on a single node with a single GPU.
-            </p>
+            <div class="fleet-node">
+              <span class="fleet-kind">GPU machine</span>
+              <strong>RTX 2080</strong>
+              <span class="fleet-fact">own hardware report</span>
+              <span class="fleet-fact">own verified model copy</span>
+            </div>
           </div>
 
-          <div class="panel panel-quiet">
-            <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.9rem">
-              <span class="pill pill-planned">Roadmap</span>
-            </div>
-            <ul class="checks checks-future" style="margin:0">
-              <li>Multi-node discovery and explainable placement</li>
-              <li>Heterogeneous GPU fleets</li>
-              <li>Fleet inventory, health and workload visibility</li>
-              <li>Team access, organisation RBAC, quotas and policy</li>
-              <li>Audit history and observability</li>
-              <li>Failover and health-aware rescheduling</li>
-              <li>Policy-controlled cloud overflow</li>
+          <div class="fleet-join" aria-hidden="true"><span class="fleet-arrow"></span></div>
+
+          <div class="fleet-brain">
+            <span class="fleet-kind">One control plane</span>
+            <strong>Where does this fit?</strong>
+            <ul class="fleet-out">
+              <li>fit checked on each machine</li>
+              <li>tightest safe fit wins</li>
+              <li>every candidate keeps a reason</li>
             </ul>
-            <p style="color:var(--text-3);font-size:0.85rem;margin-top:1rem;margin-bottom:0">
-              Not available in the current Alpha.
-            </p>
           </div>
+        </div>
+      </div>
+
+      <div class="grid grid-3 panels-even" style="margin-top:3rem">
+        <div class="panel">
+          <span class="pill pill-available" style="margin-bottom:0.9rem">Available</span>
+          <ul class="checks" style="margin:0">
+            <li>Declare a workload, not a pod spec</li>
+            <li>Observed GPU state per machine</li>
+            <li>VRAM-aware admission with an explainable decision</li>
+            <li>Reservation accounting across Nodeau workloads</li>
+            <li>Authenticated OpenAI-compatible endpoint</li>
+          </ul>
+          <p style="color:var(--text-3);font-size:0.85rem">
+            In the public Alpha, on one machine.
+          </p>
+        </div>
+
+        <div class="panel">
+          <span class="pill pill-inalpha" style="margin-bottom:0.9rem">In Alpha</span>
+          <ul class="checks" style="margin:0">
+            <li>Several GPU machines under one control plane</li>
+            <li>Each machine proves its own model copy by SHA-256</li>
+            <li>Placement evaluated per candidate, reasons kept</li>
+            <li>Mixed NVIDIA generations judged by real capacity</li>
+            <li>A healthy workload is not moved for a better score</li>
+          </ul>
+          <p style="color:var(--text-3);font-size:0.85rem">
+            Validated on two machines. Not in the public installer yet.
+          </p>
+        </div>
+
+        <div class="panel panel-quiet">
+          <span class="pill pill-planned" style="margin-bottom:0.9rem">Roadmap</span>
+          <ul class="checks checks-future" style="margin:0">
+            <li>Fleet inventory, health and workload visibility</li>
+            <li>Automatic failover and health-aware rescheduling</li>
+            <li>Maintenance and drain workflows</li>
+            <li>Team access, organisation RBAC, quotas and policy</li>
+            <li>Audit history and observability</li>
+          </ul>
+          <p style="color:var(--text-3);font-size:0.85rem">
+            Not built. Described on the roadmap, not here.
+          </p>
         </div>
       </div>
     </div>
@@ -304,13 +404,23 @@
             Nodeau reasons about what the card can actually give this workload:
             the memory CUDA can address, what is already in use outside Nodeau,
             what Nodeau has itself reserved, a safety reserve, and what the
-            model has been measured to need. Then it admits the workload — or
-            explains why it will not.
+            model needs. Then it admits the workload — or explains why it will
+            not.
           </p>
           <p style="color:var(--text-2);max-width:52ch">
-            The control plane is deliberately not in the inference path. It
-            decides placement and manages lifecycle; requests go straight to
-            the model runtime. Restarting the control plane does not interrupt
+            <strong style="color:var(--text)">And it tells you where its number
+            came from.</strong> Where a configuration has been measured on
+            hardware like yours, Nodeau uses the measurement. Where it has not,
+            it derives a conservative estimate from the model’s own
+            architecture, adds a further margin, and says on the decision that
+            it did. An estimate is never presented as a measurement.
+          </p>
+          <p style="color:var(--text-2);max-width:52ch">
+            With more than one machine, that same arithmetic simply runs once
+            per candidate — there is no second, looser rule for picking a
+            machine. The control plane is also deliberately not in the inference
+            path: it decides and manages lifecycle, while requests go straight
+            to the model runtime, so restarting it does not interrupt
             inference.
           </p>
           <a class="link-arrow" href="/about/" style="margin-top:0.5rem">How this works</a>
@@ -320,7 +430,8 @@
           <div class="admit-row"><span class="tag">GPU profile</span> <span class="val">CUDA-addressable VRAM</span></div>
           <div class="admit-row"><span class="tag">Current usage</span> <span class="val">desktop + other processes</span></div>
           <div class="admit-row"><span class="tag">Reservations</span> <span class="val">other Nodeau workloads</span></div>
-          <div class="admit-row"><span class="tag">Model profile</span> <span class="val">measured peak + margin</span></div>
+          <div class="admit-row"><span class="tag">Model need</span> <span class="val">measured, or labelled estimate</span></div>
+          <div class="admit-row"><span class="tag">Model on disk</span> <span class="val">verified by SHA-256</span></div>
           <div class="admit-arrow" aria-hidden="true">↓</div>
           <div class="admit-out">
             <div class="yes">Admit — run it</div>
@@ -353,7 +464,7 @@
           <h3>Nodeau Business</h3>
           <p class="kicker">For teams and organisations with shared GPU hardware.</p>
           <div class="price">Contact us</div>
-          <p class="price-note">Design partners welcome while multi-node is built.</p>
+          <p class="price-note">Design partners shape how fleet operation gets packaged.</p>
           <a class="btn btn-ghost btn-sm" href="/contact/?type=business">Contact us</a>
         </div>
       </div>
@@ -365,28 +476,28 @@
   <section class="divider reveal">
     <div class="wrap">
       <p class="eyebrow">Roadmap</p>
-      <h2 style="font-size:var(--step-2)">Single GPU today. Fleet intelligence next.</h2>
+      <h2 style="font-size:var(--step-2)">What ships, what runs, and what does not exist yet.</h2>
 
       <div class="grid grid-4" style="margin-top:2rem">
         <div>
-          <span class="pill pill-alpha">Available</span>
+          <span class="pill pill-available">Available</span>
           <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Self-Hosted Alpha</h3>
           <p style="color:var(--text-2);font-size:0.9rem;margin:0">One Linux machine, one NVIDIA GPU, working end to end.</p>
         </div>
         <div>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Multi-node foundation</h3>
+          <p style="color:var(--text-2);font-size:0.9rem;margin:0">Two machines, mixed GPUs, explainable placement decisions.</p>
+        </div>
+        <div>
           <span class="pill pill-next">Next</span>
-          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Harden and expand</h3>
-          <p style="color:var(--text-2);font-size:0.9rem;margin:0">More hardware, more models, WSL, better diagnostics.</p>
+          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Package and expand</h3>
+          <p style="color:var(--text-2);font-size:0.9rem;margin:0">A supported multi-node command, more cards, more models.</p>
         </div>
         <div>
           <span class="pill pill-planned">Planned</span>
-          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Business multi-node</h3>
-          <p style="color:var(--text-2);font-size:0.9rem;margin:0">Placement across machines, heterogeneous GPUs.</p>
-        </div>
-        <div>
-          <span class="pill pill-exploring">Exploring</span>
-          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Fleet and hybrid</h3>
-          <p style="color:var(--text-2);font-size:0.9rem;margin:0">Policy, quotas, audit, cloud overflow.</p>
+          <h3 style="font-size:1rem;margin:0.75rem 0 0.35rem">Fleet operations</h3>
+          <p style="color:var(--text-2);font-size:0.9rem;margin:0">Failover, visibility, quotas, policy, audit.</p>
         </div>
       </div>
       <p style="margin-top:1.75rem"><a class="link-arrow" href="/roadmap/">Full roadmap</a></p>
@@ -396,7 +507,7 @@
   <!-- ======================================================= cta ========== -->
   <section class="divider cta reveal">
     <div class="wrap">
-      <h2 style="font-size:var(--step-2)">One GPU, or a rack of them.</h2>
+      <h2 style="font-size:var(--step-2)">One GPU, or several machines.</h2>
       <p class="lede" style="margin:1rem auto 2rem;max-width:44ch">
         Install the Alpha on a machine you don’t mind experimenting on, or talk
         to us about the hardware your team already has.
@@ -421,7 +532,7 @@
           </svg>
           Nodeau
         </a>
-        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -453,7 +564,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
+      <span>Self-Hosted Alpha <span data-release></span> · experimental · Linux-first</span>
     </div>
   </div>
 </footer>

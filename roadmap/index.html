@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nodeau Roadmap — Single GPU Today, Fleet Intelligence Next</title>
-<meta name="description" content="What Nodeau does today and what is planned: Alpha hardening, more models, WSL, multi-node placement, fleet management and hybrid cloud.">
+<title>Nodeau Roadmap — What Ships, What Runs, What Is Planned</title>
+<meta name="description" content="The public Nodeau Alpha runs one GPU on one machine. Multi-node and mixed-GPU reasoning is built and validated but not yet packaged. Everything else is labelled honestly.">
 <link rel="canonical" href="https://nodeau.ai/roadmap/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/roadmap/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Nodeau Roadmap — Single GPU Today, Fleet Intelligence Next">
-<meta property="og:description" content="What Nodeau does today and what is planned: Alpha hardening, more models, WSL, multi-node placement, fleet management and hybrid cloud.">
+<meta property="og:title" content="Nodeau Roadmap — What Ships, What Runs, What Is Planned">
+<meta property="og:description" content="The public Nodeau Alpha runs one GPU on one machine. Multi-node and mixed-GPU reasoning is built and validated but not yet packaged. Everything else is labelled honestly.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/nodeau.css">
@@ -53,19 +53,37 @@
   <section class="hero" style="padding-bottom:2rem">
     <div class="wrap">
       <p class="eyebrow">Roadmap</p>
-      <h1 style="font-size:var(--step-3)">Single GPU today. Fleet intelligence next.</h1>
+      <h1 style="font-size:var(--step-3)">What ships, what runs, and what is planned.</h1>
       <p class="lede" style="margin-top:1.15rem">
-        Nodeau has a working Self-Hosted Alpha. This page separates what runs
-        today from what is intended, because the difference matters more than
-        the ambition does.
+        Nodeau has a working Self-Hosted Alpha, and a multi-node control plane
+        that runs on real hardware but is not in the installer yet. Those are
+        different things, and this page never lets them blur.
       </p>
-      <div class="btn-row" style="margin-top:1.75rem">
-        <span class="pill pill-available">Available</span>
-        <span class="pill pill-next">Next</span>
-        <span class="pill pill-planned">Planned</span>
-        <span class="pill pill-exploring">Exploring</span>
+
+      <div class="key" style="margin-top:2.5rem;max-width:52rem">
+        <div class="key-item">
+          <span class="pill pill-available">Available</span>
+          <p>Ships in the public Self-Hosted Alpha. Install it and you have it.</p>
+        </div>
+        <div class="key-item">
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>Built and physically validated on real hardware, but not yet the supported public install path.</p>
+        </div>
+        <div class="key-item">
+          <span class="pill pill-next">Next</span>
+          <p>Being worked on now, or the immediate priority once the current work lands.</p>
+        </div>
+        <div class="key-item">
+          <span class="pill pill-planned">Planned</span>
+          <p>Intended and designed for, but not built. No code you can run.</p>
+        </div>
+        <div class="key-item">
+          <span class="pill pill-exploring">Exploring</span>
+          <p>A direction we think is right and have not committed to. Intent, not plan.</p>
+        </div>
       </div>
-      <p style="color:var(--text-3);font-size:0.88rem;margin-top:1rem;max-width:56ch">
+
+      <p style="color:var(--text-3);font-size:0.88rem;margin-top:2rem;max-width:56ch">
         There are no dates on this page. Nodeau is a small effort and a date
         would be a guess presented as a commitment.
       </p>
@@ -77,9 +95,9 @@
 
       <div class="stage">
         <div class="stage-head">
-          <h2>Now — the working Alpha</h2>
+          <h2>Now — the public Alpha</h2>
           <span class="pill pill-available">Available</span>
-          <p>Everything here runs in v0.1.0-alpha.1 on a single Linux machine with a single NVIDIA GPU.</p>
+          <p>Everything here is in the published Self-Hosted Alpha (<span data-release></span>), running on a single Linux machine with a single NVIDIA GPU. This is what you get by following the <a href="/alpha/">install guide</a>.</p>
         </div>
         <div class="rows">
         <div class="row">
@@ -118,9 +136,9 @@
           <p>A node agent reports the GPU's real addressable memory and current usage.</p>
         </div>
         <div class="row">
-          <h3>Measured model profiles</h3>
+          <h3>Model profiles that carry their source</h3>
           <span class="pill pill-available">Available</span>
-          <p>Memory and throughput measured on real hardware. Nodeau refuses configurations it has not measured rather than estimating.</p>
+          <p>Where a configuration has been measured on real hardware, Nodeau uses the measurement. Where it has not, it derives a conservative estimate from the model’s own architecture, adds a further margin, and labels the decision as estimated. An estimate is never shown as a measurement.</p>
         </div>
         <div class="row">
           <h3>Model artifact verification</h3>
@@ -140,7 +158,7 @@
         <div class="row">
           <h3>Install ownership ledger</h3>
           <span class="pill pill-available">Available</span>
-          <p>Records what Nodeau installed as distinct from what it found, so uninstall removes only its own work.</p>
+          <p>Records what Nodeau installed as distinct from what it found, and prints an uninstall plan before making any change. It does not remove things that were on the machine before it.</p>
         </div>
         <div class="row">
           <h3>Reproducible release artifacts</h3>
@@ -152,15 +170,73 @@
 
       <div class="stage">
         <div class="stage-head">
-          <h2>Next — harden and expand</h2>
-          <span class="pill pill-next">Next</span>
-          <p>The immediate priority is making the Alpha work on machines other than the one it was built on.</p>
+          <h2>In Alpha — built and running, not packaged</h2>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>These run in the current development build and have been validated on two physical machines carrying different NVIDIA GPUs. They are <strong>not</strong> in the public installer: adding a second machine is still a manual step rather than a supported Nodeau command.</p>
         </div>
         <div class="rows">
         <div class="row">
-          <h3>Clean-machine validation</h3>
+          <h3>Multi-node GPU discovery</h3>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>More than one GPU machine under a single control plane, each publishing its own hardware state and being reasoned about separately.</p>
+        </div>
+        <div class="row">
+          <h3>Per-machine hardware observation</h3>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>Addressable memory, current usage and attached-display state, reported by each machine about itself. On the two-machine cluster every value differed between them, as it should.</p>
+        </div>
+        <div class="row">
+          <h3>Per-machine model verification</h3>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>Each machine computes a SHA-256 over its own copy of the model and publishes the digest. A machine whose copy is missing, unverified or wrong is not a placement candidate at all. This found genuine silent corruption on a second machine that had been serving answers and reporting healthy.</p>
+        </div>
+        <div class="row">
+          <h3>Explainable placement across candidates</h3>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>The fit calculation runs once per candidate machine, and every candidate keeps a reason — including the ones that lost. There is deliberately no second, looser rule for choosing a machine.</p>
+        </div>
+        <div class="row">
+          <h3>Heterogeneous GPU reasoning</h3>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>An RTX 3080 and an RTX 2080 in the same cluster, each scored on what it can actually give the workload rather than treated as one interchangeable “GPU”.</p>
+        </div>
+        <div class="row">
+          <h3>Placement stickiness</h3>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>A healthy workload is not restarted elsewhere because another machine scored better. Observed doing exactly that on real hardware, with the other machine genuinely winning on score.</p>
+        </div>
+        <div class="row">
+          <h3>Node-scoped isolation</h3>
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>Each machine’s agent can write only its own state, and can read no credentials at all. Verified in both directions on two machines.</p>
+        </div>
+        </div>
+
+        <div class="note note-warn" style="margin-top:1.5rem;max-width:66ch">
+          <strong style="color:var(--text)">What this does not yet show.</strong>
+          A workload has been <em>decided</em> across both machines, but has not
+          been started on the second GPU. No machine has been switched off to
+          see what happens, and there is no automatic failover — that work is
+          <a href="#fleet">further down this page</a>, unbuilt.
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-head">
+          <h2>Next — package and expand</h2>
           <span class="pill pill-next">Next</span>
-          <p>Broader testing on hardware Nodeau has never seen. This is the current gate.</p>
+          <p>The immediate priority is turning the multi-node foundation into something a person can install, and widening the hardware it has met.</p>
+        </div>
+        <div class="rows">
+        <div class="row">
+          <h3>A supported multi-node command</h3>
+          <span class="pill pill-next">Next</span>
+          <p>Adding a second machine currently means driving the underlying cluster by hand. Turning that into a safe, checked Nodeau command — and shipping it in the installer — is the packaging job that stands between “In Alpha” and “Available” above.</p>
+        </div>
+        <div class="row">
+          <h3>Broader hardware validation</h3>
+          <span class="pill pill-next">Next</span>
+          <p>Nodeau has now been installed and run on two machines with two different NVIDIA GPUs. That is two data points, not a compatibility list, and widening it is the current gate.</p>
         </div>
         <div class="row">
           <h3>Installer edge cases</h3>
@@ -168,9 +244,9 @@
           <p>More failure modes handled cleanly, better recovery, clearer diagnostics.</p>
         </div>
         <div class="row">
-          <h3>More NVIDIA GPUs</h3>
+          <h3>More measured NVIDIA GPUs</h3>
           <span class="pill pill-next">Next</span>
-          <p>Additional cards measured and profiled rather than assumed compatible.</p>
+          <p>Additional cards measured rather than estimated. Nodeau runs on an unmeasured card today by estimating conservatively and saying so, but a measurement is still the better answer and is what should end up in the catalogue.</p>
         </div>
         <div class="row">
           <h3>More Ubuntu and Linux coverage</h3>
@@ -202,49 +278,34 @@
 
       <div class="stage">
         <div class="stage-head">
-          <h2>Business — multi-node</h2>
+          <h2>Planned — smarter placement</h2>
           <span class="pill pill-planned">Planned</span>
-          <p>The next major platform capability, and the point at which Nodeau becomes a fleet control plane rather than a single-machine tool. None of this is in the Alpha.</p>
+          <p>Placement decides on <em>fit</em> today: can this machine safely hold this workload, and which safe machine leaves the least waste. These would make it decide on more than fit. None of them is built.</p>
         </div>
         <div class="rows">
         <div class="row">
-          <h3>Multi-node GPU discovery</h3>
+          <h3>Model locality as a preference</h3>
           <span class="pill pill-planned">Planned</span>
-          <p>More than one GPU machine under one control plane, with health and heartbeats.</p>
-        </div>
-        <div class="row">
-          <h3>Explainable placement</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Choose a machine for a workload, and report why each candidate was not chosen.</p>
-        </div>
-        <div class="row">
-          <h3>Heterogeneous fleets</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Mixed GPU generations reasoned about individually rather than treated as interchangeable.</p>
-        </div>
-        <div class="row">
-          <h3>VRAM-aware scheduling across machines</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>The admission model that exists today, applied across a fleet.</p>
-        </div>
-        <div class="row">
-          <h3>Model locality awareness</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Prefer machines that already hold the model, because pulling weights dominates cold start.</p>
+          <p>Nodeau already <em>knows and verifies</em> which machines hold a good copy of a model, and refuses to place a workload on one that does not — that part is In Alpha above. <em>Preferring</em> a machine that already holds it, so a cold start does not pay for a download, is a scoring change that has not been made.</p>
         </div>
         <div class="row">
           <h3>Performance-aware placement</h3>
           <span class="pill pill-planned">Planned</span>
-          <p>Use measured throughput rather than card names to choose.</p>
+          <p>Choose using measured throughput rather than fit alone. A card that fits is not necessarily the card you want.</p>
+        </div>
+        <div class="row">
+          <h3>Multi-machine capacity planning</h3>
+          <span class="pill pill-planned">Planned</span>
+          <p>Answering “what could this cluster hold?” rather than only “where does this one workload go?”.</p>
         </div>
         </div>
       </div>
 
-      <div class="stage">
+      <div class="stage" id="fleet">
         <div class="stage-head">
-          <h2>Business — fleet management</h2>
+          <h2>Planned — fleet operations</h2>
           <span class="pill pill-planned">Planned</span>
-          <p>Once workloads can move between machines, the organisational layer becomes the useful part.</p>
+          <p>Once workloads move between machines on purpose, the organisational layer becomes the useful part. None of this exists — in the Alpha or on a branch.</p>
         </div>
         <div class="rows">
         <div class="row">
@@ -280,7 +341,7 @@
         <div class="row">
           <h3>Health-aware rescheduling and failover</h3>
           <span class="pill pill-planned">Planned</span>
-          <p>Recovering a workload elsewhere. Nodeau does not do this today.</p>
+          <p>Recovering a workload elsewhere when a machine fails. <strong>Nodeau does not do this.</strong> Placement deliberately keeps a healthy workload where it is; noticing that one has stopped being healthy, and acting on it, is a separate capability that has not been built or tested.</p>
         </div>
         <div class="row">
           <h3>Maintenance and drain workflows</h3>
@@ -308,9 +369,9 @@
           <p>A managed management plane over infrastructure you still own. Inference would not inherently need to traverse it simply because management is hosted.</p>
         </div>
         <div class="row">
-          <h3>Multiple GPUs per machine</h3>
+          <h3>Multiple GPUs inside one machine</h3>
           <span class="pill pill-exploring">Exploring</span>
-          <p>Deliberately separate from multi-node. Nodeau currently works with one GPU per node.</p>
+          <p>A genuinely different problem from multiple machines, and not solved by it. Nodeau works with one GPU per machine today, however many machines there are.</p>
         </div>
         <div class="row">
           <h3>AMD GPU support</h3>
@@ -379,7 +440,7 @@
       </svg>
           Nodeau
         </a>
-        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -411,7 +472,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
+      <span>Self-Hosted Alpha <span data-release></span> · experimental · Linux-first</span>
     </div>
   </div>
 </footer>

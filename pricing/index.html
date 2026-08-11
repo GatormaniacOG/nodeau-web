@@ -79,6 +79,10 @@
             <li>Local OpenAI-compatible API with its own key</li>
             <li>Simple CLI, diagnostics and support bundles</li>
           </ul>
+          <p class="note" style="margin-bottom:1.5rem">
+            Multi-node is deliberately not part of Home. One person, one
+            machine, kept simple.
+          </p>
           <a class="btn btn-primary btn-sm" href="/alpha/">Try Alpha</a>
         </div>
 
@@ -86,26 +90,44 @@
           <h3>Nodeau Business</h3>
           <p class="kicker">For startups and organisations managing shared GPU infrastructure.</p>
           <div class="price">Contact us</div>
-          <p class="price-note">Design partners welcome while multi-node is built.</p>
+          <p class="price-note">Design partners shape how fleet operation gets packaged.</p>
           <ul class="checks">
             <li>Everything in Home</li>
             <li>GPU workload management on owned hardware</li>
           </ul>
+          <ul class="checks" style="margin-top:0">
+            <li>Several GPU machines, one control plane <span class="pill pill-inalpha" style="margin-left:.35rem">In Alpha</span></li>
+            <li>Mixed NVIDIA generations, judged individually <span class="pill pill-inalpha" style="margin-left:.35rem">In Alpha</span></li>
+            <li>Placement with a reason kept for every candidate <span class="pill pill-inalpha" style="margin-left:.35rem">In Alpha</span></li>
+            <li>Per-machine model verification <span class="pill pill-inalpha" style="margin-left:.35rem">In Alpha</span></li>
+          </ul>
           <ul class="checks checks-future" style="margin-top:0">
-            <li>Multi-node placement <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
-            <li>Heterogeneous GPU fleets <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
-            <li>Team controls, RBAC, quotas and policy <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
-            <li>Fleet observability and audit <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
+            <li>Team access and organisation RBAC <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
+            <li>Quotas and placement policy <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
+            <li>Audit history <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
+            <li>Fleet observability and alerting <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
+            <li>Failover and health-aware rescheduling <span class="pill pill-planned" style="margin-left:.35rem">Planned</span></li>
             <li>Support</li>
           </ul>
           <a class="btn btn-ghost btn-sm" href="/contact/?type=business">Contact us</a>
         </div>
       </div>
 
-      <div class="note" style="margin-top:2.5rem;max-width:64ch">
-        Items marked <strong>Planned</strong> are not in the current Alpha. They
-        are on the <a href="/roadmap/">roadmap</a> and are described there with
-        the same labels. Nothing on this page is a commitment to a date.
+      <div class="key" style="margin-top:2.5rem;max-width:60rem">
+        <div class="key-item">
+          <span class="pill pill-inalpha">In Alpha</span>
+          <p>Built and validated on real hardware — two machines, two NVIDIA generations — but not yet in the public installer. Adding a second machine is still a manual step.</p>
+        </div>
+        <div class="key-item">
+          <span class="pill pill-planned">Planned</span>
+          <p>Not built. Described on the <a href="/roadmap/">roadmap</a> with the same labels used here.</p>
+        </div>
+      </div>
+
+      <div class="note" style="margin-top:2rem;max-width:64ch">
+        Nothing on this page is a commitment to a date, and nothing marked
+        <strong>Planned</strong> should be counted on when you are deciding
+        whether Nodeau fits.
       </div>
     </div>
   </section>
@@ -162,7 +184,7 @@
       </svg>
           Nodeau
         </a>
-        <p style="max-width:34ch">You own the GPU. Nodeau makes it usable infrastructure.</p>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -194,7 +216,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-Hosted Alpha v0.1.0-alpha.1 · experimental · Linux-first</span>
+      <span>Self-Hosted Alpha <span data-release></span> · experimental · Linux-first</span>
     </div>
   </div>
 </footer>
