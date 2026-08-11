@@ -62,11 +62,10 @@
       <div class="callout callout-warn" style="margin-top:2rem;max-width:64ch">
         <h3>This is early software</h3>
         <p style="margin:0">
-          Nodeau has been installed and run end to end on two machines with two
-          different NVIDIA GPUs. That is two data points, not a compatibility
-          list — you may still be among the first people running it on hardware
-          like yours. Please use a computer you don’t mind experimenting on, and
-          if it fails, that is a useful result rather than a wasted evening.
+          Nodeau works, but it is an Alpha, and your machine may well be the
+          first of its kind to run it. Use a computer you don’t mind tinkering
+          with. And if it does fall over, please tell us — that is genuinely
+          useful, not a wasted evening.
         </p>
       </div>
     </div>
@@ -99,12 +98,12 @@
             <li>No Windows, and no WSL yet</li>
           </ul>
           <p style="color:var(--text-3);font-size:0.85rem;margin:1rem 0 0">
-            Nodeau has run on an <strong>RTX 3080</strong> and an
-            <strong>RTX 2080</strong>, both on Ubuntu 24.04. The 3080 is the one
-            with a full memory measurement; on any other card Nodeau estimates
-            conservatively and tells you it did. Cards beyond those two are
-            untested rather than known-broken.
-            <a href="/roadmap/">See the roadmap</a>.
+            Nodeau has been run on an <strong>RTX 3080</strong> and an
+            <strong>RTX 2080</strong> under Ubuntu 24.04. On a card it has not
+            measured directly it works out a cautious estimate and tells you
+            that is what it did, instead of guessing quietly. Other NVIDIA cards
+            are not known to be a problem — they simply have not been measured
+            yet. <a href="/roadmap/">See the roadmap</a>.
           </p>
         </div>
       </div>
@@ -312,17 +311,17 @@ print(reply.choices[0].message.content)</code></pre>
       <div class="grid grid-2" style="margin-top:1.5rem;align-items:start;gap:clamp(2rem,5vw,3.5rem)">
         <div>
           <p style="color:var(--text-2)">
-            Nodeau’s control plane already runs across more than one GPU
-            machine. It has been validated on two, with different NVIDIA
-            generations: each machine reports its own hardware, independently
-            verifies its own copy of the model, and is evaluated as a separate
-            candidate when Nodeau decides where a workload should run.
+            Nodeau’s control plane already spans more than one GPU machine, on
+            mixed NVIDIA hardware. Each machine reports what it has, checks its
+            own copy of the model, and gets considered on its own merits when
+            Nodeau decides where something should run.
           </p>
           <p style="color:var(--text-2)">
-            That is not yet a supported command, though. Adding a second machine
-            currently means driving the underlying cluster by hand, which is a
-            development procedure rather than a product — so it is deliberately
-            not written up here. Packaging it safely is the next piece of work.
+            What there is not yet is a command for it. Adding a machine today
+            means driving the cluster underneath by hand, and that is a
+            development procedure rather than something we would ask you to
+            follow — so it is not written up here. Turning it into one safe
+            command is the next job.
           </p>
           <div class="btn-row" style="margin-top:1.5rem">
             <a class="btn btn-ghost btn-sm" href="/#business">What works across machines</a>
@@ -333,16 +332,16 @@ print(reply.choices[0].message.content)</code></pre>
         <div class="panel panel-quiet">
           <span class="pill pill-inalpha" style="margin-bottom:0.9rem">In Alpha</span>
           <p style="color:var(--text-2);font-size:0.95rem;margin-bottom:0.9rem">
-            Built and running on real hardware, not in this installer:
+            Running on real hardware, not in this installer:
           </p>
           <ul class="checks" style="margin:0">
-            <li>Several GPU machines under one control plane</li>
+            <li>More than one GPU machine under one control plane</li>
             <li>Mixed NVIDIA generations, judged individually</li>
-            <li>Placement with a reason kept for every candidate</li>
+            <li>Every machine considered, and the reasoning kept</li>
           </ul>
           <p style="color:var(--text-3);font-size:0.85rem;margin:1.1rem 0 0">
-            Still absent everywhere: automatic failover. See the
-            <a href="/roadmap/">roadmap</a>.
+            One thing Nodeau still will not do anywhere: fail over on its own.
+            See the <a href="/roadmap/">roadmap</a>.
           </p>
         </div>
       </div>

@@ -37,13 +37,37 @@ hardware has to be mislabelled as either unbuilt or fully shipped, and both are
 wrong. Do not collapse it, and do not use it for something that has only been
 tested synthetically.
 
+### Where the detail lives
+
+The marketing pages describe what Nodeau **does**. They deliberately do not
+enumerate how deep the testing goes — no machine counts, no "that is only two
+data points", no "and they both belong to the same person". Not volunteering a
+test matrix is ordinary editorial judgement, and the old copy was talking
+itself down.
+
+**The roadmap carries the full picture**, and that is not optional. It is the
+one page that states the exact limits of what multi-machine operation has
+shown, and `tools/check-site.py` asserts those sentences are still present. If
+they are ever trimmed, every other page silently becomes an overclaim by
+omission — which is why they are checked rather than trusted.
+
 ### Claims that are deliberately NOT made
 
-Nodeau's control plane spans two machines, but a workload has never been
-*started* on the second GPU, no machine has been removed to see what happens,
-and failover does not exist. The site therefore says Nodeau **reasons across**
-and **decides between** machines. It must never say workloads run across mixed
-GPUs, that failover works, or that any kind of fleet scale has been tested.
+Nodeau's control plane spans more than one machine, but a workload has never
+been *started* on the second GPU, no machine has been removed to see what
+happens, and failover does not exist.
+
+So the site says Nodeau **reasons across** and **decides between** machines. It
+must never say that workloads *run across* mixed GPUs, that Nodeau spreads,
+distributes or balances work, that failover works, or that any fleet scale has
+been tested. `FORBIDDEN` in the checker enforces exactly this, and it matters
+more now that the pages no longer carry the caveats that used to catch a
+sentence drifting too far.
+
+Three limits stay on the main pages regardless, because they are capability
+boundaries rather than testing-depth trivia, and someone could build on them
+and get hurt: **no automatic failover**, **not production-ready**, and the
+**Available vs In Alpha** split.
 
 The installer at **get.nodeau.ai** is a separate deployment. This site links to
 it and must never duplicate or reimplement it.
@@ -89,11 +113,15 @@ trade was made knowingly.
 4. **No production-readiness claims.** It is an experimental Alpha, and it does
    not fail over.
 5. **No invented prices.** Home is "coming soon", Business is "contact us".
-6. **Name the hardware actually tested.** "Validated on RTX 3080 + RTX 2080" is
-   both stronger and truer than "heterogeneous GPUs supported". Never imply
-   every NVIDIA card works.
+6. **Name the hardware actually tested.** "Run on an RTX 3080 and an RTX 2080"
+   is both stronger and truer than "heterogeneous GPUs supported". Name the
+   cards; do not count the machines. Never imply every NVIDIA card works.
 7. **Say where a number came from.** Nodeau measures where it can and estimates
    conservatively where it cannot; the site must not claim it never estimates.
+8. **Write like a person.** Short sentences, plain words, contractions where
+   they land naturally. The voice is a knowledgeable colleague telling you how
+   it is, not a spec sheet and not a pitch deck. If a sentence needs two
+   em-dashes and a semicolon, it needs to be two sentences.
 
 ### The version string
 

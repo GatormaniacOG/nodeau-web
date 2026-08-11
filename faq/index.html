@@ -55,8 +55,8 @@
       <p class="eyebrow">FAQ</p>
       <h1 style="font-size:var(--step-3)">Questions, answered plainly.</h1>
       <p class="lede" style="margin-top:1.15rem">
-        Including the ones with awkward answers. Where something is roadmap
-        rather than reality, it says so.
+        Including the awkward ones. Where something is still on the roadmap
+        rather than in your hands, we say so.
       </p>
     </div>
   </section>
@@ -67,19 +67,19 @@
       <h2 id="about-nodeau">About Nodeau</h2>
       <details class="qa">
         <summary>What is Nodeau?</summary>
-        <div class="answer"><p>Software that turns a computer with a compatible NVIDIA GPU into local AI infrastructure. It checks the machine, works out whether a supported model can fit safely in the GPU’s memory, sets up what is needed to run it, and gives you an OpenAI-compatible API on that machine.</p></div>
+        <div class="answer"><p>Software that turns a computer with an NVIDIA GPU into local AI infrastructure. It checks the machine over, works out whether a model will fit safely in the GPU’s memory, sets up everything needed to run it, and gives you an OpenAI-compatible API on that machine.</p></div>
       </details>
       <details class="qa">
         <summary>Who is Nodeau for?</summary>
-        <div class="answer"><p>Two groups. <strong>Home</strong>: an individual with a gaming PC or workstation who wants to run models locally without becoming an infrastructure engineer. <strong>Business</strong>: teams and organisations with GPU hardware they want to operate as shared infrastructure.</p><p>The Business side is no longer only an intention. The control plane runs across more than one GPU machine and has been validated on two with different NVIDIA generations. What it is not yet is <em>packaged</em> — see <a href='#in-alpha'>“What does In&nbsp;Alpha mean?”</a> below.</p></div>
+        <div class="answer"><p>Two groups. <strong>Home</strong>: someone with a gaming PC or a workstation who wants to run models locally without first becoming an infrastructure engineer. <strong>Business</strong>: teams with GPU hardware they would like to run as shared infrastructure.</p><p>The Business side is no longer just an intention. The control plane runs across more than one GPU machine, on mixed NVIDIA hardware. What it is not yet is <em>packaged</em> — see <a href='#in-alpha'>“What does In&nbsp;Alpha mean?”</a> below.</p></div>
       </details>
       <details class="qa" id="in-alpha">
         <summary>What does “In Alpha” mean on this site?</summary>
-        <div class="answer"><p>Three states, kept apart deliberately.</p><p><strong>Available</strong> — it ships in the public Self-Hosted Alpha. You install it and you have it.</p><p><strong>In Alpha</strong> — it is built and it has been validated on real hardware, but it is not in the public installer yet. Multi-node and mixed-GPU reasoning are here.</p><p><strong>Planned</strong> or <strong>Exploring</strong> — not built. There is no code you can run.</p><p>The distinction exists because collapsing it would force a capability that genuinely works to be described as either unbuilt or fully shipped, and both would be wrong. The <a href='/roadmap/'>roadmap</a> labels every item.</p></div>
+        <div class="answer"><p>Three states, and we keep them apart on purpose.</p><p><strong>Available</strong> — it ships in the public Self-Hosted Alpha. Install it and you have it.</p><p><strong>In Alpha</strong> — it is built and running on real hardware, but it is not in the public installer yet. Running across several machines lives here.</p><p><strong>Planned</strong> or <strong>Exploring</strong> — not built. There is nothing to run.</p><p>Without the middle one we would have to call something that genuinely works either unbuilt or fully shipped, and neither would be true. The <a href='/roadmap/'>roadmap</a> labels everything.</p></div>
       </details>
       <details class="qa">
         <summary>Do I need to know Kubernetes?</summary>
-        <div class="answer"><p>No. Nodeau uses Kubernetes underneath, but normal use is three commands and an API. You never write YAML, and you do not need to know what a container is. Running across several machines is the one place that leaks today — which is exactly why it is not presented as a supported workflow yet.</p></div>
+        <div class="answer"><p>No. Kubernetes is under the bonnet, but day-to-day use is three commands and an API. You never write YAML, and you do not need to know what a container is. Adding extra machines is the one place it currently shows through, which is exactly why we are not yet presenting that as a supported workflow.</p></div>
       </details>
       <details class="qa">
         <summary>Is Nodeau open source?</summary>
@@ -104,14 +104,14 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/a
       </details>
       <details class="qa">
         <summary>Can I uninstall it?</summary>
-        <div class="answer"><p>Yes. <code>nodeau uninstall</code> shows an uninstall plan and asks before changing anything. Nodeau records what it installed as distinct from what it found, so it does not remove things that were on the machine before it — your downloaded models, your GPU driver, and a Kubernetes cluster it did not create all stay.</p><p>If you had your own Kubernetes cluster and Nodeau adopted it, uninstall is less thorough than the plan suggests and can leave Nodeau’s own components behind. That is a known gap we are fixing; nothing of yours is at risk from it, and <code>nodeau support bundle</code> plus an email will get you a hand.</p></div>
+        <div class="answer"><p>Yes. <code>nodeau uninstall</code> shows you the plan and asks before it changes anything. Nodeau keeps track of what it installed versus what was already there, so it will not take away things that predate it — your downloaded models, your GPU driver and any Kubernetes cluster it did not create all stay put.</p><p>One caveat: if Nodeau adopted a Kubernetes cluster you already had, uninstall is less thorough than the plan suggests and can leave some of Nodeau’s own pieces behind. We are fixing that. Nothing of yours is at risk, and if you get stuck, send us <code>nodeau support bundle</code> and we will sort it out.</p></div>
       </details>
     </div>
     <div class="faq-group">
       <h2 id="hardware">Hardware</h2>
       <details class="qa">
         <summary>What GPUs are supported?</summary>
-        <div class="answer"><p>NVIDIA only, one GPU per machine. Three categories, and it is worth keeping them apart:</p><p><strong>Physically validated</strong> — Nodeau has been installed and run end to end on an <strong>RTX 3080</strong> and an <strong>RTX 2080</strong>, both under Ubuntu 24.04.</p><p><strong>Fully measured</strong> — only the RTX 3080. Its memory behaviour for the starter model has been measured directly, so admission on that card uses a real figure.</p><p><strong>Everything else</strong> — untested rather than known-broken. Nodeau will still run: it derives a conservative memory estimate from the model’s own architecture, carries an extra safety margin, and tells you plainly that the number is estimated. It does not pretend an estimate is a measurement, and it does not pretend every NVIDIA card is known to work.</p></div>
+        <div class="answer"><p>NVIDIA, one GPU per machine. Nodeau has been run end to end on an <strong>RTX 3080</strong> and an <strong>RTX 2080</strong> under Ubuntu 24.04.</p><p>On other NVIDIA cards it still works. Where it has a direct measurement for your configuration it uses it; where it does not, it works out a cautious estimate from the model’s own shape, holds extra memory back, and tells you the number is an estimate. What it will not do is quietly present a guess as a measurement, or promise that every card on the market is known to be fine.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau install my NVIDIA driver?</summary>
@@ -139,7 +139,7 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/a
       </details>
       <details class="qa">
         <summary>Can Nodeau use several GPUs?</summary>
-        <div class="answer"><p>These are two different questions, and Nodeau’s answers to them differ.</p><p><strong>Several GPU machines, one control plane</strong> — yes, and it has been validated on two machines with different NVIDIA generations. It is <strong>In&nbsp;Alpha</strong>: real, but not yet in the public installer, which sets up one machine.</p><p><strong>Several GPUs inside one machine</strong> — no. Nodeau works with one GPU per machine, however many machines there are. This is genuinely a different problem from multi-node and is not solved by it; it is marked <strong>Exploring</strong> on the <a href='/roadmap/'>roadmap</a>.</p></div>
+        <div class="answer"><p>These are two different questions, and Nodeau’s answers to them differ.</p><p><strong>Several GPU machines, one control plane</strong> — yes, on mixed NVIDIA hardware. It is <strong>In&nbsp;Alpha</strong>: real, but not yet in the public installer, which sets up one machine at a time.</p><p><strong>Several GPUs inside one machine</strong> — no. Nodeau works with one GPU per machine, however many machines there are. That is genuinely a different problem from running across machines, and solving one does not solve the other. It is marked <strong>Exploring</strong> on the <a href='/roadmap/'>roadmap</a>.</p></div>
       </details>
     </div>
     <div class="faq-group">
@@ -150,7 +150,7 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/a
       </details>
       <details class="qa">
         <summary>Why so few models?</summary>
-        <div class="answer"><p>Because a good answer costs work. A model profile starts as measurements on real hardware, not a formula, and adding a model properly means measuring it. Nodeau can fall back to a conservative estimate derived from a model’s architecture — that is what lets it run on cards nobody here owns — but an estimate is the fallback, not the goal, and Nodeau always says which one it used.</p></div>
+        <div class="answer"><p>Because a good answer takes work. A model profile starts life as real measurements on real hardware, so adding a model properly means measuring it. Nodeau can fall back to a cautious estimate worked out from the model’s own shape, which is what lets it run on cards we have never touched — but an estimate is the fallback, not the goal, and Nodeau always tells you which one you got.</p></div>
       </details>
       <details class="qa">
         <summary>How does Nodeau know if a model will fit?</summary>
@@ -196,15 +196,15 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/a
       <h2 id="the-alpha">The Alpha</h2>
       <details class="qa">
         <summary>Is Nodeau production-ready?</summary>
-        <div class="answer"><p>No, and please do not treat it as such. It is an experimental Alpha with no uptime guarantee, no failover and no support commitment, and it is not hardened for hostile multi-tenancy.</p></div>
+        <div class="answer"><p>No, and please don’t treat it as though it were. It is an experimental Alpha: no uptime guarantee, no failover, no support commitment, and not hardened against hostile users sharing the same box.</p></div>
       </details>
       <details class="qa">
         <summary>Has this been tested on more than one machine?</summary>
-        <div class="answer"><p>Yes — on two. Nodeau was installed from the published release onto a second, separate machine with a different NVIDIA GPU (an RTX 2080 against the development machine’s RTX 3080), and it served a model there. The two now run as one cluster, each observing its own hardware and verifying its own copy of the model independently.</p><p>Two machines is not a fleet, and both belong to the same person. Broad validation across hardware nobody here owns has still not happened, and that is what testers and design partners are for.</p></div>
+        <div class="answer"><p>Yes. Nodeau was installed from the published release onto a separate machine with a different NVIDIA card, and it served a model there. Those machines now run as one cluster, each watching its own hardware and checking its own copy of the model.</p><p>Worth being clear about what that means for you today: setting this up yourself is <strong>In&nbsp;Alpha</strong>, so the public installer still does one machine at a time.</p><p>We would also love to see Nodeau on more hardware. That is what testers and design partners are for — if that sounds like you, <a href='/contact/'>say hello</a>.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau fail over to another machine?</summary>
-        <div class="answer"><p>No. This is worth stating flatly because multi-node capability invites the assumption. Nodeau decides where a workload should run and deliberately keeps a healthy workload where it is; noticing that a machine has died and recovering the workload elsewhere is a separate capability that has not been built or tested. Treat every endpoint as something that stops when its machine stops.</p></div>
+        <div class="answer"><p>No, and it is worth saying plainly, because running on several machines invites the assumption. Nodeau chooses where a workload should run and then deliberately leaves it there. Spotting that a machine has died and rescuing the workload elsewhere is a different job, and it is not built. Assume an endpoint stops when its machine stops.</p></div>
       </details>
       <details class="qa">
         <summary>What happens if the installation fails?</summary>
@@ -223,15 +223,15 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/a
       <h2 id="business">Business</h2>
       <details class="qa">
         <summary>Can Nodeau manage multiple GPU machines?</summary>
-        <div class="answer"><p>Yes, and it has been validated on two. Each machine publishes its own hardware state and independently verifies its own copy of the model; the control plane evaluates every machine as a candidate for a workload, applies the same fit arithmetic to each, and keeps a reason for the ones it did not choose.</p><p>The honest caveat is packaging. This is <strong>In&nbsp;Alpha</strong>: the public installer sets up a single machine, and adding a second currently means driving the underlying cluster by hand. A supported command for it is the next piece of work.</p></div>
+        <div class="answer"><p>Yes. Each machine reports its own hardware and checks its own copy of the model. When you deploy something, Nodeau considers every machine, works out where it will really fit, and keeps the reasoning for the ones it passed over.</p><p>The catch is packaging, not capability. This is <strong>In&nbsp;Alpha</strong>: the public installer sets up one machine, and adding another currently means driving the cluster underneath by hand. A proper command for it is the next job.</p></div>
       </details>
       <details class="qa">
         <summary>Can Nodeau manage different GPU models together?</summary>
-        <div class="answer"><p>Yes — that was the point of validating on two <em>unlike</em> cards rather than two identical ones. An RTX 3080 and an RTX 2080 in the same cluster are reported and scored separately, on what each can actually give a workload. Nothing anywhere in Nodeau treats “a GPU” as a unit of capacity.</p><p>Also <strong>In&nbsp;Alpha</strong>. And one limit worth being exact about: Nodeau has <em>decided</em> across both cards, but a workload has not yet been started on the second one.</p></div>
+        <div class="answer"><p>Yes — and that was rather the point of testing on two <em>unlike</em> cards instead of two matching ones. An RTX 3080 and an RTX 2080 in the same cluster are measured and weighed up separately, on what each can really give a workload. Nothing in Nodeau treats “a GPU” as a unit of capacity.</p><p>Also <strong>In&nbsp;Alpha</strong>. The <a href='/roadmap/'>roadmap</a> sets out exactly how far this has been taken.</p></div>
       </details>
       <details class="qa">
         <summary>Can teams share GPU infrastructure?</summary>
-        <div class="answer"><p>Partly. The machine-level foundation is there — several machines, one control plane, one place that decides. What is missing is the organisational layer: team accounts, per-team access control, quotas and policy are all <strong>Planned</strong> and unbuilt. Nodeau does not know who you are beyond an API key today.</p></div>
+        <div class="answer"><p>Partly. The machine side is there: several machines, one control plane, one place that decides. The organisational side is not. Team accounts, per-team access control, quotas and policy are all <strong>Planned</strong> and unbuilt — today Nodeau knows nothing about you beyond an API key.</p></div>
       </details>
       <details class="qa">
         <summary>Will Nodeau support quotas and policies?</summary>

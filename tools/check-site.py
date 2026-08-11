@@ -52,22 +52,71 @@ RETIRED = [
 
 # Claims that must never appear, regardless of refresh. These are capabilities
 # Nodeau does not have; wording that implies them is a defect, not a style nit.
+#
+# This list carries more weight than it looks. The marketing pages deliberately
+# no longer enumerate how shallow the testing is, which is a fair editorial
+# choice — but it removes the caveats that used to stop a confident sentence
+# from reading as a bigger claim than the evidence supports. The guard is now
+# the thing keeping that line, so it is stricter than it was.
 FORBIDDEN = [
     (r"production[- ]proven|battle[- ]tested|enterprise[- ]grade",
      "unsupportable maturity claim"),
     (r"every NVIDIA (GPU|card) (works|is supported)",
-     "only RTX 3080 and RTX 2080 have been physically validated"),
+     "no such claim: two cards have been run on, the rest are estimated"),
     (r"failover works|supports failover|failover across",
      "Nodeau has no failover of any kind"),
+
+    # Nodeau DECIDES between machines. It has never STARTED a workload on the
+    # second one. "reasons across" and "decides between" are true; anything
+    # that puts the workload itself on several machines is not.
+    (r"runs? (your )?(workloads?|models?|inference) across",
+     "workloads do not run across machines; Nodeau reasons across and decides between them"),
+    (r"(spread|distribute|balance)s? .{0,24}across (machines|GPUs|nodes|your fleet)",
+     "Nodeau does not spread, distribute or balance work across machines"),
+    (r"across your (whole )?fleet|manage your fleet|fleet management is",
+     "fleet-scale operation is unbuilt; do not write as though it ships"),
+    (r"scales? to (dozens|hundreds|any number)",
+     "no scale claim is supportable"),
+    (r"automatically (moves?|migrates?|recovers?|reschedules?)",
+     "Nodeau never moves a workload on its own"),
 ]
 
 # Words that are only safe next to a disclaimer. A bare mention reads as a
 # feature; the check is that a negation or a roadmap label sits close by.
 NEEDS_DISCLAIMER = [
-    ("failover", r"not|no\b|does not|never|absent|Planned|pill-planned|unbuilt|nothing"),
+    ("failover", r"not|no\b|does not|will not|never|absent|Planned|pill-planned|unbuilt|nothing"),
     ("heterogeneous", r"In&nbsp;Alpha|In Alpha|pill-inalpha|validated|reason"),
+    # Multi-machine capability must always sit next to its status label. The
+    # marketing pages carry no other reminder that it is not installable.
+    ("more than one (GPU )?machine",
+     r"In Alpha|not yet|not in the public|on purpose|sets up one machine"),
 ]
-DISCLAIMER_WINDOW = 240
+# Measured against the page with its markup stripped, because the distance that
+# matters is how far a READER travels between a claim and its qualifier, not how
+# many characters of nested <div> sit in between.
+DISCLAIMER_WINDOW = 400
+
+# Content the site must not lose. The roadmap is the one page that carries the
+# full picture, so the exact limits of what multi-machine operation has shown
+# live there and nowhere else. If a future edit trims them, every other page
+# becomes an overclaim by omission — so they are asserted rather than trusted.
+REQUIRED = [
+    ("roadmap/index.html", "has not been started on the second GPU",
+     "the roadmap must keep the exact limit of what multi-machine has shown"),
+    ("roadmap/index.html", "Nodeau does not do this",
+     "the roadmap must say plainly that failover does not exist"),
+    ("roadmap/index.html", "In Alpha",
+     "the roadmap must keep the In Alpha state"),
+]
+
+
+def text_of(html: str) -> str:
+    """The page as a reader sees it: no tags, no entities, single spaces."""
+    t = re.sub(r"<(script|style)\b.*?</\1>", " ", html, flags=re.S | re.I)
+    t = re.sub(r"<[^>]+>", " ", t)
+    t = (t.replace("&nbsp;", " ").replace("&amp;", "&")
+          .replace("&lt;", "<").replace("&gt;", ">").replace("&#39;", "'"))
+    return re.sub(r"\s+", " ", t).strip()
 
 
 class Page(HTMLParser):
@@ -192,14 +241,15 @@ def main() -> int:
         # A loaded word is fine as long as the sentence around it does the
         # qualifying. Checking a window rather than the word itself is what
         # keeps this from firing on every honest mention.
+        plain = text_of(src)
         for word, disclaimer in NEEDS_DISCLAIMER:
-            for m in re.finditer(word, src, re.IGNORECASE):
+            for m in re.finditer(word, plain, re.IGNORECASE):
                 lo = max(0, m.start() - DISCLAIMER_WINDOW)
-                window = src[lo:m.end() + DISCLAIMER_WINDOW]
+                window = plain[lo:m.end() + DISCLAIMER_WINDOW]
                 if not re.search(disclaimer, window, re.IGNORECASE):
-                    line = src[:m.start()].count("\n") + 1
                     errors.append(
-                        f"{name}:{line}: {word!r} appears with no qualifier nearby"
+                        f"{name}: {m.group(0)!r} appears with no qualifier nearby "
+                        f"(…{plain[max(0, m.start() - 60):m.end() + 60]}…)"
                     )
 
         # Every page must be able to render its version from the single source.
@@ -221,6 +271,14 @@ def main() -> int:
                 continue
             if frag and frag not in pages[target].ids:
                 errors.append(f"{route}: link to {href} — no element with id '{frag}'")
+
+    # --------------------------------------------------------------- required
+    for rel, needle, why in REQUIRED:
+        f = ROOT / rel
+        if not f.exists():
+            errors.append(f"{rel}: missing, but REQUIRED content is asserted against it")
+        elif needle.lower() not in text_of(f.read_text()).lower():
+            errors.append(f"{rel}: lost required content {needle[:48]!r} — {why}")
 
     # ---------------------------------------------------------------- sitemap
     sitemap = (ROOT / "sitemap.xml").read_text()
