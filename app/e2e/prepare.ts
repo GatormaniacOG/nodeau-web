@@ -55,6 +55,7 @@ export function prepare(): E2EState {
   if (!existsSync(PSQL)) {
     throw new Error(`psql not found at ${PSQL}; set PSQL to its location`);
   }
+  requireGo();
 
   // Dropped and recreated so a run never inherits state from the previous one.
   // Only here, in the main process.
@@ -73,6 +74,28 @@ export function prepare(): E2EState {
   };
   writeFileSync(STATE_FILE, JSON.stringify(state), { mode: 0o600 });
   return state;
+}
+
+/**
+ * requireGo fails with a sentence rather than an exit code.
+ *
+ * The browser tests build and run the real `nodeau-cloud` binary, so the Go
+ * toolchain has to be on PATH. Without this the webServer dies with
+ * `sh: 1: go: not found` and Playwright reports `Exit code: 127`, which says
+ * nothing about what to do — and the Go toolchain here is user-local, so
+ * "it works in my shell" is the normal way to hit it.
+ */
+function requireGo(): void {
+  try {
+    execFileSync('go', ['version'], { stdio: 'ignore' });
+  } catch {
+    throw new Error(
+      'The Go toolchain is not on PATH, and the browser tests build and run the ' +
+        'real nodeau-cloud binary.\n' +
+        '  export PATH="$HOME/.local/go/bin:$PATH"\n' +
+        'then run the browser tests again.',
+    );
+  }
 }
 
 function readState(): E2EState {
