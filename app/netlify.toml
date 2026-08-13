@@ -1,0 +1,121 @@
+# Netlify configuration for app.nodeau.ai — the authenticated Nodeau account
+# application.
+#
+# ---------------------------------------------------------------------------
+# This is a SECOND Netlify site from the same repository
+# ---------------------------------------------------------------------------
+#
+# The marketing site at the repository root keeps its own netlify.toml and its
+# own deployment, and nothing here touches it. Netlify reads the config from the
+# site's BASE DIRECTORY, so this file governs the app site only — which is why
+# creating the second site is a matter of setting "base directory" to `app` and
+# nothing else (docs/phase-07/netlify-deployment.md in the platform repository).
+#
+# Keeping them apart matters beyond tidiness: the marketing site deploys with no
+# build step at all, deliberately, so that it cannot break when a toolchain
+# moves. Giving it a Node build to serve the app would undo that.
+
+[build]
+  base = "app"
+  publish = "dist"
+  command = "npm ci && npm run build"
+
+[build.environment]
+  # Pinned. A major Node bump arriving silently on a deploy is the classic way a
+  # build that worked yesterday stops working, and the pin is what makes a
+  # failure attributable.
+  NODE_VERSION = "24"
+  # Vite reads VITE_* at BUILD time and inlines them into the bundle. Everything
+  # here is therefore PUBLIC by construction: a hostname is fine, a secret is
+  # not, and there is no configuration in this file that could hold one.
+  #
+  # VITE_NODEAU_API_URL is set in the Netlify UI per context rather than here,
+  # because the production value depends on the api.nodeau.ai DNS record, which
+  # is an owner action and does not exist yet.
+
+# ---------------------------------------------------------------------------
+# SPA fallback
+# ---------------------------------------------------------------------------
+#
+# The application uses the History API, so /installations/abc123 is a real URL a
+# person can bookmark, refresh or be linked to. Without this rule Netlify looks
+# for a file at that path and serves a 404 — the classic single-page-app
+# deployment bug, and one that only appears on a hard refresh, which is exactly
+# the moment somebody is already confused.
+#
+# 200 rather than 301: the browser must keep the URL it asked for, so the router
+# can read it.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ---------------------------------------------------------------------------
+# Security headers
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=()"
+    # HSTS. Netlify terminates TLS and redirects http→https already; this stops
+    # the first request of a session from being made in the clear at all.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+    # The Content-Security-Policy.
+    #
+    # frame-ancestors 'none' rather than X-Frame-Options: it is the modern
+    # directive, it is what browsers enforce, and clickjacking an authenticated
+    # account page is a real attack — an invisible frame over an "Authorize"
+    # button is precisely how a device-approval flow gets abused.
+    #
+    # connect-src names the API host explicitly. It is the only network
+    # destination this application has, and pinning it means a compromised
+    # dependency cannot exfiltrate to somewhere else without the browser
+    # refusing.
+    #
+    # NOTE ON style-src: 'unsafe-inline' is present because Vite inlines a small
+    # style block. It is not present for script-src, which is where it would
+    # actually matter. Removing it needs a nonce, which needs a server rendering
+    # the HTML — and this is static hosting.
+    #
+    # This policy is written to be COMPATIBLE with the sign-in flow rather than
+    # so strict that auth only works once somebody disables it. The provider
+    # redirect is a top-level navigation, not a fetch or a frame, so it needs no
+    # allowance here at all — which is a property of choosing a redirect flow
+    # over an embedded one.
+    Content-Security-Policy = """
+      default-src 'self';
+      base-uri 'self';
+      object-src 'none';
+      frame-ancestors 'none';
+      form-action 'self';
+      img-src 'self' data:;
+      style-src 'self' 'unsafe-inline';
+      script-src 'self';
+      font-src 'self';
+      connect-src 'self' https://api.nodeau.ai;
+      upgrade-insecure-requests
+      """
+
+# Hashed asset filenames, so they can be cached hard and forever.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# The entry point must never be cached, or a deploy is invisible until somebody
+# force-refreshes.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# The application is authenticated and every page is about one person's account.
+# Nothing here should be indexed.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
