@@ -8,66 +8,78 @@ without a working toolchain is a site that breaks when the toolchain moves.
 
 ## Positioning
 
-The site describes Nodeau as it exists today and keeps a hard line between what
-ships, what runs, and what is intended.
+The site describes Nodeau as a product. It does not describe it as an
+experiment, and it does not annotate every sentence with how far the testing
+goes — that reads as a changelog, and it talked the product down.
 
-- **Nodeau Home** — one person, one machine, one GPU. Local inference, model
-  and GPU fit checks, an OpenAI-compatible endpoint on `127.0.0.1`. Multi-node
-  is deliberately *not* part of Home.
-- **Nodeau Business** — teams and organisations with shared GPU hardware. The
-  multi-node control plane is real and validated on two machines with different
-  NVIDIA generations; it is labelled `In Alpha`, not `Available`, because the
-  public installer sets up one machine.
+Three tiers, and the boundaries between them are about scale and
+collaboration rather than customer size:
 
-### The three-state rule
+- **Home** — one person, one machine, one GPU. Free, and genuinely useful:
+  local inference, the model catalogue, the local dashboard, fit checks, the
+  authenticated OpenAI-compatible endpoint.
+- **Home Pro** — the prosumer. Several machines you own, several GPUs in a
+  machine, batch inference, remote management, model replication.
+- **Business** — an organisation. Members, RBAC, SSO, quotas, audit, fleet
+  policy, priority queues, support.
 
-This is the site's central editorial constraint. Every capability carries a
-status pill, and the colour system reinforces it:
+The tier table on `/pricing/` is derived from `internal/entitlement/plans.go`
+in the platform repository, which is the thing that actually decides what an
+installation may do. **If the two disagree, the code wins and the page is
+wrong** — a pricing page that promises what the binary refuses is worse than
+one that promises less.
+
+### Release states live on the roadmap, and only there
+
+Every capability on `/roadmap/` carries one of five labels:
 
 | pill | colour | meaning |
 |---|---|---|
-| `Available` | green | ships in the public Self-Hosted Alpha |
-| `In Alpha` | amber | built and physically validated, **not** in the public installer |
-| `Next` | slate | being worked on, or the immediate next priority |
+| `Available` | green | in the published build |
+| `Next release` | amber | qualified on real hardware here, in the next published build |
+| `Working on it` | slate | under way now |
 | `Planned` | slate | intended, designed for, not built |
 | `Exploring` | slate | intent, not plan |
 
-`In Alpha` exists because without it a capability that genuinely runs on
-hardware has to be mislabelled as either unbuilt or fully shipped, and both are
-wrong. Do not collapse it, and do not use it for something that has only been
-tested synthetically.
+`Next release` is load-bearing. Without it, something that runs on real
+hardware has to be labelled either unbuilt or already downloadable, and both
+are wrong. Do not collapse it, and do not use it for something that has only
+been tested synthetically.
 
-### Where the detail lives
-
-The marketing pages describe what Nodeau **does**. They deliberately do not
-enumerate how deep the testing goes — no machine counts, no "that is only two
-data points", no "and they both belong to the same person". Not volunteering a
-test matrix is ordinary editorial judgement, and the old copy was talking
-itself down.
-
-**The roadmap carries the full picture**, and that is not optional. It is the
-one page that states the exact limits of what multi-machine operation has
-shown, and `tools/check-site.py` asserts those sentences are still present. If
-they are ever trimmed, every other page silently becomes an overclaim by
-omission — which is why they are checked rather than trusted.
+The marketing pages carry no status pills at all. The roadmap is the ledger,
+it is linked from every page that describes a capability, and
+`tools/check-site.py` asserts its key sentences are still there.
 
 ### Claims that are deliberately NOT made
 
-Nodeau's control plane spans more than one machine, but a workload has never
-been *started* on the second GPU, no machine has been removed to see what
-happens, and failover does not exist.
+Nodeau's control plane spans more than one machine, and a workload has been
+placed and served on a second machine's GPU. What has never happened is a
+workload *moving* between machines: placement decides where something runs and
+then holds it there, and there is no failover of any kind.
 
-So the site says Nodeau **reasons across** and **decides between** machines. It
-must never say that workloads *run across* mixed GPUs, that Nodeau spreads,
+So the site says Nodeau **reasons across**, **decides between** and **holds**.
+It must never say that workloads *run across* mixed GPUs, that Nodeau spreads,
 distributes or balances work, that failover works, or that any fleet scale has
-been tested. `FORBIDDEN` in the checker enforces exactly this, and it matters
-more now that the pages no longer carry the caveats that used to catch a
-sentence drifting too far.
+been tested. `FORBIDDEN` in the checker enforces exactly this.
 
-Three limits stay on the main pages regardless, because they are capability
-boundaries rather than testing-depth trivia, and someone could build on them
-and get hurt: **no automatic failover**, **not production-ready**, and the
-**Available vs In Alpha** split.
+Two boundaries stay on the sub-pages regardless of tone, because somebody
+could build on them and get hurt: **no automatic failover**, and **Nodeau
+assumes the people with access to a machine are trusted**. `REQUIRED` in the
+checker pins the sentences that carry them on `/roadmap/`, `/faq/` and
+`/about/`. They are deliberately **not** on the homepage.
+
+### The account application
+
+`app.nodeau.ai` is a **separate Netlify site** built from `app/` in this
+repository. The marketing site links to it — header, footer, the account
+section on the homepage — and `netlify.toml` redirects the addresses people
+type by hand (`/login`, `/signin`, `/account`, `/dashboard`, `/activate`,
+`/app/*`) to it. `/app/*` is forced, because the repository root is published
+as-is and `app/` would otherwise be served as raw, unbuilt source.
+
+The install guide moved from `/alpha/` to `/install/`. The old path is a
+permanent redirect and must stay one: it is linked from release notes and
+other people's posts.
 
 The installer at **get.nodeau.ai** is a separate deployment. This site links to
 it and must never duplicate or reimplement it.
@@ -76,11 +88,12 @@ it and must never duplicate or reimplement it.
 
 ```
 index.html            homepage
-about/   alpha/   roadmap/   pricing/   faq/   contact/   thanks/
+about/   install/   roadmap/   pricing/   faq/   contact/   thanks/
 404.html
 assets/nodeau.css     design system
 assets/nodeau.js      nav, copy buttons, reveal, contact deep-link
-netlify.toml          headers; publish ".", no build command
+netlify.toml          headers, redirects; publish ".", no build command
+app/                  the account application — SEPARATE Netlify site
 robots.txt  sitemap.xml  favicon.svg
 tools/generate-pages.py   one-off generator (see below)
 ```
@@ -105,14 +118,17 @@ trade was made knowingly.
    verified against the shipped CLI before publication. In particular, do not
    document raw Kubernetes join procedures as a Nodeau workflow — development
    plumbing is not product UX.
-2. **Label every capability.** Use the three-state rule above. If something is
-   not in the public installer, say so next to it, not in a footnote.
+2. **Label every capability on the roadmap.** Use the five states above. The
+   marketing pages don't label; they link to the page that does.
 3. **No absolute privacy claims.** The endpoint is localhost-only and
    authenticated, and Nodeau collects nothing — but a third-party app you point
    at it can do what it likes, and the site says so.
-4. **No production-readiness claims.** It is an experimental Alpha, and it does
-   not fail over.
-5. **No invented prices.** Home is "coming soon", Business is "contact us".
+4. **No production-readiness claims, and no failover claims.** Nodeau does not
+   fail over, and it is not built for mutually hostile users on one box. Say
+   that where it matters (roadmap, FAQ, About) and do not apologise for it
+   everywhere else.
+5. **No invented prices.** Home is free, Home Pro is "coming soon" until
+   checkout exists, Business is "contact us".
 6. **Name the hardware actually tested.** "Run on an RTX 3080 and an RTX 2080"
    is both stronger and truer than "heterogeneous GPUs supported". Name the
    cards; do not count the machines. Never imply every NVIDIA card works.
@@ -142,8 +158,12 @@ python3 tools/check-site.py
 Standard library only, no dependencies. It verifies structure (one `<title>`,
 canonical, OG tags, no stray `<!doctype>`), that internal links and in-page
 anchors resolve, that every CSS class used in the HTML is defined, that no page
-hard-codes a version string, and that a list of retired phrases has not crept
-back in. Run it before pushing.
+hard-codes a version string, that the sentences in `REQUIRED` are still present,
+and that a list of retired phrases has not crept back in. Run it before pushing.
+
+It skips `app/` entirely — that is the account application, it has its own
+toolchain and its own tests (`cd app && npm run check`), and once anyone has run
+`npm ci` it contains several hundred vendored HTML files.
 
 ## Local preview
 
@@ -160,9 +180,12 @@ locally and works normally on the deployed HTTPS site.
 - Build command: *(blank)*
 - Publish directory: `.`
 
-`netlify.toml` sets security headers and cache policy. There is deliberately no
-catch-all redirect: one would swallow `404.html` and serve the homepage for
-every typo.
+`netlify.toml` sets security headers, cache policy and the redirects listed
+above. There is deliberately no catch-all redirect: one would swallow
+`404.html` and serve the homepage for every typo.
+
+The account application is a **second site from this repository**, with base
+directory `app` and its own `app/netlify.toml`. Nothing about it belongs here.
 
 ### Forms
 

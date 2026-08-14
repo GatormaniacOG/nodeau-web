@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 RETIRED = [
     (r"v0\.1\.0-alpha\.[0-9]",
      "hard-coded version; use <span data-release></span> (RELEASE lives in assets/nodeau.js)"),
-    (r"0\.6\.0-phase",
+    (r"0\.[67]\.0-phase",
      "development build number must never appear on the public site"),
     (r"[Ss]ingle GPU today",
      "stale: the control plane reasons across more than one machine"),
@@ -39,15 +39,25 @@ RETIRED = [
     (r"[Nn]odeau refuses to guess",
      "overstated: it estimates when it must, and reports the source"),
     (r"removes only its own work",
-     "issue #43: uninstall under-removes on adopted Kubernetes; claim not guaranteed"),
+     "issue #43: the stronger claim is not exercised on an adopted cluster yet"),
     (r"exactly what it will remove",
-     "issue #43: the printed plan can name components no code path deletes"),
+     "issue #43: the printed plan is not yet proven against every component"),
     (r"machine it was built on",
      "stale: it has been installed and run on a second machine"),
     (r"Multi-node discovery and placement is the next major platform capability",
      "stale: multi-node discovery and placement is built and validated"),
-    (r"Heterogeneous fleet scheduling is <strong>Planned</strong>",
-     "stale: heterogeneous reasoning is In Alpha"),
+
+    # Retired by the 2026-08-13 refresh. The product is described as a product;
+    # the roadmap carries the release states. These read as a permanent apology
+    # and are not how the site talks about itself any more.
+    (r"Self-Hosted Alpha|Experimental Alpha|experimental Alpha",
+     "retired positioning: the site names the build, it does not brand itself an alpha"),
+    (r"In&nbsp;Alpha|In Alpha",
+     "retired label: the roadmap says 'Next release' (see the key on /roadmap/)"),
+    (r"href=[\"']/alpha/",
+     "the install guide moved to /install/; /alpha/ is a redirect, not a link target"),
+    (r"[Tt]wo (plans|tiers)",
+     "stale: there are three tiers — Home, Home Pro and Business"),
 ]
 
 # Claims that must never appear, regardless of refresh. These are capabilities
@@ -83,13 +93,15 @@ FORBIDDEN = [
 
 # Words that are only safe next to a disclaimer. A bare mention reads as a
 # feature; the check is that a negation or a roadmap label sits close by.
+#
+# The multi-machine rule that used to live here is gone, deliberately. It
+# required every mention of a second machine to sit beside "not in the public
+# installer", which was the right guard while that capability was unproven and
+# is now just an apology attached to something that works. What still needs
+# qualifying is what Nodeau genuinely does not do — which is the list below.
 NEEDS_DISCLAIMER = [
     ("failover", r"not|no\b|does not|will not|never|absent|Planned|pill-planned|unbuilt|nothing"),
-    ("heterogeneous", r"In&nbsp;Alpha|In Alpha|pill-inalpha|validated|reason"),
-    # Multi-machine capability must always sit next to its status label. The
-    # marketing pages carry no other reminder that it is not installable.
-    ("more than one (GPU )?machine",
-     r"In Alpha|not yet|not in the public|on purpose|sets up one machine"),
+    ("heterogeneous", r"pill-inalpha|Next release|validated|qualified|reason"),
 ]
 # Measured against the page with its markup stripped, because the distance that
 # matters is how far a READER travels between a claim and its qualifier, not how
@@ -101,12 +113,27 @@ DISCLAIMER_WINDOW = 400
 # live there and nowhere else. If a future edit trims them, every other page
 # becomes an overclaim by omission — so they are asserted rather than trusted.
 REQUIRED = [
-    ("roadmap/index.html", "has not been started on the second GPU",
-     "the roadmap must keep the exact limit of what multi-machine has shown"),
     ("roadmap/index.html", "Nodeau does not do this",
      "the roadmap must say plainly that failover does not exist"),
-    ("roadmap/index.html", "In Alpha",
-     "the roadmap must keep the In Alpha state"),
+    ("roadmap/index.html", "no automatic failover",
+     "the roadmap must state the limit next to the multi-machine capabilities"),
+    ("roadmap/index.html", "Next release",
+     "the roadmap must keep the state that separates the published build from the current one"),
+    ("roadmap/index.html", "Available",
+     "the roadmap must keep the state that means 'in the published build'"),
+
+    # The marketing pages describe the product; the FAQ and the About page are
+    # where somebody goes to find the edges. Both must keep the one boundary a
+    # reader could otherwise build on and get hurt by.
+    ("faq/index.html", "does not fail over on its own",
+     "the FAQ must answer the failover question honestly"),
+    ("about/index.html", "does not fail over on its own",
+     "About must keep the sentence that says what Nodeau will not pretend"),
+
+    # Three tiers, since 2026-08-12. A pricing page that quietly loses the
+    # middle one takes Home Pro's whole audience with it.
+    ("pricing/index.html", "Home Pro",
+     "pricing must show all three tiers"),
 ]
 
 
@@ -177,8 +204,14 @@ def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
 
+    # The marketing site only. `app/` is the account application: a second
+    # Netlify site, with its own toolchain, its own tests and — once anyone has
+    # run `npm ci` — several hundred vendored HTML files that are none of this
+    # checker's business. Excluding the directory rather than just
+    # node_modules/dist keeps that boundary explicit.
+    skip = {".git", "app", "node_modules", "dist"}
     html_files = sorted(
-        p for p in ROOT.rglob("*.html") if ".git" not in p.parts
+        p for p in ROOT.rglob("*.html") if not (skip & set(p.relative_to(ROOT).parts))
     )
     if not html_files:
         print("no HTML files found — wrong directory?")

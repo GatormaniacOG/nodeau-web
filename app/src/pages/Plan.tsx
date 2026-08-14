@@ -117,6 +117,14 @@ export function PlanPage({ org }: { org: Organization }) {
         it refreshes, and a machine that cannot reach Nodeau Cloud keeps working on the
         entitlement it already holds.
       </p>
+      {/*
+        The full capability comparison lives on the marketing site rather than
+        being duplicated here. Two copies of a pricing table drift, and the one
+        that drifts is always the one nobody is looking at.
+      */}
+      <p className="muted small">
+        <a href="https://nodeau.ai/pricing/">Compare what each plan includes</a>
+      </p>
     </section>
   );
 }

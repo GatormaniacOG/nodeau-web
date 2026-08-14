@@ -15,6 +15,87 @@
 # Clean URLs come from directory/index.html, so no redirect rules are needed
 # for the pages themselves. There is deliberately no catch-all redirect: one
 # would swallow the 404 and serve the homepage for every typo.
+#
+# ---------------------------------------------------------------------------
+# The account application lives on its own host
+# ---------------------------------------------------------------------------
+#
+# app.nodeau.ai is a SEPARATE Netlify site built from app/ in this repository.
+# These rules exist so that the addresses people actually type — /login,
+# /signin, /account — land somewhere sensible instead of on a 404, and so that
+# printed or emailed links keep working if the app ever moves again.
+#
+# force = true on /app/*: the repository root is published as-is, so app/ is a
+# real directory here and would otherwise be served as raw, unbuilt source.
+
+[[redirects]]
+  from = "/login"
+  to = "https://app.nodeau.ai/signin"
+  status = 302
+
+[[redirects]]
+  from = "/signin"
+  to = "https://app.nodeau.ai/signin"
+  status = 302
+
+[[redirects]]
+  from = "/sign-in"
+  to = "https://app.nodeau.ai/signin"
+  status = 302
+
+[[redirects]]
+  from = "/account"
+  to = "https://app.nodeau.ai/"
+  status = 302
+
+[[redirects]]
+  from = "/dashboard"
+  to = "https://app.nodeau.ai/"
+  status = 302
+
+# The CLI prints this address when you run `nodeau login`, and somebody will
+# type it without the app. subdomain. The query string carries the code and is
+# preserved by Netlify automatically.
+[[redirects]]
+  from = "/activate"
+  to = "https://app.nodeau.ai/activate"
+  status = 302
+
+[[redirects]]
+  from = "/app/*"
+  to = "https://app.nodeau.ai/:splat"
+  status = 302
+  force = true
+
+# ---------------------------------------------------------------------------
+# Old addresses
+# ---------------------------------------------------------------------------
+#
+# The install guide used to live at /alpha/. It is linked from README files,
+# release notes and other people's posts, so the address has to keep working —
+# permanently, which is what 301 means to a search engine.
+
+[[redirects]]
+  from = "/alpha"
+  to = "/install/"
+  status = 301
+
+[[redirects]]
+  from = "/alpha/*"
+  to = "/install/"
+  status = 301
+
+[[redirects]]
+  from = "/download"
+  to = "/install/"
+  status = 301
+
+# Convenience: `curl nodeau.ai/install.sh` should do what everyone expects it
+# to do rather than 404.
+[[redirects]]
+  from = "/install.sh"
+  to = "https://get.nodeau.ai/install.sh"
+  status = 302
 
 [[headers]]
   for = "/*"
