@@ -53,11 +53,14 @@ RETIRED = [
     (r"Self-Hosted Alpha|Experimental Alpha|experimental Alpha",
      "retired positioning: the site names the build, it does not brand itself an alpha"),
     (r"In&nbsp;Alpha|In Alpha",
-     "retired label: the roadmap says 'Next release' (see the key on /roadmap/)"),
+     "retired label: the roadmap says 'Manual setup' (see the key on /roadmap/)"),
     (r"href=[\"']/alpha/",
      "the install guide moved to /install/; /alpha/ is a redirect, not a link target"),
     (r"[Tt]wo (plans|tiers)",
      "stale: there are three tiers — Home, Home Pro and Business"),
+    (r"Next release",
+     "stale label: batch, the dashboard, the catalogue and the CLI verbs ship in the "
+     "published build now; what remains hands-on is multi-machine, labelled 'Manual setup'"),
 ]
 
 # Claims that must never appear, regardless of refresh. These are capabilities
@@ -101,7 +104,7 @@ FORBIDDEN = [
 # qualifying is what Nodeau genuinely does not do — which is the list below.
 NEEDS_DISCLAIMER = [
     ("failover", r"not|no\b|does not|will not|never|absent|Planned|pill-planned|unbuilt|nothing"),
-    ("heterogeneous", r"pill-inalpha|Next release|validated|qualified|reason"),
+    ("heterogeneous", r"pill-inalpha|Manual setup|validated|qualified|reason"),
 ]
 # Measured against the page with its markup stripped, because the distance that
 # matters is how far a READER travels between a claim and its qualifier, not how
@@ -117,8 +120,8 @@ REQUIRED = [
      "the roadmap must say plainly that failover does not exist"),
     ("roadmap/index.html", "no automatic failover",
      "the roadmap must state the limit next to the multi-machine capabilities"),
-    ("roadmap/index.html", "Next release",
-     "the roadmap must keep the state that separates the published build from the current one"),
+    ("roadmap/index.html", "Manual setup",
+     "the roadmap must keep the state for things that ship but are not yet one command"),
     ("roadmap/index.html", "Available",
      "the roadmap must keep the state that means 'in the published build'"),
 

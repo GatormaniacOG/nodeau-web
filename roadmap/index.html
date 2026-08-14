@@ -56,9 +56,9 @@
       <p class="eyebrow">Roadmap</p>
       <h1 style="font-size:var(--step-3)">What ships, what's next, and what's planned.</h1>
       <p class="lede" style="margin-top:1.15rem">
-        This is the page that keeps the score. Every capability carries a label,
-        and the labels mean specific things, so you can tell what is in your
-        hands today from what we are still building.
+        Every capability here carries a label, and the labels mean something
+        specific. It should always be obvious which things you get by installing
+        Nodeau and which things we are still writing.
       </p>
 
       <div class="key" style="margin-top:2.5rem;max-width:52rem">
@@ -67,8 +67,8 @@
           <p>In the published build. Install it and you have it.</p>
         </div>
         <div class="key-item">
-          <span class="pill pill-inalpha">Next release</span>
-          <p>Built and qualified on real hardware here, landing in the next published build.</p>
+          <span class="pill pill-inalpha">Manual setup</span>
+          <p>In the build you can download, and running on real hardware — but getting it going takes steps we haven't turned into a command yet.</p>
         </div>
         <div class="key-item">
           <span class="pill pill-next">Working on it</span>
@@ -171,85 +171,85 @@
           <span class="pill pill-available">Available</span>
           <p>Sign in at <a href="https://app.nodeau.ai/">app.nodeau.ai</a> to see your organisation, the installations linked to it and the plan in force. Linking a machine from the command line arrives with the next release, below.</p>
         </div>
+        <div class="row">
+          <h3>Batch inference</h3>
+          <span class="pill pill-available">Available</span>
+          <p>Submit a file of requests, get results correlated exactly to your inputs. Jobs queue for a whole GPU, survive a control-plane restart, and release the card once the process is genuinely gone. Part of Home Pro and Business — see <a href="/pricing/">pricing</a>.</p>
+        </div>
+        <div class="row">
+          <h3>Local dashboard</h3>
+          <span class="pill pill-available">Available</span>
+          <p>A read-only view of models, workloads, GPU state and decisions, served by Nodeau itself on your own machine. Authenticated, bound to the loopback interface, and holding no cluster credentials in the browser.</p>
+        </div>
+        <div class="row">
+          <h3>Curated model catalogue</h3>
+          <span class="pill pill-available">Available</span>
+          <p>Nine models chosen to span common card sizes from 8&nbsp;GB to 24&nbsp;GB, each pinned to an exact published file from its original publisher. Every measurement in the catalogue now records what it measured, so a figure taken one way can never be silently compared against one taken another.</p>
+        </div>
+        <div class="row">
+          <h3>The everyday commands</h3>
+          <span class="pill pill-available">Available</span>
+          <p><code>run</code>, <code>ps</code>, <code>logs</code>, <code>stop</code>: start a model, see what's running, read its output, free the GPU. Every command speaks <code>--json</code>, exit codes distinguish a refusal from a fault, and every refusal carries a reason code and a remedy.</p>
+        </div>
+        <div class="row">
+          <h3>Installation diagnosis</h3>
+          <span class="pill pill-available">Available</span>
+          <p><code>nodeau doctor</code> now checks Nodeau's own control plane and endpoints, not only the host and the GPU — including whether the local endpoint really reaches the model rather than merely holding a port open.</p>
+        </div>
+        <div class="row">
+          <h3>Linking a machine to your account</h3>
+          <span class="pill pill-available">Available</span>
+          <p><code>nodeau login</code> approves an installation from your browser and stores a signed entitlement locally. It is checked offline, so a machine with no internet keeps exactly the plan it was granted.</p>
+        </div>
         </div>
       </div>
 
       <div class="stage">
         <div class="stage-head">
-          <h2>Next release — qualified on hardware, being packaged</h2>
-          <span class="pill pill-inalpha">Next release</span>
-          <p>These run in the current build and have been qualified on two physical machines carrying different NVIDIA GPUs, including across reboots and power cuts. What stands between them and the label above is packaging: an installer that sets up more than one machine, and a release.</p>
+          <h2>Several machines — real, but hands-on</h2>
+          <span class="pill pill-inalpha">Manual setup</span>
+          <p>All of this is in the build you just downloaded, and it has been run on two physical machines with different NVIDIA cards, through reboots and a power cut. The catch is getting there: the installer sets up one machine, and adding a second means driving the cluster underneath by hand. That is a real gap, and closing it is the next thing we're doing.</p>
         </div>
         <div class="rows">
         <div class="row">
           <h3>Several GPU machines, one control plane</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>Each machine publishes its own hardware state and is reasoned about separately. Two physical machines have run as one cluster, each with its own GPU, its own cache and its own credentials.</p>
         </div>
         <div class="row">
           <h3>Per-machine hardware observation</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>Addressable memory, current usage and attached-display state, reported by each machine about itself. On the two-machine cluster every value differed between them, as it should.</p>
         </div>
         <div class="row">
           <h3>Per-machine model verification</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>Each machine computes a SHA-256 over its own copy of the model and publishes the digest. A machine whose copy is missing, unverified or wrong is not a placement candidate at all. This found genuine silent corruption on a second machine that had been serving answers and reporting healthy.</p>
         </div>
         <div class="row">
           <h3>Explainable placement across candidates</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>The fit calculation runs once per candidate machine, and every candidate keeps a reason — including the ones that lost. There is deliberately no second, looser rule for choosing a machine.</p>
         </div>
         <div class="row">
           <h3>Heterogeneous GPU reasoning</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>An RTX 3080 and an RTX 2080 in the same cluster, each scored on what it can actually give the workload rather than treated as one interchangeable “GPU”. A model that fits the first and not the second is admitted on one and refused on the other, by arithmetic.</p>
         </div>
         <div class="row">
           <h3>Exclusive GPU reservations</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>A card committed to one workload is not offered to another, across services and batch jobs alike. A job that finds every GPU busy waits in a queue and starts by itself when one frees.</p>
         </div>
         <div class="row">
           <h3>Placement stickiness, and holding rather than moving</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>A healthy workload is not restarted elsewhere because another machine scored better — observed doing exactly that with the other machine genuinely winning on score. And when a machine stops reporting, anything already running on it is <em>held</em> rather than re-placed. Moving it would be a decision Nodeau cannot currently justify, so it doesn't make one.</p>
         </div>
         <div class="row">
           <h3>Node-scoped isolation</h3>
-          <span class="pill pill-inalpha">Next release</span>
+          <span class="pill pill-inalpha">Manual setup</span>
           <p>Each machine's agent can write only its own state, and can read no credentials at all. Verified in both directions on two machines.</p>
-        </div>
-        <div class="row">
-          <h3>Batch inference</h3>
-          <span class="pill pill-inalpha">Next release</span>
-          <p>Submit a file of requests, get results correlated exactly to your inputs. Jobs queue for a whole GPU, survive a control-plane restart, and release the card once the process is genuinely gone. Part of Home Pro and Business — see <a href="/pricing/">pricing</a>.</p>
-        </div>
-        <div class="row">
-          <h3>Local dashboard</h3>
-          <span class="pill pill-inalpha">Next release</span>
-          <p>A read-only view of models, workloads, GPU state and decisions, served by Nodeau itself on your own machine. Authenticated, bound to the loopback interface, and holding no cluster credentials in the browser.</p>
-        </div>
-        <div class="row">
-          <h3>Curated model catalogue</h3>
-          <span class="pill pill-inalpha">Next release</span>
-          <p>Nine models chosen to span common card sizes from 8&nbsp;GB to 24&nbsp;GB, each pinned to an exact published file from its original publisher. Every measurement in the catalogue now records what it measured, so a figure taken one way can never be silently compared against one taken another.</p>
-        </div>
-        <div class="row">
-          <h3>The everyday commands</h3>
-          <span class="pill pill-inalpha">Next release</span>
-          <p><code>run</code>, <code>ps</code>, <code>logs</code>, <code>stop</code>: start a model, see what's running, read its output, free the GPU. Every command speaks <code>--json</code>, exit codes distinguish a refusal from a fault, and every refusal carries a reason code and a remedy.</p>
-        </div>
-        <div class="row">
-          <h3>Installation diagnosis</h3>
-          <span class="pill pill-inalpha">Next release</span>
-          <p><code>nodeau doctor</code> now checks Nodeau's own control plane and endpoints, not only the host and the GPU — including whether the local endpoint really reaches the model rather than merely holding a port open.</p>
-        </div>
-        <div class="row">
-          <h3>Linking a machine to your account</h3>
-          <span class="pill pill-inalpha">Next release</span>
-          <p><code>nodeau login</code> approves an installation from your browser and stores a signed entitlement locally. It is checked offline, so a machine with no internet keeps exactly the plan it was granted.</p>
         </div>
         </div>
 

@@ -170,13 +170,13 @@
   // an empty <span data-release></span>; no page hard-codes the number, so a
   // release bump is one edit instead of nine files that drift apart.
   //
-  // This is the version on the PUBLIC alpha channel at get.nodeau.ai. It is
+  // This is the version on the PUBLIC beta channel at get.nodeau.ai. It is
   // deliberately not whatever the development build happens to be running —
   // the site describes what a visitor can install, not what is on a branch.
   //
   // With JavaScript disabled the span stays empty and the surrounding
   // whitespace collapses, so the sentence still reads correctly without it.
-  const RELEASE = "v0.1.0-alpha.5";
+  const RELEASE = "v0.2.0-beta.2";
 
   document.querySelectorAll("[data-release]").forEach((el) => {
     el.textContent = RELEASE;

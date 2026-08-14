@@ -58,16 +58,17 @@
         <div>
           <a class="release-tag" href="/install/">
             <span class="dot" aria-hidden="true"></span>
-            Self-hosted · Linux · NVIDIA
+            Beta <span data-release></span> · Linux · NVIDIA
           </a>
           <h1>Turn the GPUs you already own into private AI infrastructure.</h1>
           <p class="lede" style="margin-top:1.25rem">
-            Nodeau works out whether a model will actually run on your hardware,
-            sets everything up, and hands you a private OpenAI-compatible API.
-            No Kubernetes to learn, no CUDA rabbit holes.
+            You have a graphics card. Somewhere between that and a working AI
+            endpoint sit drivers, containers, quantisation and a lot of VRAM
+            arithmetic. Nodeau does that part, then hands you an
+            OpenAI-compatible API on your own machine.
           </p>
           <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
-            Start with one machine. Add more when you have them.
+            Three commands. No Kubernetes to learn.
           </p>
           <div class="btn-row" style="margin-top:2rem">
             <a class="btn btn-primary" href="/install/">Install Nodeau</a>
@@ -120,15 +121,16 @@
           <p class="eyebrow">Nodeau Home</p>
           <h2>Put the GPU you already have to work.</h2>
           <p class="lede" style="margin-top:1rem">
-            If your PC has a compatible NVIDIA card, Nodeau handles everything
-            between that card and a usable local AI endpoint.
+            The card in your desktop is probably idle right now. It can run a
+            capable model locally, and the only thing standing in the way is
+            setup.
           </p>
           <p style="color:var(--text-2);margin-top:1rem;max-width:56ch">
-            Owning a GPU is not the same as having AI infrastructure. Drivers,
-            runtimes, model formats, quantisation, memory limits, containers,
-            model servers, authentication. None of that is why you wanted to run
-            a model in the first place. Nodeau does that part so you don't have
-            to.
+            Anyone who has tried knows how that goes. You want to ask a model a
+            question and you end up reading about container runtimes at
+            midnight. Nodeau takes that on: it checks your machine, works out
+            what will fit, fetches the weights, and starts something you can
+            actually send a request to.
           </p>
           <div class="btn-row" style="margin-top:1.75rem">
             <a class="btn btn-primary" href="/install/">Install Nodeau</a>
@@ -280,22 +282,22 @@ nodeau stop qwen3-8b-q4km --workload</code></pre>
       <div class="grid grid-2" style="margin-top:2.75rem;align-items:center;gap:clamp(2rem,5vw,3.5rem)">
         <div class="prose">
           <p style="color:var(--text-2)">
-            Organisations end up with GPUs faster than they end up with ways to
-            use them. A few developer workstations, a lab server, an edge box,
-            three generations of hardware. Owning all of it tells you nothing
-            about what could safely run where.
+            Most organisations acquire GPUs faster than they acquire any way of
+            using them. Two workstations, a lab server, whatever was in the
+            budget in 2023. Owning all that tells you nothing about which box
+            could safely run the thing you want to run on Thursday.
           </p>
           <p style="color:var(--text-2)">
-            Nodeau's control plane spans more than one machine. Each one reports
-            its own hardware and checks its own copy of the model. When you
-            deploy something, Nodeau looks at every machine, works out where it
-            will genuinely fit, and tells you why it picked that one.
+            Nodeau asks each machine what it actually has, checks that its copy
+            of the model is the right one down to the hash, and then picks —
+            showing you why that machine and not the others.
           </p>
           <p style="color:var(--text-2)">
-            We run it that way ourselves, on two machines with two different
-            NVIDIA generations, and the interesting cases are the ones that go
-            wrong: a card that's already busy, a model file that has quietly
-            gone bad, a machine that reboots underneath a running workload.
+            We run it on two machines here, deliberately mismatched, because
+            matched pairs hide everything. The useful cases are the ugly ones: a
+            card that is already busy, a model file that has quietly rotted, a
+            machine that reboots while it is holding a workload. Those are the
+            ones we test.
           </p>
           <div class="btn-row" style="margin-top:1.5rem">
             <a class="btn btn-primary" href="/contact/?type=business">Become a design partner</a>
@@ -379,16 +381,16 @@ nodeau stop qwen3-8b-q4km --workload</code></pre>
           <p class="eyebrow">How it decides</p>
           <h2>A scheduler should know more than “GPU: 1”.</h2>
           <p style="color:var(--text-2);margin-top:1rem;max-width:52ch">
-            Most infrastructure knows only that a GPU exists. That's enough to
-            start a workload somewhere, and nowhere near enough to know it will
-            survive.
+            Most schedulers know one thing about your GPU: that it exists. Enough
+            to start something. Not enough to know it will survive.
           </p>
           <p style="color:var(--text-2);max-width:52ch">
-            Nodeau looks at what the card can really offer this workload: the
-            memory it can actually address, what your desktop and other programs
-            are already holding, what Nodeau has promised to other workloads, a
-            safety margin, and what the model needs. Then it either starts it or
-            explains why it won't.
+            A 16&nbsp;GB card does not give a model 16&nbsp;GB. Some of it the
+            compute API cannot address at all, your desktop is holding a chunk,
+            and a model that fits with nothing spare dies the moment anything
+            else asks for memory. Nodeau does that subtraction before it starts
+            anything, and if the answer is negative it tells you by how much
+            instead of letting you find out sixty seconds into loading.
           </p>
           <p style="color:var(--text-2);max-width:52ch">
             <strong style="color:var(--text)">It also tells you where its number
@@ -434,16 +436,15 @@ nodeau stop qwen3-8b-q4km --workload</code></pre>
           <p class="eyebrow">Your account</p>
           <h2 style="font-size:var(--step-2)">Optional, and deliberately small.</h2>
           <p style="color:var(--text-2);margin-top:0.9rem;max-width:52ch">
-            Nodeau runs on your machines. An account is for the things that
-            genuinely belong somewhere else: which installations are yours,
-            which plan is in force, and a record you can look at from a laptop
-            that has no GPU in it.
+            You don't need one. Nodeau installs and runs with no sign-in at all,
+            and we intend to keep it that way.
           </p>
           <p style="color:var(--text-2);max-width:52ch">
-            Sign in, run <code>nodeau login</code> on a machine, approve it, and
-            it's linked. That's the whole flow. Nothing about your prompts, your
-            documents or your results ever leaves your hardware, and Nodeau keeps
-            working if this site is down.
+            What an account gives you is a list of your machines and the plan
+            each is on, visible from a laptop with no GPU in it. Run
+            <code>nodeau login</code>, approve it in the browser, done. Your
+            prompts and results never come near it — and if this site goes down,
+            your models carry on serving.
           </p>
           <div class="btn-row" style="margin-top:1.5rem">
             <a class="btn btn-ghost" href="https://app.nodeau.ai/">Sign in</a>
@@ -504,10 +505,10 @@ nodeau stop qwen3-8b-q4km --workload</code></pre>
   <!-- ======================================================= cta ========== -->
   <section class="divider cta reveal">
     <div class="wrap">
-      <h2 style="font-size:var(--step-2)">One GPU, or several machines.</h2>
+      <h2 style="font-size:var(--step-2)">Go and use that graphics card.</h2>
       <p class="lede" style="margin:1rem auto 2rem;max-width:44ch">
-        Install it on the machine with the graphics card in it, or tell us about
-        the hardware your team already has.
+        It takes about ten minutes, most of which is downloading the model. If
+        your team has hardware sitting idle instead, we'd like to hear about it.
       </p>
       <div class="btn-row">
         <a class="btn btn-primary" href="/install/">Install Nodeau</a>
