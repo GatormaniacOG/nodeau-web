@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Install the Nodeau Alpha — Run Your First Local AI Model</title>
+<title>Install Nodeau — Run Your First Local AI Model</title>
 <meta name="description" content="Turn a compatible Linux/NVIDIA PC into a private, OpenAI-compatible local AI endpoint. Requirements, the exact install commands, and what to do if it fails.">
-<link rel="canonical" href="https://nodeau.ai/alpha/">
+<link rel="canonical" href="https://nodeau.ai/install/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://nodeau.ai/alpha/">
+<meta property="og:url" content="https://nodeau.ai/install/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Install the Nodeau Alpha — Run Your First Local AI Model">
-<meta property="og:description" content="Run your first local AI model on a compatible Linux/NVIDIA PC. Experimental Self-Hosted Alpha.">
+<meta property="og:title" content="Install Nodeau — Run Your First Local AI Model">
+<meta property="og:description" content="Requirements, the exact commands, and what to do if something goes wrong. About ten minutes, plus the model download.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/nodeau.css">
@@ -36,14 +36,15 @@
       <ul>
         <li><a href="/#home">For home</a></li>
         <li><a href="/#business">For business</a></li>
-        <li><a href="/alpha/" aria-current="page">Alpha</a></li>
-        <li><a href="/roadmap/">Roadmap</a></li>
+        <li><a href="/install/" aria-current="page">Install</a></li>
         <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
       </ul>
     </nav>
     <div class="header-actions">
-      <a class="btn btn-ghost btn-sm" href="/contact/">Talk to us</a>
-      <a class="btn btn-primary btn-sm" href="#step-1">Install</a>
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
     </div>
   </div>
 </header>
@@ -52,21 +53,21 @@
 
   <section class="hero" style="padding-bottom:2rem">
     <div class="wrap">
-      <span class="pill pill-alpha" style="margin-bottom:1.25rem">Experimental Alpha</span>
+      <p class="eyebrow">Install</p>
       <h1 style="font-size:var(--step-3)">Run your first local AI model with Nodeau.</h1>
       <p class="lede" style="margin-top:1.15rem">
         Turn a compatible Linux/NVIDIA PC into a private, OpenAI-compatible
         local AI endpoint. Three commands, then a request.
       </p>
+      <p style="color:var(--text-3);margin-top:1rem">
+        Current build <span data-release></span> · free · no account needed
+      </p>
 
-      <div class="callout callout-warn" style="margin-top:2rem;max-width:64ch">
-        <h3>This is early software</h3>
-        <p style="margin:0">
-          Nodeau works, but it is an Alpha, and your machine may well be the
-          first of its kind to run it. Use a computer you don’t mind tinkering
-          with. And if it does fall over, please tell us — that is genuinely
-          useful, not a wasted evening.
-        </p>
+      <div class="note" style="margin-top:2rem;max-width:64ch">
+        Nodeau is Linux-first and NVIDIA-only, and it expects the graphics
+        driver to be working before it starts. Everything else on this page it
+        does for you. If something does go wrong, tell us — a report from a
+        machine we have never seen is the most useful thing we get.
       </div>
     </div>
   </section>
@@ -129,11 +130,11 @@
             If you see a table with your graphics card in it, you are ready.
           </p>
           <div class="note note-warn" style="margin-top:0.75rem">
-            If it prints an error, stop here. Nodeau Alpha expects a working
-            NVIDIA driver and will not install, replace or repair one — that
-            decision affects whether your computer boots to a desktop, so it
-            stays yours. Install your distribution’s driver first, or
-            <a href="/contact/?type=alpha">ask us</a>.
+            If it prints an error, stop here. Nodeau expects a working NVIDIA
+            driver and will not install, replace or repair one. That decision
+            affects whether your computer boots to a desktop, so it stays yours.
+            Install your distribution’s driver first, or
+            <a href="/contact/?type=install">ask us</a>.
           </div>
         </div>
 
@@ -290,8 +291,8 @@ print(reply.choices[0].message.content)</code></pre>
       <div class="grid grid-2" style="margin-top:1.5rem;align-items:start">
         <div class="grid" style="gap:1.1rem">
           <div class="feature"><h3><code>nodeau status</code></h3><p>What is running, and whether the endpoint is answering.</p></div>
-          <div class="feature"><h3><code>nodeau doctor</code></h3><p>Read-only check of the machine. Changes nothing.</p></div>
-          <div class="feature"><h3><code>nodeau stop qwen-local</code></h3><p>Stop the endpoint. Your downloaded model stays.</p></div>
+          <div class="feature"><h3><code>nodeau doctor</code></h3><p>Read-only check of the machine and the installation. Changes nothing.</p></div>
+          <div class="feature"><h3><code>nodeau stop qwen-local</code></h3><p>Stop the endpoint. Your downloaded model stays. Add <code>--workload</code> to free the GPU as well.</p></div>
         </div>
         <div class="grid" style="gap:1.1rem">
           <div class="feature"><h3><code>nodeau run qwen-local</code></h3><p>Start it again.</p></div>
@@ -299,6 +300,12 @@ print(reply.choices[0].message.content)</code></pre>
           <div class="feature"><h3><code>nodeau uninstall</code></h3><p>Shows an uninstall plan and asks before changing anything. Keeps your models, your driver, and what was on the machine before Nodeau.</p></div>
         </div>
       </div>
+
+      <p class="note" style="margin-top:1.75rem;max-width:64ch">
+        Every command takes <code>--json</code> if you are scripting it, and the
+        exit code tells you which kind of answer you got: a refusal is not the
+        same as a failure, and neither is “not yet”.
+      </p>
     </div>
   </section>
 
@@ -311,17 +318,21 @@ print(reply.choices[0].message.content)</code></pre>
       <div class="grid grid-2" style="margin-top:1.5rem;align-items:start;gap:clamp(2rem,5vw,3.5rem)">
         <div>
           <p style="color:var(--text-2)">
-            Nodeau’s control plane already spans more than one GPU machine, on
-            mixed NVIDIA hardware. Each machine reports what it has, checks its
-            own copy of the model, and gets considered on its own merits when
-            Nodeau decides where something should run.
+            Nodeau’s control plane spans more than one GPU machine, on mixed
+            NVIDIA hardware. Each machine reports what it has, checks its own
+            copy of the model, and gets considered on its own merits when Nodeau
+            decides where something should run.
           </p>
           <p style="color:var(--text-2)">
-            What there is not yet is a command for it. Adding a machine today
-            means driving the cluster underneath by hand, and that is a
-            development procedure rather than something we would ask you to
-            follow — so it is not written up here. Turning it into one safe
-            command is the next job.
+            This guide covers one machine because that is what the installer
+            sets up today, and because it is the right place to start even if
+            you have three. Several machines is a Home Pro and Business
+            capability, and the single command that adds one is what we are
+            working on now.
+          </p>
+          <p style="color:var(--text-2)">
+            If you already have the hardware, we would like to talk to you while
+            that is being finished.
           </p>
           <div class="btn-row" style="margin-top:1.5rem">
             <a class="btn btn-ghost btn-sm" href="/#business">What works across machines</a>
@@ -330,18 +341,17 @@ print(reply.choices[0].message.content)</code></pre>
         </div>
 
         <div class="panel panel-quiet">
-          <span class="pill pill-inalpha" style="margin-bottom:0.9rem">In Alpha</span>
-          <p style="color:var(--text-2);font-size:0.95rem;margin-bottom:0.9rem">
-            Running on real hardware, not in this installer:
-          </p>
+          <h3 style="font-size:1rem;margin-bottom:0.9rem">Across several machines</h3>
           <ul class="checks" style="margin:0">
             <li>More than one GPU machine under one control plane</li>
             <li>Mixed NVIDIA generations, judged individually</li>
             <li>Every machine considered, and the reasoning kept</li>
+            <li>Each machine verifies its own copy of the model</li>
           </ul>
           <p style="color:var(--text-3);font-size:0.85rem;margin:1.1rem 0 0">
-            One thing Nodeau still will not do anywhere: fail over on its own.
-            See the <a href="/roadmap/">roadmap</a>.
+            One thing Nodeau does not do anywhere: fail over on its own. It
+            decides where a workload runs and leaves it there. See the
+            <a href="/roadmap/">roadmap</a>.
           </p>
         </div>
       </div>
@@ -355,8 +365,8 @@ print(reply.choices[0].message.content)</code></pre>
       <h2 style="font-size:var(--step-2)">Send us one file. Please don’t repair it by hand.</h2>
       <p style="color:var(--text-2);margin-top:0.9rem;max-width:60ch">
         If you have to fix something manually, that is a bug we need to know
-        about — and fixing it hides the problem. This is Alpha; failing is a
-        legitimate outcome.
+        about, and patching it up by hand hides it from us. We would much rather
+        have the report.
       </p>
 
       <div class="grid grid-2" style="margin-top:1.75rem;align-items:start">
@@ -395,7 +405,7 @@ print(reply.choices[0].message.content)</code></pre>
 
       <p style="margin-top:1.75rem">
         Either way: <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>,
-        or use the <a href="/contact/?type=alpha">contact form</a>.
+        or use the <a href="/contact/?type=install">contact form</a>.
       </p>
     </div>
   </section>
@@ -441,8 +451,8 @@ print(reply.choices[0].message.content)</code></pre>
       <div>
         <h4>Start</h4>
         <ul>
-          <li><a href="/alpha/">Alpha guide</a></li>
-          <li><a href="https://get.nodeau.ai/">Installer</a></li>
+          <li><a href="/install/">Install guide</a></li>
+          <li><a href="https://app.nodeau.ai/">Sign in</a></li>
           <li><a href="https://get.nodeau.ai/docs/requirements.md">Requirements</a></li>
           <li><a href="https://get.nodeau.ai/docs/troubleshooting.md">Troubleshooting</a></li>
         </ul>
@@ -459,7 +469,7 @@ print(reply.choices[0].message.content)</code></pre>
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-Hosted Alpha <span data-release></span> · experimental · Linux-first</span>
+      <span>Self-hosted <span data-release></span> · Linux-first</span>
     </div>
   </div>
 </footer>

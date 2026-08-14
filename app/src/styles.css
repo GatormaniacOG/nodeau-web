@@ -1,0 +1,576 @@
+/* ==========================================================================
+   Nodeau Account — the authenticated application
+   --------------------------------------------------------------------------
+   The tokens below are LIFTED FROM the marketing site's design system
+   (assets/nodeau.css) rather than imported from it. Two reasons, and they pull
+   the same way: the app is a separate Netlify deployment so a cross-site
+   stylesheet would be a runtime dependency on another site's build, and the
+   marketing CSS is a page-layout system for hero sections and pricing tables
+   that this application has no use for.
+
+   What IS shared is the vocabulary — the same near-black surfaces, the same
+   lime accent used as a SIGNAL rather than a surface, the same rule that green
+   never sets body copy. So the app reads as Nodeau without inheriting a
+   marketing page's structure, and the marketing site can be redesigned without
+   breaking an authenticated flow.
+   ========================================================================== */
+
+:root {
+  --bg: #08090b;
+  --bg-raised: #0c0e11;
+  --panel: #101317;
+  --panel-2: #14181d;
+
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.13);
+
+  --text: #f2f4f3;
+  --text-2: #9aa39f;
+  --text-3: #6d7873;
+
+  --accent: #b8ff5a;
+  --accent-ink: #0a0d06;
+  --accent-quiet: rgba(184, 255, 90, 0.1);
+  --accent-line: rgba(184, 255, 90, 0.28);
+  --accent-text: #c9f58a;
+
+  --warn: #f0c674;
+  --warn-quiet: rgba(240, 198, 116, 0.1);
+  --warn-line: rgba(240, 198, 116, 0.28);
+
+  --danger: #f08a7a;
+  --danger-quiet: rgba(240, 138, 122, 0.1);
+  --danger-line: rgba(240, 138, 122, 0.3);
+
+  --neutral: #8fb3d9;
+  --neutral-quiet: rgba(143, 179, 217, 0.1);
+
+  --radius: 12px;
+  --radius-lg: 16px;
+  --max: 1000px;
+
+  --font: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent-text);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+.mono {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+code {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0.1em 0.4em;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin: 0 0 0.5rem;
+}
+h1 {
+  font-size: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: 1.25rem;
+}
+h3 {
+  font-size: 1.02rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+.muted {
+  color: var(--text-2);
+}
+.small {
+  font-size: 0.875rem;
+}
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  width: 100%;
+}
+
+.narrow {
+  max-width: 620px;
+}
+
+/* --------------------------------------------------------------------- shell */
+
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-raised);
+}
+.app-header .wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 60px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.brand:hover {
+  text-decoration: none;
+}
+.brand-mark {
+  width: 22px;
+  height: 22px;
+}
+
+.app-nav {
+  display: flex;
+  gap: 1.25rem;
+  margin-right: auto;
+}
+.app-nav a {
+  color: var(--text-2);
+  font-size: 0.94rem;
+  padding: 0.2rem 0;
+  border-bottom: 2px solid transparent;
+}
+.app-nav a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+.app-nav a[aria-current='page'] {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.app-user {
+  color: var(--text-3);
+}
+
+.app-main {
+  flex: 1;
+  padding-top: 2.5rem;
+  padding-bottom: 4rem;
+}
+
+.app-footer {
+  border-top: 1px solid var(--line);
+  padding: 1.25rem 0;
+}
+
+.page-head {
+  margin-bottom: 2rem;
+}
+.page-head p {
+  margin-bottom: 0;
+}
+.section-head {
+  margin: 2.5rem 0 1rem;
+}
+
+.back {
+  display: inline-block;
+  color: var(--text-2);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+/* -------------------------------------------------------------------- panels */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.panel.quiet {
+  background: var(--bg-raised);
+}
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.panel h3 {
+  margin-top: 1.25rem;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  color: var(--text);
+}
+.tile:hover {
+  border-color: var(--line-strong);
+  text-decoration: none;
+}
+.tile-label {
+  color: var(--text-3);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tile-value {
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  color: var(--text);
+}
+.card-link:hover {
+  border-color: var(--line-strong);
+  background: var(--panel-2);
+  text-decoration: none;
+}
+.card-current {
+  border-color: var(--accent-line);
+}
+.card-main h3 {
+  margin-bottom: 0.15rem;
+}
+.card-main p,
+.card-aside {
+  margin-bottom: 0;
+}
+.card-aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------- details */
+
+.detail {
+  margin: 0 0 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(140px, max-content) 1fr;
+  gap: 0.6rem 1.5rem;
+}
+.detail dt {
+  color: var(--text-3);
+  font-size: 0.9rem;
+}
+.detail dd {
+  margin: 0;
+}
+.detail-row {
+  display: contents;
+}
+
+.feature-list {
+  margin: 0 0 1rem;
+  padding-left: 1.1rem;
+}
+.feature-list li {
+  margin-bottom: 0.25rem;
+}
+.steps {
+  color: var(--text-2);
+  padding-left: 1.2rem;
+}
+
+/* -------------------------------------------------------------------- states */
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--text-2);
+  padding: 2rem 0;
+}
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Respect a stated preference. A spinner is decoration; the text beside it is
+   the actual status, and it is announced either way. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+    border-top-color: var(--line-strong);
+  }
+}
+
+.empty {
+  background: var(--bg-raised);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+}
+.empty h3 {
+  margin-bottom: 0.5rem;
+}
+
+.notice {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background: var(--panel);
+}
+.notice h3 {
+  margin-bottom: 0.35rem;
+}
+.notice p:last-child {
+  margin-bottom: 0;
+}
+.notice-error {
+  border-color: var(--danger-line);
+  background: var(--danger-quiet);
+}
+.notice-ok {
+  border-color: var(--accent-line);
+  background: var(--accent-quiet);
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.badge-ok {
+  color: var(--accent-text);
+  border-color: var(--accent-line);
+  background: var(--accent-quiet);
+}
+.badge-warn {
+  color: var(--warn);
+  border-color: var(--warn-line);
+  background: var(--warn-quiet);
+}
+.badge-neutral {
+  color: var(--neutral);
+  background: var(--neutral-quiet);
+}
+
+/* ------------------------------------------------------------------- inputs */
+
+.field {
+  display: block;
+  margin-bottom: 1.25rem;
+}
+.field > span {
+  display: block;
+  color: var(--text-3);
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+
+.input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  color: var(--text);
+  font: inherit;
+  padding: 0.6rem 0.8rem;
+}
+.input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+.code-input {
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  max-width: 12ch;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-weight: 550;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn:hover:not(:disabled) {
+  text-decoration: none;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.btn-ghost {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--text-3);
+}
+.btn-danger {
+  border-color: var(--danger-line);
+  color: var(--danger);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-quiet);
+}
+.btn-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.danger-zone {
+  border: 1px solid var(--danger-line);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-top: 2.5rem;
+}
+.danger-zone h2 {
+  color: var(--danger);
+}
+
+.confirm .detail dd .input {
+  margin-bottom: 0.3rem;
+}
+
+/* ------------------------------------------------------------------ narrow */
+
+@media (max-width: 640px) {
+  .app-header .wrap {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  .app-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .detail {
+    grid-template-columns: 1fr;
+    gap: 0.15rem 0;
+  }
+  .detail dd {
+    margin-bottom: 0.75rem;
+  }
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .card-aside {
+    align-items: flex-start;
+    text-align: left;
+  }
+}

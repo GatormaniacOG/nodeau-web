@@ -185,14 +185,21 @@
   /* -------------------------------------------------- contact preselection */
 
   // /contact?type=business deep-links from every Business call to action.
+  //
+  // `alpha` is kept pointing at install help: the install guide used to live at
+  // /alpha/ and links out there still carry the old parameter. An unknown value
+  // simply leaves the select alone, so a stale link is never worse than no
+  // parameter at all.
   const params = new URLSearchParams(window.location.search);
   const type = params.get("type");
   const interest = document.querySelector("#interest");
   if (type && interest) {
     const map = {
       business: "Nodeau Business",
+      pro: "Nodeau Home Pro",
       home: "Nodeau Home",
-      alpha: "Alpha help",
+      install: "Install help",
+      alpha: "Install help",
       partner: "Design partner",
       partnership: "Partnership",
     };

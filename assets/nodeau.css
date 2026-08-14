@@ -10,16 +10,13 @@
    merely information is white or grey.
 
    Three accents, and they carry meaning rather than decoration:
-     --accent   green   this ships in the public Alpha, or this is the thing
-                        to click
-     --warn     amber   this is built and physically validated, but it is not
-                        the supported public install path yet
+     --accent   green   this is in the product, or this is the thing to click
+     --warn     amber   this is qualified on hardware and lands in the next
+                        published build
      --future   slate   this is roadmap
-   That trio is doing real work. The site has to distinguish three states on
-   almost every page — shipping, proven-but-unpackaged, and intent — and colour
-   does it faster than a caption can. The amber state is the one that did not
-   exist before multi-node worked: without it a capability that runs on real
-   hardware has to be mislabelled as either unbuilt or fully shipped.
+   That trio does real work on the roadmap page, which is where the site keeps
+   its ledger. The marketing pages themselves no longer label every sentence:
+   a product page that annotates its own features reads as a changelog.
    ========================================================================== */
 
 :root {
@@ -212,6 +209,12 @@ section.tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
 .stack-lg > * + * { margin-top: 2rem; }
 
 .grid { display: grid; gap: clamp(1.25rem, 3vw, 2rem); }
+/* A grid item's automatic minimum size is its content, so an item holding a
+   long, scrollable <pre> refuses to shrink and pushes the whole page sideways
+   on a phone. The block that scrolls should be the code block, not the page. */
+.grid > *,
+.steps > *,
+.hero-grid > * { min-width: 0; }
 .grid-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
 .grid-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
 .grid-4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
@@ -281,6 +284,10 @@ section.tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
 
 .header-actions { display: flex; align-items: center; gap: 0.6rem; }
 
+/* The account link duplicated inside the menu. Hidden here, shown in the
+   narrow-screen block below — declared before it so the media query wins. */
+.nav-signin { display: none; }
+
 .nav-toggle {
   display: none;
   margin-left: auto;
@@ -313,6 +320,10 @@ section.tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
   .nav a { padding: 0.8rem 0.25rem; border-bottom: 1px solid var(--line); font-size: 1rem; }
   .nav li:last-child a { border-bottom: 0; }
   .header-actions .btn-ghost { display: none; }
+  /* Sign in is a ghost button in the header, so it disappears with the rest of
+     them here. The menu carries its own copy: a sign-in link nobody can reach
+     on a phone is not a sign-in link. */
+  .nav-signin { display: list-item; }
 }
 
 /* --------------------------------------------------------------------------
@@ -388,9 +399,9 @@ section.tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
   flex: none;
 }
 .pill-available { color: var(--accent-text); border-color: var(--accent-line); background: var(--accent-quiet); }
-/* pill-alpha marks the release itself as experimental; pill-inalpha marks a
-   capability that runs and has been validated on hardware but is not in the
-   public installer. Same amber deliberately — both mean "real, not supported". */
+/* Amber is "next release": qualified on real hardware, arriving in the next
+   published build. pill-alpha is kept as an alias so a page can mark the
+   published channel itself without inventing a second colour. */
 .pill-alpha,
 .pill-inalpha { color: var(--warn); border-color: rgba(240, 198, 116, 0.3); background: var(--warn-quiet); }
 .pill-next,
@@ -887,6 +898,81 @@ details.qa .answer > :first-child { margin-top: 0; }
 .price { font-size: var(--step-2); font-weight: 600; letter-spacing: -0.02em; margin: 0.25rem 0 0.15rem; }
 .price-note { color: var(--text-3); font-size: 0.85rem; margin-bottom: 1.35rem; }
 
+/* Three tiers, not two. Home Pro sits in the middle and is the one most people
+   arrive wanting, so it gets the accent border — the same signal the primary
+   button uses, rather than a "most popular" ribbon nobody believes. */
+.tiers {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
+  align-items: stretch;
+}
+.tiers .panel { display: flex; flex-direction: column; }
+.tiers .panel h3 { margin-bottom: 0.4rem; }
+.tiers .kicker { color: var(--text-3); font-size: 0.85rem; margin-bottom: 1.1rem; }
+.tiers .checks { margin-bottom: 1.5rem; }
+.tiers .panel .btn { margin-top: auto; align-self: flex-start; }
+.tier-featured { border-color: var(--accent-line); background: var(--panel-2); }
+
+/* The capability table.
+   -----------------------------------------------------------------------
+   A table, not a grid of divs, because it is genuinely tabular: a screen
+   reader should be able to say "Batch inference, Home Pro, included". The
+   wrapper scrolls on a narrow screen instead of the page doing it, and the
+   first column stays put so a row is still identifiable while scrolling. */
+.compare-wrap {
+  overflow-x: auto;
+  /* Measured, not decorative: without containment Chromium lets the table's
+     overflow reach the document and the whole page scrolls sideways by ~40px
+     on a 390px screen. The promise `contain: paint` makes — nothing paints
+     outside this box — is exactly what a scrolling table means. */
+  contain: paint;
+  margin-top: 2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+.compare { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 34rem; }
+.compare caption { text-align: left; padding: 1.1rem clamp(0.9rem, 2.5vw, 1.4rem) 0; color: var(--text-3); font-size: 0.85rem; }
+.compare th,
+.compare td { padding: 0.7rem clamp(0.6rem, 1.8vw, 1rem); text-align: center; border-bottom: 1px solid var(--line); }
+.compare thead th { color: var(--text); font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+.compare thead th:first-child,
+.compare tbody th { text-align: left; font-weight: 500; color: var(--text-2); }
+.compare tbody th {
+  position: sticky;
+  left: 0;
+  background: var(--bg);
+  z-index: 1;
+  min-width: 13rem;
+}
+.compare tbody tr:hover th,
+.compare tbody tr:hover td { background: rgba(255, 255, 255, 0.02); }
+.compare tbody tr:last-child th,
+.compare tbody tr:last-child td { border-bottom: 0; }
+.compare .col-featured { background: rgba(184, 255, 90, 0.045); }
+
+/* On a narrow screen the sticky first column is competing with the answers for
+   the same 390px. Give it less, so two plans are visible before anyone has to
+   scroll sideways. */
+@media (max-width: 560px) {
+  .compare { min-width: 28rem; font-size: 0.86rem; }
+  .compare tbody th { min-width: 10rem; }
+}
+.compare-group th {
+  padding-top: 1.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Cell values. The tick is drawn rather than typed so it cannot be read out as
+   "check mark" fifty times; each cell carries its own screen-reader label. */
+.c-yes { color: var(--accent-text); font-weight: 600; }
+.c-no { color: var(--text-3); }
+.c-lim { color: var(--warn); font-size: 0.82rem; font-weight: 550; }
+.c-note { color: var(--text-2); font-size: 0.85rem; }
+
 /* --------------------------------------------------------------------------
    Forms
    -------------------------------------------------------------------------- */
@@ -963,6 +1049,13 @@ details.qa .answer > :first-child { margin-top: 0; }
 
 .site-footer { border-top: 1px solid var(--line); padding-block: 3rem 2.5rem; color: var(--text-3); font-size: 0.9rem; }
 .footer-grid { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1.4fr) repeat(auto-fit, minmax(8rem, 1fr)); }
+/* On a phone, auto-fit still fits three 8rem link columns, which squeezes the
+   brand column down to about one word per line. Two columns, with the brand
+   across the top. */
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem; }
+  .footer-grid > :first-child { grid-column: 1 / -1; }
+}
 .footer-grid h4 { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.75rem; }
 .footer-grid ul { list-style: none; padding: 0; margin: 0; }
 .footer-grid li { margin: 0.4rem 0; }
