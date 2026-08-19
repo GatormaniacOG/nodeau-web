@@ -5,6 +5,7 @@ import { ErrorNotice, Spinner } from './components/ui';
 import { InstallationDetailPage, InstallationsPage } from './pages/Installations';
 import { ActivatePage } from './pages/Activate';
 import { PlanPage } from './pages/Plan';
+import { BillingPage } from './pages/Billing';
 import { DashboardPage } from './pages/Dashboard';
 import { SettingsPage } from './pages/Settings';
 import { SignInPage } from './pages/SignIn';
@@ -164,6 +165,8 @@ function Page({
       );
     case 'plan':
       return <PlanPage org={org} />;
+    case 'billing':
+      return <BillingPage org={org} complete={route.complete} navigate={navigate} />;
     case 'settings':
       return <SettingsPage me={me} org={org} />;
     case 'signin':

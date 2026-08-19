@@ -1,4 +1,6 @@
-import { api, type AvailablePlan, type Organization, type Plan } from '../lib/api';
+import { useState } from 'react';
+
+import { ApiError, api, type AvailablePlan, type Organization, type Plan } from '../lib/api';
 import { Badge, ErrorNotice, Spinner, formatDate } from '../components/ui';
 import { useResource } from '../lib/useResource';
 
@@ -15,11 +17,40 @@ import { useResource } from '../lib/useResource';
  * # It does not claim you can buy anything
  *
  * `purchasable` comes from the backend and is false until a billing provider is
- * live. Home Pro is a real, approved tier that cannot be bought yet, so it is
- * shown with "coming soon" rather than a checkout button that goes nowhere —
- * Phase 7C brief §5 and §68.
+ * live AND the launch gate is open — it is `cfg.CheckoutEnabled()`, not "are
+ * keys present". A tier that is approved but not yet on sale shows "coming
+ * soon" rather than a checkout button that goes nowhere.
+ *
+ * # Buying is a redirect, and nothing here grants anything
+ *
+ * The Upgrade button asks the API for a hosted checkout URL and navigates to it.
+ * It never sets a plan, and the customer's return trip is not evidence of
+ * payment — see BillingPage. Two refusals are ordinary rather than exceptional
+ * and are shown as sentences, not stack traces: 403 when the launch gate is
+ * closed, 409 when this deployment defines a plan but maps no price to it.
  */
 export function PlanPage({ org }: { org: Organization }) {
+  // Which plan's button is busy, so two clicks cannot open two checkouts.
+  const [busy, setBusy] = useState<string | null>(null);
+  const [refusal, setRefusal] = useState<string | null>(null);
+
+  async function go(action: () => Promise<{ url: string }>, key: string) {
+    setBusy(key);
+    setRefusal(null);
+    try {
+      const { url } = await action();
+      // A full navigation, not a router push: the destination is the payment
+      // provider's own domain.
+      window.location.assign(url);
+    } catch (cause) {
+      setBusy(null);
+      if (cause instanceof ApiError) {
+        setRefusal(cause.message);
+        return;
+      }
+      setRefusal('Could not reach Nodeau Cloud. Nothing was charged.');
+    }
+  }
   const [state, reload] = useResource<{ plan: Plan; available: AvailablePlan[] }>(
     (signal) =>
       Promise.all([api.plan(org.id, signal), api.availablePlans(org.id, signal)]).then(
@@ -55,6 +86,21 @@ export function PlanPage({ org }: { org: Organization }) {
           <p className="muted small">Renews {formatDate(plan.currentPeriodEnd)}</p>
         )}
 
+        {/* Deliberately keyed on "there is a subscription", NOT on whether
+            checkout is open. Somebody who has already paid must always be able
+            to see, change and cancel it — the API takes the same position. */}
+        {plan.status !== 'none' && (
+          <p>
+            <button
+              className="btn btn-sm"
+              disabled={busy !== null}
+              onClick={() => go(() => api.billingPortal(org.id), 'portal')}
+            >
+              {busy === 'portal' ? 'Opening…' : 'Manage billing'}
+            </button>
+          </p>
+        )}
+
         <h3>Included</h3>
         {plan.features.length === 0 ? (
           <p className="muted">
@@ -87,6 +133,12 @@ export function PlanPage({ org }: { org: Organization }) {
         )}
       </div>
 
+      {refusal && (
+        <div className="notice notice-warn" role="status">
+          <p>{refusal}</p>
+        </div>
+      )}
+
       <h2 className="section-head">All plans</h2>
       <ul className="card-list">
         {available.map((p) => (
@@ -100,8 +152,12 @@ export function PlanPage({ org }: { org: Organization }) {
               </div>
               <div className="card-aside">
                 {p.current ? null : p.purchasable ? (
-                  <button className="btn btn-primary btn-sm" disabled>
-                    Upgrade
+                  <button
+                    className="btn btn-primary btn-sm"
+                    disabled={busy !== null}
+                    onClick={() => go(() => api.startCheckout(org.id, p.id), p.id)}
+                  >
+                    {busy === p.id ? 'Opening…' : 'Upgrade'}
                   </button>
                 ) : (
                   <Badge tone="neutral">Coming soon</Badge>
