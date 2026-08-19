@@ -897,6 +897,9 @@ details.qa .answer > :first-child { margin-top: 0; }
 
 .price { font-size: var(--step-2); font-weight: 600; letter-spacing: -0.02em; margin: 0.25rem 0 0.15rem; }
 .price-note { color: var(--text-3); font-size: 0.85rem; margin-bottom: 1.35rem; }
+/* The billing period sits with the number rather than under it, at the body
+   weight and colour, so "$9.99" stays the thing the eye lands on. */
+.price-unit { font-size: 0.9rem; font-weight: 400; color: var(--text-2); letter-spacing: 0; }
 
 /* Three tiers, not two. Home Pro sits in the middle and is the one most people
    arrive wanting, so it gets the accent border — the same signal the primary
