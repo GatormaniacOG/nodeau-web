@@ -22,6 +22,13 @@ export type Route =
   | { name: 'activate'; code?: string }
   | { name: 'plan' }
   | { name: 'settings' }
+  // Where the billing provider sends the customer back. `complete` is the
+  // success return and `/billing` the cancel return — both are the provider's
+  // redirect targets, set by the API in handleStartCheckout, so they must exist
+  // here or a paid customer lands on "not found" at the worst possible moment.
+  // Neither is evidence of payment: the page says what happened and reads state
+  // from the API, which learns it from a verified webhook.
+  | { name: 'billing'; complete: boolean }
   | { name: 'signin'; error?: string }
   | { name: 'notfound'; path: string };
 
@@ -40,6 +47,8 @@ export function parseRoute(pathname: string, search: string): Route {
   if (path === '/activate') return { name: 'activate', code: params.get('code') ?? undefined };
   if (path === '/plan') return { name: 'plan' };
   if (path === '/settings') return { name: 'settings' };
+  if (path === '/billing') return { name: 'billing', complete: false };
+  if (path === '/billing/complete') return { name: 'billing', complete: true };
   if (path === '/signin') return { name: 'signin', error: params.get('error') ?? undefined };
   return { name: 'notfound', path };
 }

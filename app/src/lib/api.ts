@@ -282,6 +282,38 @@ export const api = {
       signal,
     ),
 
+  /** Start a hosted checkout for a paid plan.
+   *
+   *  Returns the URL to send the browser to; the caller navigates. This grants
+   *  nothing by itself — a plan follows from stored subscription state, which
+   *  follows from a verified webhook, never from the customer's return trip.
+   *
+   *  Two refusals are expected rather than exceptional, and read differently to
+   *  a user:
+   *    403 FORBIDDEN — the launch gate is closed; paid plans are not on sale
+   *                    from this deployment yet.
+   *    409 CONFLICT  — this build defines the plan but maps no price to it,
+   *                    which is what selling Home Pro and not Business looks
+   *                    like.
+   */
+  startCheckout: (orgId: string, planId: string) =>
+    request<{ url: string }>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/checkout`, {
+      planId,
+    }),
+
+  /** Open the billing provider's own portal.
+   *
+   *  Available whenever a subscription exists, INCLUDING while checkout is
+   *  gated off — somebody who has already paid must always be able to see,
+   *  change and cancel what they are paying for. Gating this behind a launch
+   *  switch would let a launch decision trap a customer in a subscription.
+   */
+  billingPortal: (orgId: string) =>
+    request<{ url: string }>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/billing-portal`,
+    ),
+
   pendingActivation: (userCode: string, signal?: AbortSignal) =>
     request<ActivationPendingView>(
       'GET',
