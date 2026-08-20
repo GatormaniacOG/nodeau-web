@@ -970,6 +970,11 @@ details.qa .answer > :first-child { margin-top: 0; }
    "check mark" fifty times; each cell carries its own screen-reader label. */
 .c-yes { color: var(--accent-text); font-weight: 600; }
 .c-no { color: var(--text-3); }
+/* A third state, because two were not enough to be truthful: a capability that
+   the tier will include and that does not exist yet. It reads in the "future"
+   colour the roadmap already uses for planned work, so the page cannot imply
+   that something shipping later is shipping now. */
+.c-soon { color: var(--future); font-size: 0.72rem; font-weight: 650; letter-spacing: 0.055em; text-transform: uppercase; white-space: nowrap; }
 .c-lim { color: var(--warn); font-size: 0.82rem; font-weight: 550; }
 .c-note { color: var(--text-2); font-size: 0.85rem; }
 
