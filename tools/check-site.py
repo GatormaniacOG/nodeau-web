@@ -61,6 +61,16 @@ RETIRED = [
     (r"Next release",
      "stale label: batch, the dashboard, the catalogue and the CLI verbs ship in the "
      "published build now; what remains hands-on is multi-machine, labelled 'Manual setup'"),
+
+    # Retired by Phase 9, which shipped independent multi-GPU per machine in
+    # the published build. These sentences UNDERSTATED the product and
+    # contradicted the pricing page, which lists two cards in a machine as an
+    # included Home Pro capability — so a paying customer reading the FAQ was
+    # told they did not have what they had bought.
+    (r"[Nn]odeau works with one GPU per machine",
+     "stale since Phase 9: every qualified card in a machine is scheduled independently"),
+    (r"one GPU per machine, however many machines",
+     "stale since Phase 9: Home Pro schedules up to two cards in any one machine"),
 ]
 
 # Claims that must never appear, regardless of refresh. These are capabilities
@@ -203,6 +213,104 @@ def route_of(path: Path) -> str:
     return f"/{rel.as_posix()}"
 
 
+# ---------------------------------------------------------------------------
+# The pricing comparison table must not promise Business what Home Pro admits
+# is unbuilt.
+# ---------------------------------------------------------------------------
+#
+# Business includes everything Home Pro includes, plus organisational
+# capabilities. So a row that reads "Coming soon" under Home Pro and "Included"
+# under Business is describing a capability that is not built for one tier and
+# somehow shipped for the other. That cannot be true, and it is exactly what the
+# page said for seven rows: role-based access control, single sign-on, quotas,
+# audit history, fleet policy, priority queues and shared ownership all carried
+# a tick under Business while none of them existed.
+#
+# Business is not on sale, so nobody could be charged on the claim — but a
+# design partner reading the page was being told the tier already did things it
+# could not do, and the same page marked Home Pro's unbuilt items honestly two
+# columns to the left.
+#
+# Checked structurally rather than by phrase, because the defect is a
+# RELATIONSHIP between cells and any wording of it is equally wrong.
+
+ROW = re.compile(r"<tr>\s*<th scope=\"row\">(.*?)</th>(.*?)</tr>", re.S)
+CELL = re.compile(r"<td class=\"([a-z][a-z-]*)[^\"]*\"[^>]*>(.*?)</td>", re.S)
+
+
+def comparison_rows(src: str) -> list[tuple[str, list[str]]]:
+    """Return (row label, [class per column]) for every three-column row."""
+    out = []
+    for label, body in ROW.findall(src):
+        cells = CELL.findall(body)
+        if len(cells) != 3:
+            continue
+        out.append((re.sub(r"<[^>]+>", "", label).strip(), [c for c, _ in cells]))
+    return out
+
+
+# Capabilities Nodeau has NAMED and not BUILT.
+#
+# Mirrors internal/entitlement/delivery.go in the product repository, which is
+# the authority: every feature there declares Delivered or Planned, and no plan
+# may grant one that is not Delivered (issue #74). This list is the site's copy,
+# because the two repositories do not share code — so it has to be updated when
+# a capability ships, and the roadmap page is the reminder: a row here that the
+# roadmap marks Available is a contradiction the next check catches.
+#
+# The failure this prevents is precise. The pricing table showed a tick under
+# Business for seven capabilities that do not exist — role-based access control,
+# single sign-on, quotas, audit history, fleet policy, priority queues, shared
+# ownership — while marking Home Pro's unbuilt items honestly two columns to the
+# left. Business is not on sale, so nobody could be charged on the claim, but a
+# design partner reading it was told the tier already did things it cannot do.
+NOT_BUILT = {
+    "organisations and shared ownership",
+    "role-based access control",
+    "single sign-on",
+    "quotas",
+    "quotas and fleet policy",
+    "audit history",
+    "fleet policy",
+    "priority queues",
+    "advanced scheduling controls",
+    "scheduled and overnight batch",
+    "remote dashboard and management",
+    "model replication across machines",
+}
+
+
+def check_unbuilt_is_never_included(name: str, src: str, errors: list[str]) -> None:
+    """No capability that does not exist may be shown as included, in any tier."""
+    for label, classes in comparison_rows(src):
+        if label.strip().lower() not in NOT_BUILT:
+            continue
+        for column, cls in zip(("Home", "Home Pro", "Business"), classes):
+            if cls == "c-yes":
+                errors.append(
+                    f"{name}: the row {label!r} is shown as INCLUDED for {column}, and that "
+                    "capability is not built. Mark it 'Coming soon' (c-soon), or — if it "
+                    "has shipped — remove it from NOT_BUILT here and from the Planned "
+                    "section of the roadmap."
+                )
+
+
+def check_tier_consistency(name: str, src: str, errors: list[str]) -> None:
+    for label, classes in comparison_rows(src):
+        home, home_pro, business = classes
+        if home_pro == "c-soon" and business == "c-yes":
+            errors.append(
+                f"{name}: the row {label!r} is 'Coming soon' for Home Pro and 'Included' "
+                "for Business. Business includes everything Home Pro does, so a "
+                "capability that is unbuilt for one cannot have shipped for the other."
+            )
+        if home == "c-yes" and business in {"c-no", "c-soon"}:
+            errors.append(
+                f"{name}: the row {label!r} is included in free Home and not in Business. "
+                "Nothing is ever withheld from a paid tier."
+            )
+
+
 def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
@@ -252,6 +360,9 @@ def main() -> int:
         for required in ("og:title", "og:description", "og:url", "og:type", "og:site_name"):
             if required not in p.metas:
                 errors.append(f"{name}: missing {required}")
+
+        check_unbuilt_is_never_included(name, src, errors)
+        check_tier_consistency(name, src, errors)
 
         if not p.canonical:
             errors.append(f"{name}: no canonical link")

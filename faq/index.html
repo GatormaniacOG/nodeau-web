@@ -72,7 +72,7 @@
       </details>
       <details class="qa">
         <summary>Who is Nodeau for?</summary>
-        <div class="answer"><p>Three sorts of people, which is why there are three plans.</p><p><strong>Home</strong>: someone with a gaming PC or a workstation who wants to run models locally without first becoming an infrastructure engineer.</p><p><strong>Home Pro</strong>: the same person a year later, with a second machine, a server in a cupboard, and a laptop that wants to reach both.</p><p><strong>Business</strong>: an organisation with GPU hardware it would like to run as shared infrastructure, with members, roles and an audit trail. See <a href='/pricing/'>pricing</a>.</p></div>
+        <div class="answer"><p>Three sorts of people, which is why there are three plans.</p><p><strong>Home</strong>: someone with a gaming PC or a workstation who wants to run models locally without first becoming an infrastructure engineer.</p><p><strong>Home Pro</strong>: the same person a year later, with a second machine, a server in a cupboard, and a laptop that wants to reach both.</p><p><strong>Business</strong>: an organisation with GPU hardware it would like to run as shared infrastructure, with members, roles and an audit trail. That tier is being designed with its first customers and is not on sale — see <a href='/pricing/'>pricing</a>.</p></div>
       </details>
       <details class="qa" id="labels">
         <summary>What do the labels on the roadmap mean?</summary>
@@ -140,7 +140,7 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>Can Nodeau use several GPUs?</summary>
-        <div class="answer"><p>These are two different questions, and Nodeau’s answers to them differ.</p><p><strong>Several GPU machines, one control plane</strong> — yes, on mixed NVIDIA hardware. Each machine is measured and judged on its own merits. It is part of Home Pro and Business.</p><p><strong>Several GPUs inside one machine</strong> — not yet. Nodeau works with one GPU per machine, however many machines there are. That is genuinely a different problem from using several machines, and solving one did not solve the other. It is <strong>Planned</strong> on the <a href='/roadmap/'>roadmap</a> and included in Home Pro and Business when it lands.</p></div>
+        <div class="answer"><p>Yes, both ways — and they were genuinely different problems.</p><p><strong>Several GPU machines, one control plane</strong> — on mixed NVIDIA hardware. Each machine is measured and judged on its own merits. Part of Home Pro and Business.</p><p><strong>Several GPUs inside one machine</strong> — each card is observed, reserved and scheduled on its own. Nodeau picks the physical card, Kubernetes allocates that card, and the telemetry shows which one ran the work. Home Pro includes up to two cards in any one machine; on Home the second card is still detected and reported, it is simply not scheduled onto.</p></div>
       </details>
     </div>
     <div class="faq-group">
@@ -209,7 +209,7 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>What is the difference between Home and Home Pro?</summary>
-        <div class="answer"><p>Machines. Home is one person and one machine with one GPU, free. Home Pro is the same person with several machines they own, and it adds batch inference across them. Remote management, model replication and scheduled batch are planned for it and are not built yet. <strong>Business</strong> is the next line along: an organisation with several people in it, which brings members, roles, quotas, audit and single sign-on. Full comparison on <a href='/pricing/'>pricing</a>.</p></div>
+        <div class="answer"><p>Machines. Home is one person and one machine with one GPU, free. Home Pro is the same person with several machines they own, and it adds batch inference across them. Remote management, model replication and scheduled batch are planned for it and are not built yet. <strong>Business</strong> is the next line along: an organisation with several people in it. Members, roles, quotas, audit and single sign-on are what it is <em>for</em>, and none of them is built yet — which is why Business is not on sale. Full comparison on <a href='/pricing/'>pricing</a>.</p></div>
       </details>
     </div>
     <div class="faq-group">

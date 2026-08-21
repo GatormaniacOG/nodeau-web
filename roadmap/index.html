@@ -137,6 +137,11 @@
           <p>A node agent reports the GPU's real addressable memory and current usage.</p>
         </div>
         <div class="row">
+          <h3>Several GPUs inside one machine</h3>
+          <span class="pill pill-available">Available</span>
+          <p>Per-card observation, per-card reservations, and placement within a machine as well as between machines. Nodeau names the physical card, Kubernetes allocates that card, and the telemetry shows which one ran the work. Included in Home Pro, up to two cards in any one machine.</p>
+        </div>
+        <div class="row">
           <h3>Model profiles that carry their source</h3>
           <span class="pill pill-available">Available</span>
           <p>Where a configuration has been measured on real hardware, Nodeau uses the measurement. Where it hasn't, it derives a conservative estimate from the model's own architecture, adds a further margin, and labels the decision as estimated. An estimate is never shown as a measurement.</p>
@@ -324,16 +329,11 @@
 
       <div class="stage">
         <div class="stage-head">
-          <h2>Planned — more capacity per machine</h2>
+          <h2>Planned — moving work and weights around the fleet</h2>
           <span class="pill pill-planned">Planned</span>
-          <p>Nodeau works with one GPU per machine, however many machines there are. Using several cards in one box is a genuinely different problem from using several machines, and solving one did not solve the other.</p>
+          <p>Nodeau now schedules every qualified card in a machine independently. What is still ahead is the fleet acting as one: getting weights to the machine that will need them, running work when nobody is watching, and reaching an installation from somewhere else.</p>
         </div>
         <div class="rows">
-        <div class="row">
-          <h3>Several GPUs inside one machine</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Per-card observation, per-card reservations and placement within a machine as well as between machines. Part of what Home Pro and Business include; not built yet.</p>
-        </div>
         <div class="row">
           <h3>Model replication across machines</h3>
           <span class="pill pill-planned">Planned</span>
