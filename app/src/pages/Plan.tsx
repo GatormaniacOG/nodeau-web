@@ -21,6 +21,16 @@ import { useResource } from '../lib/useResource';
  * keys present". A tier that is approved but not yet on sale shows "coming
  * soon" rather than a checkout button that goes nowhere.
  *
+ * `purchasable` alone is not enough to render from, which issue #86 found the
+ * embarrassing way. It is false for two unrelated reasons: a paid tier that is
+ * not on sale YET, and the FREE tier, which is never bought because it is free.
+ * Rendering both as "coming soon" was invisible while nothing was purchasable —
+ * every tier said it — and became absurd the moment Home Pro went on sale,
+ * leaving "Coming soon" beside Nodeau Home, the plan every installation already
+ * runs. So the backend sends `free` and this page renders three states. It does
+ * NOT test the plan id to work out which is which: that would be exactly the
+ * second enforcement point the paragraph above forbids.
+ *
  * # Buying is a redirect, and nothing here grants anything
  *
  * The Upgrade button asks the API for a hosted checkout URL and navigates to it.
@@ -159,6 +169,8 @@ export function PlanPage({ org }: { org: Organization }) {
                   >
                     {busy === p.id ? 'Opening…' : 'Upgrade'}
                   </button>
+                ) : p.free ? (
+                  <Badge tone="neutral">Free</Badge>
                 ) : (
                   <Badge tone="neutral">Coming soon</Badge>
                 )}

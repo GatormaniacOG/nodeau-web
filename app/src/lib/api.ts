@@ -85,6 +85,14 @@ export interface AvailablePlan {
   features: string[];
   current: boolean;
   purchasable: boolean;
+  /**
+   * This tier costs nothing, so there is nothing to buy.
+   *
+   * Separate from `purchasable` because "not purchasable" has two unrelated
+   * meanings — a paid tier that is not on sale yet, and a free tier that is
+   * never bought — and one boolean cannot tell them apart. See PlanPage.
+   */
+  free: boolean;
 }
 
 export interface Installation {

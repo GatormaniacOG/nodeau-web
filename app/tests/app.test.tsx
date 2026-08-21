@@ -368,8 +368,8 @@ describe('the plan page', () => {
     reply('GET', '/v1/organizations/org1/plan', HOME_PLAN);
     reply('GET', '/v1/organizations/org1/plans', {
       plans: [
-        { id: 'home', displayName: 'Nodeau Home', summary: 'a', features: [], current: true, purchasable: false },
-        { id: 'home-pro', displayName: 'Nodeau Home Pro', summary: 'b', features: [], current: false, purchasable: false },
+        { id: 'home', displayName: 'Nodeau Home', summary: 'a', features: [], current: true, purchasable: false, free: true },
+        { id: 'home-pro', displayName: 'Nodeau Home Pro', summary: 'b', features: [], current: false, purchasable: false, free: false },
       ],
     });
     window.history.pushState({}, '', '/plan');
@@ -444,5 +444,56 @@ describe('every request', () => {
       const headers = call.init.headers as Record<string, string>;
       expect(headers['X-Nodeau-Request']).toBe('1');
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Issue #86 — the free tier is free, not "coming soon"
+// ---------------------------------------------------------------------------
+
+describe('the plan page once something IS on sale', () => {
+  // Reported from the live app: an account on Home Pro saw "Coming soon" beside
+  // Nodeau Home — the plan every installation already runs.
+  //
+  // `purchasable` is false for two unrelated reasons and the page had only that
+  // one boolean, so it rendered both as "coming soon". Invisible while nothing
+  // was purchasable, because every tier said it; absurd the moment one tier
+  // stopped saying it.
+  it('labels the free tier Free rather than Coming soon', async () => {
+    reply('GET', '/v1/me', ME);
+    reply('GET', '/v1/organizations/org1/plan', HOME_PLAN);
+    reply('GET', '/v1/organizations/org1/plans', {
+      plans: [
+        { id: 'home', displayName: 'Nodeau Home', summary: 'a', features: [], current: false, purchasable: false, free: true },
+        { id: 'home-pro', displayName: 'Nodeau Home Pro', summary: 'b', features: [], current: true, purchasable: false, free: false },
+        { id: 'business', displayName: 'Nodeau Business', summary: 'c', features: [], current: false, purchasable: false, free: false },
+      ],
+    });
+    window.history.pushState({}, '', '/plan');
+    render(<App />);
+
+    expect(await screen.findByText('Nodeau Business')).toBeInTheDocument();
+    // The discriminating assertion: Business is the ONLY tier not on sale.
+    // Before the fix there were two, because the free tier said it as well.
+    expect(screen.getAllByText(/coming soon/i)).toHaveLength(1);
+    expect(screen.getAllByText('Free').length).toBeGreaterThan(0);
+  });
+
+  it('offers Upgrade for a purchasable tier while the free one still says Free', async () => {
+    reply('GET', '/v1/me', ME);
+    reply('GET', '/v1/organizations/org1/plan', HOME_PLAN);
+    reply('GET', '/v1/organizations/org1/plans', {
+      plans: [
+        { id: 'home', displayName: 'Nodeau Home', summary: 'a', features: [], current: true, purchasable: false, free: true },
+        { id: 'home-pro', displayName: 'Nodeau Home Pro', summary: 'b', features: [], current: false, purchasable: true, free: false },
+      ],
+    });
+    window.history.pushState({}, '', '/plan');
+    render(<App />);
+
+    expect(await screen.findByRole('button', { name: /upgrade/i })).toBeInTheDocument();
+    // The current tier renders no aside at all, so "Free" appears only when the
+    // free tier is NOT the current one — which is the case the defect was about.
+    expect(screen.queryByText(/coming soon/i)).not.toBeInTheDocument();
   });
 });
