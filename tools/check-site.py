@@ -213,6 +213,32 @@ PLATFORM_EXCLUSIONS = (
 # live there and nowhere else. If a future edit trims them, every other page
 # becomes an overclaim by omission — so they are asserted rather than trusted.
 REQUIRED = [
+    # THE SUPPORT MATRIX IS AN EXIT CRITERION, NOT A PAGE DECORATION.
+    #
+    # docs/ROADMAP.md §7 asks for two things and they are joined by "and": a
+    # second platform reaching meaningful product quality, AND a support matrix
+    # distinguishing unsupported · experimental · qualified · recommended.
+    # Deleting the table would un-meet half a phase's exit criterion silently,
+    # with every other page still reading correctly — so the four level names
+    # and the rows that carry the exclusions are asserted rather than trusted.
+    #
+    # "Batch inference" is required on the install page because it is the one
+    # §7.1 parity item with no darwin implementation. A matrix that stopped
+    # listing it would not become wrong sentence by sentence; it would become
+    # wrong by omission, which is the failure this whole file exists to catch.
+    ("install/index.html", "Recommended",
+     "the support matrix must keep the level that means 'what we run and measure'"),
+    ("install/index.html", "Qualified",
+     "the support matrix must keep the level Apple Silicon sits at"),
+    ("install/index.html", "Experimental",
+     "the four levels are the exit criterion; a level with nothing in it is still a level"),
+    ("install/index.html", "Unsupported",
+     "the support matrix must keep the level that means Nodeau refuses rather than half-works"),
+    ("install/index.html", "Batch inference",
+     "the matrix must keep the row naming the one capability a Mac does not have"),
+    ("install/index.html", "runs standalone",
+     "the matrix must keep the row saying a Mac does not join a fleet"),
+
     ("roadmap/index.html", "Nodeau does not do this",
      "the roadmap must say plainly that failover does not exist"),
     ("roadmap/index.html", "no automatic failover",

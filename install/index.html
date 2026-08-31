@@ -103,8 +103,10 @@
             <li>No Windows, and no WSL yet</li>
           </ul>
           <p style="color:var(--text-3);font-size:0.85rem;margin:1rem 0 0">
-            Nodeau has been run on an <strong>RTX 3080</strong> and an
-            <strong>RTX 2080</strong> under Ubuntu 24.04. On a card it has not
+            Nodeau has been run on an <strong>RTX 5070&nbsp;Ti</strong>, an
+            <strong>RTX 3080</strong>, an <strong>RTX 5060&nbsp;Ti</strong> and an
+            <strong>RTX 2080</strong> under Ubuntu 24.04, and on an
+            <strong>M3&nbsp;Pro</strong> under macOS. On a card it has not
             measured directly it works out a cautious estimate and tells you
             that is what it did, instead of guessing quietly. Other NVIDIA cards
             are not known to be a problem — they simply have not been measured
@@ -112,6 +114,105 @@
           </p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== support matrix === -->
+  <section class="tight divider">
+    <div class="wrap">
+      <h2 style="font-size:var(--step-2)">What runs where</h2>
+      <p style="color:var(--text-3);max-width:68ch;margin-top:0.6rem">
+        Four levels, and we use them literally.
+        <strong>Recommended</strong> is what we run every day and measure against.
+        <strong>Qualified</strong> means a real machine has been through the whole
+        customer path and the exclusions below are known and listed.
+        <strong>Experimental</strong> would mean it runs but we would not ask you to
+        rely on it — nothing sits there today.
+        <strong>Unsupported</strong> means Nodeau refuses rather than half-works.
+      </p>
+
+      <div class="compare-wrap" style="margin-top:1.4rem">
+        <table class="compare">
+          <caption>Platform support. A level is a claim about evidence, not about intent.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Platform</th>
+              <th scope="col">Level</th>
+              <th scope="col">What that rests on</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Linux · NVIDIA<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">Ubuntu 24.04, x86_64</span></th>
+              <td><span class="pill pill-available">Recommended</span></td>
+              <td style="text-align:left">Several machines and four NVIDIA cards, through reboots, a power cut and a GPU swap.</td>
+            </tr>
+            <tr>
+              <th scope="row">Apple Silicon<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">M-series, macOS</span></th>
+              <td><span class="pill pill-available">Qualified</span></td>
+              <td style="text-align:left">One machine, an M3&nbsp;Pro on macOS&nbsp;26.5, installed from the public path and serving on Metal. Earlier macOS versions are untested rather than unsupported.</td>
+            </tr>
+            <tr>
+              <th scope="row">Windows via WSL</th>
+              <td><span class="pill pill-exploring">Unsupported</span></td>
+              <td style="text-align:left">The GPU path through WSL is genuinely different, and is refused rather than half-supported. Native Windows is not planned.</td>
+            </tr>
+            <tr>
+              <th scope="row">AMD and Intel GPUs</th>
+              <td><span class="pill pill-exploring">Unsupported</span></td>
+              <td style="text-align:left">A different runtime and memory story, not a configuration flag.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="compare-wrap" style="margin-top:1.6rem">
+        <table class="compare">
+          <caption>What each qualified platform does. A dash is a capability that is not there, not one that is slower.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Capability</th>
+              <th scope="col">Linux · NVIDIA</th>
+              <th scope="col">Apple Silicon</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="compare-group"><th scope="rowgroup" colspan="3">The same on both</th></tr>
+            <tr><th scope="row">Local inference on your own GPU</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">Model catalog, download and verified cache</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">Will it fit? — admission before anything starts</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">OpenAI-compatible API</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row"><code>run</code> · <code>ps</code> · <code>stop</code> · <code>logs</code> · <code>doctor</code></th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">Local dashboard</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">Accounts, plans and offline entitlements</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">Works with no internet once installed</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">Clean uninstall</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr class="compare-group"><th scope="rowgroup" colspan="3">Where the two differ</th></tr>
+            <tr>
+              <th scope="row">Several GPUs in one machine</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not applicable</span><br><span style="color:var(--text-3);font-size:0.8rem">one integrated GPU</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Several machines as one fleet</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">runs standalone</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Batch inference</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">Linux-only; refuses clearly</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="color:var(--text-3);max-width:68ch;margin-top:1.2rem;font-size:0.9rem">
+        On Apple Silicon the GPU shares one pool of memory with everything else, so
+        whether a model fits depends on what else is running. The same request can
+        be admitted today and correctly refused tomorrow — Nodeau shows you the
+        arithmetic either way rather than leaving you to guess.
+      </p>
     </div>
   </section>
 
