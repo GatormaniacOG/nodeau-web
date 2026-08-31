@@ -1,0 +1,4 @@
+# Python bytecode from tools/. Generated when a checker is imported (the
+# tier guards are exercised by importing check-site.py), never source.
+__pycache__/
+*.pyc

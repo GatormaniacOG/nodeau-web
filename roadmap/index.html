@@ -98,7 +98,7 @@
         <div class="stage-head">
           <h2>Available — the published build</h2>
           <span class="pill pill-available">Available</span>
-          <p>Everything here is in the published build (<span data-release></span>), on a Linux machine with an NVIDIA GPU. This is what you get by following the <a href="/install/">install guide</a>.</p>
+          <p>Everything here is in the published build (<span data-release></span>), on a Linux machine with an NVIDIA GPU or on an Apple Silicon Mac. This is what you get by following the <a href="/install/">install guide</a>.</p>
         </div>
         <div class="rows">
         <div class="row">
@@ -135,6 +135,11 @@
           <h3>GPU hardware observation</h3>
           <span class="pill pill-available">Available</span>
           <p>A node agent reports the GPU's real addressable memory and current usage.</p>
+        </div>
+        <div class="row">
+          <h3>Several GPUs inside one machine</h3>
+          <span class="pill pill-available">Available</span>
+          <p>Per-card observation, per-card reservations, and placement within a machine as well as between machines. Nodeau names the physical card, Kubernetes allocates that card, and the telemetry shows which one ran the work. Included in Home Pro, up to two cards in any one machine.</p>
         </div>
         <div class="row">
           <h3>Model profiles that carry their source</h3>
@@ -300,7 +305,7 @@
           <p>More failure modes handled cleanly, better recovery, clearer diagnostics.</p>
         </div>
         <div class="row">
-          <h3>More Ubuntu and Linux coverage</h3>
+          <h3>More Linux and macOS coverage</h3>
           <span class="pill pill-next">Working on it</span>
           <p>Beyond the single measured Ubuntu 24.04 baseline.</p>
         </div>
@@ -324,16 +329,11 @@
 
       <div class="stage">
         <div class="stage-head">
-          <h2>Planned — more capacity per machine</h2>
+          <h2>Planned — moving work and weights around the fleet</h2>
           <span class="pill pill-planned">Planned</span>
-          <p>Nodeau works with one GPU per machine, however many machines there are. Using several cards in one box is a genuinely different problem from using several machines, and solving one did not solve the other.</p>
+          <p>Nodeau now schedules every qualified card in a machine independently. What is still ahead is the fleet acting as one: getting weights to the machine that will need them, running work when nobody is watching, and reaching an installation from somewhere else.</p>
         </div>
         <div class="rows">
-        <div class="row">
-          <h3>Several GPUs inside one machine</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Per-card observation, per-card reservations and placement within a machine as well as between machines. Part of what Home Pro and Business include; not built yet.</p>
-        </div>
         <div class="row">
           <h3>Model replication across machines</h3>
           <span class="pill pill-planned">Planned</span>
@@ -456,8 +456,8 @@
         </div>
         <div class="row">
           <h3>macOS support</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>Unified memory changes the admission model substantially.</p>
+          <span class="pill pill-available">Qualified</span>
+          <p>Apple Silicon runs models on the Mac's own GPU through Metal. Qualified on Apple Silicon, standalone: a Mac cannot join a fleet, and batch inference is Linux-only. Intel Macs are unsupported.</p>
         </div>
         <div class="row">
           <h3>Broader runtimes</h3>
@@ -553,7 +553,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> · Linux-first</span>
+      <span>Self-hosted <span data-release></span> · your hardware, your models</span>
     </div>
   </div>
 </footer>
