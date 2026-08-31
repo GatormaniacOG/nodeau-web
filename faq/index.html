@@ -68,7 +68,7 @@
       <h2 id="about-nodeau">About Nodeau</h2>
       <details class="qa">
         <summary>What is Nodeau?</summary>
-        <div class="answer"><p>Software that turns a computer with an NVIDIA GPU into local AI infrastructure. It checks the machine over, works out whether a model will fit safely in the GPU’s memory, sets up everything needed to run it, and gives you an OpenAI-compatible API on that machine.</p></div>
+        <div class="answer"><p>Software that turns a computer with an NVIDIA GPU, or an Apple Silicon Mac, into local AI infrastructure. It checks the machine over, works out whether a model will fit safely in the GPU’s memory, sets up everything needed to run it, and gives you an OpenAI-compatible API on that machine.</p></div>
       </details>
       <details class="qa">
         <summary>Who is Nodeau for?</summary>
@@ -91,7 +91,7 @@
       <h2 id="getting-started">Getting started</h2>
       <details class="qa">
         <summary>How do I install it?</summary>
-        <div class="answer"><p>Three commands, on a machine that already has a working NVIDIA driver:</p><div class='code'><pre><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+        <div class="answer"><p>Three commands. On Linux the machine needs a working NVIDIA driver already; on an Apple Silicon Mac there is nothing to install first.</p><div class='code'><pre><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
 nodeau install
 nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/install/'>install guide</a> walks through each one.</p></div>
       </details>
@@ -112,7 +112,7 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       <h2 id="hardware">Hardware</h2>
       <details class="qa">
         <summary>What GPUs are supported?</summary>
-        <div class="answer"><p>NVIDIA, one GPU per machine. Nodeau has been run end to end on an <strong>RTX 3080</strong> and an <strong>RTX 2080</strong> under Ubuntu 24.04.</p><p>On other NVIDIA cards it still works. Where it has a direct measurement for your configuration it uses it; where it does not, it works out a cautious estimate from the model’s own shape, holds extra memory back, and tells you the number is an estimate. What it will not do is quietly present a guess as a measurement, or promise that every card on the market is known to be fine.</p></div>
+        <div class="answer"><p>NVIDIA cards on Linux — several per machine, each judged on its own — and the integrated GPU of an Apple Silicon Mac through Metal. Nodeau has been run end to end on an <strong>RTX 5070&nbsp;Ti</strong>, an <strong>RTX 3080</strong>, an <strong>RTX 5060&nbsp;Ti</strong> and an <strong>RTX 2080</strong> under Ubuntu 24.04, and on an <strong>M3&nbsp;Pro</strong> under macOS.</p><p>On other NVIDIA cards it still works. Where it has a direct measurement for your configuration it uses it; where it does not, it works out a cautious estimate from the model’s own shape, holds extra memory back, and tells you the number is an estimate. What it will not do is quietly present a guess as a measurement, or promise that every card on the market is known to be fine.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau install my NVIDIA driver?</summary>
@@ -136,7 +136,7 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>Does Nodeau support macOS?</summary>
-        <div class="answer"><p>No. Also <strong>Exploring</strong>. Unified memory changes the fit calculation substantially.</p></div>
+        <div class="answer"><p>Yes, on <strong>Apple Silicon</strong> — <strong>qualified</strong>, with exclusions worth knowing before you start. Nodeau runs models on the Mac's own GPU through Metal, and installing needs no password and no driver.</p><p>What a Mac does not do: it runs <strong>standalone</strong> and cannot join a fleet, because it is a native execution plane rather than a Kubernetes node — Nodeau will not install a cluster on your laptop to pretend otherwise. <strong>Batch inference is Linux-only</strong> and refuses with a clear error. And because Apple Silicon shares one pool of memory between everything, whether a model fits depends on what else is running: the same request can be admitted today and correctly refused tomorrow, and Nodeau tells you the numbers when it refuses.</p><p>Intel Macs are unsupported.</p></div>
       </details>
       <details class="qa">
         <summary>Can Nodeau use several GPUs?</summary>
@@ -350,7 +350,7 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> · Linux-first</span>
+      <span>Self-hosted <span data-release></span> · your hardware, your models</span>
     </div>
   </div>
 </footer>

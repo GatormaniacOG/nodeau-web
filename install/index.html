@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Install Nodeau — Run Your First Local AI Model</title>
-<meta name="description" content="Turn a compatible Linux/NVIDIA PC into a private, OpenAI-compatible local AI endpoint. Requirements, the exact install commands, and what to do if it fails.">
+<meta name="description" content="Turn a Linux/NVIDIA PC or an Apple Silicon Mac into a private, OpenAI-compatible local AI endpoint. Requirements, the exact install commands, and what to do if it fails.">
 <link rel="canonical" href="https://nodeau.ai/install/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="article">
@@ -56,17 +56,19 @@
       <p class="eyebrow">Install</p>
       <h1 style="font-size:var(--step-3)">Run your first local AI model with Nodeau.</h1>
       <p class="lede" style="margin-top:1.15rem">
-        Turn a compatible Linux/NVIDIA PC into a private, OpenAI-compatible
-        local AI endpoint. Three commands, then a request.
+        Turn a Linux/NVIDIA PC or an Apple Silicon Mac into a private,
+        OpenAI-compatible local AI endpoint. Three commands, then a request.
       </p>
       <p style="color:var(--text-3);margin-top:1rem">
         Current build <span data-release></span> · free · no account needed
       </p>
 
       <div class="note" style="margin-top:2rem;max-width:64ch">
-        Nodeau is Linux-first and NVIDIA-only, and it expects the graphics
-        driver to be working before it starts. Everything else on this page it
-        does for you. If something does go wrong, tell us — a report from a
+        Nodeau runs on Linux with an NVIDIA GPU, and on Apple Silicon Macs
+        through Metal. Both are qualified. A Mac runs standalone — it cannot
+        join a fleet, and batch inference is Linux-only. On Linux it expects
+        the graphics driver to be working before it starts. Everything else on
+        this page it does for you. If something does go wrong, tell us — a report from a
         machine we have never seen is the most useful thing we get.
       </div>
     </div>
@@ -81,19 +83,21 @@
       <div class="grid grid-2" style="margin-top:1.75rem;align-items:start">
         <div>
           <ul class="checks">
-            <li><strong>Ubuntu 24.04 LTS</strong>, installed normally (not in a virtual machine without GPU passthrough)</li>
-            <li><strong>x86_64</strong></li>
-            <li>An <strong>NVIDIA GPU</strong> with a <strong>working driver already installed</strong></li>
-            <li>About <strong>20&nbsp;GB free disk</strong> — Nodeau is under 100&nbsp;MB, but the container images are ~3&nbsp;GB and the starter model is 4.7&nbsp;GB</li>
+            <li><strong>Linux:</strong> Ubuntu 24.04 LTS on <strong>x86_64</strong>, installed normally (not in a virtual machine without GPU passthrough), with an <strong>NVIDIA GPU</strong> and a <strong>working driver already installed</strong></li>
+            <li><strong>macOS:</strong> an <strong>Apple Silicon</strong> Mac (M-series). No driver to install, and no password needed. Tested on macOS&nbsp;26.5; earlier versions are untested rather than unsupported — the installer does not check the version</li>
+            <li>About <strong>20&nbsp;GB free disk</strong> — Nodeau is under 100&nbsp;MB and the starter model is 4.7&nbsp;GB; on Linux the container images add ~3&nbsp;GB</li>
             <li>An internet connection during installation and the model download</li>
-            <li><strong>sudo</strong>, for the setup step only</li>
+            <li><strong>sudo</strong> on Linux, for the setup step only — a Mac install needs no password</li>
           </ul>
         </div>
         <div class="panel panel-quiet">
           <h3 style="font-size:1rem;margin-bottom:0.6rem">Current limits</h3>
           <ul class="checks checks-future" style="margin-bottom:0">
-            <li>NVIDIA only — no AMD, Intel or Apple GPUs</li>
-            <li>One GPU per machine</li>
+            <li>Apple Silicon Macs run <strong>standalone</strong> — a Mac is not a Kubernetes node and cannot join a fleet</li>
+            <li><strong>Batch inference is Linux-only</strong> — it has no macOS implementation and refuses with a clear error</li>
+            <li>On a Mac, whether a model fits depends on what else is running; the same request can be admitted today and correctly refused tomorrow</li>
+            <li>AMD and Intel GPUs are unsupported</li>
+            <li>Several GPUs per machine on Linux/NVIDIA; a Mac uses its one integrated GPU</li>
             <li>The installer sets up one machine</li>
             <li>llama.cpp runtime</li>
             <li>No Windows, and no WSL yet</li>
@@ -469,7 +473,7 @@ print(reply.choices[0].message.content)</code></pre>
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> · Linux-first</span>
+      <span>Self-hosted <span data-release></span> · your hardware, your models</span>
     </div>
   </div>
 </footer>

@@ -98,7 +98,7 @@
         <div class="stage-head">
           <h2>Available — the published build</h2>
           <span class="pill pill-available">Available</span>
-          <p>Everything here is in the published build (<span data-release></span>), on a Linux machine with an NVIDIA GPU. This is what you get by following the <a href="/install/">install guide</a>.</p>
+          <p>Everything here is in the published build (<span data-release></span>), on a Linux machine with an NVIDIA GPU or on an Apple Silicon Mac. This is what you get by following the <a href="/install/">install guide</a>.</p>
         </div>
         <div class="rows">
         <div class="row">
@@ -305,7 +305,7 @@
           <p>More failure modes handled cleanly, better recovery, clearer diagnostics.</p>
         </div>
         <div class="row">
-          <h3>More Ubuntu and Linux coverage</h3>
+          <h3>More Linux and macOS coverage</h3>
           <span class="pill pill-next">Working on it</span>
           <p>Beyond the single measured Ubuntu 24.04 baseline.</p>
         </div>
@@ -456,8 +456,8 @@
         </div>
         <div class="row">
           <h3>macOS support</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>Unified memory changes the admission model substantially.</p>
+          <span class="pill pill-available">Qualified</span>
+          <p>Apple Silicon runs models on the Mac's own GPU through Metal. Qualified on Apple Silicon, standalone: a Mac cannot join a fleet, and batch inference is Linux-only. Intel Macs are unsupported.</p>
         </div>
         <div class="row">
           <h3>Broader runtimes</h3>
@@ -553,7 +553,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> · Linux-first</span>
+      <span>Self-hosted <span data-release></span> · your hardware, your models</span>
     </div>
   </div>
 </footer>

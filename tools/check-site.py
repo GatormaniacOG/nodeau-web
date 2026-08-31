@@ -121,6 +121,93 @@ NEEDS_DISCLAIMER = [
 # many characters of nested <div> sit in between.
 DISCLAIMER_WINDOW = 400
 
+# ---------------------------------------------------------------------------
+# PLATFORM CLAIMS — the second truthfulness axis
+# ---------------------------------------------------------------------------
+#
+# The capability rules below this were written after the pricing table ticked
+# seven Business features that do not exist. They ask "does Nodeau DO this?".
+# They have no notion of WHERE it does it, which is why every sentence on the
+# site could say Linux-only while the published build ran on Apple Silicon and
+# nothing noticed.
+#
+# The two axes fail in opposite directions and both are live. A capability
+# claim overclaims by naming something unbuilt; a platform claim can overclaim
+# the same way, but it can equally go STALE and understate — telling a customer
+# they cannot do what they have already bought (BUILD_STATE 111.5). So these
+# rules run in both directions: strings that must not survive a platform
+# shipping, and claims that must never appear at all.
+#
+# Vocabulary is docs/ROADMAP.md 7's four levels — unsupported, experimental,
+# qualified, recommended — used consistently here so the full support matrix,
+# which is deferred as its own design task, slots in rather than needing a
+# rewrite of everything this touches.
+
+RETIRED_PLATFORM = [
+    (r"Linux-first",
+     "stale: Apple Silicon is qualified; the footer claim appeared on every page"),
+    (r"NVIDIA-only",
+     "stale: the native Metal execution plane is qualified on Apple Silicon"),
+    (r"no AMD, Intel or Apple GPUs",
+     "false: Apple Silicon runs through Metal; AMD and Intel remain unsupported"),
+    (r"Unified memory changes the fit calculation",
+     "stale FAQ answer: macOS is no longer 'Exploring', it is qualified"),
+    (r"Unified memory changes the admission model",
+     "stale roadmap entry: macOS is no longer 'Exploring', it is qualified"),
+    (r"One GPU per machine",
+     "stale since Phase 9: every qualified card in a machine is scheduled independently"),
+
+    # A macOS version floor is an assertion nobody has evidence for. install.sh
+    # branches on Darwin/arm64 and never checks a version, and exactly one
+    # configuration has run Nodeau — macOS 26.5 on an M3 Pro. Say what was
+    # tested; do not print a minimum that implies somebody looked.
+    (r"macOS 1[0-9] or later|macOS 1[0-9]\+|requires macOS 1[0-9]",
+     "invented version floor: untested is not unsupported, and the installer checks no version"),
+]
+
+# Platform claims that are wrong in EVERY context, so a plain match is safe.
+# Anything whose truth depends on a nearby qualifier belongs in
+# NEEDS_DISCLAIMER instead — a negation like "a Mac cannot join a fleet" must
+# not be caught here, and writing it as a forbidden pattern would do exactly
+# that.
+FORBIDDEN_PLATFORM = [
+    (r"(macOS|Apple Silicon) is fully supported|full (macOS|Apple Silicon) support",
+     "overclaim: macOS is qualified with named exclusions, not 'fully supported'"),
+    (r"(Mac|macOS|Apple Silicon)[^.]{0,40}can join[^.]{0,30}(fleet|cluster)",
+     "false: a Mac is a native execution plane and is not a Kubernetes node (issue #93)"),
+    (r"multi[- ]GPU on (a )?(Mac|macOS|Apple)",
+     "false: multi-GPU per machine is a Linux/NVIDIA capability"),
+    (r"batch (inference|jobs?) (works?|runs?|is available) on (a )?(Mac|macOS|Apple)",
+     "false: Batch Inference V1 has no darwin implementation and returns a typed error"),
+    (r"runs on (any|every) Mac",
+     "overclaim: qualified on Apple Silicon only, and on one machine and one model"),
+]
+
+# A platform named without its exclusions is the overclaim this whole section
+# exists to prevent. The operator chose "qualified" over "experimental", and
+# that word is only honest when the same surface says what is excluded.
+#
+# This is a PER-PAGE rule, not a per-mention one, and the distinction was
+# forced by watching it run. Written first as a proximity window like
+# NEEDS_DISCLAIMER, it fired on three honest passing mentions — "on a Linux
+# machine with an NVIDIA GPU or on an Apple Silicon Mac" — where the page
+# already carried the exclusions in full further down. Satisfying it per
+# mention would have meant repeating "standalone" into unreadable copy, and
+# loosening the regex until those passed would have left a rule that matched
+# anything.
+#
+# "The same surface" is the page. A page that names the platform must also
+# state what it excludes, somewhere a reader will meet it. That is strictly
+# stronger than the window in one respect — a far-off footer mention no longer
+# passes just because a qualifier happens to sit within 400 characters of it —
+# and weaker in none that matter, because a page cannot mention the platform
+# and omit the exclusions entirely, which is the failure being guarded.
+PLATFORM_WORDS = r"Apple Silicon|Metal|macOS"
+PLATFORM_EXCLUSIONS = (
+    r"standalone|cannot join|not a Kubernetes|Linux-only|Linux only|"
+    r"batch inference is|does not join|unsupported"
+)
+
 # Content the site must not lose. The roadmap is the one page that carries the
 # full picture, so the exact limits of what multi-machine operation has shown
 # live there and nowhere else. If a future edit trims them, every other page
@@ -381,14 +468,26 @@ def main() -> int:
         for pattern, why in RETIRED:
             for m in re.finditer(pattern, src):
                 errors.append(f"{name}: retired phrase {m.group(0)!r} — {why}")
+        for pattern, why in RETIRED_PLATFORM:
+            for m in re.finditer(pattern, src):
+                errors.append(f"{name}: retired platform claim {m.group(0)!r} — {why}")
         for pattern, why in FORBIDDEN:
             for m in re.finditer(pattern, src, re.IGNORECASE):
                 errors.append(f"{name}: forbidden claim {m.group(0)!r} — {why}")
+        for pattern, why in FORBIDDEN_PLATFORM:
+            for m in re.finditer(pattern, src, re.IGNORECASE):
+                errors.append(f"{name}: forbidden platform claim {m.group(0)!r} — {why}")
 
         # A loaded word is fine as long as the sentence around it does the
         # qualifying. Checking a window rather than the word itself is what
         # keeps this from firing on every honest mention.
         plain = text_of(src)
+        # Per-page: naming a platform obliges the page to say what it excludes.
+        if re.search(PLATFORM_WORDS, plain, re.IGNORECASE) and not re.search(
+                PLATFORM_EXCLUSIONS, plain, re.IGNORECASE):
+            errors.append(
+                f"{name}: names a platform but states no exclusions — "
+                "a page that says where Nodeau runs must say what it does not do there")
         for word, disclaimer in NEEDS_DISCLAIMER:
             for m in re.finditer(word, plain, re.IGNORECASE):
                 lo = max(0, m.start() - DISCLAIMER_WINDOW)
