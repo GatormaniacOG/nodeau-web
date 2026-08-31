@@ -226,6 +226,8 @@ REQUIRED = [
     # §7.1 parity item with no darwin implementation. A matrix that stopped
     # listing it would not become wrong sentence by sentence; it would become
     # wrong by omission, which is the failure this whole file exists to catch.
+    ("install/index.html", "What runs where",
+     "the support matrix section itself must remain — its heading is the one string unique to it"),
     ("install/index.html", "Recommended",
      "the support matrix must keep the level that means 'what we run and measure'"),
     ("install/index.html", "Qualified",
