@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nodeau — Private AI Infrastructure on GPUs You Already Own</title>
-<meta name="description" content="Nodeau turns a Linux/NVIDIA machine or an Apple Silicon Mac into private AI infrastructure. It works out whether a model fits, sets it up, and gives you an OpenAI-compatible API on your own hardware.">
+<meta name="description" content="Chat, embeddings, reranking, structured output and image understanding on GPUs you own. Nodeau works out whether a model fits before it starts anything, on Linux/NVIDIA and Apple Silicon.">
 <link rel="canonical" href="https://nodeau.ai/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
@@ -67,10 +67,16 @@
             arithmetic. Nodeau does that part, then hands you an
             OpenAI-compatible API on your own machine.
           </p>
+          <p class="lede" style="margin-top:0.85rem;max-width:52ch">
+            Not just chat. Embeddings, reranking, structured output, tool
+            calling and image understanding — the same catalog, the same
+            engine, the same two commands.
+          </p>
           <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
             On Linux with an NVIDIA card, and on Apple Silicon through Metal.
             A Mac runs standalone — it cannot join a fleet, and batch
-            inference is Linux-only.
+            inference is Linux-only. The workloads beyond chat are measured on
+            Linux/NVIDIA today.
           </p>
           <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
             Three commands. No Kubernetes to learn.
