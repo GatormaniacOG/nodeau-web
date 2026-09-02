@@ -97,7 +97,9 @@
             <li><strong>Batch inference is Linux-only</strong> — it has no macOS implementation and refuses with a clear error</li>
             <li>On a Mac, whether a model fits depends on what else is running; the same request can be admitted today and correctly refused tomorrow</li>
             <li>AMD and Intel GPUs are unsupported</li>
-            <li>Several GPUs per machine on Linux/NVIDIA; a Mac uses its one integrated GPU</li>
+            <li>Several GPUs per machine on Linux/NVIDIA, and a single model can be split
+                across them when one card is not enough; a Mac uses its one
+                integrated GPU</li>
             <li>The installer sets up one machine</li>
             <li>llama.cpp runtime</li>
             <li>No Windows, and no WSL yet</li>
@@ -151,6 +153,11 @@
               <th scope="row">Apple Silicon<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">M-series, macOS</span></th>
               <td><span class="pill pill-available">Qualified</span></td>
               <td style="text-align:left">One machine, an M3&nbsp;Pro on macOS&nbsp;26.5, installed from the public path and serving on Metal. Earlier macOS versions are untested rather than unsupported.</td>
+            </tr>
+            <tr>
+              <th scope="row">One model across several GPUs<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">Linux · NVIDIA, same machine</span></th>
+              <td><span class="pill pill-available">Qualified</span></td>
+              <td style="text-align:left">One heterogeneous pair — an RTX&nbsp;3080 and an RTX&nbsp;5060&nbsp;Ti — running a model whose weights fit on neither card alone. Other combinations are untested. It buys capacity, not speed. <strong>Not available on Apple Silicon</strong>, which uses its one integrated GPU.</td>
             </tr>
             <tr>
               <th scope="row">Windows via WSL</th>

@@ -142,6 +142,21 @@
           <p>Per-card observation, per-card reservations, and placement within a machine as well as between machines. Nodeau names the physical card, Kubernetes allocates that card, and the telemetry shows which one ran the work. Included in Home Pro, up to two cards in any one machine.</p>
         </div>
         <div class="row">
+          <h3>One model across several GPUs</h3>
+          <span class="pill pill-available">Available</span>
+          <p>When a model is too large for any single card, Nodeau can split one
+          workload across several GPUs in the same Linux machine. It picks the
+          exact cards, reserves them as one unit — all of them or none — and
+          checks that <em>each</em> card can hold its own share, because GPU
+          memory is not pooled. Qualified on one heterogeneous pair, an
+          RTX&nbsp;3080 and an RTX&nbsp;5060&nbsp;Ti, serving a model whose
+          weights fit on neither card alone. This buys capacity, not speed: on
+          that pair a model that did fit on one card ran about 21% slower split
+          across two than on the faster card by itself. Linux and NVIDIA only;
+          a Mac uses its one integrated GPU. Included in Home Pro, up to two
+          cards in any one machine.</p>
+        </div>
+        <div class="row">
           <h3>Model profiles that carry their source</h3>
           <span class="pill pill-available">Available</span>
           <p>Where a configuration has been measured on real hardware, Nodeau uses the measurement. Where it hasn't, it derives a conservative estimate from the model's own architecture, adds a further margin, and labels the decision as estimated. An estimate is never shown as a measurement.</p>
