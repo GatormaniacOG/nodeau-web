@@ -239,6 +239,24 @@ REQUIRED = [
     ("install/index.html", "runs standalone",
      "the matrix must keep the row saying a Mac does not join a fleet"),
 
+    # PHASE 11's CLAIM AND ITS CAVEAT ARE ONE UNIT.
+    #
+    # "One model across several GPUs" is the kind of line that reads as a
+    # performance feature unless the page says otherwise in the same breath.
+    # It is not one: on the qualifying pair a model that fitted on one card ran
+    # ~21% SLOWER split across two. So the capacity claim and the speed
+    # disclaimer are asserted together — losing the second while keeping the
+    # first is the overclaim-by-omission this file exists to catch, and it is
+    # the likeliest edit somebody makes while tightening copy.
+    ("roadmap/index.html", "One model across several GPUs",
+     "the roadmap must keep the Phase 11 capability row"),
+    ("roadmap/index.html", "not speed",
+     "the multi-GPU row must keep saying it buys capacity rather than speed"),
+    ("roadmap/index.html", "memory is not pooled",
+     "the multi-GPU row must keep saying GPU memory is not pooled"),
+    ("install/index.html", "One model across several GPUs",
+     "the support matrix must keep the row that distinguishes Linux/NVIDIA from Apple on this"),
+
     ("roadmap/index.html", "Nodeau does not do this",
      "the roadmap must say plainly that failover does not exist"),
     ("roadmap/index.html", "no automatic failover",
