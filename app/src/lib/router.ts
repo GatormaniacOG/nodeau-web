@@ -29,6 +29,15 @@ export type Route =
   // Neither is evidence of payment: the page says what happened and reads state
   // from the API, which learns it from a verified webhook.
   | { name: 'billing'; complete: boolean }
+  // The fleet — Phase 14. `/fleet` sits BESIDE `/installations` rather than
+  // replacing it (owner decision OD-4): an organisation may own several
+  // installations, which are separate fleets that cannot schedule against each
+  // other, and merging them into one list would imply capacity that does not
+  // exist.
+  | { name: 'fleet' }
+  | { name: 'fleetMachine'; id: string }
+  | { name: 'fleetWorkloads' }
+  | { name: 'fleetRun' }
   | { name: 'signin'; error?: string }
   | { name: 'notfound'; path: string };
 
@@ -49,6 +58,13 @@ export function parseRoute(pathname: string, search: string): Route {
   if (path === '/settings') return { name: 'settings' };
   if (path === '/billing') return { name: 'billing', complete: false };
   if (path === '/billing/complete') return { name: 'billing', complete: true };
+  if (path === '/fleet') return { name: 'fleet' };
+  if (path === '/fleet/workloads') return { name: 'fleetWorkloads' };
+  if (path === '/fleet/run') return { name: 'fleetRun' };
+  if (path.startsWith('/fleet/machines/')) {
+    const id = decodeURIComponent(path.slice('/fleet/machines/'.length));
+    return id ? { name: 'fleetMachine', id } : { name: 'fleet' };
+  }
   if (path === '/signin') return { name: 'signin', error: params.get('error') ?? undefined };
   return { name: 'notfound', path };
 }
@@ -82,4 +98,8 @@ export const hrefFor = {
   plan: () => '/plan',
   settings: () => '/settings',
   signin: () => '/signin',
+  fleet: () => '/fleet',
+  fleetMachine: (id: string) => `/fleet/machines/${encodeURIComponent(id)}`,
+  fleetWorkloads: () => '/fleet/workloads',
+  fleetRun: () => '/fleet/run',
 };

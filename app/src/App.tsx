@@ -9,6 +9,9 @@ import { BillingPage } from './pages/Billing';
 import { DashboardPage } from './pages/Dashboard';
 import { SettingsPage } from './pages/Settings';
 import { SignInPage } from './pages/SignIn';
+import { FleetMachinePage, FleetPage } from './pages/Fleet';
+import { FleetWorkloadsPage } from './pages/FleetWorkloads';
+import { FleetRunPage } from './pages/FleetRun';
 
 /**
  * The application shell.
@@ -167,6 +170,14 @@ function Page({
       return <PlanPage org={org} />;
     case 'billing':
       return <BillingPage org={org} complete={route.complete} navigate={navigate} />;
+    case 'fleet':
+      return <FleetPage org={org} navigate={navigate} />;
+    case 'fleetMachine':
+      return <FleetMachinePage org={org} id={route.id} navigate={navigate} />;
+    case 'fleetWorkloads':
+      return <FleetWorkloadsPage org={org} navigate={navigate} />;
+    case 'fleetRun':
+      return <FleetRunPage org={org} navigate={navigate} />;
     case 'settings':
       return <SettingsPage me={me} org={org} />;
     case 'signin':
@@ -231,6 +242,30 @@ function Shell({
                 aria-current={route?.name === 'dashboard' ? 'page' : undefined}
               >
                 Overview
+              </a>
+              {/* Fleet BESIDE Installations, not instead of it (OD-4). An
+                  organisation may own several installations, which are separate
+                  fleets that cannot schedule against each other — merging them
+                  into one list would imply capacity that does not exist. */}
+              <a
+                href={hrefFor.fleet()}
+                onClick={go(hrefFor.fleet())}
+                aria-current={
+                  route?.name === 'fleet' || route?.name === 'fleetMachine' ? 'page' : undefined
+                }
+              >
+                Fleet
+              </a>
+              <a
+                href={hrefFor.fleetWorkloads()}
+                onClick={go(hrefFor.fleetWorkloads())}
+                aria-current={
+                  route?.name === 'fleetWorkloads' || route?.name === 'fleetRun'
+                    ? 'page'
+                    : undefined
+                }
+              >
+                Workloads
               </a>
               <a
                 href={hrefFor.installations()}

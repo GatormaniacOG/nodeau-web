@@ -95,6 +95,153 @@ export interface AvailablePlan {
   free: boolean;
 }
 
+// ---------------------------------------------------------------------------
+// The fleet — Phase 14
+// ---------------------------------------------------------------------------
+
+/**
+ * Can Nodeau Cloud see this fleet right now?
+ *
+ * # It is NOT health and it is NOT scheduling state
+ *
+ * Three orthogonal dimensions, never one value. A connected machine can be
+ * unhealthy; a draining machine is perfectly healthy; and a machine Nodeau
+ * Cloud cannot see may be serving happily. Collapsing them is how a dashboard
+ * tells somebody their fleet is down when it is not.
+ *
+ * `unknown` is the row that stops this lying. One connector reports a whole
+ * installation, so when it is offline the cloud does not know the other
+ * machines are offline — it knows it cannot see them.
+ */
+export type FleetPresence = 'online' | 'stale' | 'offline' | 'unknown';
+
+export interface FleetGPUView {
+  uuid: string;
+  ordinal: number;
+  model?: string;
+  vramTotalMib?: number;
+  vramUsedMib?: number;
+  /**
+   * Every live figure is OPTIONAL, and absent means UNOBSERVED rather than
+   * zero. An idle card at 0% and a card whose driver did not answer are
+   * different facts, and rendering both as "0" is confidently wrong about one.
+   */
+  utilizationPercent?: number;
+  temperatureC?: number;
+  powerWatts?: number;
+  powerLimitWatts?: number;
+  healthy: boolean;
+  /** Whether Nodeau can place work here, as the MACHINE resolved it. */
+  schedulable: boolean;
+  /** Why not, in the product's own words. */
+  note?: string;
+}
+
+export interface FleetMachineView {
+  id: string;
+  /** What to display: the operator's name if they set one, else the machine's. */
+  name: string;
+  /** Always what the machine calls itself, shown beside the display name so a
+   *  rename can never make two machines look like one. */
+  reportedName: string;
+  presence: FleetPresence;
+  health: string;
+  schedulingState: string;
+  /** What this machine reports it is USING. Never render the word "default":
+   *  it means different things on different builds. */
+  schedulingMode?: string;
+  platform?: string;
+  osVersion?: string;
+  nodeauVersion?: string;
+  agentVersion?: string;
+  role?: string;
+  executionPlane?: string;
+  /** What this machine can be asked to do. A control is offered only when the
+   *  machine that would execute it declares the capability — a button that will
+   *  certainly fail is not shown. */
+  capabilities?: string[];
+  localOnline?: boolean;
+  lastReportedAt?: string;
+  findings?: { code: string; severity?: string; detail: string }[];
+  gpus?: FleetGPUView[];
+}
+
+export interface FleetInstallation {
+  id: string;
+  name: string;
+  presence: FleetPresence;
+  lastSyncAt?: string;
+  connected: boolean;
+  nodeauVersion?: string;
+  /** The sentence to show above the machines — the product's own words. */
+  headline: string;
+  machines: FleetMachineView[];
+}
+
+export interface FleetView {
+  installations: FleetInstallation[];
+}
+
+export interface FleetWorkloadView {
+  name: string;
+  machineId?: string;
+  machineName?: string;
+  type?: string;
+  task?: string;
+  model?: string;
+  state: string;
+  reasonCode?: string;
+  reasonDetail?: string;
+  gpuCount?: number;
+  deviceUuids?: string[];
+  schedulingMode?: string;
+  /** The scheduler's own explanation, carried verbatim. There is no
+   *  cloud-side explanation generator and there must not be one here either. */
+  placementSummary?: string;
+  restartCount?: number;
+  generation?: number;
+  lastReportedAt?: string;
+}
+
+export type OperationState =
+  | 'requested'
+  | 'delivered'
+  | 'applying'
+  | 'applied'
+  | 'observed'
+  | 'failed'
+  | 'expired';
+
+export interface Operation {
+  id: string;
+  kind: string;
+  machineId?: string;
+  machineName?: string;
+  workloadName?: string;
+  deviceUuid?: string;
+  state: OperationState;
+  resultCode?: string;
+  resultDetail?: string;
+  summary?: string;
+  requestedByEmail?: string;
+  requestedAt: string;
+  deliveredAt?: string;
+  finishedAt?: string;
+  expiresAt?: string;
+}
+
+export interface FleetLogArtifact {
+  operationId: string;
+  text: string;
+  lines: number;
+  truncated: boolean;
+  collectedAt: string;
+  expiresAt: string;
+  /** The honest limitation, carried WITH the artefact so this cannot be
+   *  rendered without it. */
+  warning?: string;
+}
+
 export interface Installation {
   id: string;
   name: string;
@@ -341,6 +488,82 @@ export const api = {
     request<void>('POST', '/v1/activation/deny', { userCode }),
 
   logout: () => request<{ logoutUrl?: string }>('POST', '/v1/auth/logout'),
+
+  // -- the fleet ------------------------------------------------------------
+
+  fleet: (orgId: string, signal?: AbortSignal) =>
+    request<FleetView>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet`,
+      undefined,
+      signal,
+    ),
+
+  fleetMachine: (orgId: string, id: string, signal?: AbortSignal) =>
+    request<FleetMachineView>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/machines/${encodeURIComponent(id)}`,
+      undefined,
+      signal,
+    ),
+
+  renameFleetMachine: (orgId: string, id: string, displayName: string) =>
+    request<FleetMachineView>(
+      'PATCH',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/machines/${encodeURIComponent(id)}`,
+      { displayName },
+    ),
+
+  fleetWorkloads: (orgId: string, signal?: AbortSignal) =>
+    request<{ workloads: FleetWorkloadView[] }>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/workloads`,
+      undefined,
+      signal,
+    ),
+
+  fleetOperations: (orgId: string, signal?: AbortSignal) =>
+    request<{ operations: Operation[] }>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/operations`,
+      undefined,
+      signal,
+    ),
+
+  fleetOperation: (orgId: string, id: string, signal?: AbortSignal) =>
+    request<Operation>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/operations/${encodeURIComponent(id)}`,
+      undefined,
+      signal,
+    ),
+
+  /** Ask a machine, or the fleet, to do one typed thing.
+   *
+   *  Returns immediately with a handle to follow. Nothing here waits for a
+   *  model to download, and nothing renders a terminal success until the
+   *  operation reaches `observed` — which the SERVER decides by comparing the
+   *  intent against what the fleet reports, because only it holds both.
+   *
+   *  Three refusals are expected rather than exceptional:
+   *    403 FORBIDDEN — this plan includes seeing the fleet and not changing it.
+   *    409 CONFLICT  — the target machine's build cannot do this yet.
+   *    400 INVALID   — the parameters are not something Nodeau can run.
+   */
+  requestFleetOperation: (orgId: string, body: Record<string, unknown>) =>
+    request<Operation>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/operations`,
+      body,
+    ),
+
+  fleetLogs: (orgId: string, opId: string, signal?: AbortSignal) =>
+    request<FleetLogArtifact>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/logs/${encodeURIComponent(opId)}`,
+      undefined,
+      signal,
+    ),
 };
 
 /** signInURL is a top-level navigation, not a fetch — the provider redirect
