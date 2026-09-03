@@ -395,6 +395,11 @@ def comparison_rows(src: str) -> list[tuple[str, list[str]]]:
 # ownership — while marking Home Pro's unbuilt items honestly two columns to the
 # left. Business is not on sale, so nobody could be charged on the claim, but a
 # design partner reading it was told the tier already did things it cannot do.
+# Remote dashboard and management LEFT THIS LIST on 2026-09-03, when Phase 14
+# shipped in v0.7.0-beta.1 and was qualified from the artifact a customer
+# downloads. It is the only entry ever removed, and removing it is the whole
+# point of the list existing: a capability leaves when it ships, and until then
+# no page may tick it.
 NOT_BUILT = {
     "organisations and shared ownership",
     "role-based access control",
@@ -406,7 +411,6 @@ NOT_BUILT = {
     "priority queues",
     "advanced scheduling controls",
     "scheduled and overnight batch",
-    "remote dashboard and management",
     "model replication across machines",
 }
 
