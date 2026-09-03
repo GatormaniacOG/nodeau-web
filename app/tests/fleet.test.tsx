@@ -338,3 +338,124 @@ describe('the run form', () => {
     expect(options).toContain('balanced');
   });
 });
+
+// ---------------------------------------------------------------------------
+// Drain, maintenance and the power budget — Phase 14E
+// ---------------------------------------------------------------------------
+
+/** machine builds one machine detail response. */
+function machine(overrides: Record<string, unknown> = {}) {
+  return {
+    ...fleet().installations[0]!.machines[0]!,
+    capabilities: ['fleet.report', 'workload.run', 'machine.drain'],
+    ...overrides,
+  };
+}
+
+describe('taking a machine out of service', () => {
+  it('says plainly that nothing running is stopped', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1', machine());
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    // THE SENTENCE IS THE FEATURE. The most likely misreading of a button
+    // labelled "Stop new work" is that it takes models offline, and the person
+    // most likely to misread it is the one reaching for it in a hurry.
+    expect(
+      await screen.findByText(/Nothing running here is stopped, moved or evicted/),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Stop new work' })).toBeInTheDocument();
+  });
+
+  it('offers nothing to a machine whose build cannot be drained', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1',
+      machine({ capabilities: ['fleet.report'] }));
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    // A control the machine cannot perform is ABSENT, not disabled and not
+    // failing on click. The page says what would add it instead.
+    expect(await screen.findByText(/cannot be drained from here/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Stop new work' })).not.toBeInTheDocument();
+  });
+
+  it('shows a pending drain as pending, never as done', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1',
+      machine({ schedulingState: 'active', desiredSchedulingState: 'draining' }));
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    // The machine still reports `active`; somebody asked for `draining`. That
+    // is reconciliation in flight — not a failure, and not yet a success.
+    expect(await screen.findByText('draining…')).toBeInTheDocument();
+  });
+
+  it('explains a machine that is out of service on purpose', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1',
+      machine({ schedulingState: 'drained', maintenanceReason: 'replacing a fan' }));
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    // Without this a fleet with a machine down on purpose reads as a fleet
+    // with a fault, and somebody goes looking for a problem that is not there.
+    expect(await screen.findByText(/Out of service on purpose/)).toBeInTheDocument();
+    expect(screen.getByText(/replacing a fan/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Take new work again' })).toBeInTheDocument();
+  });
+
+  it('says that putting a machine back moves nothing back', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1',
+      machine({ schedulingState: 'drained' }));
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    // Phase 6A's rule: a healthy workload is never restarted for a better
+    // score, and undraining must not read as a promise that it will be.
+    expect(await screen.findByText(/does not move anything back/)).toBeInTheDocument();
+  });
+
+  it('calls a power budget a scheduling ceiling, not a power limit', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1',
+      machine({ powerBudgetWatts: 300 }));
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    // CLAUDE.md §4 draws this line and the UI must not blur it: one changes
+    // where a workload goes, the other changes what a card draws.
+    expect(await screen.findByText(/does not change\s+what any card draws/)).toBeInTheDocument();
+  });
+
+  it('requires a reason before it will offer maintenance', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1', machine());
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    const button = await screen.findByRole('button', { name: 'Maintenance' });
+    expect(button).toBeDisabled();
+
+    await userEvent.type(screen.getByLabelText(/take it out for maintenance/i), 'new thermal paste');
+    expect(screen.getByRole('button', { name: 'Maintenance' })).toBeEnabled();
+  });
+
+  it('sends the typed operation and nothing else', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/machines/m1', machine());
+    reply('POST', '/v1/organizations/org1/fleet/operations', {
+      id: 'op1', kind: 'machine.drain', state: 'requested',
+      requestedAt: new Date().toISOString(),
+    } satisfies Operation, 202);
+    window.history.pushState({}, '', '/fleet/machines/m1');
+    render(<App />);
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Stop new work' }));
+
+    const call = (fetch as unknown as ReturnType<typeof vi.fn>).mock.calls.find(
+      (c) => (c[1] as RequestInit | undefined)?.method === 'POST',
+    );
+    expect(call, 'no operation was requested').toBeDefined();
+    const body = JSON.parse((call![1] as RequestInit).body as string);
+
+    // A KIND AND A TARGET. No command, no arguments, no script — and the
+    // browser cannot invent one, because there is no field for it.
+    expect(body).toEqual({ kind: 'machine.drain', machineId: 'm1' });
+  });
+});

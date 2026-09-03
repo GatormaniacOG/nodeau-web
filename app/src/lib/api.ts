@@ -162,6 +162,19 @@ export interface FleetMachineView {
   capabilities?: string[];
   localOnline?: boolean;
   lastReportedAt?: string;
+  /** What somebody ASKED for, present only when it differs from what the
+   *  machine reports. Two fields that usually say the same thing invite a UI
+   *  that renders whichever it reached first; one that appears only while
+   *  reconciliation is pending can only be rendered as what it is. */
+  desiredSchedulingState?: string;
+  /** Why a machine is deliberately out of service, so a fleet with a machine
+   *  down on purpose does not read as a fleet with a fault. */
+  maintenanceReason?: string;
+  maintenanceUntil?: string;
+  /** The ceiling on the predicted power of everything Nodeau may run here. A
+   *  SCHEDULING ceiling: it makes a candidate infeasible and writes nothing to
+   *  any card. */
+  powerBudgetWatts?: number;
   findings?: { code: string; severity?: string; detail: string }[];
   gpus?: FleetGPUView[];
 }

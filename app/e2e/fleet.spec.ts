@@ -132,7 +132,10 @@ test.beforeAll(async ({ request }) => {
             role: 'control-plane',
             executionPlane: 'kubernetes',
             nodeauVersion: 'v0.7.0-e2e',
-            capabilities: ['fleet.report', 'policy.set', 'workload.run', 'workload.stop', 'logs.tail'],
+            capabilities: [
+              'fleet.report', 'policy.set', 'workload.run', 'workload.stop',
+              'logs.tail', 'machine.drain', 'power.budget',
+            ],
             schedulingState: 'active',
             health: 'healthy',
             localOnline: true,
@@ -155,7 +158,10 @@ test.beforeAll(async ({ request }) => {
             platform: 'linux/amd64',
             role: 'worker',
             executionPlane: 'kubernetes',
-            capabilities: ['fleet.report', 'policy.set', 'workload.run', 'workload.stop', 'logs.tail'],
+            capabilities: [
+              'fleet.report', 'policy.set', 'workload.run', 'workload.stop',
+              'logs.tail', 'machine.drain', 'power.budget',
+            ],
             schedulingState: 'active',
             health: 'healthy',
             localOnline: true,
@@ -310,6 +316,44 @@ test.describe('the fleet, signed in', () => {
         WHERE subject_kind = 'workload' AND subject_id = 'browser-started'`,
     );
     expect(stored).toBe('browser-started');
+  });
+
+  test('draining a machine reaches the real API and never says it is done', async ({ page }) => {
+    await page.goto('/fleet');
+    // BY THE MACHINE'S OWN NAME, not by an exact match on the display name.
+    // An earlier test in this file renames this machine, and a selector that
+    // depended on the display name would pass or fail depending on the order
+    // the tests happened to run in — which is a property of the harness rather
+    // than of the product. The reported name is always rendered beside a
+    // display name, which is exactly the invariant that makes this stable.
+    await page.locator('.machine-row', { hasText: 'nodeau-c' }).click();
+
+    // THE SENTENCE IS THE FEATURE, and it is here in a real browser against a
+    // real API for the same reason it is in the unit test: the most likely
+    // misreading of this button is that it takes models offline.
+    await expect(page.getByText(/Nothing running here is stopped, moved or evicted/)).toBeVisible();
+
+    await page.getByRole('button', { name: 'Stop new work' }).click();
+
+    // The machine still reports `active` — no connector has applied anything —
+    // so the page must show a change IN FLIGHT and never a finished one. A UI
+    // that rendered "drained" here would be reporting an intent as a fact.
+    await expect(page.getByText('draining…')).toBeVisible();
+    await expect(page.getByText('drained', { exact: true })).toBeHidden();
+  });
+
+  test('maintenance needs a reason, and the reason reaches the fleet', async ({ page }) => {
+    await page.goto('/fleet');
+    await page.getByText('nodeforge', { exact: true }).click();
+
+    await expect(page.getByRole('button', { name: 'Maintenance' })).toBeDisabled();
+    await page.getByLabel(/take it out for maintenance/i).fill('replacing a fan');
+    await page.getByRole('button', { name: 'Maintenance' }).click();
+
+    // Without the reason a fleet with a machine down on purpose reads as a
+    // fleet with a fault.
+    await expect(page.getByText(/Out of service on purpose/)).toBeVisible();
+    await expect(page.getByText(/replacing a fan/)).toBeVisible();
   });
 
   test('the whole fleet is usable on a phone-sized viewport', async ({ page }) => {
