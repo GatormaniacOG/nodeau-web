@@ -203,8 +203,21 @@ function HealthBadge({ machine }: { machine: FleetMachineView }) {
 }
 
 function SchedulingBadge({ machine }: { machine: FleetMachineView }) {
+  // A PENDING change is shown before a settled one, because it is the fact
+  // somebody is waiting on. Draining a machine that is still reporting active
+  // is reconciliation in flight — not a failure and not yet a success.
+  if (machine.desiredSchedulingState) {
+    return <Badge tone="neutral">{drainVerb(machine.desiredSchedulingState)}…</Badge>;
+  }
   if (machine.schedulingState === 'active') return null;
   return <Badge tone="neutral">{machine.schedulingState}</Badge>;
+}
+
+/** drainVerb is what a person reads while a change is on its way. */
+function drainVerb(state: string): string {
+  if (state === 'active') return 'putting back into service';
+  if (state === 'maintenance') return 'going into maintenance';
+  return 'draining';
 }
 
 // ---------------------------------------------------------------------------
@@ -266,6 +279,17 @@ export function FleetMachinePage({
         <dt>Scheduling</dt>
         <dd>
           {m.schedulingState}
+          {/* BOTH, when they disagree — the machine reports one thing and
+              somebody asked for another, and this is the page with the button
+              that asked. Showing only the reported state here would make a
+              drain that has not landed yet indistinguishable from one nobody
+              requested. */}
+          {m.desiredSchedulingState && (
+            <>
+              {' '}
+              <SchedulingBadge machine={m} />
+            </>
+          )}
           {/* NEVER the word "default". `v0.6.0-beta.1` and later builds
               disagree about what an unset mode means, so a fleet view that
               said "default" would say two different things depending on which
@@ -308,6 +332,8 @@ export function FleetMachinePage({
         </div>
       )}
 
+      <MachineService org={org} machine={m} onChanged={reload} />
+
       <h2>Accelerators</h2>
       {(m.gpus?.length ?? 0) === 0 ? (
         <p className="muted">This machine has not reported an accelerator.</p>
@@ -342,6 +368,162 @@ export function FleetMachinePage({
         </ul>
       )}
     </section>
+  );
+}
+
+/**
+ * Taking a machine out of service, and putting it back.
+ *
+ * # Drain means NO NEW WORK. It does not mean empty.
+ *
+ * Nothing running is stopped, moved or evicted. That sentence is on the screen
+ * rather than in a document, because the single most likely misreading of a
+ * button labelled "Drain" is that it will take somebody's models offline — and
+ * the person most likely to misread it is the one reaching for it in a hurry.
+ *
+ * There is deliberately no "force drain" and no "drain and stop everything".
+ * Emptying a machine is draining it and then stopping what you want gone: two
+ * decisions, taken in that order, each of which says what it does.
+ *
+ * # A control appears only when the machine can actually perform it
+ *
+ * `capabilities` is what the machine DECLARED. A machine on an older build
+ * simply does not offer these, rather than offering a button that fails.
+ */
+function MachineService({
+  org,
+  machine,
+  onChanged,
+}: {
+  org: Organization;
+  machine: FleetMachineView;
+  onChanged: () => void;
+}) {
+  const [busy, setBusy] = useState('');
+  const [error, setError] = useState<unknown>(null);
+  const [reason, setReason] = useState('');
+
+  const can = machine.capabilities?.includes('machine.drain') ?? false;
+  const draining =
+    machine.schedulingState === 'draining' ||
+    machine.schedulingState === 'drained' ||
+    machine.schedulingState === 'maintenance';
+
+  const ask = useCallback(
+    async (kind: string, maintenanceReason?: string) => {
+      setBusy(kind);
+      setError(null);
+      try {
+        await api.requestFleetOperation(org.id, {
+          kind,
+          machineId: machine.id,
+          ...(maintenanceReason ? { maintenanceReason } : {}),
+        });
+        setReason('');
+        onChanged();
+      } catch (err) {
+        setError(err);
+      } finally {
+        setBusy('');
+      }
+    },
+    [org.id, machine.id, onChanged],
+  );
+
+  if (!can) {
+    return (
+      <>
+        <h2>Service</h2>
+        <p className="muted">
+          This machine runs a version of Nodeau that cannot be drained from here. Updating it
+          is what adds the capability; <code>nodeau scheduling drain</code> works on the
+          machine itself in the meantime.
+        </p>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <h2>Service</h2>
+      {machine.maintenanceReason && (
+        <div className="notice">
+          <p>
+            <strong>Out of service on purpose:</strong> {machine.maintenanceReason}
+            {machine.maintenanceUntil
+              ? ` · expected back ${new Date(machine.maintenanceUntil).toLocaleString()}`
+              : ''}
+          </p>
+        </div>
+      )}
+      {machine.powerBudgetWatts !== undefined && (
+        <p className="muted small">
+          Power budget: {machine.powerBudgetWatts} W. Nodeau will not place work here whose
+          predicted draw would exceed it. This is a scheduling ceiling — it does not change
+          what any card draws.
+        </p>
+      )}
+      <div className="row-actions">
+        {draining ? (
+          <button
+            className="btn btn-ghost btn-sm"
+            disabled={busy !== ''}
+            onClick={() => ask('machine.undrain')}
+          >
+            {busy === 'machine.undrain' ? 'Asking…' : 'Take new work again'}
+          </button>
+        ) : (
+          <button
+            className="btn btn-ghost btn-sm"
+            disabled={busy !== ''}
+            onClick={() => ask('machine.drain')}
+          >
+            {busy === 'machine.drain' ? 'Asking…' : 'Stop new work'}
+          </button>
+        )}
+      </div>
+      <p className="muted small">
+        {draining
+          ? 'Putting it back does not move anything back. A running workload is never restarted for a better score.'
+          : 'Nothing running here is stopped, moved or evicted. Nodeau simply stops choosing this machine for new work.'}
+      </p>
+
+      {!draining && (
+        <form
+          className="rename"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (reason.trim()) void ask('machine.maintenance', reason.trim());
+          }}
+        >
+          <label htmlFor="maintenance-reason" className="muted small">
+            Or take it out for maintenance, with a reason
+          </label>
+          <div className="rename-row">
+            <input
+              id="maintenance-reason"
+              type="text"
+              value={reason}
+              placeholder="replacing a fan"
+              maxLength={200}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <button
+              className="btn btn-ghost btn-sm"
+              type="submit"
+              disabled={busy !== '' || reason.trim() === ''}
+            >
+              {busy === 'machine.maintenance' ? 'Asking…' : 'Maintenance'}
+            </button>
+          </div>
+          <p className="muted small">
+            The reason is shown here so a machine that is down on purpose does not read as a
+            fault. It changes nothing about what the machine does.
+          </p>
+        </form>
+      )}
+      {error !== null && <ErrorNotice error={error as ApiError} />}
+    </>
   );
 }
 
