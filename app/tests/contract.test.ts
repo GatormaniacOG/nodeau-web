@@ -27,9 +27,21 @@ import { describe, expect, it } from 'vitest';
 
 const PLATFORM_REPO =
   process.env.NODEAU_PLATFORM_REPO ?? resolve(import.meta.dirname, '../../../nodeforge');
-const CONTRACT = resolve(PLATFORM_REPO, 'pkg/cloudapi/cloudapi.go');
+/**
+ * EVERY file in the Go contract package, not just the first one.
+ *
+ * This read `cloudapi.go` alone until Phase 14 put the fleet types in
+ * `fleet.go` and `fleetops.go` — at which point the check kept passing while
+ * covering none of the new surface, which is exactly the silent gap it exists
+ * to prevent. A guard that names one file is a guard that stops tracking its
+ * subject the moment the subject grows a second file (issue #98).
+ */
+const CONTRACT_FILES = ['cloudapi.go', 'fleet.go', 'fleetops.go'].map((f) =>
+  resolve(PLATFORM_REPO, 'pkg/cloudapi', f),
+);
+const CONTRACT = CONTRACT_FILES[0]!;
 
-const available = existsSync(CONTRACT);
+const available = CONTRACT_FILES.every((f) => existsSync(f));
 const describeIfAvailable = available ? describe : describe.skip;
 
 if (!available) {
@@ -41,7 +53,7 @@ if (!available) {
 }
 
 describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
-  const goSource = available ? readFileSync(CONTRACT, 'utf8') : '';
+  const goSource = available ? CONTRACT_FILES.map((f) => readFileSync(f, 'utf8')).join('\n') : '';
   const tsSource = readFileSync(resolve(import.meta.dirname, '../src/lib/api.ts'), 'utf8');
 
   /** goStructFields extracts the json tag names from one Go struct. */
@@ -81,6 +93,16 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     'AvailablePlan',
     'Installation',
     'ActivationPendingView',
+    // The fleet — Phase 14. These are what /fleet, /fleet/machines/:id,
+    // /fleet/workloads and the operation endpoints return.
+    'FleetView',
+    'FleetInstallation',
+    'FleetMachineView',
+    'FleetGPUView',
+    'FleetWorkloadView',
+    'Operation',
+    'FleetLogArtifact',
+    'HealthFinding',
   ];
 
   for (const typeName of responseTypes) {
@@ -96,6 +118,17 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
       ).toEqual([]);
     });
   }
+
+  it('checks a list that has actually grown with the product', () => {
+    // A floor, so a future edit that trimmed this list to make a failure go
+    // away has to trip something. It is the same reasoning as the byte floors
+    // in the platform repository's parsing guards: a check whose subject has
+    // silently become empty reports success.
+    expect(responseTypes.length).toBeGreaterThanOrEqual(12);
+    for (const name of responseTypes) {
+      expect(() => goStructFields(name), `${name} is no longer a Go type`).not.toThrow();
+    }
+  });
 
   it('declares every error code the Go package defines', () => {
     // A code the frontend has never heard of falls through to a generic

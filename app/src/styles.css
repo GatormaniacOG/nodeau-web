@@ -574,3 +574,106 @@ p {
     text-align: left;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   The fleet — Phase 14C
+   ---------------------------------------------------------------------------
+
+   Built on the same tokens as everything else. Nothing here is a new design
+   system: a fleet is a list of machines and a list of workloads, and the value
+   of the page is that every number on it came from the machine rather than from
+   a guess.
+
+   RESPONSIVE BY DEFAULT, not by breakpoint. The rows below wrap because they
+   are flex rather than a table — somebody away from their desk needs status,
+   stop and warnings on a phone, and a table of eight columns is the reliable
+   way to make that unusable. */
+
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fleet-card { margin-bottom: 1.25rem; }
+
+.fleet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.fleet-head h2 { margin: 0 0 0.15rem; font-size: 1.05rem; }
+
+/* The sentence about the fleet. Given room, because it is the thing somebody
+   opening this page is actually reading. */
+.fleet-headline {
+  margin: 0.75rem 0 1rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.presence { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+
+.machine-list, .workload-list, .gpu-list { list-style: none; margin: 0; padding: 0; }
+
+.machine-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line, #23262c);
+  text-decoration: none;
+  color: inherit;
+}
+.machine-row:hover { background: rgba(255, 255, 255, 0.02); }
+.machine-name { font-weight: 600; }
+.machine-gpus { flex: 1 1 12rem; }
+.machine-badges { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 1rem 0 1.5rem; }
+.facts dt { color: var(--muted, #8b93a1); }
+.facts dd { margin: 0; }
+
+.gpu { padding: 0.75rem 0; border-top: 1px solid var(--line, #23262c); }
+.gpu-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+.workload { padding: 0.9rem 0; border-top: 1px solid var(--line, #23262c); }
+.workload-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.workload-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap; }
+.placement { font-style: italic; }
+
+.rename { margin: 0 0 1.25rem; }
+.rename-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.3rem 0; }
+.rename-row input { flex: 1 1 14rem; }
+
+.logs { margin-top: 0.75rem; border: 1px solid var(--line, #23262c); border-radius: 8px; padding: 0.75rem; }
+.logs-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.log-body {
+  max-height: 22rem;
+  overflow: auto;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.form { display: block; margin: 1.25rem 0; }
+.form label { display: block; margin-top: 1rem; font-weight: 600; }
+.form input, .form select { width: 100%; max-width: 26rem; }
+.form-actions { display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap; }
+
+.notice-info { border-color: var(--line, #23262c); }
+.notice-ok { border-color: #3f7d43; }
+.notice-warn { border-color: #7d6a3f; }
+
+.code {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
