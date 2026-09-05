@@ -165,6 +165,36 @@
           </p>
         </div>
         <div class="row">
+          <h3>Independent batch workers across several GPUs</h3>
+          <span class="pill pill-available">Available</span>
+          <p>A batch job can run several workers at once, each a complete model
+          instance on a card of its own, taking records from the same input.
+          They share nothing but the input and the result file: a worker claims
+          the next unprocessed record when it is free, so a faster card
+          naturally does more and nobody waits on a fixed share. This is the
+          <em>opposite</em> trade from splitting one model across cards —
+          splitting buys capacity for a model that fits nowhere else, and
+          independent workers buy throughput for work that was already
+          independent.</p>
+          <p>A worker count is a request rather than a guarantee. Each worker
+          reserves a card of its own, so asking for more workers than there are
+          free cards runs the ones that fit and leaves the rest waiting; the job
+          still completes, because the workers that did start take the records
+          the others would have. <code>nodeau batch status</code> reports how
+          many are running and how many are waiting.</p>
+          <p>Qualified on the same heterogeneous pair as everything else here,
+          an RTX&nbsp;3080 and an RTX&nbsp;5060&nbsp;Ti, with both cards
+          observed running a model server at the same time. On a
+          twenty-four-record job two workers finished in 47 seconds against 61
+          for one — and that is a floor rather than a rate, because a short job
+          is dominated by loading the model and both workers pay it. Linux and
+          NVIDIA only. A job still does not span machines, and its workers are
+          not restarted or moved if a card is lost.</p>
+          <p style="color:var(--text-3);font-size:0.85rem;margin-top:0.5rem">
+            <code>nodeau batch submit records.jsonl --model &lt;model&gt; --workers 2 --gpus 1</code>
+          </p>
+        </div>
+        <div class="row">
           <h3>Model profiles that carry their source</h3>
           <span class="pill pill-available">Available</span>
           <p>Where a configuration has been measured on real hardware, Nodeau uses the measurement. Where it hasn't, it derives a conservative estimate from the model's own architecture, adds a further margin, and labels the decision as estimated. An estimate is never shown as a measurement.</p>

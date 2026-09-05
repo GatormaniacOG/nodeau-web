@@ -160,6 +160,11 @@
               <td style="text-align:left">One heterogeneous pair — an RTX&nbsp;3080 and an RTX&nbsp;5060&nbsp;Ti — running a model whose weights fit on neither card alone. Other combinations are untested. It buys capacity, not speed. <strong>Not available on Apple Silicon</strong>, which uses its one integrated GPU.</td>
             </tr>
             <tr>
+              <th scope="row">Independent batch workers across several GPUs<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">Linux · NVIDIA, same machine</span></th>
+              <td><span class="pill pill-available">Qualified</span></td>
+              <td style="text-align:left">The same heterogeneous pair, with both cards observed running a model server at once and every record accounted for exactly once. A worker count is a request: workers that cannot get a card wait, and the job still completes. <strong>Not available on Apple Silicon</strong>, where batch inference is absent rather than untested.</td>
+            </tr>
+            <tr>
               <th scope="row">Windows via WSL</th>
               <td><span class="pill pill-exploring">Unsupported</span></td>
               <td style="text-align:left">The GPU path through WSL is genuinely different, and is refused rather than half-supported. Native Windows is not planned.</td>
