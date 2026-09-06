@@ -55,6 +55,11 @@ RETIRED = [
      "stale: the starter model is Qwen3.5-4B. qwen3-8b-q4km still resolves and "
      "still runs, and is deprecated — a page telling somebody what to type should "
      "show what they will have after installing today"),
+    (r"max_tokens\"?\s*[:=]\s*(?:6[0-9]|[1-9][0-9]?|[1-4][0-9]{2}|50[0-9]|51[01])\b",
+     "a completion budget below Nodeau's 512-token floor. The starter model "
+     "reasons before it answers, so a small budget comes back EMPTY with "
+     "finish_reason length — issue #36 and #88, and this page shipped 64 "
+     "until Phase 15.5. Use the product's own default"),
     (r"qwen3-8b-q4km",
      "stale as an EXAMPLE id, for the same reason. The id itself is still valid "
      "and still names the same bytes for ever; it is just no longer what a new "

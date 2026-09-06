@@ -392,7 +392,7 @@ bash install-nodeau.sh</code></pre>
   -d '{
     "model": "qwen3.5-4b-q4km",
     "messages": [{"role": "user", "content": "Say hello from my local GPU."}],
-    "max_tokens": 64
+    "max_tokens": 2048
   }'</code></pre>
           </div>
           <p style="margin-top:0.85rem">
@@ -422,7 +422,7 @@ client = OpenAI(
 reply = client.chat.completions.create(
     model="qwen3.5-4b-q4km",
     messages=[{"role": "user", "content": "Say hello from my local GPU."}],
-    max_tokens=64,
+    max_tokens=2048,
 )
 print(reply.choices[0].message.content)</code></pre>
               </div>
