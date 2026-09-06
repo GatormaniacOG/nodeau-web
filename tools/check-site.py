@@ -65,6 +65,17 @@ RETIRED = [
      "and still names the same bytes for ever; it is just no longer what a new "
      "install hands you"),
 
+    # A SIZE IS A CLAIM ABOUT THE STARTER MODEL, AND IT DRIFTS SEPARATELY FROM
+    # THE NAME. The Phase 15.5 refresh renamed the starter everywhere and left
+    # its SIZE behind in two places, so install/ said "the starter model is
+    # 4.7 GB" nine lines above "about a 2.6 GB download" — one page, two
+    # answers, and the guard above passed because the NAME was already right.
+    # Whoever moves the alias next will move a number too.
+    (r"starter model is (?:about )?4\.7",
+     "stale size: the starter model is Qwen3.5-4B at about 2.6 GB. 4.7 GB was "
+     "Qwen3-8B Q4_K_M, the previous starter — a page that names the new model "
+     "and the old download size is worse than one that is simply out of date"),
+
     # Retired by the 2026-08-13 refresh. The product is described as a product;
     # the roadmap carries the release states. These read as a permanent apology
     # and are not how the site talks about itself any more.
