@@ -362,7 +362,7 @@ bash install-nodeau.sh</code></pre>
           </div>
           <p style="margin-top:0.85rem;color:var(--text-2)">Nodeau will:</p>
           <ul class="checks">
-            <li>offer the starter model — <strong>Qwen3-8B Q4_K_M</strong>, Apache-2.0, about a 4.7&nbsp;GB download</li>
+            <li>offer the starter model — <strong>Qwen3.5-4B</strong>, Apache-2.0, about a 2.6&nbsp;GB download</li>
             <li>tell you the size and licence, and ask before downloading anything</li>
             <li>verify the file against a known SHA-256</li>
             <li>check the model fits safely in your GPU’s memory</li>
@@ -390,9 +390,9 @@ bash install-nodeau.sh</code></pre>
   -H "Authorization: Bearer $NODEAU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen3-8b-q4km",
+    "model": "qwen3.5-4b-q4km",
     "messages": [{"role": "user", "content": "Say hello from my local GPU."}],
-    "max_tokens": 64
+    "max_tokens": 2048
   }'</code></pre>
           </div>
           <p style="margin-top:0.85rem">
@@ -420,9 +420,9 @@ client = OpenAI(
 )
 
 reply = client.chat.completions.create(
-    model="qwen3-8b-q4km",
+    model="qwen3.5-4b-q4km",
     messages=[{"role": "user", "content": "Say hello from my local GPU."}],
-    max_tokens=64,
+    max_tokens=2048,
 )
 print(reply.choices[0].message.content)</code></pre>
               </div>

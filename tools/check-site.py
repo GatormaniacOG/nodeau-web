@@ -47,6 +47,24 @@ RETIRED = [
     (r"Multi-node discovery and placement is the next major platform capability",
      "stale: multi-node discovery and placement is built and validated"),
 
+    # Retired by the Phase 15.5 catalog refresh.
+    (r"Nine models chosen",
+     "stale count: the curated set is 8 recommended models and a count on a page "
+     "must match the release. Prefer durable wording plus current examples"),
+    (r"Qwen3-8B Q4_K_M",
+     "stale: the starter model is Qwen3.5-4B. qwen3-8b-q4km still resolves and "
+     "still runs, and is deprecated — a page telling somebody what to type should "
+     "show what they will have after installing today"),
+    (r"max_tokens\"?\s*[:=]\s*(?:6[0-9]|[1-9][0-9]?|[1-4][0-9]{2}|50[0-9]|51[01])\b",
+     "a completion budget below Nodeau's 512-token floor. The starter model "
+     "reasons before it answers, so a small budget comes back EMPTY with "
+     "finish_reason length — issue #36 and #88, and this page shipped 64 "
+     "until Phase 15.5. Use the product's own default"),
+    (r"qwen3-8b-q4km",
+     "stale as an EXAMPLE id, for the same reason. The id itself is still valid "
+     "and still names the same bytes for ever; it is just no longer what a new "
+     "install hands you"),
+
     # Retired by the 2026-08-13 refresh. The product is described as a product;
     # the roadmap carries the release states. These read as a permanent apology
     # and are not how the site talks about itself any more.
