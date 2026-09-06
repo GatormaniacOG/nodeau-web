@@ -91,9 +91,9 @@
           <div class="code-head"><span>terminal</span></div>
 <pre><code><span class="prompt">$</span> <span class="cmd">nodeau quickstart</span>
 
-<span class="dim">==&gt;</span> model            <span class="str">Qwen3-8B Q4_K_M</span> <span class="ok">verified</span>
-<span class="dim">==&gt;</span> gpu              <span class="str">RTX 3080 · 9,854 MiB usable</span>
-<span class="dim">==&gt;</span> admission        <span class="ok">Admit · fits with 2,890 MiB spare</span>
+<span class="dim">==&gt;</span> model            <span class="str">Qwen3.5-4B</span> <span class="ok">verified</span>
+<span class="dim">==&gt;</span> gpu              <span class="str">RTX 3080 · 7,005 MiB available</span>
+<span class="dim">==&gt;</span> admission        <span class="ok">Admit · needs 4,406 MiB · 2,599 MiB spare</span>
 <span class="dim">==&gt;</span> endpoint         <span class="str">http://127.0.0.1:8080/v1</span>
 
 <span class="ok">Nodeau is ready.</span></code></pre>
@@ -253,12 +253,12 @@
             <span>bash</span>
             <button class="copy-btn" data-copy="#cmd-day" type="button"><span data-copy-label>Copy</span></button>
           </div>
-<pre id="cmd-day"><code>nodeau run qwen3-8b-q4km
+<pre id="cmd-day"><code>nodeau run qwen3.5-4b-q4km
 nodeau ps
-nodeau logs qwen3-8b-q4km
-nodeau batch submit requests.jsonl --model qwen3-8b-q4km
+nodeau logs qwen3.5-4b-q4km
+nodeau batch submit requests.jsonl --model qwen3.5-4b-q4km
 nodeau dashboard
-nodeau stop qwen3-8b-q4km --workload</code></pre>
+nodeau stop qwen3.5-4b-q4km --workload</code></pre>
         </div>
 
         <div class="grid" style="gap:1.4rem">
