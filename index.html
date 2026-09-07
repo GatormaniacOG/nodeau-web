@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nodeau · Private AI Infrastructure on GPUs You Already Own</title>
-<meta name="description" content="Chat, embeddings, reranking, structured output and image understanding on GPUs you own. Nodeau works out whether a model fits before it starts anything, on Linux/NVIDIA and Apple Silicon.">
+<meta name="description" content="Chat, embeddings, reranking, structured output and image understanding on GPUs you own — including GGUF models you bring yourself. Nodeau works out whether a model fits before it starts anything, on Linux/NVIDIA and Apple Silicon.">
 <link rel="canonical" href="https://nodeau.ai/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
@@ -71,6 +71,11 @@
             There is more here than chat. Embeddings, reranking, structured
             output, tool calling and image understanding all run from the same
             catalog, on the same engine, with the same two commands.
+          </p>
+          <p class="lede" style="margin-top:0.85rem;max-width:52ch">
+            And the catalog is not the limit. Give Nodeau a <strong>GGUF</strong>
+            file of your own and it reads the header, works out what the model
+            needs, and tests it on your card before saying it works.
           </p>
           <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
             Runs on Linux with an NVIDIA card, and on Apple Silicon through
@@ -262,6 +267,20 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
         </div>
 
         <div class="grid" style="gap:1.4rem">
+          <div class="feature">
+            <h3>Your own models, not just ours</h3>
+            <p><code>nodeau model import</code> takes a <strong>GGUF</strong> file
+            you already have. Nodeau reads its header to work out the architecture,
+            quantisation and memory it will need, hashes the bytes so the file is
+            its own identity, and registers it. Nothing in your file is executed —
+            a GGUF is data, and it runs on Nodeau's own pinned engine.</p>
+            <p style="margin-top:0.7rem"><code>nodeau model qualify</code> is the
+            half that matters. It starts your model on a real card, measures what
+            it actually took, and tries each capability with a probe built to fail
+            if the model can't do it — a tool call whose arguments have to parse,
+            JSON checked against the schema it was asked for. If chat works and
+            tool calling doesn't, you get chat, and Nodeau doesn't claim the rest.</p>
+          </div>
           <div class="feature">
             <h3>A local dashboard</h3>
             <p>One command opens a read-only view of your models, workloads, GPU and decisions in a browser. It's served by Nodeau itself on your own machine, needs no extra install, and never holds cluster credentials.</p>
