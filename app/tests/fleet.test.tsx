@@ -375,7 +375,7 @@ describe('taking a machine out of service', () => {
 
     // A control the machine cannot perform is ABSENT, not disabled and not
     // failing on click. The page says what would add it instead.
-    expect(await screen.findByText(/cannot be drained from here/)).toBeInTheDocument();
+    expect(await screen.findByText(/arrives with a newer version of Nodeau/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Stop new work' })).not.toBeInTheDocument();
   });
 
@@ -422,7 +422,7 @@ describe('taking a machine out of service', () => {
 
     // CLAUDE.md §4 draws this line and the UI must not blur it: one changes
     // where a workload goes, the other changes what a card draws.
-    expect(await screen.findByText(/does not change\s+what any card draws/)).toBeInTheDocument();
+    expect(await screen.findByText(/leaves what each card draws exactly as it was/)).toBeInTheDocument();
   });
 
   it('requires a reason before it will offer maintenance', async () => {

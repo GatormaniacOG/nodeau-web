@@ -190,8 +190,8 @@ export function InstallationDetailPage({
           <h2>Remove this installation</h2>
           <p className="muted">
             Its credential stops working immediately and it will no longer receive
-            entitlements. <strong>Nothing running on the machine stops</strong> — it falls
-            back to the free Home plan and keeps serving.
+            entitlements. <strong>Nothing running on the machine stops</strong>. It falls back to
+            the free Home plan and keeps serving.
           </p>
           {removeError ? <ErrorNotice error={removeError} /> : null}
           {confirming ? (

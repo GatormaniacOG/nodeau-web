@@ -115,8 +115,7 @@ export function PlanPage({ org }: { org: Organization }) {
         {plan.features.length === 0 ? (
           <p className="muted">
             Everything a single machine needs, and nothing that requires a second one.
-            Admission, artifact verification and authentication are the same here as on any
-            paid plan — nothing has been disabled.
+            Admission, artifact verification and authentication are the same here as on any paid plan. Everything stays switched on.
           </p>
         ) : (
           <ul className="feature-list">
@@ -172,7 +171,7 @@ export function PlanPage({ org }: { org: Organization }) {
                 ) : p.free ? (
                   <Badge tone="neutral">Free</Badge>
                 ) : (
-                  <Badge tone="neutral">Coming soon</Badge>
+                  <Badge tone="neutral">Talk to us</Badge>
                 )}
               </div>
             </div>

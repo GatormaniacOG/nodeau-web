@@ -111,7 +111,7 @@ export function ActivatePage({
         <div className="notice notice-ok">
           <h1>{phase.installation.name} is connected</h1>
           <p>
-            Return to your terminal — <code>nodeau login</code> will finish on its own within
+            Return to your terminal, where <code>nodeau login</code> will finish on its own within
             a few seconds.
           </p>
         </div>
@@ -138,7 +138,7 @@ export function ActivatePage({
           <h1>Not approved</h1>
           <p>
             Nothing was granted and no installation was created. If you did not start this
-            activation, no further action is needed — a refused code gives nothing away.
+            activation, no further action is needed, because a refused code gives nothing away.
           </p>
         </div>
       </section>

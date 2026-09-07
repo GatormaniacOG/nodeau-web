@@ -141,8 +141,7 @@ export function FleetRunPage({
           <option value="2">2</option>
         </select>
         <p className="muted small">
-          More than one is for a model that fits on no single card. It is not faster —
-          the layers run in sequence.
+          More than one is for a model that fits on no single card. It adds capacity rather than speed, because the layers run in sequence.
         </p>
 
         <label htmlFor="run-mode">Scheduling</label>

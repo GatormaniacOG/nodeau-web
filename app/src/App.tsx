@@ -124,7 +124,7 @@ export function App() {
             new ApiError(500, {
               code: 'INTERNAL_ERROR',
               message:
-                'Your account has no workspace. That should not be possible — every account ' +
+                'Your account has no workspace. That should not be possible, because every account ' +
                 'gets a personal one at signup. Please get in touch.',
             })
           }
@@ -309,8 +309,8 @@ function Shell({
       <footer className="app-footer">
         <div className="wrap">
           <span className="muted small">
-            Nodeau runs on your own machines. This site manages your account and your
-            installations — it never sees your prompts, your documents or your results.
+            Nodeau runs on your own machines. This site manages your account and your installations. It never sees your
+            prompts, your documents or your results.
           </span>
         </div>
       </footer>
