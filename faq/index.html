@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nodeau FAQ — Hardware, Models, Privacy and Plans</title>
+<title>Nodeau FAQ · Hardware, Models, Privacy and Plans</title>
 <meta name="description" content="Answers about supported GPUs, drivers, models, several machines and mixed GPUs, privacy, accounts and plans, and Nodeau for teams.">
 <link rel="canonical" href="https://nodeau.ai/faq/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/faq/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Nodeau FAQ — Hardware, Models, Privacy and Plans">
+<meta property="og:title" content="Nodeau FAQ · Hardware, Models, Privacy and Plans">
 <meta property="og:description" content="Answers about supported GPUs, drivers, models, several machines and mixed GPUs, privacy, accounts and plans, and Nodeau for teams.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -72,11 +72,16 @@
       </details>
       <details class="qa">
         <summary>Who is Nodeau for?</summary>
-        <div class="answer"><p>Three sorts of people, which is why there are three plans.</p><p><strong>Home</strong>: someone with a gaming PC or a workstation who wants to run models locally without first becoming an infrastructure engineer.</p><p><strong>Home Pro</strong>: the same person a year later, with a second machine, a server in a cupboard, and a laptop that wants to reach both.</p><p><strong>Business</strong>: an organisation with GPU hardware it would like to run as shared infrastructure, with members, roles and an audit trail. That tier is being designed with its first customers and is not on sale — see <a href='/pricing/'>pricing</a>.</p></div>
+        <div class="answer"><p>Three sorts of people, which is why there are three plans.</p><p><strong>Home</strong>: someone with a gaming PC or a workstation who wants to run models locally without first becoming an infrastructure engineer.</p><p><strong>Home Pro</strong>: the same person a year later, with a second machine, a server in a cupboard, and a laptop that wants to reach both.</p><p><strong>Business</strong>: an organisation with GPU hardware it would like to run as shared infrastructure, with members, roles and an audit trail. That tier is being shaped with its first customers. See <a
+        href='/pricing/'>pricing</a>.</p></div>
       </details>
       <details class="qa" id="labels">
         <summary>What do the labels on the roadmap mean?</summary>
-        <div class="answer"><p>Five, and we keep them apart on purpose.</p><p><strong>Available</strong> — it is in the published build. Install it and you have it.</p><p><strong>Manual setup</strong> — it is in that same build and it works, but getting it going takes steps we haven't turned into a command yet. Running across several machines is the one thing here.</p><p><strong>Working on it</strong> — under way now.</p><p><strong>Planned</strong> or <strong>Exploring</strong> — not built. There is nothing to run.</p><p>The <a href='/roadmap/'>roadmap</a> labels every capability, so you can always check where something stands rather than taking a marketing page's word for it.</p></div>
+        <div class="answer"><p>Five, and we keep them apart on purpose.</p><p><strong>Available</strong> means it is in the published build. Install
+        it and you have it.</p><p><strong>Manual setup</strong> means it is in that same build and it
+        works, though getting it going still takes steps we have yet to turn into
+        a single command. Running across several machines is the one thing here.</p><p><strong>Working on it</strong> means under way right now.</p><p><strong>Planned</strong> and <strong>Exploring</strong> are where the
+        ideas live before they are built.</p><p>The <a href='/roadmap/'>roadmap</a> labels every capability, so you can always check where something stands rather than taking a marketing page's word for it.</p></div>
       </details>
       <details class="qa">
         <summary>Do I need to know Kubernetes?</summary>
@@ -84,14 +89,16 @@
       </details>
       <details class="qa">
         <summary>Is Nodeau open source?</summary>
-        <div class="answer"><p>Not at this time. The installer and the published distribution are public; the platform source is not.</p></div>
+        <div class="answer"><p>Not at this time. The installer and the published distribution are public. The platform
+        source stays with us for now.</p></div>
       </details>
     </div>
     <div class="faq-group">
       <h2 id="getting-started">Getting started</h2>
       <details class="qa">
         <summary>How do I install it?</summary>
-        <div class="answer"><p>Three commands. On Linux the machine needs a working NVIDIA driver already; on an Apple Silicon Mac there is nothing to install first.</p><div class='code'><pre><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+        <div class="answer"><p>Three commands. On Linux the machine needs a working NVIDIA driver already. On an Apple
+        Silicon Mac you are ready to go straight away.</p><div class='code'><pre><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
 nodeau install
 nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/install/'>install guide</a> walks through each one.</p></div>
       </details>
@@ -101,18 +108,25 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>Does it cost anything?</summary>
-        <div class="answer"><p>Nodeau Home is free, needs no account and no card, and stays that way: one machine, one GPU, local inference, the model catalogue, the dashboard and the fit checks. Paid plans are about scale and collaboration — several machines, batch, teams. Remote management ships in v0.7.0-beta.1: open the fleet console from any browser and see and operate the machines you own. Model replication is planned, not shipped. See <a href='/pricing/'>pricing</a>.</p></div>
+        <div class="answer"><p>Nodeau Home is free, needs no account and no card, and stays that way: one machine, one GPU, local inference, the model catalogue, the dashboard and the fit checks. Paid plans are about scale and collaboration, so several machines, batch
+        work and teams. Remote management ships in v0.7.0-beta.1: open the fleet console from any browser and see and operate the machines you own. Model replication is planned, not shipped. See <a href='/pricing/'>pricing</a>.</p></div>
       </details>
       <details class="qa">
         <summary>Can I uninstall it?</summary>
-        <div class="answer"><p>Yes. <code>nodeau uninstall</code> shows you the plan and asks before it changes anything. Nodeau keeps track of what it installed versus what was already there, so it will not take away things that predate it — your downloaded models, your GPU driver and any Kubernetes cluster it did not create all stay put.</p><p>If Nodeau adopted a Kubernetes cluster you already had, it removes its own objects from it and leaves the cluster itself alone — it did not install that, so it will not take it away. If anything looks left behind, send us <code>nodeau support bundle</code> and we will sort it out.</p></div>
+        <div class="answer"><p>Yes. <code>nodeau uninstall</code> shows you the plan and asks before it changes anything. Nodeau keeps track of what it installed versus what was already there, so things that predate it stay exactly where they are. Your downloaded
+        models, your GPU driver and any Kubernetes cluster it did not create are
+        all left alone.</p><p>If Nodeau adopted a Kubernetes cluster you already had, it removes its own objects and leaves the cluster itself alone. It did not
+        install that, so it leaves it for you. If anything looks left behind, send us <code>nodeau support bundle</code> and we will sort it out.</p></div>
       </details>
     </div>
     <div class="faq-group">
       <h2 id="hardware">Hardware</h2>
       <details class="qa">
         <summary>What GPUs are supported?</summary>
-        <div class="answer"><p>NVIDIA cards on Linux — several per machine, each judged on its own — and the integrated GPU of an Apple Silicon Mac through Metal. Nodeau has been run end to end on an <strong>RTX 5070&nbsp;Ti</strong>, an <strong>RTX 3080</strong>, an <strong>RTX 5060&nbsp;Ti</strong> and an <strong>RTX 2080</strong> under Ubuntu 24.04, and on an <strong>M3&nbsp;Pro</strong> under macOS.</p><p>On other NVIDIA cards it still works. Where it has a direct measurement for your configuration it uses it; where it does not, it works out a cautious estimate from the model’s own shape, holds extra memory back, and tells you the number is an estimate. What it will not do is quietly present a guess as a measurement, or promise that every card on the market is known to be fine.</p></div>
+        <div class="answer"><p>NVIDIA cards on Linux, several per machine, each judged on its own merits.
+        Also the integrated GPU of an Apple Silicon Mac through Metal. Nodeau has been run end to end on an <strong>RTX 5070&nbsp;Ti</strong>, an <strong>RTX 3080</strong>, an <strong>RTX 5060&nbsp;Ti</strong> and an <strong>RTX 2080</strong> under Ubuntu 24.04, and on an <strong>M3&nbsp;Pro</strong> under macOS.</p><p>On other NVIDIA cards it still works. Where it has a direct measurement for your configuration it uses it.
+        Otherwise it works out a cautious estimate from the model’s own shape,
+        holds extra memory back, and tells you the number is an estimate. What it will not do is quietly present a guess as a measurement, or promise that every card on the market is known to be fine.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau install my NVIDIA driver?</summary>
@@ -120,11 +134,15 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>What happens if nvidia-smi doesn’t work?</summary>
-        <div class="answer"><p>Nodeau stops before changing anything and tells you the driver is not working. Fix the driver first — through your distribution — then run <code>nodeau install</code> again.</p></div>
+        <div class="answer"><p>Nodeau stops before changing anything and tells you the driver is not working. Fix the driver first through your distribution, then run <code>nodeau
+        install</code> again.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau support Windows?</summary>
-        <div class="answer"><p>Not today. Native Windows is not planned. Support through WSL is on the roadmap and is currently <strong>Planned</strong>, not available — the GPU path through WSL is genuinely different and untested, so the installer refuses cleanly rather than half-working.</p></div>
+        <div class="answer"><p>Not today. Native Windows is not planned. Support through WSL is on the roadmap and is currently
+        <strong>Planned</strong>. The GPU path through WSL is genuinely different
+        and still untested, so the installer says so plainly rather than
+        half-working.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau support WSL?</summary>
@@ -132,22 +150,35 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>Does Nodeau support AMD GPUs?</summary>
-        <div class="answer"><p>No. It is listed under <strong>Exploring</strong> on the roadmap — a different runtime and memory model, not a configuration flag.</p></div>
+        <div class="answer"><p>Not today. It is listed under <strong>Exploring</strong> on the
+        roadmap, because it needs a different runtime and memory model rather than
+        a configuration flag.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau support macOS?</summary>
-        <div class="answer"><p>Yes, on <strong>Apple Silicon</strong> — <strong>qualified</strong>, with exclusions worth knowing before you start. Nodeau runs models on the Mac's own GPU through Metal, and installing needs no password and no driver.</p><p>What a Mac does not do: it runs <strong>standalone</strong> and cannot join a fleet, because it is a native execution plane rather than a Kubernetes node — Nodeau will not install a cluster on your laptop to pretend otherwise. <strong>Batch inference is Linux-only</strong> and refuses with a clear error. And because Apple Silicon shares one pool of memory between everything, whether a model fits depends on what else is running: the same request can be admitted today and correctly refused tomorrow, and Nodeau tells you the numbers when it refuses.</p><p>Intel Macs are unsupported.</p></div>
+        <div class="answer"><p>Yes, on <strong>Apple Silicon</strong>, where it is
+        <strong>qualified</strong>. There is some scope worth knowing before you
+        start. Nodeau runs models on the Mac's own GPU through Metal, and installing needs no password and no driver.</p><p>What a Mac does not do: it runs <strong>standalone</strong> and cannot join a fleet, because it is a native execution plane rather than a Kubernetes node.
+        Nodeau leaves your laptop as a laptop rather than installing a cluster on
+        it. <strong>Batch inference is Linux-only</strong> and refuses with a clear error. And because Apple Silicon shares one pool of memory between everything, whether a model fits depends on what else is running: the same request can be admitted today and correctly refused tomorrow, and Nodeau tells you the numbers when it refuses.</p><p>Intel Macs are unsupported.</p></div>
       </details>
       <details class="qa">
         <summary>Can Nodeau use several GPUs?</summary>
-        <div class="answer"><p>Yes, both ways — and they were genuinely different problems.</p><p><strong>Several GPU machines, one control plane</strong> — on mixed NVIDIA hardware. Each machine is measured and judged on its own merits. Part of Home Pro and Business.</p><p><strong>Several GPUs inside one machine</strong> — each card is observed, reserved and scheduled on its own. Nodeau picks the physical card, Kubernetes allocates that card, and the telemetry shows which one ran the work. Home Pro includes up to two cards in any one machine; on Home the second card is still detected and reported, it is simply not scheduled onto.</p></div>
+        <div class="answer"><p>Yes, both ways, and they were genuinely different problems to solve.</p><p><strong>Several GPU machines, one control plane</strong>, on mixed NVIDIA
+        hardware. Each machine is measured and judged on its own merits. Part of Home Pro and Business.</p><p><strong>Several GPUs inside one machine</strong>, where each card is
+        observed, reserved and scheduled on its own. Nodeau picks the physical card, Kubernetes allocates that card, and the telemetry shows which one ran the work. Home Pro puts up to two cards in any one machine to work. On Home the
+        second card is still detected and reported, ready for whenever you want
+        it.</p></div>
       </details>
     </div>
     <div class="faq-group">
       <h2 id="models">Models</h2>
       <details class="qa">
         <summary>What models can I run?</summary>
-        <div class="answer"><p>A curated catalogue, chosen to span the card sizes people actually own — from 8&nbsp;GB up to 24&nbsp;GB — and pinned to exact published files. The starter model is <strong>Qwen3.5-4B</strong> (Apache-2.0, about 2.6&nbsp;GB), which is the compact model for 8&nbsp;GB cards; larger ones go up to a flagship that needs a 24&nbsp;GB card or two smaller cards in one machine. Run <code>nodeau model list</code> to see what your installation can serve, and <code>nodeau model info</code> for what a model will cost on your card.</p><p>Running a model that is not in the catalogue is <strong>Exploring</strong> on the <a href='/roadmap/'>roadmap</a>. The obstacle is not loading it, it is knowing what it will cost before it runs — which is the part Nodeau exists to get right.</p></div>
+        <div class="answer"><p>A curated catalogue, chosen to span the card sizes people actually own, from 8&nbsp;GB up to
+        24&nbsp;GB, and pinned to exact published files. The starter model is <strong>Qwen3.5-4B</strong> (Apache-2.0, about 2.6&nbsp;GB), which is the compact model for 8&nbsp;GB cards. Larger ones go up to a
+        flagship that needs a 24&nbsp;GB card or two smaller cards in one machine. Run <code>nodeau model list</code> to see what your installation can serve, and <code>nodeau model info</code> for what a model will cost on your card.</p><p>Running a model that is not in the catalogue is <strong>Exploring</strong> on the <a href='/roadmap/'>roadmap</a>. The obstacle is knowing what it will cost before it runs, which is the
+        part Nodeau exists to get right.</p></div>
       </details>
       <details class="qa">
         <summary>Why so few models?</summary>
@@ -155,7 +186,10 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>How does Nodeau know if a model will fit?</summary>
-        <div class="answer"><p>It compares what the GPU can actually give a workload — the memory the compute API can address, minus what is already in use outside Nodeau, minus what Nodeau has reserved for other workloads, minus a safety reserve — against what that model needs in that configuration, plus a margin. If the result is negative it refuses and shows the arithmetic.</p><p>The “what the model needs” number is either measured on hardware like yours, or estimated from the model’s own architecture with an extra margin added. The decision tells you which. That matters: an estimate carries more uncertainty, and you should know when you are relying on one.</p></div>
+        <div class="answer"><p>It compares what the GPU can actually give a workload, meaning the memory
+        the compute API can address, minus what is already in use outside Nodeau,
+        minus what Nodeau has reserved for other workloads, minus a safety reserve, against what that model needs in that
+        configuration plus a margin. If the result is negative it refuses and shows the arithmetic.</p><p>The “what the model needs” number is either measured on hardware like yours, or estimated from the model’s own architecture with an extra margin added. The decision tells you which. That matters: an estimate carries more uncertainty, and you should know when you are relying on one.</p></div>
       </details>
       <details class="qa">
         <summary>Why isn’t all my advertised VRAM available?</summary>
@@ -197,7 +231,9 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       <h2 id="accounts-and-plans">Accounts and plans</h2>
       <details class="qa">
         <summary>Do I need an account to use Nodeau?</summary>
-        <div class="answer"><p>No. Nodeau Home installs and runs with no account at all: local inference, the model catalogue, the dashboard, the fit checks. Nothing phones home and nothing is gated behind a sign-in.</p><p>An account is for the things that genuinely belong elsewhere — which installations are yours, which plan is in force, and being able to look at that from a laptop with no GPU in it.</p></div>
+        <div class="answer"><p>No. Nodeau Home installs and runs with no account at all: local inference, the model catalogue, the dashboard, the fit checks. Nothing phones home and nothing is gated behind a sign-in.</p><p>An account is for the things that genuinely belong elsewhere. Which
+        installations are yours, which plan is in force, and being able to look at
+        that from a laptop with no GPU in it.</p></div>
       </details>
       <details class="qa">
         <summary>What is app.nodeau.ai?</summary>
@@ -209,7 +245,8 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>What is the difference between Home and Home Pro?</summary>
-        <div class="answer"><p>Machines. Home is one person and one machine with one GPU, free. Home Pro is the same person with several machines they own, and it adds batch inference across them. Remote management ships: you can see and operate your machines from a browser anywhere. Model replication and scheduled batch are planned for it and are not built yet. <strong>Business</strong> is the next line along: an organisation with several people in it. Members, roles, quotas, audit and single sign-on are what it is <em>for</em>, and none of them is built yet — which is why Business is not on sale. Full comparison on <a href='/pricing/'>pricing</a>.</p></div>
+        <div class="answer"><p>Machines. Home is one person and one machine with one GPU, free. Home Pro is the same person with several machines they own, and it adds batch inference across them. Remote management ships: you can see and operate your machines from a browser anywhere. Model replication and scheduled batch are planned for it and are not built yet. <strong>Business</strong> is the next line along: an organisation with several people in it. Members, roles, quotas, audit and single sign-on are what it is
+        <em>for</em>, and those are what we are building with design partners now. Full comparison on <a href='/pricing/'>pricing</a>.</p></div>
       </details>
     </div>
     <div class="faq-group">
@@ -220,11 +257,13 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>Can I run a big batch of prompts overnight?</summary>
-        <div class="answer"><p>Yes, with a paid plan. Hand Nodeau a file of requests and it queues the job, waits for a whole GPU to be free, runs it, and writes results back correlated exactly to your inputs. Cancel it and the card is released once the process is genuinely gone rather than when something says it should be.</p><p>Batch is part of Home Pro and Business — see <a href='/pricing/'>pricing</a>.</p></div>
+        <div class="answer"><p>Yes, with a paid plan. Hand Nodeau a file of requests and it queues the job, waits for a whole GPU to be free, runs it, and writes results back correlated exactly to your inputs. Cancel it and the card is released once the process is genuinely gone rather than when something says it should be.</p><p>Batch is part of Home Pro and Business. See <a
+        href='/pricing/'>pricing</a>.</p></div>
       </details>
       <details class="qa">
         <summary>What happens when a model will not fit?</summary>
-        <div class="answer"><p>Nodeau refuses before it starts anything, and shows the arithmetic: what the card can actually give a workload, what is already in use, what the model needs, and by how much you are short. It also suggests what would change the answer — a smaller quantisation, a shorter context, freeing the card.</p><p>A refusal is not a crash, and Nodeau's exit codes say so, which matters if you are scripting it.</p></div>
+        <div class="answer"><p>Nodeau refuses before it starts anything, and shows the arithmetic: what the card can actually give a workload, what is already in use, what the model needs, and by how much you are short. It also suggests what would change the answer, such as a smaller
+        quantisation, a shorter context, or freeing the card.</p><p>A refusal is not a crash, and Nodeau's exit codes say so, which matters if you are scripting it.</p></div>
       </details>
       <details class="qa">
         <summary>Can I use my existing OpenAI code?</summary>
@@ -235,11 +274,15 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       <h2 id="running-it">Running it</h2>
       <details class="qa">
         <summary>What is Nodeau suited for, and what is it not?</summary>
-        <div class="answer"><p>It is built for running your own models on your own hardware: a workstation under a desk, a machine in a cupboard, a few boxes a small team shares. That is a real job and Nodeau does it.</p><p>Two boundaries worth knowing before you build on it. Nodeau does not fail over on its own — it decides where a workload runs and leaves it there, so if a machine stops, what it was running stops with it. And it assumes the people with access to a machine are trusted; it is not designed to keep hostile users on the same box away from each other. If you need a multi-tenant service with an uptime guarantee, that is a different kind of product.</p></div>
+        <div class="answer"><p>It is built for running your own models on your own hardware: a workstation under a desk, a machine in a cupboard, a few boxes a small team shares. That is a real job and Nodeau does it.</p><p>Two boundaries worth knowing before you build on it. Nodeau does not fail over on its own. It decides where a workload runs and
+        leaves it there, so if a machine stops, what it was running stops with it. It also assumes the people with access to a machine are trusted, so it is
+        built for teams that already share the hardware rather than for isolating
+        strangers on one box. If you need a multi-tenant service with an uptime guarantee, that is a different kind of product.</p></div>
       </details>
       <details class="qa">
         <summary>Has this been tested on more than one machine?</summary>
-        <div class="answer"><p>Yes, and on purpose with two <em>unlike</em> machines rather than two matching ones. Nodeau was installed from a published release onto a second machine with a different NVIDIA card, and the two now run as one cluster: each watches its own hardware, checks its own copy of the model, and gets judged on its own merits. It has been through reboots, power cuts and a card that was already busy.</p><p>We would also love to see Nodeau on more hardware. That is what testers and design partners are for — if that sounds like you, <a href='/contact/'>say hello</a>.</p></div>
+        <div class="answer"><p>Yes, and on purpose with two <em>unlike</em> machines rather than two matching ones. Nodeau was installed from a published release onto a second machine with a different NVIDIA card, and the two now run as one cluster: each watches its own hardware, checks its own copy of the model, and gets judged on its own merits. It has been through reboots, power cuts and a card that was already busy.</p><p>We would also love to see Nodeau on more hardware. That is what testers and design partners are for. If that sounds like you,
+        <a href='/contact/'>say hello</a>.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau fail over to another machine?</summary>
@@ -247,11 +290,12 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>What happens if the installation fails?</summary>
-        <div class="answer"><p>It should fail safely: Nodeau stops, tells you which stage it stopped at and why, lists what it had already changed, and states what it did not touch — your driver, Secure Boot, your bootloader, your partitions and your personal files. Re-running <code>nodeau install</code> is safe.</p></div>
+        <div class="answer"><p>It should fail safely: Nodeau stops, tells you which stage it stopped at and why, lists what it had already changed, and states what it left alone, meaning your driver, Secure Boot, your
+        bootloader, your partitions and your personal files. Re-running <code>nodeau install</code> is safe.</p></div>
       </details>
       <details class="qa">
         <summary>How do I send a diagnostic report?</summary>
-        <div class="answer"><p>Run <code>nodeau support bundle</code>. It writes one <code>.tar.gz</code> with no API keys, no credentials, no prompts and no model output, and it uploads nothing — you attach it yourself. If the CLI will not run at all, send <code>~/.local/state/nodeau/install.log</code> instead. Email either to <a href='mailto:founders@nodeau.ai'>founders@nodeau.ai</a>.</p></div>
+        <div class="answer"><p>Run <code>nodeau support bundle</code>. It writes one <code>.tar.gz</code> with no API keys, no credentials, no prompts and no model output, and it uploads nothing, so you attach it yourself. If the CLI will not run at all, send <code>~/.local/state/nodeau/install.log</code> instead. Email either to <a href='mailto:founders@nodeau.ai'>founders@nodeau.ai</a>.</p></div>
       </details>
       <details class="qa">
         <summary>Should I try to fix a broken install myself?</summary>
@@ -262,11 +306,14 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       <h2 id="business">Business</h2>
       <details class="qa">
         <summary>Can Nodeau manage multiple GPU machines?</summary>
-        <div class="answer"><p>Yes. Each machine reports its own hardware and checks its own copy of the model. When you deploy something, Nodeau considers every machine, works out where it will really fit, and keeps the reasoning for the ones it passed over.</p><p>It is part of Home Pro and Business. The single command that adds a machine to an existing installation is what we are working on now — until it lands, we set it up with design partners directly.</p></div>
+        <div class="answer"><p>Yes. Each machine reports its own hardware and checks its own copy of the model. When you deploy something, Nodeau considers every machine, works out where it will really fit, and keeps the reasoning for the ones it passed over.</p><p>It is part of Home Pro and Business. The single command that adds a machine to an existing installation is what
+        we are working on now. Until it lands, we set it up with design partners
+        directly.</p></div>
       </details>
       <details class="qa">
         <summary>Can Nodeau manage different GPU models together?</summary>
-        <div class="answer"><p>Yes — and that was rather the point of testing on two <em>unlike</em> cards instead of two matching ones. An RTX 3080 and an RTX 2080 in the same cluster are measured and weighed up separately, on what each can really give a workload. Nothing in Nodeau treats “a GPU” as a unit of capacity.</p><p>The <a href='/roadmap/'>roadmap</a> sets out exactly how far this has been taken.</p></div>
+        <div class="answer"><p>Yes, and that was rather the point of testing on two <em>unlike</em>
+        cards instead of two matching ones. An RTX 3080 and an RTX 2080 in the same cluster are measured and weighed up separately, on what each can really give a workload. Nothing in Nodeau treats “a GPU” as a unit of capacity.</p><p>The <a href='/roadmap/'>roadmap</a> sets out exactly how far this has been taken.</p></div>
       </details>
       <details class="qa">
         <summary>Can teams share GPU infrastructure?</summary>
@@ -282,7 +329,9 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>Will Nodeau support cloud overflow?</summary>
-        <div class="answer"><p>Policy-controlled overflow to cloud capacity — owned hardware first, cloud when policy or capacity requires it — is <strong>Exploring</strong>. It is a direction rather than a plan.</p></div>
+        <div class="answer"><p>Policy-controlled overflow to cloud capacity, with owned hardware first
+        and cloud when policy or capacity requires it, is
+        <strong>Exploring</strong>. It is a direction rather than a plan.</p></div>
       </details>
       <details class="qa">
         <summary>How do I get involved early?</summary>

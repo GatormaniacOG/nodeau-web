@@ -70,14 +70,13 @@ export function BillingPage({
         <h1>{upgraded ? `You are on ${plan.displayName}` : 'Payment received'}</h1>
         {upgraded ? (
           <p>
-            {org.name} is on {plan.displayName}. Your machines pick this up the next time they
-            refresh their entitlement — Nodeau verifies entitlements offline, so nothing has to
-            be reachable for inference to keep working.
+            {org.name} is on {plan.displayName}. Your machines pick this up the next time they refresh their entitlement. Nodeau verifies entitlements
+            offline, so nothing has to be reachable for inference to keep working.
           </p>
         ) : (
           <p>
-            Your payment went through. We have not finished recording it yet — a plan changes
-            only once the provider's confirmation reaches us and is verified, which is usually
+            Your payment went through. We are still recording it. A plan changes only once the provider's
+            confirmation reaches us and is verified, which is usually
             seconds. This page does not have to stay open.
           </p>
         )}

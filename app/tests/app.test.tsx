@@ -129,7 +129,7 @@ describe('the signed-out state', () => {
     // Retrying never fixes this one, so it must not be collapsed into a
     // generic "sign-in failed".
     expect(await screen.findByText(/already has an account/i)).toBeInTheDocument();
-    expect(screen.getByText(/retrying with this method will not work/i)).toBeInTheDocument();
+    expect(screen.getByText(/retrying with this method will land here again/i)).toBeInTheDocument();
   });
 });
 
@@ -378,7 +378,7 @@ describe('the plan page', () => {
     expect(await screen.findByText('Nodeau Home Pro')).toBeInTheDocument();
     // A checkout button that goes nowhere is worse than an honest label.
     expect(screen.queryByRole('button', { name: /upgrade/i })).not.toBeInTheDocument();
-    expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
+    expect(screen.getByText(/talk to us/i)).toBeInTheDocument();
   });
 
   it('says the free plan is not a crippled one', async () => {
@@ -388,7 +388,7 @@ describe('the plan page', () => {
     window.history.pushState({}, '', '/plan');
     render(<App />);
 
-    expect(await screen.findByText(/nothing has been disabled/i)).toBeInTheDocument();
+    expect(await screen.findByText(/everything stays switched on/i)).toBeInTheDocument();
   });
 
   it('renders paid capabilities as sentences rather than identifiers', async () => {
@@ -473,9 +473,10 @@ describe('the plan page once something IS on sale', () => {
     render(<App />);
 
     expect(await screen.findByText('Nodeau Business')).toBeInTheDocument();
-    // The discriminating assertion: Business is the ONLY tier not on sale.
-    // Before the fix there were two, because the free tier said it as well.
-    expect(screen.getAllByText(/coming soon/i)).toHaveLength(1);
+    // The discriminating assertion: Business is the ONLY tier that sends you
+    // to a conversation. Before the fix there were two, because the free tier
+    // carried the same label as well.
+    expect(screen.getAllByText(/talk to us/i)).toHaveLength(1);
     expect(screen.getAllByText('Free').length).toBeGreaterThan(0);
   });
 
@@ -494,6 +495,6 @@ describe('the plan page once something IS on sale', () => {
     expect(await screen.findByRole('button', { name: /upgrade/i })).toBeInTheDocument();
     // The current tier renders no aside at all, so "Free" appears only when the
     // free tier is NOT the current one — which is the case the defect was about.
-    expect(screen.queryByText(/coming soon/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/talk to us/i)).not.toBeInTheDocument();
   });
 });

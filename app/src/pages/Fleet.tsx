@@ -85,8 +85,8 @@ export function FleetPage({
         <FleetCard key={inst.id} inst={inst} navigate={navigate} />
       ))}
       <p className="muted small">
-        Several installations are separate fleets. They cannot place work on each other's
-        machines, which is why they are listed apart rather than merged.
+        Several installations are separate fleets. Each places work only on its
+        own machines, which is why they are listed apart rather than merged.
       </p>
     </section>
   );
@@ -435,8 +435,8 @@ function MachineService({
       <>
         <h2>Service</h2>
         <p className="muted">
-          This machine runs a version of Nodeau that cannot be drained from here. Updating it
-          is what adds the capability; <code>nodeau scheduling drain</code> works on the
+          Draining from here arrives with a newer version of Nodeau on this machine.
+          Updating it is what adds the capability. <code>nodeau scheduling drain</code> works on the
           machine itself in the meantime.
         </p>
       </>
@@ -459,8 +459,8 @@ function MachineService({
       {machine.powerBudgetWatts !== undefined && (
         <p className="muted small">
           Power budget: {machine.powerBudgetWatts} W. Nodeau will not place work here whose
-          predicted draw would exceed it. This is a scheduling ceiling — it does not change
-          what any card draws.
+          predicted draw would exceed it. This is a scheduling ceiling, and it leaves what each card draws exactly
+          as it was.
         </p>
       )}
       <div className="row-actions">

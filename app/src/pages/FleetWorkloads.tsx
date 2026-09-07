@@ -110,8 +110,8 @@ export function FleetWorkloadsPage({
       {rows.length === 0 ? (
         <Empty title="Nothing is running">
           <p className="muted">
-            Your machines are connected and no model is loaded. Starting one takes a model
-            name; Nodeau chooses which machine and which card.
+            Your machines are connected and no model is loaded. Starting one takes a model name, and Nodeau chooses which machine and
+            which card.
           </p>
         </Empty>
       ) : (
@@ -283,7 +283,7 @@ export function OperationProgress({
   return (
     <div className={`notice ${tone.failed ? 'notice-error' : tone.done ? 'notice-ok' : 'notice-info'}`}>
       <h3>
-        {op.summary ?? op.kind} — {tone.label}
+        {op.summary ?? op.kind}: {tone.label}
       </h3>
       {op.resultDetail && <p>{op.resultDetail}</p>}
       {!tone.done && !tone.failed && (

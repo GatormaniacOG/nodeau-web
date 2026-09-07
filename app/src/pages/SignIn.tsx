@@ -37,8 +37,8 @@ export function SignInPage({ route }: { route: Route }) {
         <p className="muted">
           Nodeau Home runs on your own machine with no sign-in at all: local inference,
           batch jobs, the local dashboard, model verification and safe scheduling. Signing
-          in adds an account, a record of your installations, and a paid plan if you want
-          one — it does not turn Nodeau into software that needs this site.
+          in adds an account, a record of your installations, and a paid plan if you want one. Nodeau carries on working on its own
+          either way.
         </p>
       </div>
     </section>
@@ -66,7 +66,7 @@ function SignInError({ error }: { error: string }) {
       title: 'That address already has an account',
       body:
         'An account already exists for that email address using a different sign-in method. ' +
-        'Sign in the way you did the first time — retrying with this method will not work.',
+        'Sign in the way you did the first time, since retrying with this method will land here again.',
     },
   };
   const m = messages[error] ?? {

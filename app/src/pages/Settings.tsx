@@ -57,8 +57,8 @@ export function SettingsPage({ me, org }: { me: Me; org: Organization }) {
         <p className="muted">
           Your identity, your organisation, your subscription, and the installations you
           have linked with the version and machine counts they reported. It does not hold
-          prompts, documents, batch inputs, results or model weights — Nodeau does not send
-          them, and there is nowhere here to put them.
+          prompts, documents, batch inputs, results or model weights. Nodeau does not send them, and
+          there is nowhere here to put them.
         </p>
       </div>
 
