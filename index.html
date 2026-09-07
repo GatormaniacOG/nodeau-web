@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nodeau — Private AI Infrastructure on GPUs You Already Own</title>
+<title>Nodeau · Private AI Infrastructure on GPUs You Already Own</title>
 <meta name="description" content="Chat, embeddings, reranking, structured output and image understanding on GPUs you own. Nodeau works out whether a model fits before it starts anything, on Linux/NVIDIA and Apple Silicon.">
 <link rel="canonical" href="https://nodeau.ai/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Nodeau — Private AI Infrastructure on GPUs You Already Own">
+<meta property="og:title" content="Nodeau · Private AI Infrastructure on GPUs You Already Own">
 <meta property="og:description" content="Local inference, batch jobs and a private OpenAI-compatible API on hardware you own. Nodeau checks the fit before it starts anything, and tells you how it decided.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -62,21 +62,21 @@
           </a>
           <h1>Turn the GPUs you already own into private AI infrastructure.</h1>
           <p class="lede" style="margin-top:1.25rem">
-            You have a graphics card. Somewhere between that and a working AI
-            endpoint sit drivers, containers, quantisation and a lot of VRAM
-            arithmetic. Nodeau does that part, then hands you an
+            You have a graphics card. Between that and a working AI endpoint sit
+            drivers, containers, quantisation and a great deal of VRAM
+            arithmetic. Nodeau handles all of that and hands you an
             OpenAI-compatible API on your own machine.
           </p>
           <p class="lede" style="margin-top:0.85rem;max-width:52ch">
-            Not just chat. Embeddings, reranking, structured output, tool
-            calling and image understanding — the same catalog, the same
-            engine, the same two commands.
+            There is more here than chat. Embeddings, reranking, structured
+            output, tool calling and image understanding all run from the same
+            catalog, on the same engine, with the same two commands.
           </p>
           <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
-            On Linux with an NVIDIA card, and on Apple Silicon through Metal.
-            A Mac runs standalone — it cannot join a fleet, and batch
-            inference is Linux-only. The workloads beyond chat are measured on
-            Linux/NVIDIA today.
+            Runs on Linux with an NVIDIA card, and on Apple Silicon through
+            Metal. A Mac runs standalone and is a fine way to work with chat
+            models. Fleets, batch work and the other workloads run on Linux
+            with NVIDIA, where they are measured.
           </p>
           <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
             Three commands. No Kubernetes to learn.
@@ -156,7 +156,7 @@
           </div>
           <div class="feature">
             <h3>It works out whether the model fits</h3>
-            <p>Nodeau compares what your GPU can really give a workload against what the model needs. If it won't fit you get the numbers and an explanation, not a crash five seconds into loading.</p>
+            <p>Nodeau compares what your GPU can really give a workload against what the model needs. If it will fit you are told how much room is left. If it will not, you get the numbers and a plain explanation before anything starts loading.</p>
           </div>
           <div class="feature">
             <h3>It fetches and verifies the model</h3>
@@ -272,7 +272,7 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
           </div>
           <div class="feature">
             <h3>Diagnosis that names the problem</h3>
-            <p><code>nodeau doctor</code> checks the installation, not just the hardware, and every refusal carries a reason code and a remedy in plain words. Scripts get <code>--json</code> and honest exit codes: a refusal isn't a crash.</p>
+            <p><code>nodeau doctor</code> checks the installation, not just the hardware, and every refusal carries a reason code and a remedy in plain words. Scripts get <code>--json</code> and honest exit codes, so you always know where you stand.</p>
           </div>
         </div>
       </div>
@@ -299,9 +299,9 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
             could safely run the thing you want to run on Thursday.
           </p>
           <p style="color:var(--text-2)">
-            Nodeau asks each machine what it actually has, checks that its copy
-            of the model is the right one down to the hash, and then picks —
-            showing you why that machine and not the others.
+            Nodeau asks every machine what it actually has, checks that its copy
+            of the model is the right one down to the hash, and then chooses.
+            It shows you why it picked that machine over the others.
           </p>
           <p style="color:var(--text-2)">
             We run it on two machines here, deliberately mismatched, because
@@ -353,7 +353,7 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
             <li>Each machine reports its own GPU and what's really free on it</li>
             <li>Cards from different generations are judged on their own merits</li>
             <li>Each machine verifies its own copy of a model, by hash</li>
-            <li>A machine that can't vouch for itself isn't a candidate</li>
+            <li>Every machine has to vouch for itself before it is offered work</li>
           </ul>
         </div>
 
@@ -396,8 +396,9 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
             to start something. Not enough to know it will survive.
           </p>
           <p style="color:var(--text-2);max-width:52ch">
-            A 16&nbsp;GB card does not give a model 16&nbsp;GB. Some of it the
-            compute API cannot address at all, your desktop is holding a chunk,
+            A 16&nbsp;GB card gives a model rather less than 16&nbsp;GB. Some of it
+            sits outside what the compute API can reach, your desktop is
+            holding a chunk,
             and a model that fits with nothing spare dies the moment anything
             else asks for memory. Nodeau does that subtraction before it starts
             anything, and if the answer is negative it tells you by how much
@@ -418,7 +419,7 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
           <p style="color:var(--text-2);max-width:52ch">
             One more thing worth knowing: Nodeau stays out of the way of your
             requests. It decides and manages, but the traffic goes straight to
-            the model. Restarting Nodeau doesn't interrupt anything.
+            the model. Restarting Nodeau leaves your traffic untouched.
           </p>
           <a class="link-arrow" href="/about/" style="margin-top:0.5rem">How this works</a>
         </div>
@@ -431,8 +432,8 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
           <div class="admit-row"><span class="tag">Model on disk</span> <span class="val">verified by SHA-256</span></div>
           <div class="admit-arrow" aria-hidden="true">↓</div>
           <div class="admit-out">
-            <div class="yes">Admit — run it</div>
-            <div class="no">Refuse — and say why</div>
+            <div class="yes">Admit and run it</div>
+            <div class="no">Refuse, and say why</div>
           </div>
         </div>
       </div>
@@ -454,8 +455,8 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
             What an account gives you is a list of your machines and the plan
             each is on, visible from a laptop with no GPU in it. Run
             <code>nodeau login</code>, approve it in the browser, done. Your
-            prompts and results never come near it — and if this site goes down,
-            your models carry on serving.
+            prompts and results never come near it. If this site goes down, your
+            models carry on serving.
           </p>
           <div class="btn-row" style="margin-top:1.5rem">
             <a class="btn btn-ghost" href="https://app.nodeau.ai/">Sign in</a>

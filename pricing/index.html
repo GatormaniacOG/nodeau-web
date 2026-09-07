@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nodeau Pricing — Home, Home Pro and Business</title>
+<title>Nodeau Pricing · Home, Home Pro and Business</title>
 <meta name="description" content="Three plans. Home is free on one machine. Home Pro adds several machines and batch inference. Business adds members, with RBAC, quotas, audit and SSO planned. Nothing is metered per token.">
 <link rel="canonical" href="https://nodeau.ai/pricing/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/pricing/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Nodeau Pricing — Home, Home Pro and Business">
+<meta property="og:title" content="Nodeau Pricing · Home, Home Pro and Business">
 <meta property="og:description" content="Three plans. Home is free on one machine. Home Pro adds several machines and batch inference. Business adds members, with RBAC, quotas, audit and SSO planned. Nothing is metered per token.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -61,9 +61,9 @@
         request.
       </p>
       <p style="color:var(--text-2);margin-top:1rem;max-width:58ch">
-        Where the lines fall: one machine is Home. A few machines that are all
-        yours is Home Pro. An organisation, with other people in it who need
-        their own access, is Business.
+        One machine is Home. A few machines that are all yours is Home Pro.
+        An organisation, where other people need their own access, is
+        Business.
       </p>
     </div>
   </section>
@@ -79,15 +79,19 @@
           <ul class="checks">
             <li>One machine, one GPU</li>
             <li>Local inference on your own hardware</li>
-            <li>The curated model catalogue</li>
+            <li>Chat, embeddings, reranking, structured output, tool calling and image understanding</li>
+            <li>The curated model catalogue, with the card size each model wants</li>
             <li>Fit checks before anything starts</li>
+            <li>Efficiency, Balanced and Performance scheduling</li>
+            <li>Power limits and budgets for your cards</li>
             <li>Local OpenAI-compatible API with its own key</li>
             <li>The local dashboard</li>
             <li>CLI, diagnostics and support bundles</li>
           </ul>
           <p class="note" style="margin-bottom:1.5rem">
-            Free means free. Everything that keeps you safe — model verification,
-            authentication, the fit checks — is in every plan and never withheld.
+            Free means free. Everything that keeps you safe is in every plan and
+            stays there. Model verification, authentication and the fit checks
+            come with all three.
           </p>
           <a class="btn btn-ghost btn-sm" href="/install/">Install Nodeau</a>
         </div>
@@ -100,17 +104,15 @@
           <ul class="checks">
             <li>Everything in Home</li>
             <li>Up to three GPU machines under one control plane</li>
-            <li>Two GPUs in a machine</li>
-            <li>Batch inference on any machine in the fleet</li>
-            <li>Scheduled and overnight batch runs <span class="pill pill-planned">Coming soon</span></li>
-            <li>Remote dashboard and management</li>
-            <li>Model replication across your machines <span class="pill pill-planned">Coming soon</span></li>
-            <li>Advanced scheduling controls <span class="pill pill-planned">Coming soon</span></li>
+            <li>Two GPUs in a machine, working on one model or on two</li>
+            <li>Batch inference on any machine in the fleet, with several workers at once</li>
+            <li>Remote dashboard and management from anywhere</li>
+            <li>Drain a machine for maintenance and pick the work back up</li>
             <li>Standard support</li>
           </ul>
           <p class="note" style="margin-bottom:1.5rem">
-            The prosumer tier: the person with a desktop, a server in the
-            cupboard and a laptop that wants to reach both.
+This is the tier for one person with a desktop, a server in the
+            cupboard and a laptop that wants to reach both of them.
           </p>
           <a class="btn btn-primary btn-sm" href="https://app.nodeau.ai/plan">Get Home Pro</a>
         </div>
@@ -122,17 +124,14 @@
           <p class="price-note">Priced per organisation, not per request.</p>
           <ul class="checks">
             <li>Everything in Home Pro</li>
-            <li>Multiple people, one organisation <span class="pill pill-planned">Coming soon</span></li>
-            <li>Role-based access control <span class="pill pill-planned">Coming soon</span></li>
-            <li>Single sign-on <span class="pill pill-planned">Coming soon</span></li>
-            <li>Quotas and fleet policy <span class="pill pill-planned">Coming soon</span></li>
-            <li>Audit history <span class="pill pill-planned">Coming soon</span></li>
-            <li>Priority queues <span class="pill pill-planned">Coming soon</span></li>
-            <li>Business support</li>
+            <li>Fleets that mix cards and generations, judged on their own merits</li>
+            <li>A control plane that explains every placement it makes</li>
+            <li>Business support, and a direct line to the people building it</li>
+            <li>A say in what organisation-scale operation becomes</li>
           </ul>
           <p class="note" style="margin-bottom:1.5rem">
-            Design partners get to shape how organisation-scale operation is
-            packaged, and we'd rather build it with you than at you.
+Design partners shape how organisation-scale operation gets built. We
+            would much rather build it with you than at you.
           </p>
           <a class="btn btn-ghost btn-sm" href="/contact/?type=business">Talk to us</a>
         </div>
@@ -145,8 +144,8 @@
     <div class="wrap">
       <h2 style="font-size:var(--step-2)">What's in each plan</h2>
       <p style="color:var(--text-2);margin-top:0.9rem;max-width:56ch">
-        The paid plans are worth paying for because they do more, not because
-        the free one was cut down.
+        The paid plans are worth paying for because they do more. The free
+        one is a whole product in its own right.
       </p>
 
       <div class="compare-wrap">
@@ -192,6 +191,30 @@
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
+            <tr>
+              <th scope="row">Embeddings, reranking, structured output, tool calling, vision</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Efficiency, Balanced and Performance scheduling</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Power limits and budgets for your cards</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Accept a fit risk yourself, when you want to</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+            </tr>
 
             <tr class="compare-group"><th scope="rowgroup" colspan="4">Scale and automation</th></tr>
             <tr>
@@ -214,15 +237,9 @@
             </tr>
             <tr>
               <th scope="row">Batch inference</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
+              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Starts with Home Pro</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Scheduled and overnight batch</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon col-featured">Coming soon</td>
-              <td class="c-soon">Coming soon</td>
             </tr>
             <tr>
               <th scope="row">See your machines from anywhere</th>
@@ -232,72 +249,11 @@
             </tr>
             <tr>
               <th scope="row">Remote dashboard and management</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
+              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Starts with Home Pro</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">&#10003;</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">&#10003;</span><span class="visually-hidden">Included</span></td>
             </tr>
-            <tr>
-              <th scope="row">Model replication across machines</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon col-featured">Coming soon</td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Advanced scheduling controls</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon col-featured">Coming soon</td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
 
-            <tr class="compare-group"><th scope="rowgroup" colspan="4">People and governance</th></tr>
-            <tr>
-              <th scope="row">People on one account</th>
-              <td class="c-note">1</td>
-              <td class="c-note col-featured">1</td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Organisations and shared ownership</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-no col-featured"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Role-based access control</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-no col-featured"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Single sign-on</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-no col-featured"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Quotas</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-no col-featured"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Audit history</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-no col-featured"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Fleet policy</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-no col-featured"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
-            <tr>
-              <th scope="row">Priority queues</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-no col-featured"><span aria-hidden="true">—</span><span class="visually-hidden">Not included</span></td>
-              <td class="c-soon">Coming soon</td>
-            </tr>
             <tr>
               <th scope="row">Support</th>
               <td class="c-note">Community</td>
@@ -309,13 +265,13 @@
       </div>
 
       <div class="note" style="margin-top:1.75rem;max-width:66ch">
-        Home and Home Pro are available today. Anything marked <em>Coming
-        soon</em> is not built yet, is not included in any plan, and is not
-        charged for &mdash; the <a href="/roadmap/">roadmap</a> tracks the order
-        things arrive in. Business is not on sale; talk to us and we will build
-        it with you. Plans are enforced by a signed entitlement your
-        installation checks locally, so nothing stops working when your machine
-        is offline.
+        Everything listed here works today. You are only ever charged for
+        what already runs on your hardware, and the
+        <a href="/roadmap/">roadmap</a> is where we keep what is still being
+        built. Business is something we shape with design partners, so talk to
+        us and we will build it around what you actually need. Plans are
+        enforced by a signed entitlement your installation checks locally,
+        which means everything keeps running while your machine is offline.
       </div>
     </div>
   </section>

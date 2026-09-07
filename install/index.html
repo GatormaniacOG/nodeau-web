@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Install Nodeau — Run Your First Local AI Model</title>
+<title>Install Nodeau · Run Your First Local AI Model</title>
 <meta name="description" content="Turn a Linux/NVIDIA PC or an Apple Silicon Mac into a private, OpenAI-compatible local AI endpoint. Requirements, the exact install commands, and what to do if it fails.">
 <link rel="canonical" href="https://nodeau.ai/install/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://nodeau.ai/install/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Install Nodeau — Run Your First Local AI Model">
+<meta property="og:title" content="Install Nodeau · Run Your First Local AI Model">
 <meta property="og:description" content="Requirements, the exact commands, and what to do if something goes wrong. About ten minutes, plus the model download.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -65,11 +65,10 @@
 
       <div class="note" style="margin-top:2rem;max-width:64ch">
         Nodeau runs on Linux with an NVIDIA GPU, and on Apple Silicon Macs
-        through Metal. Both are qualified. A Mac runs standalone — it cannot
-        join a fleet, and batch inference is Linux-only. On Linux it expects
+        through Metal. Both are qualified. A Mac runs standalone, and batch inference runs on Linux. On Linux it expects
         the graphics driver to be working before it starts. Everything else on
-        this page it does for you. If something does go wrong, tell us — a report from a
-        machine we have never seen is the most useful thing we get.
+        this page it does for you. If something does go wrong, tell us. A report from a machine we have never
+        seen is the most useful thing we get.
       </div>
     </div>
   </section>
@@ -84,22 +83,28 @@
         <div>
           <ul class="checks">
             <li><strong>Linux:</strong> Ubuntu 24.04 LTS on <strong>x86_64</strong>, installed normally (not in a virtual machine without GPU passthrough), with an <strong>NVIDIA GPU</strong> and a <strong>working driver already installed</strong></li>
-            <li><strong>macOS:</strong> an <strong>Apple Silicon</strong> Mac (M-series). No driver to install, and no password needed. Tested on macOS&nbsp;26.5; earlier versions are untested rather than unsupported — the installer does not check the version</li>
-            <li>About <strong>20&nbsp;GB free disk</strong> — Nodeau is under 100&nbsp;MB and the starter model is 2.6&nbsp;GB; on Linux the container images add ~3&nbsp;GB</li>
+            <li><strong>macOS:</strong> an <strong>Apple Silicon</strong> Mac (M-series). No driver to install, and no password needed. Tested on macOS&nbsp;26.5, and earlier versions are untested rather than
+            unsupported, so the installer leaves the choice to you</li>
+            <li>About <strong>20&nbsp;GB free disk</strong>, since Nodeau is under
+            100&nbsp;MB and the starter model is 2.6&nbsp;GB. On Linux the container
+            images add about 3&nbsp;GB</li>
             <li>An internet connection during installation and the model download</li>
-            <li><strong>sudo</strong> on Linux, for the setup step only — a Mac install needs no password</li>
+            <li><strong>sudo</strong> on Linux for the setup step only. A Mac install
+            needs no password at all</li>
           </ul>
         </div>
         <div class="panel panel-quiet">
           <h3 style="font-size:1rem;margin-bottom:0.6rem">Current limits</h3>
           <ul class="checks checks-future" style="margin-bottom:0">
-            <li>Apple Silicon Macs run <strong>standalone</strong> — a Mac is not a Kubernetes node and cannot join a fleet</li>
-            <li><strong>Batch inference is Linux-only</strong> — it has no macOS implementation and refuses with a clear error</li>
-            <li>On a Mac, whether a model fits depends on what else is running; the same request can be admitted today and correctly refused tomorrow</li>
+            <li>Apple Silicon Macs run <strong>standalone</strong>, working happily on
+            their own</li>
+            <li><strong>Batch inference is Linux-only</strong>, and on a Mac it says
+            so clearly</li>
+            <li>On a Mac, whether a model fits depends on what else is running, so the
+            same request can be admitted today and correctly refused tomorrow</li>
             <li>AMD and Intel GPUs are unsupported</li>
-            <li>Several GPUs per machine on Linux/NVIDIA, and a single model can be split
-                across them when one card is not enough; a Mac uses its one
-                integrated GPU</li>
+            <li>Several GPUs per machine on Linux/NVIDIA, and a single model can be split across them when one card needs a hand. A
+            Mac uses its one integrated GPU</li>
             <li>The installer sets up one machine</li>
             <li>llama.cpp runtime</li>
             <li>No Windows, and no WSL yet</li>
@@ -110,9 +115,8 @@
             <strong>RTX 2080</strong> under Ubuntu 24.04, and on an
             <strong>M3&nbsp;Pro</strong> under macOS. On a card it has not
             measured directly it works out a cautious estimate and tells you
-            that is what it did, instead of guessing quietly. Other NVIDIA cards
-            are not known to be a problem — they simply have not been measured
-            yet. <a href="/roadmap/">See the roadmap</a>.
+            that is what it did, instead of guessing quietly. Other NVIDIA cards are expected to work well. They simply have not been
+            measured yet. <a href="/roadmap/">See the roadmap</a>.
           </p>
         </div>
       </div>
@@ -128,8 +132,8 @@
         <strong>Recommended</strong> is what we run every day and measure against.
         <strong>Qualified</strong> means a real machine has been through the whole
         customer path and the exclusions below are known and listed.
-        <strong>Experimental</strong> would mean it runs but we would not ask you to
-        rely on it — nothing sits there today.
+        <strong>Experimental</strong> would mean it runs but we would rather you
+        did not rely on it. Everything we ship has moved past that.
         <strong>Unsupported</strong> means Nodeau refuses rather than half-works.
       </p>
 
@@ -157,7 +161,9 @@
             <tr>
               <th scope="row">One model across several GPUs<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">Linux · NVIDIA, same machine</span></th>
               <td><span class="pill pill-available">Qualified</span></td>
-              <td style="text-align:left">One heterogeneous pair — an RTX&nbsp;3080 and an RTX&nbsp;5060&nbsp;Ti — running a model whose weights fit on neither card alone. Other combinations are untested. It buys capacity, not speed. <strong>Not available on Apple Silicon</strong>, which uses its one integrated GPU.</td>
+              <td style="text-align:left">One heterogeneous pair, an RTX&nbsp;3080 and
+              an RTX&nbsp;5060&nbsp;Ti, running a model whose weights fit on neither
+              card alone. Other combinations are untested. It buys capacity, not speed. <strong>Not available on Apple Silicon</strong>, which uses its one integrated GPU.</td>
             </tr>
             <tr>
               <th scope="row">Independent batch workers across several GPUs<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">Linux · NVIDIA, same machine</span></th>
@@ -192,7 +198,8 @@
             <tr class="compare-group"><th scope="rowgroup" colspan="3">The same on both</th></tr>
             <tr><th scope="row">Local inference on your own GPU</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
             <tr><th scope="row">Model catalog, download and verified cache</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
-            <tr><th scope="row">Will it fit? — admission before anything starts</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
+            <tr><th scope="row">Will it fit? Admission runs before anything
+            starts</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
             <tr><th scope="row">OpenAI-compatible API</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
             <tr><th scope="row"><code>run</code> · <code>ps</code> · <code>stop</code> · <code>logs</code> · <code>doctor</code></th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
             <tr><th scope="row">Local dashboard</th><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td><td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td></tr>
@@ -223,7 +230,7 @@
             <tr>
               <th scope="row">Batch inference<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">chat or embeddings, a file of requests at a time</span></th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">Linux-only; refuses clearly</span></td>
+              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">Linux only, and says so clearly</span></td>
             </tr>
             <tr>
               <th scope="row">Embeddings<br><span style="color:var(--text-3);font-weight:400;font-size:0.85rem">vectors for search and retrieval</span></th>
@@ -247,8 +254,8 @@
             </tr>
             <tr>
               <th scope="row">Speech to text</th>
-              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">not offered</span></td>
-              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">not offered</span></td>
+              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">Linux only</span></td>
+              <td><span aria-hidden="true">—</span><span class="visually-hidden">Not available</span><br><span style="color:var(--text-3);font-size:0.8rem">Linux only</span></td>
             </tr>
           </tbody>
         </table>
@@ -256,9 +263,9 @@
 
       <p style="color:var(--text-3);max-width:68ch;margin-top:1.2rem;font-size:0.9rem">
         On Apple Silicon the GPU shares one pool of memory with everything else, so
-        whether a model fits depends on what else is running. The same request can
-        be admitted today and correctly refused tomorrow — Nodeau shows you the
-        arithmetic either way rather than leaving you to guess.
+        whether a model fits depends on what else is running. The same request can be admitted today and correctly refused tomorrow.
+        Nodeau shows you the arithmetic either way rather than leaving you to
+        guess.
       </p>
     </div>
   </section>
@@ -362,7 +369,8 @@ bash install-nodeau.sh</code></pre>
           </div>
           <p style="margin-top:0.85rem;color:var(--text-2)">Nodeau will:</p>
           <ul class="checks">
-            <li>offer the starter model — <strong>Qwen3.5-4B</strong>, Apache-2.0, about a 2.6&nbsp;GB download</li>
+            <li>offer the starter model, <strong>Qwen3.5-4B</strong>, Apache-2.0,
+            about a 2.6&nbsp;GB download</li>
             <li>tell you the size and licence, and ask before downloading anything</li>
             <li>verify the file against a known SHA-256</li>
             <li>check the model fits safely in your GPU’s memory</li>
@@ -373,7 +381,7 @@ bash install-nodeau.sh</code></pre>
 
         <div class="step">
           <h3>Talk to it</h3>
-          <p>Nodeau prints a working command when it finishes. It looks like this — and the key is unique to your machine.</p>
+          <p>Nodeau prints a working command when it finishes. It looks like this, and the key is unique to your machine.</p>
           <div class="code">
             <div class="code-head">
               <span>bash</span>
@@ -396,8 +404,8 @@ bash install-nodeau.sh</code></pre>
   }'</code></pre>
           </div>
           <p style="margin-top:0.85rem">
-            If text comes back, <strong>it worked</strong> — your own graphics
-            card generated it. The first reply can take a few seconds while the
+            If text comes back, <strong>it worked</strong>. Your own graphics card
+            generated it. The first reply can take a few seconds while the
             model warms up. Streaming works too: add <code>"stream": true</code>
             and use <code>curl -N</code>.
           </p>
@@ -465,7 +473,7 @@ print(reply.choices[0].message.content)</code></pre>
   <section class="tight divider">
     <div class="wrap">
       <p class="eyebrow">More than one machine</p>
-      <h2 style="font-size:var(--step-2)">This guide sets up one machine — on purpose.</h2>
+      <h2 style="font-size:var(--step-2)">This guide sets up one machine, on purpose.</h2>
 
       <div class="grid grid-2" style="margin-top:1.5rem;align-items:start;gap:clamp(2rem,5vw,3.5rem)">
         <div>
@@ -533,8 +541,7 @@ print(reply.choices[0].message.content)</code></pre>
           </div>
           <p style="color:var(--text-2);margin-top:0.85rem">
             Writes one <code>.tar.gz</code> into the current folder. It contains
-            no API keys, no credentials, no prompts and no model output, and it
-            is sent nowhere — you attach it yourself. It is an ordinary archive,
+            no API keys, no credentials, no prompts and no model output, and it is sent nowhere, so you attach it yourself. It is an ordinary archive,
             so you are very welcome to open it and look first.
           </p>
         </div>
@@ -549,8 +556,7 @@ print(reply.choices[0].message.content)</code></pre>
           </div>
           <p style="color:var(--text-2);margin-top:0.85rem">
             Everything <code>nodeau install</code> prints is also written there.
-            Send that file — or simply copy and paste whatever the terminal
-            showed. Anything is better than nothing.
+            Send that file, or simply copy and paste whatever the terminal showed. Anything is better than nothing.
           </p>
         </div>
       </div>

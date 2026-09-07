@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About Nodeau — Making Owned GPUs Usable Infrastructure</title>
+<title>About Nodeau · Making Owned GPUs Usable Infrastructure</title>
 <meta name="description" content="Why owning a GPU is not the same as having AI infrastructure, why “GPU: 1” is not enough to schedule on, and how Nodeau decides where a model can safely run.">
 <link rel="canonical" href="https://nodeau.ai/about/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/about/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="About Nodeau — Making Owned GPUs Usable Infrastructure">
+<meta property="og:title" content="About Nodeau · Making Owned GPUs Usable Infrastructure">
 <meta property="og:description" content="Why owning a GPU is not the same as having AI infrastructure, why “GPU: 1” is not enough to schedule on, and how Nodeau decides where a model can safely run.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -96,9 +96,8 @@
           an estimate.
         </p>
         <p style="color:var(--text-2)">
-          That second path matters more than it sounds. Refusing everything it
-          hasn’t measured would not be caution — it would be a product that
-          works on exactly one graphics card. The honest position isn’t “we
+          That second path matters more than it sounds. Refusing everything it has not measured would leave you with a product
+          that works on exactly one graphics card, which helps nobody. The honest position isn’t “we
           never estimate”. It’s <em>you can always see which one you got</em>.
         </p>
       </div>
@@ -107,9 +106,9 @@
         <h2 style="font-size:var(--step-2)">The number on the box is not the number you get</h2>
         <p style="color:var(--text-2)">
           A card advertised with 10&nbsp;GB does not hand 10&nbsp;GB to a
-          workload. Some of it cannot be addressed by the compute API at all.
-          Your desktop is already using some — every window, every browser tab
-          with a video in it. And a model that fits exactly with nothing to
+          workload. Some of it sits outside what the compute API can reach.
+          Your desktop is already using some of it, for every window and every
+          browser tab with a video in it. And a model that fits exactly with nothing to
           spare will fail the moment anything else asks for memory.
         </p>
         <p style="color:var(--text-2)">
@@ -194,9 +193,8 @@
         <p style="color:var(--text-2)">
           It is not automatically cheaper. A GPU that runs a few hours a week is
           usually dearer than paying per request, and anyone telling you
-          otherwise is selling something. The case for owning the hardware is
-          control and predictability — and, quite often, that you already bought
-          the card for something else entirely.
+          otherwise is selling something. The case for owning the hardware is control and predictability. Quite
+          often it is also that you bought the card for something else entirely.
         </p>
       </div>
 
