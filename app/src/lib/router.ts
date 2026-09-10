@@ -22,6 +22,10 @@ export type Route =
   | { name: 'activate'; code?: string }
   | { name: 'plan' }
   | { name: 'settings' }
+  // Organisation administration — Phase 17B. Members, teams, service accounts
+  // and where people come from. One route with tabs rather than four routes:
+  // they are one job, and four entries in a six-item nav would bury the fleet.
+  | { name: 'organization' }
   // Where the billing provider sends the customer back. `complete` is the
   // success return and `/billing` the cancel return — both are the provider's
   // redirect targets, set by the API in handleStartCheckout, so they must exist
@@ -56,6 +60,7 @@ export function parseRoute(pathname: string, search: string): Route {
   if (path === '/activate') return { name: 'activate', code: params.get('code') ?? undefined };
   if (path === '/plan') return { name: 'plan' };
   if (path === '/settings') return { name: 'settings' };
+  if (path === '/organization') return { name: 'organization' };
   if (path === '/billing') return { name: 'billing', complete: false };
   if (path === '/billing/complete') return { name: 'billing', complete: true };
   if (path === '/fleet') return { name: 'fleet' };
@@ -97,6 +102,7 @@ export const hrefFor = {
   activate: (code?: string) => (code ? `/activate?code=${encodeURIComponent(code)}` : '/activate'),
   plan: () => '/plan',
   settings: () => '/settings',
+  organization: () => '/organization',
   signin: () => '/signin',
   fleet: () => '/fleet',
   fleetMachine: (id: string) => `/fleet/machines/${encodeURIComponent(id)}`,

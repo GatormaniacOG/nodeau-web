@@ -677,3 +677,124 @@ p {
   border-radius: 6px;
   overflow-x: auto;
 }
+
+/* ---------------------------------------------------------------------------
+ * Organisation administration — Phase 17B
+ * ---------------------------------------------------------------------------
+ *
+ * Reuses this sheet's existing variables and card styling rather than
+ * introducing a second visual language. The brief for this phase says not to
+ * rebuild the design system, and a settings page is exactly where a second one
+ * usually appears.
+ */
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.5rem;
+  border-bottom: 1px solid var(--line, #23262c);
+}
+
+.tab {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted, #8b93a1);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.6rem 0.9rem;
+}
+
+.tab:hover { color: inherit; }
+
+.tab-current {
+  border-bottom-color: #b8ff5a;
+  color: inherit;
+  font-weight: 600;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.25rem;
+}
+
+.table th, .table td {
+  border-top: 1px solid var(--line, #23262c);
+  padding: 0.7rem 0.75rem 0.7rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table th {
+  border-top: 0;
+  color: var(--muted, #8b93a1);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.link, .link-danger {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.link { color: inherit; }
+.link-danger { color: #e06c6c; }
+.link:disabled, .link-danger:disabled { cursor: default; opacity: 0.5; }
+
+.inline-form {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.inline-form label { color: var(--muted, #8b93a1); }
+
+.stacked-form { margin: 1rem 0; }
+.stacked-form label { display: block; font-weight: 600; margin-top: 0.75rem; }
+.stacked-form input { max-width: 22rem; width: 100%; }
+.stacked-form fieldset {
+  border: 1px solid var(--line, #23262c);
+  border-radius: 8px;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem 1rem;
+}
+.stacked-form legend { color: var(--muted, #8b93a1); font-size: 0.85rem; padding: 0 0.4rem; }
+
+.check {
+  align-items: center;
+  display: flex;
+  font-weight: 400;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+.check input { width: auto; }
+
+.nested {
+  border-top: 1px solid var(--line, #23262c);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+/* The one place a credential is ever rendered.
+ *
+ * `user-select: all` so a single click selects the whole value: a secret that
+ * is half-copied is a support conversation, and the alternative — a copy button
+ * — needs the clipboard API and a permission prompt to do the same job. */
+.notice-strong { border-color: #b8ff5a; }
+
+.secret {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9rem;
+  margin: 0.6rem 0;
+  overflow-wrap: anywhere;
+  user-select: all;
+}

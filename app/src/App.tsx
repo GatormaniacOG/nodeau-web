@@ -8,6 +8,7 @@ import { PlanPage } from './pages/Plan';
 import { BillingPage } from './pages/Billing';
 import { DashboardPage } from './pages/Dashboard';
 import { SettingsPage } from './pages/Settings';
+import { OrganizationPage } from './pages/Organization';
 import { SignInPage } from './pages/SignIn';
 import { FleetMachinePage, FleetPage } from './pages/Fleet';
 import { FleetWorkloadsPage } from './pages/FleetWorkloads';
@@ -168,6 +169,8 @@ function Page({
       );
     case 'plan':
       return <PlanPage org={org} />;
+    case 'organization':
+      return <OrganizationPage me={me} org={org} />;
     case 'billing':
       return <BillingPage org={org} complete={route.complete} navigate={navigate} />;
     case 'fleet':
@@ -277,6 +280,18 @@ function Shell({
                 }
               >
                 Installations
+              </a>
+              {/* Organisation — Phase 17B. Shown to everybody, because seeing
+                  who is in your organisation is `organization.view`, which
+                  every role has. What the page OFFERS depends on what the
+                  server says the caller may do; what it ALLOWS is decided
+                  there, not here. */}
+              <a
+                href={hrefFor.organization()}
+                onClick={go(hrefFor.organization())}
+                aria-current={route?.name === 'organization' ? 'page' : undefined}
+              >
+                Organisation
               </a>
               <a
                 href={hrefFor.plan()}

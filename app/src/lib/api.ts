@@ -349,6 +349,110 @@ const CSRF_HEADER = 'X-Nodeau-Request';
  * Only NON-SECRET values are ever put in a frontend bundle; everything in a
  * Vite `VITE_` variable is public by construction and this one is a hostname.
  */
+/* ---------------------------------------------------------------------------
+ * Organisation governance — Phase 17B
+ * ---------------------------------------------------------------------------
+ *
+ * NO TYPE HERE HAS A FIELD FOR A SECRET, with one exception: `CreatedApiKey`,
+ * the response to creating one. That is the only moment the plaintext exists
+ * outside the caller's own memory, and there is no endpoint that reads it back.
+ *
+ * `capabilities` is the SERVER's answer and is never recomputed here. A client
+ * that derived what somebody may do would be a second implementation of the
+ * permission model, and it would disagree the day a role changes.
+ */
+
+/** One thing a principal may do. A string, because the authoritative
+ *  vocabulary lives on the server and a copy here would drift. */
+export type Capability = string;
+
+export interface RoleDescription {
+  role: string;
+  capabilities: Capability[];
+  /** Whether the CALLER may put somebody in this role. The server's answer,
+   *  because "you cannot hand out a role above your own" is a rule a client
+   *  must not be trusted to apply. */
+  grantable: boolean;
+}
+
+export interface Member {
+  userId: string;
+  email: string;
+  displayName?: string;
+  role: string;
+  /** What this person's teams confer, shown beside the direct role rather than
+   *  merged into it: "you are a viewer, and the platform team makes you an
+   *  operator" is two facts and an administrator needs both. */
+  teamRoles?: string[];
+  capabilities: Capability[];
+  active: boolean;
+  /** An identity provider owns this membership, so a control here would be
+   *  undone by the next sync. */
+  fromDirectory?: boolean;
+}
+
+export interface MemberList {
+  members: Member[];
+  roles: RoleDescription[];
+}
+
+export interface Team {
+  id: string;
+  name: string;
+  slug: string;
+  role: string;
+  capabilities: Capability[];
+  memberCount: number;
+  fromDirectory?: boolean;
+  createdAt: string;
+}
+
+export interface ServiceAccount {
+  id: string;
+  name: string;
+  description?: string;
+  role: string;
+  capabilities: Capability[];
+  enabled: boolean;
+  keyCount: number;
+  createdAt: string;
+}
+
+export interface ApiKey {
+  id: string;
+  name: string;
+  /** The scheme and the account id, for telling two keys apart. Deliberately
+   *  not the start of the secret. */
+  prefix: string;
+  scope: Capability[];
+  createdAt: string;
+  expiresAt?: string;
+  revokedAt?: string;
+  lastUsedAt?: string;
+  /** Whether it would authenticate right now. Revoked, expired and "its
+   *  account is disabled" are three ways to be dead, and only the server knows
+   *  all three. */
+  live: boolean;
+}
+
+export interface CreatedApiKey {
+  key: ApiKey;
+  /** Shown once, never recoverable. */
+  token: string;
+  notice: string;
+}
+
+export interface IdentityStatus {
+  /** 'unknown' | 'unconfigured' | 'active' — three-valued, because "we have
+   *  never asked" and "we asked and there is none" send different people to do
+   *  different things. */
+  sso: string;
+  directory: string;
+  provider?: string;
+  lastDirectoryEventAt?: string;
+  notice?: string;
+}
+
 export const apiBase: string =
   (import.meta.env.VITE_NODEAU_API_URL as string | undefined)?.replace(/\/$/, '') ??
   'http://localhost:8080';
@@ -464,6 +568,96 @@ export const api = {
    *                    which is what selling Home Pro and not Business looks
    *                    like.
    */
+  members: (orgId: string, signal?: AbortSignal) =>
+    request<MemberList>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/members`,
+      undefined,
+      signal,
+    ),
+
+  setMemberRole: (orgId: string, userId: string, role: string) =>
+    request<MemberList>(
+      'PATCH',
+      `/v1/organizations/${encodeURIComponent(orgId)}/members/${encodeURIComponent(userId)}`,
+      { role },
+    ),
+
+  deactivateMember: (orgId: string, userId: string) =>
+    request<MemberList>(
+      'DELETE',
+      `/v1/organizations/${encodeURIComponent(orgId)}/members/${encodeURIComponent(userId)}`,
+    ),
+
+  teams: (orgId: string, signal?: AbortSignal) =>
+    request<{ teams: Team[] }>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/teams`,
+      undefined,
+      signal,
+    ),
+
+  createTeam: (orgId: string, name: string, role: string) =>
+    request<Team>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/teams`, { name, role }),
+
+  deleteTeam: (orgId: string, teamId: string) =>
+    request<void>(
+      'DELETE',
+      `/v1/organizations/${encodeURIComponent(orgId)}/teams/${encodeURIComponent(teamId)}`,
+    ),
+
+  serviceAccounts: (orgId: string, signal?: AbortSignal) =>
+    request<{ accounts: ServiceAccount[]; roles: RoleDescription[] }>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts`,
+      undefined,
+      signal,
+    ),
+
+  createServiceAccount: (orgId: string, name: string, description: string, role: string) =>
+    request<ServiceAccount>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts`,
+      { name, description, role },
+    ),
+
+  disableServiceAccount: (orgId: string, accountId: string) =>
+    request<void>(
+      'DELETE',
+      `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts/${encodeURIComponent(accountId)}`,
+    ),
+
+  apiKeys: (orgId: string, accountId: string, signal?: AbortSignal) =>
+    request<{ keys: ApiKey[]; grantable: Capability[] }>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts/${encodeURIComponent(accountId)}/keys`,
+      undefined,
+      signal,
+    ),
+
+  /** Mint one key. The response is the ONLY time the plaintext exists outside
+   *  the caller's own memory, and there is no endpoint that reads it back. */
+  createApiKey: (orgId: string, accountId: string, name: string, scope: Capability[]) =>
+    request<CreatedApiKey>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts/${encodeURIComponent(accountId)}/keys`,
+      { name, scope },
+    ),
+
+  revokeApiKey: (orgId: string, accountId: string, keyId: string) =>
+    request<void>(
+      'DELETE',
+      `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts/${encodeURIComponent(accountId)}/keys/${encodeURIComponent(keyId)}`,
+    ),
+
+  identityStatus: (orgId: string, signal?: AbortSignal) =>
+    request<IdentityStatus>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/identity`,
+      undefined,
+      signal,
+    ),
+
   startCheckout: (orgId: string, planId: string) =>
     request<{ url: string }>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/checkout`, {
       planId,
