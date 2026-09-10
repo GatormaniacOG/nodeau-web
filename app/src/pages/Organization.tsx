@@ -686,11 +686,69 @@ function Identity({ org }: { org: Organization }) {
 
       {s.notice && <p className="muted">{s.notice}</p>}
 
+      <LinkForm org={org} onLinked={reload} />
+
       <p className="muted">
         Nodeau does not run a directory of its own. People and groups arrive from your
         identity provider, and what each group may do is decided here.
       </p>
     </>
+  );
+}
+
+/** LinkForm records the correspondence, and nothing else.
+ *
+ *  There is no button here that creates a connection, because creating one
+ *  needs credentials for the customer's identity provider and this product
+ *  deliberately does not hold any. What it records is which organisation and
+ *  which directory over there correspond to this one over here — without which
+ *  an incoming directory event cannot be resolved to a customer at all. */
+function LinkForm({ org, onLinked }: { org: Organization; onLinked: () => void }) {
+  const [workosOrg, setWorkosOrg] = useState('');
+  const [directory, setDirectory] = useState('');
+  const [error, setError] = useState<unknown>(null);
+  const [busy, setBusy] = useState(false);
+
+  return (
+    <form
+      className="stacked-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        api
+          .linkIdentity(org.id, workosOrg.trim(), directory.trim())
+          .then(() => {
+            onLinked();
+          })
+          .catch((err: unknown) => setError(err))
+          .finally(() => setBusy(false));
+      }}
+    >
+      {error != null && <ErrorNotice error={error} />}
+      <label htmlFor="workos-org">Identity provider organisation</label>
+      <input
+        id="workos-org"
+        value={workosOrg}
+        placeholder="org_…"
+        onChange={(e) => setWorkosOrg(e.currentTarget.value)}
+      />
+      <label htmlFor="workos-dir">Directory</label>
+      <input
+        id="workos-dir"
+        value={directory}
+        placeholder="directory_…"
+        onChange={(e) => setDirectory(e.currentTarget.value)}
+      />
+      <p className="muted">
+        Both are identifiers from your provider&rsquo;s dashboard. Leaving one empty clears
+        it; the people and teams a directory already created stay, because they are members
+        of this organisation now.
+      </p>
+      <button type="submit" disabled={busy}>
+        Save
+      </button>
+    </form>
   );
 }
 

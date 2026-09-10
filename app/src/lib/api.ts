@@ -658,6 +658,15 @@ export const api = {
       signal,
     ),
 
+  /** Record WHICH identity-provider organisation and directory govern this
+   *  one. Nodeau records a correspondence and creates nothing: the connection
+   *  itself is made in the provider's own dashboard. */
+  linkIdentity: (orgId: string, workosOrganizationId: string, directoryId: string) =>
+    request<IdentityStatus>('PUT', `/v1/organizations/${encodeURIComponent(orgId)}/identity`, {
+      workosOrganizationId,
+      directoryId,
+    }),
+
   startCheckout: (orgId: string, planId: string) =>
     request<{ url: string }>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/checkout`, {
       planId,
