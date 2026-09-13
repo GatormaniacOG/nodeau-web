@@ -185,14 +185,51 @@ test.describe('signed in', () => {
     expect((await response.json()).code).toBe('NOT_FOUND');
   });
 
-  test('the plan page does not offer to sell anything', async ({ page }) => {
+  /**
+   * The plan page offers no checkout on a deployment with billing switched off,
+   * and Business is never purchasable anywhere.
+   *
+   * # This test asserted two labels that were deliberately deleted
+   *
+   * It used to require the text "coming soon" and "nothing has been disabled",
+   * and it had been failing since `1ae4610` — "the free tier says Free, not
+   * 'Coming soon'" — removed the first, for the reason `Plan.tsx`'s own comment
+   * gives: rendering every plan as coming soon was invisible while nothing was
+   * purchasable, and it left "Coming soon" beside Nodeau Home, the plan every
+   * installation already has.
+   *
+   * Nothing noticed, because Playwright runs in no CI workflow for this
+   * repository — Netlify deploys it. That is `CLAUDE.md` issue #12's class in
+   * the browser suite: a stale assertion about a UI string, red for days,
+   * reporting a defect that did not exist while the real property went
+   * unchecked.
+   *
+   * So it now asserts the PROPERTY instead of the wording. The page has three
+   * honest states — an Upgrade button when a plan is purchasable, a Free badge,
+   * and "Talk to us" when a plan exists and is not self-service — and the
+   * property worth holding is which plan gets which.
+   */
+  test('the plan page offers no checkout here, and never offers Business', async ({ page }) => {
     await page.goto('/plan');
     await expect(page.getByRole('heading', { name: 'Plan', exact: true })).toBeVisible();
     await expect(page.getByText('Nodeau Home Pro')).toBeVisible();
-    // Billing is not live, so there must be no checkout — §5, §68.
+
+    // This deployment has NODEAU_BILLING_CHECKOUT_ENABLED unset, so nothing is
+    // purchasable and no plan may offer a checkout.
     await expect(page.getByRole('button', { name: /upgrade/i })).toHaveCount(0);
-    await expect(page.getByText(/coming soon/i).first()).toBeVisible();
-    await expect(page.getByText(/nothing has been disabled/i)).toBeVisible();
+
+    // BUSINESS IS NOT PURCHASABLE, and that is a standing claim rather than a
+    // property of this deployment's billing switch — CLAUDE.md §2.3. Asserted
+    // against the rendered card so the page itself is the evidence.
+    const business = page.locator('.card', { hasText: 'Nodeau Business' });
+    await expect(business).toBeVisible();
+    await expect(business.getByRole('button', { name: /upgrade/i })).toHaveCount(0);
+    await expect(business.getByText(/talk to us/i)).toBeVisible();
+
+    // THE CONTROL FOR THE SELECTOR. Without it, `toHaveCount(0)` above is
+    // satisfied by a `.card` that matched nothing at all — and the Business
+    // card not rendering would read as "Business is not for sale".
+    await expect(business.getByRole('heading', { name: /Nodeau Business/ })).toBeVisible();
   });
 
   test('an unknown activation code is refused by the real server', async ({ page }) => {
