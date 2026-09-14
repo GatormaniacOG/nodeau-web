@@ -46,6 +46,11 @@ export type Route =
   // governs: a policy is about one fleet, and an organisation with several has
   // several policies.
   | { name: 'fleetGovernance' }
+  // Usage and audit — Phase 17D. One route rather than two: "what did my
+  // hardware do" and "what changed" are read in the same sitting, and two
+  // entries in the nav for one question buries the fleet the way four 17B
+  // routes would have.
+  | { name: 'usage' }
   | { name: 'signin'; error?: string }
   | { name: 'notfound'; path: string };
 
@@ -71,6 +76,7 @@ export function parseRoute(pathname: string, search: string): Route {
   if (path === '/fleet/workloads') return { name: 'fleetWorkloads' };
   if (path === '/fleet/run') return { name: 'fleetRun' };
   if (path === '/fleet/governance') return { name: 'fleetGovernance' };
+  if (path === '/usage') return { name: 'usage' };
   if (path.startsWith('/fleet/machines/')) {
     const id = decodeURIComponent(path.slice('/fleet/machines/'.length));
     return id ? { name: 'fleetMachine', id } : { name: 'fleet' };
@@ -114,4 +120,5 @@ export const hrefFor = {
   fleetWorkloads: () => '/fleet/workloads',
   fleetRun: () => '/fleet/run',
   fleetGovernance: () => '/fleet/governance',
+  usage: () => '/usage',
 };

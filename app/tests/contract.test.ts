@@ -36,7 +36,15 @@ const PLATFORM_REPO =
  * to prevent. A guard that names one file is a guard that stops tracking its
  * subject the moment the subject grows a second file (issue #98).
  */
-const CONTRACT_FILES = ['cloudapi.go', 'fleet.go', 'fleetops.go', 'resourcegovernance.go'].map((f) =>
+const CONTRACT_FILES = [
+  'cloudapi.go',
+  'fleet.go',
+  'fleetops.go',
+  'resourcegovernance.go',
+  // Phase 17D.
+  'usage.go',
+  'fleetpolicy.go',
+].map((f) =>
   resolve(PLATFORM_REPO, 'pkg/cloudapi', f),
 );
 const CONTRACT = CONTRACT_FILES[0]!;
@@ -115,6 +123,10 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     'GovernanceSettings',
     'GovernanceDevice',
     'GovernanceMachine',
+    // Phase 17D — usage and audit.
+    'UsageSummary',
+    'UsageLine',
+    'UsageRate',
   ];
 
   for (const typeName of responseTypes) {

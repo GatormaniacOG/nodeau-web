@@ -386,6 +386,69 @@ export interface GovernanceMachine {
  * permission from a role name would be a second implementation of the
  * permission model, and it would disagree the day a role changes.
  */
+// ---------------------------------------------------------------------------
+// Phase 17D — usage, audit and fleet policy
+// ---------------------------------------------------------------------------
+
+/** One workload's consumption inside a window.
+ *
+ *  `acceleratorSeconds` is a fact about a RESERVATION — how long this workload
+ *  held how many cards — and NOT a measurement of any card. Nodeau cannot
+ *  attribute GPU utilisation per process (issue #17) and this figure does not
+ *  pretend to. */
+export interface UsageLine {
+  kind: string;
+  name: string;
+  nodeName?: string;
+  modelId?: string;
+  modelSha256?: string;
+  acceleratorSeconds: number;
+  intervals: number;
+  /** Present only when the organisation entered its own rate. */
+  estimatedCost?: number;
+}
+
+export interface UsageSummary {
+  acceleratorSeconds: number;
+  /** Absent when no rate is set. ABSENT IS NOT ZERO: a zero renders as "this
+   *  cost you nothing", which is a claim Nodeau is in no position to make. */
+  estimatedCost?: number;
+  currency?: string;
+  /** Says WHY a cost is absent, which a missing field cannot. "Nobody entered
+   *  a rate" and "there was no usage" must not render identically. */
+  rateConfigured: boolean;
+  from: string;
+  to: string;
+  lines?: UsageLine[];
+}
+
+export interface UsageRate {
+  /** null CLEARS the rate, which is different from zero. */
+  perAcceleratorHour: number | null;
+  currency?: string;
+}
+
+export interface AuditEvent {
+  type: string;
+  occurredAt: string;
+  actorUserId?: string;
+  actorServiceAccountId?: string;
+  installationId?: string;
+  target?: string;
+  /** "applied" or "refused". ABSENT for events written before the column
+   *  existed — absent is not "applied", and rendering it as success would
+   *  invent a fact about every record from before 2026-09-13. */
+  result?: string;
+  detail?: Record<string, string>;
+}
+
+export interface AuditPage {
+  events: AuditEvent[];
+  /** Stated WITH the data, so a reader who sees the oldest record can tell
+   *  "this is all there was" from "this is all that is kept". */
+  retentionDays: number;
+}
+
 export interface FleetGovernance {
   installationId: string;
   desired: GovernanceSettings;
@@ -846,6 +909,73 @@ export const api = {
       'POST',
       `/v1/organizations/${encodeURIComponent(orgId)}/fleet/operations`,
       body,
+    ),
+
+  // -- usage, audit and fleet policy — Phase 17D -----------------------------
+
+  /** What this organisation's hardware did, inside a window.
+   *
+   *  NOT a bill and not a meter. Nodeau is priced for infrastructure rather
+   *  than for tokens, and this surface carries no token count and no price of
+   *  Nodeau's. `estimatedCost` appears only when the organisation entered its
+   *  own rate. */
+  usage: (orgId: string, params?: { from?: string; to?: string }, signal?: AbortSignal) =>
+    request<UsageSummary>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/usage` +
+        (params && (params.from || params.to)
+          ? '?' +
+            new URLSearchParams(
+              Object.entries(params).filter(([, v]) => !!v) as [string, string][],
+            ).toString()
+          : ''),
+      undefined,
+      signal,
+    ),
+
+  usageRate: (orgId: string, signal?: AbortSignal) =>
+    request<UsageRate>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/usage/rate`,
+      undefined,
+      signal,
+    ),
+
+  /** Set or clear the organisation's own rate.
+   *
+   *  `perAcceleratorHour: null` CLEARS it, which is different from zero: "do
+   *  not show me a cost" and "this costs me nothing" are both things a customer
+   *  may legitimately mean. */
+  setUsageRate: (orgId: string, rate: UsageRate) =>
+    request<UsageRate>(
+      'PUT',
+      `/v1/organizations/${encodeURIComponent(orgId)}/usage/rate`,
+      rate,
+    ),
+
+  /** The audit trail — who changed what, and whether it happened.
+   *
+   *  A REFUSAL IS THE EVENT AN INVESTIGATION STARTS FROM, which is why
+   *  `result` is filterable and why the list shows refusals rather than only
+   *  what succeeded. */
+  auditEvents: (
+    orgId: string,
+    params?: { type?: string; result?: string; target?: string; limit?: number },
+    signal?: AbortSignal,
+  ) =>
+    request<AuditPage>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/events` +
+        (params && Object.values(params).some((v) => v !== undefined && v !== '')
+          ? '?' +
+            new URLSearchParams(
+              Object.entries(params)
+                .filter(([, v]) => v !== undefined && v !== '')
+                .map(([k, v]) => [k, String(v)]),
+            ).toString()
+          : ''),
+      undefined,
+      signal,
     ),
 
   // -- resource governance — Phase 17C --------------------------------------

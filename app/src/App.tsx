@@ -14,6 +14,7 @@ import { FleetMachinePage, FleetPage } from './pages/Fleet';
 import { FleetWorkloadsPage } from './pages/FleetWorkloads';
 import { FleetRunPage } from './pages/FleetRun';
 import { GovernancePage } from './pages/Governance';
+import { UsagePage } from './pages/Usage';
 
 /**
  * The application shell.
@@ -184,6 +185,8 @@ function Page({
       return <FleetRunPage org={org} navigate={navigate} />;
     case 'fleetGovernance':
       return <GovernancePage org={org} />;
+    case 'usage':
+      return <UsagePage org={org} />;
     case 'settings':
       return <SettingsPage me={me} org={org} />;
     case 'signin':
@@ -294,6 +297,17 @@ function Shell({
                 aria-current={route?.name === 'fleetGovernance' ? 'page' : undefined}
               >
                 Governance
+              </a>
+              {/* Usage and audit — Phase 17D. Shown to everybody for the same
+                  reason governance is: reading is `fleet.view`, and somebody
+                  who can see the fleet can see what it did and what changed.
+                  It is not a billing surface and is deliberately not near one. */}
+              <a
+                href={hrefFor.usage()}
+                onClick={go(hrefFor.usage())}
+                aria-current={route?.name === 'usage' ? 'page' : undefined}
+              >
+                Usage
               </a>
               {/* Organisation — Phase 17B. Shown to everybody, because seeing
                   who is in your organisation is `organization.view`, which
