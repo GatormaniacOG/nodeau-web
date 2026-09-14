@@ -443,6 +443,53 @@ describe('the run form', () => {
     expect(screen.queryByPlaceholderText('qwen3-8b-q4km')).not.toBeInTheDocument();
   });
 
+  it('will not let the form be submitted with no model chosen', async () => {
+    window.history.pushState({}, '', '/fleet/run');
+    render(<App />);
+
+    const box = (await screen.findByRole('combobox', { name: /model/i })) as HTMLInputElement;
+    // THE PLATFORM'S OWN VALIDITY, attached to the VALUE rather than to the
+    // text in the box — which holds a search string. And it says what to do
+    // rather than "please fill out this field".
+    expect(box.checkValidity()).toBe(false);
+    expect(box.validationMessage).toMatch(/choose a model/i);
+
+    const user = userEvent.setup();
+    // Typing is not choosing, which is the whole point of the control.
+    await user.type(box, 'qwen3.5-9b-q4km');
+    expect(box.checkValidity()).toBe(false);
+
+    const list = await screen.findByRole('listbox');
+    await user.click(within(list).getByText('Qwen3.5-9B Q4_K_M'));
+    expect(box.checkValidity()).toBe(true);
+    expect(box.validationMessage).toBe('');
+  });
+
+  it("keeps the name field's pattern a regular expression browsers accept", async () => {
+    window.history.pushState({}, '', '/fleet/run');
+    render(<App />);
+
+    const name = (await screen.findByLabelText('Name')) as HTMLInputElement;
+    const source = name.getAttribute('pattern');
+    expect(source).toBeTruthy();
+
+    // THE PROPERTY, NOT THE SPELLING. Chromium compiles `pattern` with the `v`
+    // flag and DROPS one it cannot parse — so a field can look constrained and
+    // validate nothing. This one did: `[a-z0-9-]` is an invalid character
+    // class under `v`, and the browser logged it while accepting any name.
+    for (const flags of ['u', 'v']) {
+      expect(
+        () => new RegExp(`^(?:${source})$`, flags),
+        `the name pattern does not compile with the ${flags} flag, so a browser using it validates nothing`,
+      ).not.toThrow();
+    }
+    // And it still means what it says.
+    const re = new RegExp(`^(?:${source})$`, 'v');
+    expect(re.test('my-assistant')).toBe(true);
+    expect(re.test('My_Assistant')).toBe(false);
+    expect(re.test('-leading')).toBe(false);
+  });
+
   it('narrows the models to the task being asked for', async () => {
     const user = userEvent.setup();
     window.history.pushState({}, '', '/fleet/run');

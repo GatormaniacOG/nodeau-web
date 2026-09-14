@@ -101,13 +101,20 @@ export function FleetRunPage({
 
       <form className="form" onSubmit={submit}>
         <label htmlFor="run-name">Name</label>
+        {/* THE HYPHEN IN `pattern` IS ESCAPED, and that is not decoration.
+            Chromium compiles this attribute with the `v` flag, which rejects
+            `[a-z0-9-]` as an invalid character class — and a REJECTED PATTERN
+            IS DROPPED, so the field validated nothing at all while looking
+            constrained. Measured in a real browser: "Pattern attribute value
+            … is not a valid regular expression". `\-` is accepted by both `u`
+            and `v` and means exactly the same thing. */}
         <input
           id="run-name"
           type="text"
           value={name}
           required
           maxLength={63}
-          pattern="[a-z0-9]([a-z0-9-]*[a-z0-9])?"
+          pattern="[a-z0-9]([a-z0-9\-]*[a-z0-9])?"
           placeholder="my-assistant"
           onChange={(e) => setName(e.target.value)}
         />

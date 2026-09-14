@@ -259,6 +259,31 @@ test.describe('the model selector', () => {
     expect(desiredWorkload('second-copy').model).toBe('my-imported-gguf');
   });
 
+  test('refuses to submit with no model, in the browser that would submit it', async ({
+    page,
+  }) => {
+    await page.goto('/fleet/run');
+    await page.getByLabel('Name').fill('never-started');
+    await page.getByRole('button', { name: 'Run' }).click();
+
+    // The form is still the form. Chromium blocked it on the control's own
+    // validity, which is the platform doing the work rather than a submit
+    // handler that has to be right.
+    await expect(page.getByRole('heading', { name: /run a workload/i })).toBeVisible();
+    const message = await page
+      .getByRole('combobox', { name: 'Model' })
+      .evaluate((el) => (el as HTMLInputElement).validationMessage);
+    expect(message).toMatch(/choose a model/i);
+
+    // And nothing reached the fleet.
+    const stored = psql(
+      e2e.scopedDSN,
+      `SELECT count(*) FROM fleet_desired_state
+        WHERE subject_kind = 'workload' AND subject_id = 'never-started'`,
+    );
+    expect(stored).toBe('0');
+  });
+
   test('asks the server for the task rather than filtering in the browser', async ({ page }) => {
     await page.goto('/fleet/run');
     await page.selectOption('#run-task', 'embed');

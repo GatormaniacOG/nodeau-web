@@ -241,6 +241,7 @@ function ModelCombo({
   const [active, setActive] = useState(0);
   const [manual, setManual] = useState(false);
   const shell = useRef<HTMLDivElement>(null);
+  const box = useRef<HTMLInputElement>(null);
 
   // Opening and filtering both reset the highlight, and they do it HERE
   // rather than in an effect. `react-hooks/set-state-in-effect` is right about
@@ -283,6 +284,27 @@ function ModelCombo({
     document.addEventListener('mousedown', away);
     return () => document.removeEventListener('mousedown', away);
   }, [open, closeList]);
+
+  // `required` IS THE PLATFORM'S OWN VALIDITY, ATTACHED TO THE VALUE RATHER
+  // THAN TO THE TEXT.
+  //
+  // The visible box holds a SEARCH STRING while the list is open, so marking it
+  // `required` would let a form pass because somebody typed — the exact mistake
+  // this control exists to remove. The first draft used a hidden `required`
+  // input instead, and a real browser showed why that is worse: Chromium blocks
+  // the submit and anchors "Please fill out this field" to a clipped element
+  // nobody can see, with no way to say what to do about it.
+  //
+  // `setCustomValidity` keeps the browser doing the blocking — no submit
+  // handler to get wrong, no second source of truth about whether the form is
+  // complete — while pointing the message at the control somebody is looking at
+  // and saying what it wants. An effect is the right place: this synchronises
+  // React state with a DOM API, which is what effects are for.
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    el.setCustomValidity(required && value === '' ? 'Choose a model from the list.' : '');
+  }, [required, value, manual]);
 
   const choose = useCallback(
     (row: Row) => {
@@ -396,6 +418,7 @@ function ModelCombo({
     <div className="combo-shell" ref={shell}>
       <div className="combo">
         <input
+          ref={box}
           id={id}
           className="input combo-input"
           type="text"
@@ -415,20 +438,6 @@ function ModelCombo({
           onFocus={openList}
           onKeyDown={onKeyDown}
         />
-        {/* `required` is enforced by a hidden field rather than by the text
-            box, which holds a SEARCH STRING while the list is open. Marking
-            the search box required would make a form valid because somebody
-            typed, which is exactly the mistake this control exists to remove. */}
-        {required && (
-          <input
-            className="visually-hidden"
-            tabIndex={-1}
-            aria-hidden="true"
-            required
-            value={value}
-            onChange={() => undefined}
-          />
-        )}
         <button
           type="button"
           className="combo-toggle"

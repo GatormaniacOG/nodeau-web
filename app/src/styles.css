@@ -910,23 +910,6 @@ p {
   margin-top: 0.4rem;
 }
 
-/* Available to a screen reader, invisible on screen, and not focusable. Used
-   for the hidden field that carries `required`: the visible box holds a search
-   string while the list is open, so marking IT required would let a form pass
-   validation because somebody typed. */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
 /* Long ids must not push the panel wider than its field. */
 .combo-option-id,
 .combo-option-meta,
