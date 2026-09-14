@@ -46,6 +46,13 @@ export interface WireError {
   message: string;
   requestId?: string;
   retryAfterSeconds?: number;
+  /** What was wrong with each field of a rejected request — Phase 17C.
+   *
+   *  The server owns validation, so a form marks its fields from what it is
+   *  TOLD rather than re-deriving the rules. A client that re-validated would
+   *  be a second implementation of a rule it does not own, and it would
+   *  disagree the day a bound changes. */
+  fields?: Record<string, string>;
 }
 
 export interface User {
@@ -300,6 +307,8 @@ export class ApiError extends Error {
   readonly status: number;
   readonly requestId?: string;
   readonly retryAfterSeconds?: number;
+  /** Per-field problems, when the server sent any — Phase 17C. */
+  readonly fields?: Record<string, string>;
 
   constructor(status: number, body: WireError) {
     super(body.message || body.code);
@@ -308,6 +317,7 @@ export class ApiError extends Error {
     this.status = status;
     this.requestId = body.requestId;
     this.retryAfterSeconds = body.retryAfterSeconds;
+    this.fields = body.fields;
   }
 }
 
@@ -324,6 +334,71 @@ export class NetworkError extends Error {
     this.name = 'NetworkError';
     this.cause = cause;
   }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Resource governance — Phase 17C                                             */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * An organisation's policy over one fleet.
+ *
+ * # null and [] are DIFFERENT and this file must never normalise them
+ *
+ * `null` means NO POLICY — every model, every card, every machine. `[]` means a
+ * policy that permits NOTHING. They are opposite intentions, both reachable,
+ * and a helper here that turned one into the other would change what a fleet
+ * enforces from inside a browser.
+ *
+ * A quota that is absent is NO QUOTA. Zero is the same thing said differently
+ * and the server canonicalises it away, so nothing here has to decide.
+ */
+export interface GovernanceSettings {
+  maxWorkloads?: number;
+  maxGpus?: number;
+  maxBatchWorkers?: number;
+  allowedModels: string[] | null;
+  allowedDevices: string[] | null;
+  allowedNodes: string[] | null;
+}
+
+export interface GovernanceDevice {
+  uuid: string;
+  model?: string;
+  machineName?: string;
+  inPool: boolean;
+}
+
+export interface GovernanceMachine {
+  name: string;
+  machineId?: string;
+  inGroup: boolean;
+}
+
+/**
+ * What the organisation asked for, and what the fleet reports it has.
+ *
+ * `applied` is the SERVER's comparison of the two. A page that rendered a
+ * saved form as a working policy would be reporting a claim as a fact, which is
+ * the failure desired-versus-observed exists to prevent.
+ *
+ * `mayManage` is the server's answer too. A console that recomputed a
+ * permission from a role name would be a second implementation of the
+ * permission model, and it would disagree the day a role changes.
+ */
+export interface FleetGovernance {
+  installationId: string;
+  desired: GovernanceSettings;
+  observed?: GovernanceSettings;
+  observedAt?: string;
+  applied: boolean;
+  consistent: boolean;
+  setByEmail?: string;
+  setAt?: string;
+  mayManage: boolean;
+  machines: number;
+  devices?: GovernanceDevice[];
+  nodes?: GovernanceMachine[];
 }
 
 // ---------------------------------------------------------------------------
@@ -771,6 +846,33 @@ export const api = {
       'POST',
       `/v1/organizations/${encodeURIComponent(orgId)}/fleet/operations`,
       body,
+    ),
+
+  // -- resource governance — Phase 17C --------------------------------------
+
+  fleetGovernance: (orgId: string, signal?: AbortSignal) =>
+    request<FleetGovernance>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/governance`,
+      undefined,
+      signal,
+    ),
+
+  /** Replace a fleet's whole policy.
+   *
+   *  A REPLACEMENT, not a patch: what is sent is what the fleet will have. A
+   *  patch would need a way to say "remove the model policy" distinct from "do
+   *  not mention it", and the obvious encodings of that collapse the null/[]
+   *  distinction.
+   *
+   *  Returns the operation to follow. Nothing is applied when this resolves —
+   *  the fleet has to hear about it and report back, and only then does the
+   *  server call it applied. */
+  setFleetGovernance: (orgId: string, governance: GovernanceSettings) =>
+    request<Operation>(
+      'PUT',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/governance`,
+      { governance },
     ),
 
   fleetLogs: (orgId: string, opId: string, signal?: AbortSignal) =>

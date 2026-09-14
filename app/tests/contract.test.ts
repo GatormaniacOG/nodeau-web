@@ -36,7 +36,7 @@ const PLATFORM_REPO =
  * to prevent. A guard that names one file is a guard that stops tracking its
  * subject the moment the subject grows a second file (issue #98).
  */
-const CONTRACT_FILES = ['cloudapi.go', 'fleet.go', 'fleetops.go'].map((f) =>
+const CONTRACT_FILES = ['cloudapi.go', 'fleet.go', 'fleetops.go', 'resourcegovernance.go'].map((f) =>
   resolve(PLATFORM_REPO, 'pkg/cloudapi', f),
 );
 const CONTRACT = CONTRACT_FILES[0]!;
@@ -103,6 +103,18 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     'Operation',
     'FleetLogArtifact',
     'HealthFinding',
+    // Resource governance — Phase 17C. What /fleet/governance returns, and the
+    // policy inside it.
+    //
+    // `GovernanceSettings` is listed even though the client also CONSTRUCTS
+    // one: it is read back as `desired` and `observed`, and a field the server
+    // sends that this file never mentions is a policy the console silently
+    // cannot show — which for a quota means somebody believing a limit is not
+    // set when it is.
+    'FleetGovernance',
+    'GovernanceSettings',
+    'GovernanceDevice',
+    'GovernanceMachine',
   ];
 
   for (const typeName of responseTypes) {

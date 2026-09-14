@@ -42,6 +42,10 @@ export type Route =
   | { name: 'fleetMachine'; id: string }
   | { name: 'fleetWorkloads' }
   | { name: 'fleetRun' }
+  // Resource governance — Phase 17C. Under /fleet because that is what it
+  // governs: a policy is about one fleet, and an organisation with several has
+  // several policies.
+  | { name: 'fleetGovernance' }
   | { name: 'signin'; error?: string }
   | { name: 'notfound'; path: string };
 
@@ -66,6 +70,7 @@ export function parseRoute(pathname: string, search: string): Route {
   if (path === '/fleet') return { name: 'fleet' };
   if (path === '/fleet/workloads') return { name: 'fleetWorkloads' };
   if (path === '/fleet/run') return { name: 'fleetRun' };
+  if (path === '/fleet/governance') return { name: 'fleetGovernance' };
   if (path.startsWith('/fleet/machines/')) {
     const id = decodeURIComponent(path.slice('/fleet/machines/'.length));
     return id ? { name: 'fleetMachine', id } : { name: 'fleet' };
@@ -108,4 +113,5 @@ export const hrefFor = {
   fleetMachine: (id: string) => `/fleet/machines/${encodeURIComponent(id)}`,
   fleetWorkloads: () => '/fleet/workloads',
   fleetRun: () => '/fleet/run',
+  fleetGovernance: () => '/fleet/governance',
 };

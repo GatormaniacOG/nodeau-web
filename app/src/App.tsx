@@ -13,6 +13,7 @@ import { SignInPage } from './pages/SignIn';
 import { FleetMachinePage, FleetPage } from './pages/Fleet';
 import { FleetWorkloadsPage } from './pages/FleetWorkloads';
 import { FleetRunPage } from './pages/FleetRun';
+import { GovernancePage } from './pages/Governance';
 
 /**
  * The application shell.
@@ -181,6 +182,8 @@ function Page({
       return <FleetWorkloadsPage org={org} navigate={navigate} />;
     case 'fleetRun':
       return <FleetRunPage org={org} navigate={navigate} />;
+    case 'fleetGovernance':
+      return <GovernancePage org={org} />;
     case 'settings':
       return <SettingsPage me={me} org={org} />;
     case 'signin':
@@ -280,6 +283,17 @@ function Shell({
                 }
               >
                 Installations
+              </a>
+              {/* Governance — Phase 17C. Shown to everybody, because READING a
+                  policy is `fleet.view`: somebody refused by a quota has to be
+                  able to see the number that refused them. Whether the page
+                  offers to CHANGE it comes from the server's own answer. */}
+              <a
+                href={hrefFor.fleetGovernance()}
+                onClick={go(hrefFor.fleetGovernance())}
+                aria-current={route?.name === 'fleetGovernance' ? 'page' : undefined}
+              >
+                Governance
               </a>
               {/* Organisation — Phase 17B. Shown to everybody, because seeing
                   who is in your organisation is `organization.view`, which
