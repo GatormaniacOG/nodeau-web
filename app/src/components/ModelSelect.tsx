@@ -216,6 +216,17 @@ interface Row {
   manual?: boolean;
 }
 
+/** rowID is the ONE formula for a row's DOM id.
+ *
+ *  `aria-activedescendant` names it, the rendered option carries it, and the
+ *  effect that keeps the highlight in view looks it up. Three spellings of one
+ *  identifier is how a highlight ends up pointing at an element that is not
+ *  there — silently, and only for the people using a keyboard. */
+function rowID(listID: string, row: Row | undefined): string | null {
+  if (!row) return null;
+  return row.manual ? `${listID}-manual` : `${listID}-${row.model?.id}`;
+}
+
 function ModelCombo({
   id,
   models,
@@ -284,6 +295,17 @@ function ModelCombo({
     document.addEventListener('mousedown', away);
     return () => document.removeEventListener('mousedown', away);
   }, [open, closeList]);
+
+  // THE HIGHLIGHT HAS TO BE VISIBLE TO BE A HIGHLIGHT. The curated catalogue is
+  // already taller than the panel, so arrowing past the fold moved a selection
+  // nobody could see — which is the keyboard path failing quietly for exactly
+  // the people who depend on it. `block: 'nearest'` scrolls only when it has
+  // to, so an option already in view does not jump.
+  useEffect(() => {
+    if (!open) return;
+    const id = rowID(listId, visible[active]);
+    if (id) document.getElementById(id)?.scrollIntoView({ block: 'nearest' });
+  }, [open, active, visible, listId]);
 
   // `required` IS THE PLATFORM'S OWN VALIDITY, ATTACHED TO THE VALUE RATHER
   // THAN TO THE TEXT.
@@ -359,11 +381,7 @@ function ModelCombo({
   }
 
   const activeRow = visible[active];
-  const activeId = activeRow
-    ? activeRow.manual
-      ? `${listId}-manual`
-      : `${listId}-${activeRow.model?.id}`
-    : undefined;
+  const activeId = rowID(listId, activeRow) ?? undefined;
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
@@ -436,6 +454,7 @@ function ModelCombo({
             openList();
           }}
           onFocus={openList}
+          onClick={openList}
           onKeyDown={onKeyDown}
         />
         <button
@@ -466,7 +485,7 @@ function ModelCombo({
                   return (
                     <div
                       key={m.id}
-                      id={`${listId}-${m.id}`}
+                      id={rowID(listId, { model: m }) ?? undefined}
                       role="option"
                       className={
                         'combo-option' +
@@ -507,7 +526,7 @@ function ModelCombo({
 
           <div className="combo-group" role="group" aria-label="Not listed">
             <div
-              id={`${listId}-manual`}
+              id={rowID(listId, { manual: true }) ?? undefined}
               role="option"
               aria-selected={false}
               className={'combo-option combo-manual' + (activeRow?.manual ? ' is-active' : '')}
