@@ -304,7 +304,14 @@ test.describe('the fleet, signed in', () => {
   test('a run request reaches the real API and is recorded', async ({ page }) => {
     await page.goto('/fleet/run');
     await page.getByLabel('Name').fill('browser-started');
-    await page.getByLabel('Model').fill('qwen3-8b-q4km');
+    // THE MODEL IS CHOSEN, NOT TYPED. This used to `fill()` the field, and
+    // that is exactly what stopped working when the field became a selector:
+    // typing into it filters the list and never becomes the value. The change
+    // is the point — a typo used to be accepted here and refused later by a
+    // machine. Choosing from the real catalogue is covered in detail by
+    // `models.spec.ts`; this test is about the run request reaching the API.
+    await page.getByRole('combobox', { name: 'Model' }).click();
+    await page.getByRole('listbox').getByText('Qwen3.5-9B Q4_K_M').click();
     await page.getByRole('button', { name: 'Run' }).click();
 
     await expect(page.getByRole('heading', { name: /starting browser-started/i })).toBeVisible();

@@ -591,6 +591,82 @@ export interface IdentityStatus {
   notice?: string;
 }
 
+// ---------------------------------------------------------------------------
+// The model catalogue
+// ---------------------------------------------------------------------------
+
+/**
+ * One model a person can choose to run.
+ *
+ * # `id` is submitted; everything else is for reading
+ *
+ * The canonical identifier is what the machine resolves, and it is the ONLY
+ * field that goes back to the API. A display name is what somebody recognises;
+ * conflating the two is how a form submits "Qwen3.5 4B" to a scheduler that
+ * has never heard of it.
+ *
+ * # `tasks` absent means NOT KNOWN, never "none"
+ *
+ * A model Nodeau Cloud has only ever seen running on somebody's fleet has no
+ * profile in the hosted catalogue. Rendering that as "can do nothing" would be
+ * a claim about somebody's own model that nothing established.
+ */
+export interface CatalogModel {
+  id: string;
+  displayName?: string;
+  family?: string;
+  parameters?: string;
+  quantization?: string;
+  role?: string;
+  /** The hardware ladder rung the catalogue assigns: 8, 12, 16 or 24 GiB.
+   *
+   *  GUIDANCE AND NEVER ADMISSION. Whether a model fits is arithmetic done on
+   *  the machine, against the card actually present, at the moment it is
+   *  asked. Nothing in this application may filter on it — a browser that
+   *  hid a model because it estimated a poor fit would be a second admission
+   *  engine beside the one that works, and it would be wrong first on exactly
+   *  the machines whose free memory is not their nameplate. */
+  recommendedVramGib?: number;
+  /** What a workload can be STARTED for. Absent means Nodeau Cloud does not
+   *  know, which is not the same as none. */
+  tasks?: string[];
+  capabilities?: string[];
+  /** active, deprecated or legacy. Absent for a model the catalogue does not
+   *  describe. */
+  status?: string;
+  /** Offer this one first: an active curated entry. A deprecated model is
+   *  still listed — somebody's fleet may be serving one right now. */
+  featured: boolean;
+  /** WHERE THIS KNOWLEDGE CAME FROM — `catalog` for Nodeau's curated set,
+   *  `fleet` for an id this organisation's own fleet reported running.
+   *
+   *  Deliberately not "origin", which is a TRUST CLASS. Nodeau Cloud cannot
+   *  decide whether an id it does not recognise is a customer's imported GGUF
+   *  or a curated model from a newer release, and saying "custom" would assert
+   *  a supply-chain fact nobody established. */
+  source: 'catalog' | 'fleet';
+  /** The workloads this fleet is running on it, for a fleet-sourced entry. */
+  runningAs?: string[];
+  /** Whether the organisation's own model policy allows it — Phase 17C,
+   *  answered by the SERVER. Nothing here re-derives it: a client that did
+   *  would be a second implementation of a policy it does not own. */
+  permitted: boolean;
+  notPermittedReason?: string;
+}
+
+export interface ModelCatalog {
+  models: CatalogModel[];
+  /** The task filter that produced this list, echoed so a page can tell "no
+   *  model can embed" from "the catalogue is empty". */
+  task?: string;
+  /** The fleet whose model policy was applied. Empty means none was. */
+  installationId?: string;
+  /** Whether an organisation model policy was in force at all. Separate from
+   *  every entry being permitted: "there is no policy" and "the policy happens
+   *  to list everything" are different facts. */
+  policyApplied: boolean;
+}
+
 export const apiBase: string =
   (import.meta.env.VITE_NODEAU_API_URL as string | undefined)?.replace(/\/$/, '') ??
   'http://localhost:8080';
@@ -932,6 +1008,35 @@ export const api = {
       undefined,
       signal,
     ),
+
+  /** The models this organisation may choose to run.
+   *
+   *  # Server-side, and that is the point
+   *
+   *  The curated catalogue compiled into Nodeau Cloud, plus the ids this
+   *  organisation's own fleet reported running, narrowed by the organisation's
+   *  17C model policy. Filtering in a browser would be a second implementation
+   *  of a policy it does not own, and it would not be authorization in any
+   *  case — every submitted id is governed and admitted again on the machine.
+   *
+   *  `task` asks for models that can be STARTED for that task. An unknown one
+   *  is refused rather than answered with an empty list. */
+  models: (
+    orgId: string,
+    params?: { task?: string; installationId?: string },
+    signal?: AbortSignal,
+  ) => {
+    const query = new URLSearchParams();
+    if (params?.task) query.set('task', params.task);
+    if (params?.installationId) query.set('installationId', params.installationId);
+    const suffix = query.toString() ? `?${query.toString()}` : '';
+    return request<ModelCatalog>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/models${suffix}`,
+      undefined,
+      signal,
+    );
+  },
 
   usageRate: (orgId: string, signal?: AbortSignal) =>
     request<UsageRate>(

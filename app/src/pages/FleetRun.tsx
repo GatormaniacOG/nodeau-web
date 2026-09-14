@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { api, ApiError, type Operation, type Organization } from '../lib/api';
 import { hrefFor } from '../lib/router';
 import { ErrorNotice } from '../components/ui';
+import { ModelSelect } from '../components/ModelSelect';
 import { OperationProgress } from './FleetWorkloads';
 
 /**
@@ -114,26 +115,29 @@ export function FleetRunPage({
           Lowercase letters, numbers and hyphens. This is what you will stop it by.
         </p>
 
-        <label htmlFor="run-model">Model</label>
-        <input
-          id="run-model"
-          type="text"
-          value={model}
-          required
-          placeholder="qwen3-8b-q4km"
-          onChange={(e) => setModel(e.target.value)}
-        />
-        <p className="muted small">
-          A model id from Nodeau's catalogue. Your machine checks it before anything
-          starts.
-        </p>
-
+        {/* THE TASK IS ABOVE THE MODEL, and the order is the design. It
+            narrows what the selector offers, so choosing it second means
+            choosing a model and then watching the list change underneath. */}
         <label htmlFor="run-task">Task</label>
         <select id="run-task" value={task} onChange={(e) => setTask(e.target.value)}>
           <option value="">chat</option>
           <option value="embed">embed</option>
           <option value="rerank">rerank</option>
         </select>
+
+        <label htmlFor="run-model">Model</label>
+        <ModelSelect
+          id="run-model"
+          orgId={org.id}
+          value={model}
+          onChange={setModel}
+          task={task}
+          required
+        />
+        <p className="muted small">
+          Chosen from what Nodeau knows: its own catalogue, and any model your machines
+          have reported running. Your machine checks it again before anything starts.
+        </p>
 
         <label htmlFor="run-gpus">Accelerators</label>
         <select id="run-gpus" value={gpuCount} onChange={(e) => setGPUCount(e.target.value)}>

@@ -44,6 +44,9 @@ const CONTRACT_FILES = [
   // Phase 17D.
   'usage.go',
   'fleetpolicy.go',
+  // The model catalogue the run form and the governance policy list choose
+  // from.
+  'modelcatalog.go',
 ].map((f) =>
   resolve(PLATFORM_REPO, 'pkg/cloudapi', f),
 );
@@ -127,6 +130,13 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     'UsageSummary',
     'UsageLine',
     'UsageRate',
+    // The model catalogue. `CatalogModel` is listed for the reason
+    // `GovernanceSettings` is: a field the server sends and this file never
+    // mentions is something the selector silently cannot show, and for a model
+    // that means offering somebody a choice without the fact that would have
+    // changed it.
+    'ModelCatalog',
+    'CatalogModel',
   ];
 
   for (const typeName of responseTypes) {

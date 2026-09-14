@@ -8,6 +8,7 @@ import {
 } from '../lib/api';
 import { useResource } from '../lib/useResource';
 import { Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
+import { ModelSelect } from '../components/ModelSelect';
 
 /**
  * Resource governance — Phase 17C.
@@ -236,7 +237,7 @@ function GovernanceForm({
             {draft.modelsMode === 'only' && (
               <>
                 <label className="field">
-                  <span>One per line — a catalog id, or the SHA-256 of a model you imported</span>
+                  <span>One per line, by the id a workload names</span>
                   <textarea
                     rows={4}
                     value={draft.models}
@@ -244,6 +245,21 @@ function GovernanceForm({
                     onChange={(e) => setDraft({ ...draft, models: e.target.value })}
                   />
                 </label>
+                {/* THE LIST STAYS THE AUTHORITATIVE FIELD and the picker only
+                    appends to it. A policy legitimately names ids this
+                    catalogue does not contain — a model nobody has run yet —
+                    so replacing the list with a set of checkboxes would remove
+                    something an administrator can do today. What the picker
+                    removes is the typo in the ordinary case. */}
+                <ModelAdder
+                  orgId={org.id}
+                  onAdd={(id) => {
+                    const lines = draft.models.split('\n').map((l) => l.trim());
+                    if (lines.includes(id)) return;
+                    const kept = lines.filter((l) => l !== '');
+                    setDraft({ ...draft, models: [...kept, id].join('\n') });
+                  }}
+                />
                 {fieldErrors.allowedModels && (
                   <p className="field-error">{fieldErrors.allowedModels}</p>
                 )}
@@ -254,8 +270,8 @@ function GovernanceForm({
                   </p>
                 )}
                 <p className="muted small">
-                  A model you imported is identified by the SHA-256 of its bytes, so a policy
-                  cannot be retargeted by re-importing different bytes under the same name.
+                  A model is named here by the id a workload runs under — a catalog id, or
+                  the name a model was imported as on your machines.
                 </p>
               </>
             )}
@@ -453,6 +469,41 @@ function QuotaField({
       />
       {problem && <span className="field-error">{problem}</span>}
     </label>
+  );
+}
+
+/**
+ * ModelAdder appends a catalogue id to the permitted list.
+ *
+ * # It ADDS; it does not own the list
+ *
+ * The textarea remains the value that is saved. This exists because the
+ * ordinary case — permitting models Nodeau ships — should not be typed from
+ * memory, and because a mistyped entry in a model policy fails in the worst
+ * possible way: silently, later, as a refusal for a model somebody believes
+ * they permitted.
+ *
+ * Its own value is cleared after each add, so the control reads as an action
+ * rather than as a second place the policy lives.
+ */
+function ModelAdder({ orgId, onAdd }: { orgId: string; onAdd: (id: string) => void }) {
+  const [picked, setPicked] = useState('');
+  return (
+    <div className="model-adder">
+      <label htmlFor="governance-add-model" className="muted small">
+        Add one from your catalogue
+      </label>
+      <ModelSelect
+        id="governance-add-model"
+        orgId={orgId}
+        value={picked}
+        ariaLabel="Add a model to the policy"
+        onChange={(id) => {
+          setPicked('');
+          if (id !== '') onAdd(id);
+        }}
+      />
+    </div>
   );
 }
 
