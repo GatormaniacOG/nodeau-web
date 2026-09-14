@@ -429,33 +429,101 @@ def comparison_rows(src: str) -> list[tuple[str, list[str]]]:
 # downloads. It is the only entry ever removed, and removing it is the whole
 # point of the list existing: a capability leaves when it ships, and until then
 # no page may tick it.
+# RECONCILED 2026-09-14, after 17B, 17C and 17D. The set had four entries that
+# ARE built, which is a false statement in a file whose job is truth-checking —
+# and it is wrong in the direction that blocks a TRUE row rather than admitting a
+# false one, which is the safe direction and exactly why it went unnoticed.
+#
+# The set is now split, because one name could not express both reasons a
+# capability may not be ticked. "NOT_BUILT" said something false about audit the
+# day audit shipped.
+#
+#   NOT_BUILT       the capability does not exist
+#   BUILT_UNCLAIMED it exists and may not be advertised yet
+#
+# Both are refused a tick, which is what `check_unbuilt_is_never_included`
+# enforces and is unchanged. What changed is that the file can now say WHY.
 NOT_BUILT = {
+    # Named in the roadmap as Planned, and genuinely not built.
+    "priority queues",              # FeaturePriorityQueues — 17C decided against
+    "advanced scheduling controls",
+    "scheduled and overnight batch",  # FeatureScheduledBatch
+    "model replication across machines",  # FeatureModelReplication
+}
+
+# BUILT AND NOT ADVERTISED, WHICH IS NOT THE SAME THING.
+#
+# Phase 17B is DEPLOYED and NOT RELEASED: `api.nodeau.ai` serves its routes and
+# the released CLI expresses no 17B capability to a customer, so `CLAUDE.md`
+# §2.3 says claim it NOWHERE publicly. A capability a customer cannot reach is
+# not one a pricing page may tick, whatever the repository contains.
+#
+# These leave this set when 17B is claimable, not when it is merged.
+BUILT_UNCLAIMED = {
     "organisations and shared ownership",
     "role-based access control",
     "single sign-on",
+}
+
+# SHIPPED AND CLAIMABLE — removed from the sets above, recorded here so the
+# removal is a decision with a date rather than a deletion.
+#
+#   remote dashboard and management   2026-09-03, Phase 14, v0.7.0-beta.1
+#   quotas / quotas and fleet policy / fleet policy
+#                                     2026-09-14, Phase 17C, v0.13.0-beta.4
+#   audit history                     2026-09-14, Phase 17D, v0.14.0-beta.1
+#
+# Each was qualified against the artifact a customer downloads before it left.
+SHIPPED = {
+    "remote dashboard and management",
     "quotas",
     "quotas and fleet policy",
-    "audit history",
     "fleet policy",
-    "priority queues",
-    "advanced scheduling controls",
-    "scheduled and overnight batch",
-    "model replication across machines",
+    "audit history",
 }
+
+# MAY_NOT_BE_TICKED is what the check actually uses. Deriving it rather than
+# writing a third list means a capability cannot be in two states at once, and
+# the assertion below makes that structural rather than a convention.
+MAY_NOT_BE_TICKED = NOT_BUILT | BUILT_UNCLAIMED
+assert not (NOT_BUILT & BUILT_UNCLAIMED), "a capability cannot be both unbuilt and built"
+assert not (MAY_NOT_BE_TICKED & SHIPPED), (
+    "a capability cannot have shipped and also be forbidden a tick: "
+    f"{sorted(MAY_NOT_BE_TICKED & SHIPPED)}"
+)
 
 
 def check_unbuilt_is_never_included(name: str, src: str, errors: list[str]) -> None:
-    """No capability that does not exist may be shown as included, in any tier."""
+    """No capability a customer cannot reach may be shown as included, in any tier.
+
+    THE MESSAGE NAMES WHICH REASON APPLIES, because the two have different
+    remedies and a remedy a reader cannot act on is worse than none (#94). Before
+    the sets were split this said "that capability is not built" about single
+    sign-on — which IS built — and told the reader to take it out of a list it
+    was correctly in.
+    """
     for label, classes in comparison_rows(src):
-        if label.strip().lower() not in NOT_BUILT:
+        key = label.strip().lower()
+        if key not in MAY_NOT_BE_TICKED:
             continue
+        if key in BUILT_UNCLAIMED:
+            why = (
+                "that capability EXISTS and may not be advertised yet: Phase 17B is "
+                "deployed and not released, so no customer can reach it from the CLI "
+                "they downloaded. Move it out of BUILT_UNCLAIMED when it ships to "
+                "customers, not when it merges."
+            )
+        else:
+            why = (
+                "that capability is not built. Mark it 'Coming soon' (c-soon), or — if "
+                "it has shipped — move it from NOT_BUILT into SHIPPED here, and out of "
+                "the Planned section of the roadmap."
+            )
         for column, cls in zip(("Home", "Home Pro", "Business"), classes):
             if cls == "c-yes":
                 errors.append(
-                    f"{name}: the row {label!r} is shown as INCLUDED for {column}, and that "
-                    "capability is not built. Mark it 'Coming soon' (c-soon), or — if it "
-                    "has shipped — remove it from NOT_BUILT here and from the Planned "
-                    "section of the roadmap."
+                    f"{name}: the row {label!r} is shown as INCLUDED for {column}, and "
+                    + why
                 )
 
 
