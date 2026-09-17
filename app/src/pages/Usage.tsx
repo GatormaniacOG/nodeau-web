@@ -66,12 +66,11 @@ export function UsagePage({ org }: { org: Organization }) {
         </p>
       </header>
 
-      <div className="row" role="group" aria-label="Window">
+      <div className="segmented" role="group" aria-label="Window">
         {[7, 30, 90].map((d) => (
           <button
             key={d}
             type="button"
-            className={d === days ? 'chip chip-on' : 'chip'}
             aria-pressed={d === days}
             onClick={() => setDays(d)}
           >
@@ -96,15 +95,20 @@ export function UsagePage({ org }: { org: Organization }) {
  *  named, so nothing is being rounded away silently. */
 function hours(seconds: number): string {
   const h = seconds / 3600;
-  if (h < 1) return `${Math.round(seconds)} accelerator-seconds`;
-  return `${h.toLocaleString(undefined, { maximumFractionDigits: 1 })} accelerator-hours`;
+  if (h < 1) {
+    const s = Math.round(seconds);
+    return `${s.toLocaleString()} accelerator-second${s === 1 ? '' : 's'}`;
+  }
+  const shown = h.toLocaleString(undefined, { maximumFractionDigits: 1 });
+  // "1 accelerator-hours" read as a typo on the one figure people check first.
+  return `${shown} accelerator-hour${Math.round(h * 10) === 10 ? '' : 's'}`;
 }
 
 function UsageBody({ org, data }: { org: Organization; data: UsageSummary }) {
   const lines = data.lines ?? [];
   return (
     <>
-      <section className="panel" data-testid="usage-total">
+      <section className="panel usage-total" data-testid="usage-total">
         <h2>{hours(data.acceleratorSeconds)}</h2>
         <p className="muted">
           across {lines.length} workload{lines.length === 1 ? '' : 's'}, from{' '}
@@ -152,8 +156,14 @@ function UsageBody({ org, data }: { org: Organization; data: UsageSummary }) {
                 <th scope="col">Machine</th>
                 <th scope="col">Model</th>
                 <th scope="col">Held for</th>
-                <th scope="col">Periods</th>
-                {data.estimatedCost !== undefined && <th scope="col">At your rate</th>}
+                <th scope="col" className="num">
+                  Periods
+                </th>
+                {data.estimatedCost !== undefined && (
+                  <th scope="col" className="num">
+                    At your rate
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -174,9 +184,9 @@ function UsageBody({ org, data }: { org: Organization; data: UsageSummary }) {
                     )}
                   </td>
                   <td>{hours(l.acceleratorSeconds)}</td>
-                  <td>{l.intervals}</td>
+                  <td className="num">{l.intervals}</td>
                   {data.estimatedCost !== undefined && (
-                    <td>
+                    <td className="num">
                       {l.estimatedCost !== undefined
                         ? `${l.estimatedCost.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${data.currency}`
                         : '—'}
@@ -235,20 +245,23 @@ function RateForm({ org }: { org: Organization }) {
         by what it measured and shows nothing at all until you enter one — it has
         no idea what your power, your hardware or your time costs.
       </p>
-      <div className="row">
-        <label>
+      <div className="rate-row">
+        <label className="inline-field">
           Per accelerator-hour
           <input
             type="number"
             step="0.0001"
             min="0"
+            inputMode="decimal"
+            placeholder="0.00"
             value={value}
             onChange={(e) => setAmount(e.target.value)}
           />
         </label>
-        <label>
+        <label className="inline-field">
           Currency
           <input
+            className="currency"
             type="text"
             maxLength={3}
             placeholder="USD"
@@ -256,19 +269,28 @@ function RateForm({ org }: { org: Organization }) {
             onChange={(e) => setCurrency(e.target.value.toUpperCase())}
           />
         </label>
-        <button type="button" disabled={saving || !value || !cur} onClick={() => save(false)}>
+        <button
+          type="button"
+          className="btn btn-primary btn-sm"
+          disabled={saving || !value || !cur}
+          onClick={() => save(false)}
+        >
           Save
         </button>
         <button
           type="button"
-          className="ghost"
+          className="btn btn-ghost btn-sm"
           disabled={saving || rate.data.perAcceleratorHour === null}
           onClick={() => save(true)}
         >
           Clear
         </button>
       </div>
-      {note && <p role="status">{note}</p>}
+      {note && (
+        <p className="rate-note muted small" role="status">
+          {note}
+        </p>
+      )}
     </section>
   );
 }
@@ -290,7 +312,7 @@ function AuditSection({ org }: { org: Organization }) {
           {page.data.retentionDays} days.
         </p>
       )}
-      <label className="row">
+      <label className="filter-check">
         <input
           type="checkbox"
           checked={onlyRefusals}

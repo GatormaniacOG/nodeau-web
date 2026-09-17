@@ -85,6 +85,31 @@ describe('a cost is absent rather than zero', () => {
   });
 });
 
+describe('the figure reads as a sentence', () => {
+  it('says one accelerator-hour, not one accelerator-hours', async () => {
+    vi.spyOn(api, 'usage').mockResolvedValue(
+      stubUsage({
+        acceleratorSeconds: 3600,
+        lines: [
+          {
+            kind: 'batch',
+            name: 'nightly',
+            nodeName: 'nodeau-c',
+            modelId: 'qwen3-4b-q4km',
+            acceleratorSeconds: 3600,
+            intervals: 1,
+          },
+        ],
+      }),
+    );
+    render(<UsagePage org={org} />);
+
+    await screen.findByTestId('usage-total');
+    expect(screen.getByRole('heading', { name: '1 accelerator-hour' })).toBeInTheDocument();
+    expect(screen.queryByText(/\b1 accelerator-hours/)).not.toBeInTheDocument();
+  });
+});
+
 describe('the figure is about a reservation, never about a card', () => {
   it('names accelerator-hours and never utilisation', async () => {
     vi.spyOn(api, 'usage').mockResolvedValue(stubUsage());

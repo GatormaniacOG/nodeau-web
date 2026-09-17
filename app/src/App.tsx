@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, ApiError, NetworkError, signInURL, type Me, type Organization } from './lib/api';
 import { hrefFor, useRoute, type Route } from './lib/router';
 import { ErrorNotice, Spinner } from './components/ui';
@@ -231,8 +231,21 @@ function Shell({
     navigate(to);
   };
 
+  // On a phone the destinations scroll sideways, and the current one can sit
+  // off-screen — which reads as "none of these is where I am". Bring it into
+  // view whenever the page changes.
+  const nav = useRef<HTMLElement>(null);
+  const current = route?.name;
+  useEffect(() => {
+    const here = nav.current?.querySelector<HTMLElement>('[aria-current="page"]');
+    here?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+  }, [current]);
+
   return (
     <div className="app">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
       <header className="app-header">
         <div className="wrap">
           <a className="brand" href="https://nodeau.ai/">
@@ -244,7 +257,7 @@ function Shell({
           </a>
 
           {me && navigate && (
-            <nav className="app-nav" aria-label="Account">
+            <nav className="app-nav" aria-label="Account" ref={nav}>
               <a
                 href={hrefFor.dashboard()}
                 onClick={go(hrefFor.dashboard())}
@@ -339,15 +352,18 @@ function Shell({
           )}
 
           {me && (
-            <div className="app-user">
-              <span className="muted small">{me.user.email}</span>
-              {org && <span className="muted small"> · {org.name}</span>}
+            <div className="app-user" title={org ? `${me.user.email} · ${org.name}` : me.user.email}>
+              {org && <span className="org-name">{org.name}</span>}
+              {org && <span aria-hidden="true"> · </span>}
+              <span>{me.user.email}</span>
             </div>
           )}
         </div>
       </header>
 
-      <main className="wrap app-main">{children}</main>
+      <main className="wrap app-main" id="main" tabIndex={-1}>
+        {children}
+      </main>
 
       <footer className="app-footer">
         <div className="wrap">

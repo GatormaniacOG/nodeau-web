@@ -102,7 +102,7 @@ export function PlanPage({ org }: { org: Organization }) {
         {plan.status !== 'none' && (
           <p>
             <button
-              className="btn btn-sm"
+              className="btn btn-ghost btn-sm"
               disabled={busy !== null}
               onClick={() => go(() => api.billingPortal(org.id), 'portal')}
             >
@@ -129,8 +129,7 @@ export function PlanPage({ org }: { org: Organization }) {
           <>
             <h3>Limits</h3>
             <dl className="detail">
-              {Object.entries(plan.limits)
-                .sort(([a], [b]) => a.localeCompare(b))
+              {shownLimits(plan.limits)
                 .map(([k, v]) => (
                   <div key={k} className="detail-row">
                     <dt>{humaniseLimit(k)}</dt>
@@ -221,10 +220,31 @@ function humaniseFeature(f: string): string {
   return known[f] ?? f;
 }
 
-function humaniseLimit(l: string): string {
+/**
+ * shownLimits is the list of limits a person reads.
+ *
+ * # `MaxGPUs` IS PER MACHINE, and it is never shown as a total
+ *
+ * The legacy key is still issued beside `MaxGPUsPerMachine` for binaries that
+ * predate the explicit one, and its meaning was always "in any one machine"
+ * (`internal/entitlement`, operator decision 2026-08-14). Rendered as "GPUs:
+ * 2" next to "Machines: 3" it read as two cards in total — the one reading the
+ * entitlement package says must never be given. So the explicit key wins when
+ * both are present, and the legacy key alone is labelled for what it means.
+ */
+export function shownLimits(limits: Record<string, number>): [string, number][] {
+  const entries = Object.entries(limits);
+  const explicit = entries.some(([k]) => k === 'MaxGPUsPerMachine');
+  return entries
+    .filter(([k]) => !(explicit && k === 'MaxGPUs'))
+    .sort(([a], [b]) => a.localeCompare(b));
+}
+
+export function humaniseLimit(l: string): string {
   const known: Record<string, string> = {
     MaxNodes: 'Machines',
-    MaxGPUs: 'GPUs',
+    MaxGPUs: 'GPUs in one machine',
+    MaxGPUsPerMachine: 'GPUs in one machine',
     MaxUsers: 'People',
     MaxConcurrentServices: 'Models served at once',
     MaxBatchJobs: 'Batch jobs',

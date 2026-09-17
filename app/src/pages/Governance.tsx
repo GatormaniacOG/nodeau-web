@@ -188,14 +188,16 @@ function GovernanceForm({
 
       <form onSubmit={save} className="stack" aria-label="Fleet governance">
         <fieldset disabled={readOnly || saving} className="stack">
-          <section className="card">
-            <h2>Quotas</h2>
-            <p className="muted small">
-              Leave one empty for no limit. <strong>Lowering a quota stops nothing that is
-              already running</strong> — a quota decides what may start, so use Workloads to stop
-              something when you want capacity back.
-            </p>
-            <div className="grid-3">
+          <section className="panel gov-section" aria-labelledby="gov-quotas">
+            <header className="gov-section-head">
+              <h2 id="gov-quotas">Quotas</h2>
+              <p className="muted small">
+                Leave one empty for no limit. <strong>Lowering a quota stops nothing that is
+                already running</strong> — a quota decides what may start, so use Workloads to stop
+                something when you want capacity back.
+              </p>
+            </header>
+            <div className="quota-grid">
               <QuotaField
                 id="maxWorkloads"
                 label="Workloads at once"
@@ -218,15 +220,21 @@ function GovernanceForm({
                 onChange={(v) => setDraft({ ...draft, maxBatchWorkers: v })}
               />
             </div>
-            <p className="muted small">
+            <p className="muted small gov-note">
               Workloads and graphics cards are separate numbers because one workload may hold
               several cards. A batch worker that has to wait is behaving correctly and its job
               still finishes.
             </p>
           </section>
 
-          <section className="card">
-            <h2>Models</h2>
+          <section className="panel gov-section" aria-labelledby="gov-models">
+            <header className="gov-section-head">
+              <h2 id="gov-models">Models</h2>
+              <p className="muted small">
+                A model is named here by the id a workload runs under — a catalog id, or the
+                name a model was imported as on your machines.
+              </p>
+            </header>
             <ModeChoice
               name="models"
               mode={draft.modelsMode}
@@ -235,7 +243,7 @@ function GovernanceForm({
               onChange={(modelsMode) => setDraft({ ...draft, modelsMode })}
             />
             {draft.modelsMode === 'only' && (
-              <>
+              <div className="gov-models">
                 <label className="field">
                   <span>One per line, by the id a workload names</span>
                   <textarea
@@ -269,16 +277,19 @@ function GovernanceForm({
                     real choice and it is not the same as &ldquo;any model&rdquo;.
                   </p>
                 )}
-                <p className="muted small">
-                  A model is named here by the id a workload runs under — a catalog id, or
-                  the name a model was imported as on your machines.
-                </p>
-              </>
+              </div>
             )}
           </section>
 
-          <section className="card">
-            <h2>Graphics cards</h2>
+          <section className="panel gov-section" aria-labelledby="gov-devices">
+            <header className="gov-section-head">
+              <h2 id="gov-devices">Graphics cards</h2>
+              <p className="muted small">
+                Cards are named by their own identifier rather than by a number, so adding or
+                removing one never silently changes which card a policy means. A card left out
+                is healthy and simply not one this fleet&rsquo;s workloads may use.
+              </p>
+            </header>
             <ModeChoice
               name="devices"
               mode={draft.devicesMode}
@@ -304,10 +315,13 @@ function GovernanceForm({
                               else next.delete(d.uuid);
                               setDraft({ ...draft, devices: next });
                             }}
-                          />{' '}
-                          <strong>{d.model ?? 'Graphics card'}</strong>{' '}
-                          <span className="muted small">
-                            on {d.machineName ?? 'an unnamed machine'} · {d.uuid}
+                          />
+                          <span className="choice-text">
+                            <strong className="choice-title">{d.model ?? 'Graphics card'}</strong>{' '}
+                            <span className="choice-sub">
+                              on {d.machineName ?? 'an unnamed machine'}
+                            </span>{' '}
+                            <span className="choice-id">{d.uuid}</span>
                           </span>
                         </label>
                       </li>
@@ -315,21 +329,22 @@ function GovernanceForm({
                   </ul>
                 )}
                 {draft.devices.size === 0 && devices.length > 0 && (
-                  <p className="notice notice-warn">
+                  <p className="notice notice-warn gov-list-warning">
                     Nothing is ticked, so <strong>no card would be permitted</strong>.
                   </p>
                 )}
-                <p className="muted small">
-                  Cards are named by their own identifier rather than by a number, so adding or
-                  removing one never silently changes which card a policy means. A card left out
-                  is healthy and simply not one this fleet&rsquo;s workloads may use.
-                </p>
               </>
             )}
           </section>
 
-          <section className="card">
-            <h2>Machines</h2>
+          <section className="panel gov-section" aria-labelledby="gov-nodes">
+            <header className="gov-section-head">
+              <h2 id="gov-nodes">Machines</h2>
+              <p className="muted small">
+                Which of this fleet&rsquo;s machines its workloads may use. Leaving a machine out
+                says nothing about its health; it is simply not one this policy chooses.
+              </p>
+            </header>
             <ModeChoice
               name="nodes"
               mode={draft.nodesMode}
@@ -355,15 +370,17 @@ function GovernanceForm({
                               else next.delete(n.name);
                               setDraft({ ...draft, nodes: next });
                             }}
-                          />{' '}
-                          <strong>{n.name}</strong>
+                          />
+                          <span className="choice-text">
+                            <strong className="choice-title">{n.name}</strong>
+                          </span>
                         </label>
                       </li>
                     ))}
                   </ul>
                 )}
                 {draft.nodes.size === 0 && nodes.length > 0 && (
-                  <p className="notice notice-warn">
+                  <p className="notice notice-warn gov-list-warning">
                     Nothing is ticked, so <strong>no machine would be permitted</strong>.
                   </p>
                 )}
@@ -382,7 +399,7 @@ function GovernanceForm({
         {error !== null && <ErrorNotice error={error} />}
 
         {!readOnly && (
-          <div className="actions">
+          <div className="save-bar">
             <button type="submit" className="btn btn-primary" disabled={saving || !dirty}>
               {saving ? 'Saving…' : 'Save policy'}
             </button>
@@ -528,7 +545,7 @@ function ModeChoice({
           name={name}
           checked={mode === 'any'}
           onChange={() => onChange('any')}
-        />{' '}
+        />
         {anyLabel}
       </label>
       <label>
@@ -537,7 +554,7 @@ function ModeChoice({
           name={name}
           checked={mode === 'only'}
           onChange={() => onChange('only')}
-        />{' '}
+        />
         {onlyLabel}
       </label>
     </div>

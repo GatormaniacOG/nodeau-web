@@ -129,13 +129,15 @@ function Members({ me, org }: { me: Me; org: Organization }) {
   return (
     <>
       {error != null && <ErrorNotice error={error} />}
-      <table className="table">
+      <table className="table table-stack">
         <thead>
           <tr>
             <th scope="col">Person</th>
             <th scope="col">Role</th>
             <th scope="col">May</th>
-            <th scope="col" />
+            <th scope="col">
+              <span className="visually-hidden">Actions</span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -189,13 +191,8 @@ function MemberRow({
         {/* The email once, not twice. Rendering both a name and an address
             when the name IS the address prints it twice, which reads as a
             duplicated row. */}
-        <strong>{member.displayName || member.email}</strong>
-        {member.displayName && (
-          <>
-            <br />
-            <span className="muted">{member.email}</span>
-          </>
-        )}
+        <strong className="person-name">{member.displayName || member.email}</strong>
+        {member.displayName && <span className="person-email">{member.email}</span>}
         {member.fromDirectory && (
           <>
             {' '}
@@ -209,7 +206,7 @@ function MemberRow({
           </>
         )}
       </td>
-      <td>
+      <td data-label="Role">
         {editable ? (
           <select
             aria-label={`Role for ${member.email}`}
@@ -238,10 +235,14 @@ function MemberRow({
           <div className="muted">+ {member.teamRoles.join(', ')} by team</div>
         )}
       </td>
-      <td className="muted">
-        {member.capabilities.length === 0 ? 'nothing' : member.capabilities.join(', ')}
+      <td data-label="May">
+        {member.capabilities.length === 0 ? (
+          <span className="muted">nothing</span>
+        ) : (
+          <CapabilityList capabilities={member.capabilities} />
+        )}
       </td>
-      <td>
+      <td className="actions-cell">
         {editable && !isSelf && (
           <button type="button" className="link-danger" disabled={busy} onClick={() => onRemove(member.userId)}>
             Remove access
@@ -306,13 +307,17 @@ function Teams({ org }: { org: Organization }) {
           allows, on top of whatever their own role already gives them.
         </Empty>
       ) : (
-        <table className="table">
+        <table className="table table-stack">
           <thead>
             <tr>
               <th scope="col">Team</th>
               <th scope="col">Confers</th>
-              <th scope="col">People</th>
-              <th scope="col" />
+              <th scope="col" className="num">
+                People
+              </th>
+              <th scope="col">
+                <span className="visually-hidden">Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -326,14 +331,16 @@ function Teams({ org }: { org: Organization }) {
                       <Badge tone="neutral">from your directory</Badge>
                     </>
                   )}
-                  <div className="muted">created {formatDate(t.createdAt)}</div>
+                  <div className="muted small">created {formatDate(t.createdAt)}</div>
                 </td>
-                <td>
-                  {t.role}
-                  <div className="muted">{t.capabilities.join(', ')}</div>
+                <td data-label="Confers">
+                  <div>{t.role}</div>
+                  <CapabilityList capabilities={t.capabilities} />
                 </td>
-                <td>{t.memberCount}</td>
-                <td>
+                <td data-label="People" className="num">
+                  {t.memberCount}
+                </td>
+                <td className="actions-cell">
                   {t.fromDirectory ? (
                     <span className="muted">managed by your identity provider</span>
                   ) : (
@@ -360,23 +367,31 @@ function Teams({ org }: { org: Organization }) {
 
       {grantable.length > 0 && (
         <form className="inline-form" onSubmit={create}>
-          <label htmlFor="team-name">New team</label>
-          <input
-            id="team-name"
-            value={name}
-            required
-            placeholder="Platform"
-            onChange={(e) => setName(e.currentTarget.value)}
-          />
-          <label htmlFor="team-role">confers</label>
-          <select id="team-role" value={role} onChange={(e) => setRole(e.currentTarget.value)}>
-            {grantable.map((r) => (
-              <option key={r.role} value={r.role}>
-                {r.role}
-              </option>
-            ))}
-          </select>
-          <button type="submit" disabled={busy || name.trim() === ''}>
+          <div className="inline-field">
+            <label htmlFor="team-name">New team</label>
+            <input
+              id="team-name"
+              value={name}
+              required
+              placeholder="Platform"
+              onChange={(e) => setName(e.currentTarget.value)}
+            />
+          </div>
+          <div className="inline-field">
+            <label htmlFor="team-role">confers</label>
+            <select id="team-role" value={role} onChange={(e) => setRole(e.currentTarget.value)}>
+              {grantable.map((r) => (
+                <option key={r.role} value={r.role}>
+                  {r.role}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="btn btn-primary btn-sm"
+            disabled={busy || name.trim() === ''}
+          >
             Create
           </button>
         </form>
@@ -428,23 +443,26 @@ function Credentials({ org }: { org: Organization }) {
         </Empty>
       ) : (
         accounts.map((a) => (
-          <article key={a.id} className="card">
+          <article key={a.id} className="panel">
             <header>
-              <h2>
-                {a.name} {!a.enabled && <Badge tone="warn">disabled</Badge>}
-              </h2>
+              <div className="account-head">
+                <h2>{a.name}</h2>
+                {!a.enabled && <Badge tone="warn">disabled</Badge>}
+              </div>
               <p className="muted">
-                {a.description || 'No description.'} — {a.role}: {a.capabilities.join(', ')}
+                {a.description || 'No description.'} — {a.role}
               </p>
+              <CapabilityList capabilities={a.capabilities} />
             </header>
-            <p>
-              {a.keyCount} live {a.keyCount === 1 ? 'key' : 'keys'} ·{' '}
+            <p className="account-meta">
+              <span>
+                {a.keyCount} live {a.keyCount === 1 ? 'key' : 'keys'}
+              </span>
               <button type="button" className="link" onClick={() => setOpen(open === a.id ? null : a.id)}>
                 {open === a.id ? 'Hide keys' : 'Manage keys'}
               </button>
               {a.enabled && (
                 <>
-                  {' · '}
                   <button
                     type="button"
                     className="link-danger"
@@ -481,23 +499,27 @@ function Credentials({ org }: { org: Organization }) {
               .catch((err: unknown) => setError(err));
           }}
         >
-          <label htmlFor="sa-name">New service account</label>
-          <input
-            id="sa-name"
-            value={name}
-            required
-            placeholder="ci"
-            onChange={(e) => setName(e.currentTarget.value)}
-          />
-          <label htmlFor="sa-role">role</label>
-          <select id="sa-role" value={role} onChange={(e) => setRole(e.currentTarget.value)}>
-            {grantable.map((r) => (
-              <option key={r.role} value={r.role}>
-                {r.role}
-              </option>
-            ))}
-          </select>
-          <button type="submit" disabled={name.trim() === ''}>
+          <div className="inline-field">
+            <label htmlFor="sa-name">New service account</label>
+            <input
+              id="sa-name"
+              value={name}
+              required
+              placeholder="ci"
+              onChange={(e) => setName(e.currentTarget.value)}
+            />
+          </div>
+          <div className="inline-field">
+            <label htmlFor="sa-role">role</label>
+            <select id="sa-role" value={role} onChange={(e) => setRole(e.currentTarget.value)}>
+              {grantable.map((r) => (
+                <option key={r.role} value={r.role}>
+                  {r.role}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button type="submit" className="btn btn-primary btn-sm" disabled={name.trim() === ''}>
             Create
           </button>
         </form>
@@ -543,13 +565,15 @@ function Keys({ org, account }: { org: Organization; account: ServiceAccount }) 
       {keys.length === 0 ? (
         <p className="muted">No keys yet.</p>
       ) : (
-        <table className="table">
+        <table className="table table-stack">
           <thead>
             <tr>
               <th scope="col">Key</th>
               <th scope="col">May</th>
               <th scope="col">Last used</th>
-              <th scope="col" />
+              <th scope="col">
+                <span className="visually-hidden">Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -557,13 +581,17 @@ function Keys({ org, account }: { org: Organization; account: ServiceAccount }) 
               <tr key={k.id}>
                 <td>
                   <strong>{k.name}</strong> {!k.live && <Badge tone="warn">not usable</Badge>}
-                  <div className="muted">
-                    {k.prefix}… · created {formatDate(k.createdAt)}
+                  <div className="muted small">
+                    <span className="mono">{k.prefix}…</span> · created {formatDate(k.createdAt)}
                   </div>
                 </td>
-                <td className="muted">{k.scope.join(', ')}</td>
-                <td className="muted">{k.lastUsedAt ? relativeTime(k.lastUsedAt) : 'never'}</td>
-                <td>
+                <td data-label="May">
+                  <CapabilityList capabilities={k.scope} />
+                </td>
+                <td data-label="Last used" className="muted">
+                  {k.lastUsedAt ? relativeTime(k.lastUsedAt) : 'never'}
+                </td>
+                <td className="actions-cell">
                   {k.live && (
                     <button
                       type="button"
@@ -614,6 +642,7 @@ function Keys({ org, account }: { org: Organization; account: ServiceAccount }) 
           <legend>
             What it may do — a key can only narrow this account&rsquo;s own role, never widen it
           </legend>
+          <div className="check-grid">
           {grantable.map((c) => (
             <label key={c} className="check">
               <input
@@ -629,11 +658,16 @@ function Keys({ org, account }: { org: Organization; account: ServiceAccount }) 
                   setScope((sel) => (checked ? [...sel, c] : sel.filter((x) => x !== c)));
                 }}
               />
-              {c}
+              <span className="mono small">{c}</span>
             </label>
           ))}
+          </div>
         </fieldset>
-        <button type="submit" disabled={name.trim() === '' || scope.length === 0}>
+        <button
+          type="submit"
+          className="btn btn-primary btn-sm"
+          disabled={name.trim() === '' || scope.length === 0}
+        >
           Create key
         </button>
       </form>
@@ -745,10 +779,26 @@ function LinkForm({ org, onLinked }: { org: Organization; onLinked: () => void }
         it; the people and teams a directory already created stay, because they are members
         of this organisation now.
       </p>
-      <button type="submit" disabled={busy}>
+      <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>
         Save
       </button>
     </form>
+  );
+}
+
+/** CapabilityList shows permission names as the identifiers they are.
+ *
+ *  A comma-joined sentence of dotted names wrapped mid-word in a narrow
+ *  column; a list of tokens wraps between them. */
+function CapabilityList({ capabilities }: { capabilities: readonly string[] }) {
+  return (
+    <ul className="cap-list" aria-label="Permissions">
+      {capabilities.map((c) => (
+        <li key={c} className="cap">
+          {c}
+        </li>
+      ))}
+    </ul>
   );
 }
 

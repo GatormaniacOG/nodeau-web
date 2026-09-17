@@ -13,20 +13,43 @@
    never sets body copy. So the app reads as Nodeau without inheriting a
    marketing page's structure, and the marketing site can be redesigned without
    breaking an authenticated flow.
+
+   ONE SHEET, ONE SYSTEM (2026-09-17). Every page used to add its own block,
+   and three of those blocks carried their own hard-coded greys and a
+   `var(--muted, #8b93a1)` fallback for a token that never existed. Worse, the
+   form controls had no base style at all, so any input a page did not
+   remember to class rendered as the browser's white default on a near-black
+   page. The rules are now:
+
+     * every colour, radius and size is a token defined in :root;
+     * form controls are styled AS ELEMENTS, so an unclassed input is already
+       right, and `.input` is kept only as a compatible alias;
+     * `.card` is a LIST ROW (a flex row with an aside). A section of a page is
+       a `.panel`. Using the first for the second is what squeezed the
+       governance form into columns a word wide.
    ========================================================================== */
 
 :root {
+  color-scheme: dark;
+
+  /* Surfaces, darkest first. */
   --bg: #08090b;
   --bg-raised: #0c0e11;
   --panel: #101317;
   --panel-2: #14181d;
+  --control-bg: #0b0d10;
 
   --line: rgba(255, 255, 255, 0.07);
   --line-strong: rgba(255, 255, 255, 0.13);
+  /* A form control's edge is what tells somebody it is a control, so it holds
+     3:1 against every surface it sits on (WCAG 1.4.11). */
+  --control-line: #5e666e;
 
+  /* Text. --text-3 holds 5:1 on the lightest panel; the old value was 3.9:1
+     there, and it set every label on the page. */
   --text: #f2f4f3;
   --text-2: #9aa39f;
-  --text-3: #6d7873;
+  --text-3: #838d88;
 
   --accent: #b8ff5a;
   --accent-ink: #0a0d06;
@@ -44,15 +67,49 @@
 
   --neutral: #8fb3d9;
   --neutral-quiet: rgba(143, 179, 217, 0.1);
+  --neutral-line: rgba(143, 179, 217, 0.26);
 
+  /* Type scale. */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+
+  /* Spacing scale. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+
+  --radius-sm: 8px;
+  --radius-control: 9px;
   --radius: 12px;
   --radius-lg: 16px;
-  --max: 1000px;
+  --radius-pill: 999px;
+
+  --control-h: 2.5rem;
+  --control-h-sm: 2.125rem;
+  --control-max: 28rem;
+
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  --shadow-pop: 0 18px 40px rgba(0, 0, 0, 0.5);
+
+  --max: 1120px;
+  --gutter: 1.25rem;
 
   --font: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Helvetica, Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --ease: 120ms ease;
 }
+
+/* ====================================================================== base */
 
 *,
 *::before,
@@ -70,17 +127,30 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 1rem;
+  font-size: var(--text-md);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(184, 255, 90, 0.28);
+  color: var(--text);
 }
 
 a {
   color: var(--accent-text);
   text-decoration: none;
+  text-underline-offset: 0.18em;
 }
 a:hover {
   text-decoration: underline;
+}
+
+/* One focus treatment for everything a keyboard can reach. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 code,
@@ -96,46 +166,349 @@ code {
   padding: 0.1em 0.4em;
 }
 
+pre {
+  margin: 0 0 var(--space-4);
+}
+
 h1,
 h2,
 h3 {
   line-height: 1.25;
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
+  letter-spacing: -0.01em;
 }
 h1 {
   font-size: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
   letter-spacing: -0.02em;
 }
 h2 {
-  font-size: 1.25rem;
+  font-size: var(--text-xl);
 }
 h3 {
   font-size: 1.02rem;
 }
 
 p {
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-4);
+}
+
+ul,
+ol {
+  margin: 0 0 var(--space-4);
 }
 
 .muted {
   color: var(--text-2);
 }
 .small {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
+}
+.nowrap {
+  white-space: nowrap;
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .wrap {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding-inline: var(--gutter);
   width: 100%;
 }
 
 .narrow {
-  max-width: 620px;
+  max-width: 640px;
 }
 
-/* --------------------------------------------------------------------- shell */
+/* ============================================================= form controls
+
+   Styled as ELEMENTS. A page that forgets a class still gets a dark control
+   with a visible edge and a focus ring, which is what a white default input
+   on this page was: a page forgetting. */
+
+input:where(:not([type='checkbox'], [type='radio'], [type='range'], [type='hidden'], [type='file'], [type='submit'], [type='button'], [type='reset'], [type='color'])),
+select,
+textarea,
+.input {
+  width: 100%;
+  max-width: var(--control-max);
+  min-height: var(--control-h);
+  background-color: var(--control-bg);
+  border: 1px solid var(--control-line);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-md);
+  line-height: 1.4;
+  padding: 0.5rem 0.75rem;
+  transition:
+    border-color var(--ease),
+    box-shadow var(--ease);
+}
+
+input:where(:not([type='checkbox'], [type='radio'], [type='range'], [type='hidden'], [type='file'], [type='submit'], [type='button'], [type='reset'], [type='color'])):hover,
+select:hover,
+textarea:hover,
+.input:hover {
+  border-color: var(--text-3);
+}
+
+input:where(:not([type='checkbox'], [type='radio'], [type='range'], [type='hidden'], [type='file'], [type='submit'], [type='button'], [type='reset'], [type='color'])):focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-quiet), 0 0 0 1px var(--accent);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-3);
+  opacity: 1;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled,
+.input:disabled {
+  background-color: var(--bg-raised);
+  border-color: var(--line-strong);
+  color: var(--text-3);
+  cursor: not-allowed;
+}
+
+[aria-invalid='true'] {
+  border-color: var(--danger) !important;
+}
+
+textarea {
+  min-height: 6.5rem;
+  resize: vertical;
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+}
+
+select {
+  appearance: none;
+  padding-right: 2.25rem;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239aa39f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 12px 8px;
+}
+select option {
+  background: var(--panel);
+  color: var(--text);
+}
+
+/* A number field keeps its keyboard stepping and loses the spinner, which on
+   a dark control renders as a light square. */
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--accent);
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+input[type='checkbox']:disabled,
+input[type='radio']:disabled {
+  cursor: not-allowed;
+}
+
+fieldset {
+  min-width: 0;
+}
+
+.field {
+  display: block;
+  margin-bottom: var(--space-5);
+}
+.field > span:first-child {
+  display: block;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.field-hint {
+  color: var(--text-2);
+  display: block;
+  font-size: var(--text-sm);
+  margin-top: 0.35rem;
+}
+
+.field-error {
+  color: var(--danger);
+  display: block;
+  font-size: var(--text-sm);
+  margin-top: 0.3rem;
+}
+
+.field-warning {
+  color: var(--warn);
+  display: block;
+  font-size: var(--text-sm);
+  margin-top: 0.4rem;
+}
+
+.code-input {
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* "XXXX-XXXX" plus its letter spacing and padding. 12ch cut the last
+     character off the placeholder. */
+  width: 16ch;
+  max-width: 100%;
+  min-height: 3.25rem;
+}
+
+/* =================================================================== buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: var(--control-h);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--line-strong);
+  padding: 0.5rem 1.05rem;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+  transition:
+    background-color var(--ease),
+    border-color var(--ease),
+    color var(--ease),
+    filter var(--ease);
+}
+.btn:hover:not(:disabled) {
+  text-decoration: none;
+  border-color: var(--text-3);
+  background: rgba(255, 255, 255, 0.03);
+}
+.btn:disabled {
+  cursor: not-allowed;
+  background: var(--panel-2);
+  border-color: var(--line);
+  color: var(--text-3);
+}
+.btn-sm {
+  min-height: var(--control-h-sm);
+  padding: 0.35rem 0.8rem;
+  font-size: var(--text-sm);
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: transparent;
+  filter: brightness(1.08);
+}
+.btn-ghost {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+.btn-danger {
+  border-color: var(--danger-line);
+  color: var(--danger);
+}
+.btn-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: var(--danger-quiet);
+}
+
+/* A button nobody gave a class still reads as a button. The pages give every
+   button a class; this is the net under the ones that are added later. */
+button:not([class]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-h-sm);
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+button:not([class]):disabled {
+  color: var(--text-3);
+  border-color: var(--line);
+  cursor: not-allowed;
+}
+
+.btn-row,
+.row-actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0 0 var(--space-4);
+}
+
+/* Text buttons: an action that reads as a link. */
+.link,
+.link-danger {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  white-space: nowrap;
+  border-radius: 3px;
+}
+.link {
+  color: var(--accent-text);
+}
+.link-danger {
+  color: var(--danger);
+}
+.link:disabled,
+.link-danger:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* ===================================================================== shell */
 
 .app {
   min-height: 100dvh;
@@ -143,25 +516,50 @@ p {
   flex-direction: column;
 }
 
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -3rem;
+  z-index: 50;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.8rem;
+  font-weight: 600;
+}
+.skip-link:focus {
+  top: var(--space-3);
+  text-decoration: none;
+}
+
+/* TWO TIERS. Nine destinations do not fit beside a brand and an identity at
+   a laptop width, and wrapping them left the navigation touching the top edge
+   of the window with the identity stranded underneath. The bar holds who and
+   where; the second row holds the destinations, as tabs whose underline sits
+   on the header's own bottom edge. */
 .app-header {
   border-bottom: 1px solid var(--line);
   background: var(--bg-raised);
 }
 .app-header .wrap {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'brand user'
+    'nav nav';
   align-items: center;
-  gap: 1.5rem;
-  min-height: 60px;
-  flex-wrap: wrap;
+  column-gap: var(--space-6);
 }
 
 .brand {
+  grid-area: brand;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--text);
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: -0.01em;
+  padding-block: 0.85rem;
 }
 .brand:hover {
   text-decoration: none;
@@ -171,86 +569,197 @@ p {
   height: 22px;
 }
 
+.app-user {
+  grid-area: user;
+  justify-self: end;
+  min-width: 0;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-user .org-name {
+  color: var(--text);
+  font-weight: 500;
+}
+
 .app-nav {
+  grid-area: nav;
   display: flex;
-  gap: 1.25rem;
-  margin-right: auto;
+  gap: var(--space-1);
+  margin-inline: -0.6rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.app-nav::-webkit-scrollbar {
+  display: none;
 }
 .app-nav a {
+  flex-shrink: 0;
   color: var(--text-2);
   font-size: 0.94rem;
-  padding: 0.2rem 0;
+  font-weight: 500;
+  padding: 0.55rem 0.6rem 0.7rem;
   border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  transition:
+    color var(--ease),
+    border-color var(--ease);
 }
 .app-nav a:hover {
   color: var(--text);
   text-decoration: none;
+  border-bottom-color: var(--line-strong);
 }
 .app-nav a[aria-current='page'] {
   color: var(--text);
   border-bottom-color: var(--accent);
 }
-
-.app-user {
-  color: var(--text-3);
+.app-nav a:focus-visible {
+  outline-offset: -2px;
+  border-radius: 6px;
 }
 
 .app-main {
   flex: 1;
-  padding-top: 2.5rem;
+  padding-top: var(--space-10);
   padding-bottom: 4rem;
+}
+/* The skip link's target takes focus so the next Tab starts inside the page;
+   the page itself is not a control and draws no ring. */
+.app-main:focus {
+  outline: none;
 }
 
 .app-footer {
   border-top: 1px solid var(--line);
-  padding: 1.25rem 0;
+  padding-block: var(--space-5);
 }
 
+/* ============================================================== page layout */
+
+/* The title, and whatever acts on the whole page beside it. A description
+   paragraph always takes its own row under the title — beside it, it was
+   right-aligned into the header's corner.
+
+   A GRID, not a wrapping flex row: a flex item's max-width clamps its basis,
+   so a 72ch description "fitted" beside the title and never wrapped. */
 .page-head {
-  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-8);
 }
-.page-head p {
-  margin-bottom: 0;
+.page-head h1 {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
+.page-head > p,
+.page-head > .page-lede {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 0;
+  max-width: 72ch;
+  color: var(--text-2);
+}
+.page-head > :not(h1, p, .page-lede, div:first-child) {
+  justify-self: end;
+}
+.page-head > div:first-child {
+  min-width: 0;
+}
+.page-head > div:first-child > p {
+  margin: var(--space-1) 0 0;
+}
+
 .section-head {
-  margin: 2.5rem 0 1rem;
+  margin: var(--space-10) 0 var(--space-4);
 }
 
 .back {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   color: var(--text-2);
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-3);
+}
+.back:hover {
+  color: var(--text);
 }
 
-/* -------------------------------------------------------------------- panels */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.stack > * {
+  margin-bottom: 0;
+}
+.stack > fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.stack > fieldset:disabled {
+  opacity: 0.72;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ================================================================== surfaces */
 
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
 }
 .panel.quiet {
   background: var(--bg-raised);
+}
+.panel > :last-child {
+  margin-bottom: 0;
 }
 .panel-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.panel-head h2,
+.panel-head p {
+  margin-bottom: var(--space-1);
 }
 .panel h3 {
-  margin-top: 1.25rem;
+  margin-top: var(--space-5);
+}
+.panel > h3:first-child,
+.panel > h2:first-child {
+  margin-top: 0;
 }
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
 }
 .tile {
   display: flex;
@@ -261,40 +770,52 @@ p {
   border-radius: var(--radius);
   padding: 1.1rem 1.25rem;
   color: var(--text);
+  transition:
+    border-color var(--ease),
+    background-color var(--ease);
 }
 .tile:hover {
   border-color: var(--line-strong);
+  background: var(--panel-2);
   text-decoration: none;
 }
 .tile-label {
   color: var(--text-3);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 .tile-value {
   font-size: 1.5rem;
   letter-spacing: -0.02em;
 }
 
+/* A LIST ROW: a thing on the left, its status or action on the right. Not a
+   section container — use .panel for that. */
 .card-list {
   list-style: none;
-  margin: 0;
+  margin: 0 0 var(--space-4);
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 .card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-4);
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 1rem 1.25rem;
   color: var(--text);
+}
+.card-link {
+  transition:
+    border-color var(--ease),
+    background-color var(--ease);
 }
 .card-link:hover {
   border-color: var(--line-strong);
@@ -304,7 +825,14 @@ p {
 .card-current {
   border-color: var(--accent-line);
 }
+.card-main {
+  min-width: 0;
+}
 .card-main h3 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
   margin-bottom: 0.15rem;
 }
 .card-main p,
@@ -320,35 +848,110 @@ p {
   flex-shrink: 0;
 }
 
-/* ------------------------------------------------------------------- details */
+/* ------------------------------------------------------------------ notices */
 
-.detail {
-  margin: 0 0 1.5rem;
-  display: grid;
-  grid-template-columns: minmax(140px, max-content) 1fr;
-  gap: 0.6rem 1.5rem;
+.notice {
+  border: 1px solid var(--line-strong);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  padding: 0.95rem 1.15rem;
+  margin: 0 0 var(--space-5);
+  background: var(--panel);
 }
-.detail dt {
-  color: var(--text-3);
-  font-size: 0.9rem;
+.notice h1 {
+  font-size: clamp(1.4rem, 1.25rem + 0.8vw, 1.9rem);
 }
-.detail dd {
-  margin: 0;
+.notice h3 {
+  margin-bottom: 0.35rem;
 }
-.detail-row {
-  display: contents;
+.notice > :last-child,
+.notice p:last-child {
+  margin-bottom: 0;
 }
-
-.feature-list {
-  margin: 0 0 1rem;
+.notice ul {
+  margin: var(--space-2) 0 0;
   padding-left: 1.1rem;
 }
-.feature-list li {
-  margin-bottom: 0.25rem;
+.notice-info {
+  border-color: var(--neutral-line);
+  background: var(--neutral-quiet);
 }
-.steps {
+.notice-ok {
+  border-color: var(--accent-line);
+  background: var(--accent-quiet);
+}
+.notice-warn {
+  border-color: var(--warn-line);
+  background: var(--warn-quiet);
+}
+.notice-error {
+  border-color: var(--danger-line);
+  background: var(--danger-quiet);
+}
+/* The one place a credential is shown: it has to be impossible to miss. */
+.notice-strong {
+  border-color: var(--accent);
+  background: var(--accent-quiet);
+}
+
+.empty {
+  background: var(--bg-raised);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  margin-bottom: var(--space-5);
+  text-align: center;
   color: var(--text-2);
-  padding-left: 1.2rem;
+}
+.empty h3 {
+  color: var(--text);
+  margin-bottom: var(--space-2);
+}
+
+.danger-zone {
+  border: 1px solid var(--danger-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-top: var(--space-10);
+}
+.danger-zone h2 {
+  color: var(--danger);
+}
+.danger-zone > :last-child {
+  margin-bottom: 0;
+}
+
+/* -------------------------------------------------------------------- badges */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  padding: 0.1rem 0.55rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  color: var(--text-2);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.badge-ok {
+  color: var(--accent-text);
+  border-color: var(--accent-line);
+  background: var(--accent-quiet);
+}
+.badge-warn {
+  color: var(--warn);
+  border-color: var(--warn-line);
+  background: var(--warn-quiet);
+}
+.badge-neutral {
+  color: var(--neutral);
+  border-color: var(--neutral-line);
+  background: var(--neutral-quiet);
 }
 
 /* -------------------------------------------------------------------- states */
@@ -358,7 +961,7 @@ p {
   align-items: center;
   gap: 0.7rem;
   color: var(--text-2);
-  padding: 2rem 0;
+  padding: var(--space-8) 0;
 }
 .spinner {
   width: 15px;
@@ -381,406 +984,567 @@ p {
     animation: none;
     border-top-color: var(--line-strong);
   }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
 }
 
-.empty {
-  background: var(--bg-raised);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  text-align: center;
-}
-.empty h3 {
-  margin-bottom: 0.5rem;
-}
+/* ============================================================= data display */
 
-.notice {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1.1rem 1.25rem;
-  margin-bottom: 1.5rem;
-  background: var(--panel);
+.detail,
+.facts {
+  margin: 0 0 var(--space-6);
+  display: grid;
+  grid-template-columns: minmax(9rem, max-content) minmax(0, 1fr);
+  gap: 0.55rem var(--space-6);
+  align-items: baseline;
 }
-.notice h3 {
-  margin-bottom: 0.35rem;
-}
-.notice p:last-child {
-  margin-bottom: 0;
-}
-.notice-error {
-  border-color: var(--danger-line);
-  background: var(--danger-quiet);
-}
-.notice-ok {
-  border-color: var(--accent-line);
-  background: var(--accent-quiet);
-}
-
-.badge {
-  display: inline-block;
-  font-size: 0.78rem;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--line-strong);
-  color: var(--text-2);
-  white-space: nowrap;
-}
-.badge-ok {
-  color: var(--accent-text);
-  border-color: var(--accent-line);
-  background: var(--accent-quiet);
-}
-.badge-warn {
-  color: var(--warn);
-  border-color: var(--warn-line);
-  background: var(--warn-quiet);
-}
-.badge-neutral {
-  color: var(--neutral);
-  background: var(--neutral-quiet);
-}
-
-/* ------------------------------------------------------------------- inputs */
-
-.field {
-  display: block;
-  margin-bottom: 1.25rem;
-}
-.field > span {
-  display: block;
+.detail dt,
+.facts dt {
   color: var(--text-3);
-  font-size: 0.9rem;
-  margin-bottom: 0.35rem;
+  font-size: var(--text-sm);
+}
+.detail dd,
+.facts dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.detail-row {
+  display: contents;
 }
 
-.input {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--line-strong);
-  border-radius: 9px;
-  color: var(--text);
-  font: inherit;
-  padding: 0.6rem 0.8rem;
+.feature-list {
+  margin: 0 0 var(--space-4);
+  padding-left: 1.1rem;
 }
-.input:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-  border-color: transparent;
+.feature-list li {
+  margin-bottom: 0.25rem;
 }
-.code-input {
-  font-family: var(--mono);
-  font-size: 1.35rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  max-width: 12ch;
+.feature-list li::marker {
+  color: var(--accent);
 }
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  font: inherit;
-  font-weight: 550;
-  border-radius: 9px;
-  border: 1px solid transparent;
-  padding: 0.6rem 1.1rem;
-  cursor: pointer;
-  background: transparent;
-  color: var(--text);
+.steps {
+  color: var(--text-2);
+  padding-left: 1.2rem;
 }
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.btn:hover:not(:disabled) {
-  text-decoration: none;
-}
-.btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-.btn-sm {
-  padding: 0.4rem 0.8rem;
-  font-size: 0.9rem;
-}
-.btn-primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-.btn-primary:hover:not(:disabled) {
-  filter: brightness(1.08);
-}
-.btn-ghost {
-  border-color: var(--line-strong);
-  color: var(--text);
-}
-.btn-ghost:hover:not(:disabled) {
-  border-color: var(--text-3);
-}
-.btn-danger {
-  border-color: var(--danger-line);
-  color: var(--danger);
-}
-.btn-danger:hover:not(:disabled) {
-  background: var(--danger-quiet);
-}
-.btn-row {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.danger-zone {
-  border: 1px solid var(--danger-line);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-top: 2.5rem;
-}
-.danger-zone h2 {
-  color: var(--danger);
-}
-
-.confirm .detail dd .input {
-  margin-bottom: 0.3rem;
-}
-
-/* ------------------------------------------------------------------ narrow */
-
-@media (max-width: 640px) {
-  .app-header .wrap {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-  }
-  .app-nav {
-    order: 3;
-    width: 100%;
-    overflow-x: auto;
-  }
-  .detail {
-    grid-template-columns: 1fr;
-    gap: 0.15rem 0;
-  }
-  .detail dd {
-    margin-bottom: 0.75rem;
-  }
-  .card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .card-aside {
-    align-items: flex-start;
-    text-align: left;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   The fleet — Phase 14C
-   ---------------------------------------------------------------------------
-
-   Built on the same tokens as everything else. Nothing here is a new design
-   system: a fleet is a list of machines and a list of workloads, and the value
-   of the page is that every number on it came from the machine rather than from
-   a guess.
-
-   RESPONSIVE BY DEFAULT, not by breakpoint. The rows below wrap because they
-   are flex rather than a table — somebody away from their desk needs status,
-   stop and warnings on a phone, and a table of eight columns is the reliable
-   way to make that unusable. */
-
-.page-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.fleet-card { margin-bottom: 1.25rem; }
-
-.fleet-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.fleet-head h2 { margin: 0 0 0.15rem; font-size: 1.05rem; }
-
-/* The sentence about the fleet. Given room, because it is the thing somebody
-   opening this page is actually reading. */
-.fleet-headline {
-  margin: 0.75rem 0 1rem;
-  font-size: 1.05rem;
-  line-height: 1.5;
-}
-
-.presence { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
-
-.machine-list, .workload-list, .gpu-list { list-style: none; margin: 0; padding: 0; }
-
-.machine-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  padding: 0.7rem 0;
-  border-top: 1px solid var(--line, #23262c);
-  text-decoration: none;
-  color: inherit;
-}
-.machine-row:hover { background: rgba(255, 255, 255, 0.02); }
-.machine-name { font-weight: 600; }
-.machine-gpus { flex: 1 1 12rem; }
-.machine-badges { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-
-.facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 1rem 0 1.5rem; }
-.facts dt { color: var(--muted, #8b93a1); }
-.facts dd { margin: 0; }
-
-.gpu { padding: 0.75rem 0; border-top: 1px solid var(--line, #23262c); }
-.gpu-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
-
-.workload { padding: 0.9rem 0; border-top: 1px solid var(--line, #23262c); }
-.workload-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
-.workload-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap; }
-.placement { font-style: italic; }
-
-.rename { margin: 0 0 1.25rem; }
-.rename-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.3rem 0; }
-.rename-row input { flex: 1 1 14rem; }
-
-.logs { margin-top: 0.75rem; border: 1px solid var(--line, #23262c); border-radius: 8px; padding: 0.75rem; }
-.logs-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-.log-body {
-  max-height: 22rem;
-  overflow: auto;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.form { display: block; margin: 1.25rem 0; }
-.form label { display: block; margin-top: 1rem; font-weight: 600; }
-.form input, .form select { width: 100%; max-width: 26rem; }
-.form-actions { display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap; }
-
-.notice-info { border-color: var(--line, #23262c); }
-.notice-ok { border-color: #3f7d43; }
-.notice-warn { border-color: #7d6a3f; }
 
 .code {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--control-bg);
+  border: 1px solid var(--line);
   padding: 0.6rem 0.8rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   overflow-x: auto;
+  font-family: var(--mono);
+  font-size: var(--text-sm);
 }
 
-/* ---------------------------------------------------------------------------
- * Organisation administration — Phase 17B
- * ---------------------------------------------------------------------------
- *
- * Reuses this sheet's existing variables and card styling rather than
- * introducing a second visual language. The brief for this phase says not to
- * rebuild the design system, and a settings page is exactly where a second one
- * usually appears.
- */
-
-.tabs {
+/* A capability name is an identifier, shown as one. */
+.cap-list {
   display: flex;
-  gap: 0.25rem;
   flex-wrap: wrap;
-  margin: 0 0 1.5rem;
-  border-bottom: 1px solid var(--line, #23262c);
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cap {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--text-2);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0 0.35rem;
+  white-space: nowrap;
 }
 
-.tab {
-  background: none;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  color: var(--muted, #8b93a1);
-  cursor: pointer;
-  font: inherit;
-  padding: 0.6rem 0.9rem;
+/* ------------------------------------------------------------------- tables */
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 0 0 var(--space-5);
+  -webkit-overflow-scrolling: touch;
 }
-
-.tab:hover { color: inherit; }
-
-.tab-current {
-  border-bottom-color: #b8ff5a;
-  color: inherit;
-  font-weight: 600;
+.table-scroll > .table {
+  margin-bottom: 0;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0 0 1.25rem;
+  margin: 0 0 var(--space-5);
+  font-variant-numeric: tabular-nums;
 }
-
-.table th, .table td {
-  border-top: 1px solid var(--line, #23262c);
-  padding: 0.7rem 0.75rem 0.7rem 0;
+.table th,
+.table td {
+  border-top: 1px solid var(--line);
+  padding: 0.7rem 0.9rem 0.7rem 0;
   text-align: left;
   vertical-align: top;
 }
-
+.table th:last-child,
+.table td:last-child {
+  padding-right: 0;
+}
 .table th {
   border-top: 0;
-  color: var(--muted, #8b93a1);
-  font-size: 0.85rem;
+  color: var(--text-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.015);
+}
+.table-scroll .table td {
+  white-space: nowrap;
+}
+.table .num {
+  text-align: right;
+}
+.table .actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+.table select {
+  min-height: var(--control-h-sm);
+  padding-block: 0.25rem;
+  width: auto;
+  min-width: 8.5rem;
+}
+.person-name {
+  display: block;
+  font-weight: 600;
+}
+.table-stack td:first-child {
+  min-width: 12rem;
+}
+.person-email {
+  display: block;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+/* ================================================================= the fleet
+
+   A fleet is a list of machines and a list of workloads, and the value of the
+   page is that every number on it came from the machine rather than from a
+   guess. Rows are flex rather than a table: somebody away from their desk
+   needs status, stop and warnings on a phone. */
+
+.fleet-card {
+  padding: 0;
+  overflow: hidden;
+}
+.fleet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-5) var(--space-6) 0;
+}
+.fleet-head h2 {
+  margin: 0 0 0.15rem;
+  font-size: var(--text-lg);
+}
+.fleet-head p {
+  margin: 0;
+}
+
+/* The sentence about the fleet. Given room, because it is the thing somebody
+   opening this page is actually reading. */
+.fleet-headline {
+  margin: var(--space-3) var(--space-6) var(--space-4);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.fleet-card > .muted {
+  margin: 0 var(--space-6) var(--space-5);
+}
+
+.presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.machine-list,
+.workload-list,
+.gpu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.machine-list {
+  border-top: 1px solid var(--line);
+}
+.machine-list > li + li {
+  border-top: 1px solid var(--line);
+}
+.machine-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding: 0.8rem var(--space-6);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--ease);
+}
+.machine-row:hover {
+  background: var(--panel-2);
+  text-decoration: none;
+}
+.machine-row:focus-visible {
+  outline-offset: -2px;
+}
+.machine-name {
+  font-weight: 600;
+}
+.machine-gpus {
+  min-width: 0;
+}
+.machine-badges {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.row-chevron {
+  color: var(--text-3);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------ one machine */
+
+.machine-sections {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.inline-control {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 34rem;
+  margin: 0.35rem 0;
+}
+.inline-control > input {
+  flex: 1 1 14rem;
+  max-width: none;
+  width: auto;
+}
+
+.rename {
+  margin: 0 0 var(--space-5);
+}
+.rename > label {
+  display: block;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.rename > p {
+  margin: 0.2rem 0 0;
+}
+/* Kept for the older markup: the same thing as .inline-control. */
+.rename-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 34rem;
+  margin: 0.35rem 0;
+}
+.rename-row input {
+  flex: 1 1 14rem;
+  max-width: none;
+  width: auto;
+}
+
+/* An accelerator: a card of its own, because a machine's cards are the thing
+   a fleet is made of. */
+.gpu-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: var(--space-4);
+}
+.gpu {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5);
+}
+.gpu p {
+  margin: 0.25rem 0 0;
+}
+.gpu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.gpu-uuid {
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+
+/* Memory the machine reported in use, drawn. The sentence beside it is the
+   record; the bar is only the shape of the same two numbers. */
+.meter {
+  height: 6px;
+  margin-top: var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.meter > span {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  background: var(--neutral);
+  border-radius: inherit;
+}
+
+/* ------------------------------------------------------------- workloads */
+
+.workload-list {
+  border-top: 1px solid var(--line);
+}
+.workload {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--line);
+}
+.workload p {
+  margin: 0.2rem 0 0;
+}
+.workload-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.workload-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  flex-wrap: wrap;
+}
+.placement {
+  font-style: italic;
+}
+
+.logs {
+  margin-top: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  background: var(--bg-raised);
+}
+.logs-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.log-body {
+  max-height: 22rem;
+  overflow: auto;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: var(--space-2) 0;
+}
+
+/* The run form: labels above controls, a hint under each. */
+.form {
+  display: block;
+  margin: var(--space-6) 0;
+}
+.form label {
+  display: block;
+  margin: var(--space-5) 0 0.35rem;
+  font-weight: 600;
+}
+.form label:first-child {
+  margin-top: 0;
+}
+.form input,
+.form select,
+.form .combo-shell {
+  width: 100%;
+  max-width: var(--control-max);
+}
+.form p.small {
+  margin: 0.35rem 0 0;
+}
+.form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  flex-wrap: wrap;
+}
+
+/* ============================================================ organisation */
+
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-6);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  flex-shrink: 0;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  color: var(--text-2);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  padding: 0.6rem 0.85rem;
+  white-space: nowrap;
+  transition:
+    color var(--ease),
+    border-color var(--ease);
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab:focus-visible {
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+.tab-current {
+  border-bottom-color: var(--accent);
+  color: var(--text);
   font-weight: 600;
 }
 
-.link, .link-danger {
-  background: none;
-  border: 0;
-  cursor: pointer;
-  font: inherit;
-  padding: 0;
-  text-decoration: underline;
-}
-
-.link { color: inherit; }
-.link-danger { color: #e06c6c; }
-.link:disabled, .link-danger:disabled { cursor: default; opacity: 0.5; }
-
 .inline-form {
-  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
 }
-
-.inline-form label { color: var(--muted, #8b93a1); }
-
-.stacked-form { margin: 1rem 0; }
-.stacked-form label { display: block; font-weight: 600; margin-top: 0.75rem; }
-.stacked-form input { max-width: 22rem; width: 100%; }
-.stacked-form fieldset {
-  border: 1px solid var(--line, #23262c);
-  border-radius: 8px;
-  margin: 1rem 0;
-  padding: 0.75rem 1rem 1rem;
-}
-.stacked-form legend { color: var(--muted, #8b93a1); font-size: 0.85rem; padding: 0 0.4rem; }
-
-.check {
-  align-items: center;
+.inline-form .inline-field {
   display: flex;
-  font-weight: 400;
-  gap: 0.45rem;
-  margin-top: 0.35rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 12rem;
+  max-width: 22rem;
 }
-.check input { width: auto; }
+.inline-form .inline-field > label,
+.inline-form > label {
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.inline-form input,
+.inline-form select {
+  width: 100%;
+}
+
+.stacked-form {
+  margin: var(--space-4) 0;
+  max-width: 36rem;
+}
+.stacked-form > label {
+  display: block;
+  font-weight: 600;
+  margin: var(--space-4) 0 0.35rem;
+}
+.stacked-form > label:first-child {
+  margin-top: 0;
+}
+.stacked-form fieldset {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+.stacked-form legend {
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  padding: 0 0.4rem;
+}
+.stacked-form > p {
+  margin: var(--space-3) 0;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  gap: 0.2rem var(--space-4);
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+  margin-top: 0.35rem;
+  cursor: pointer;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.check input {
+  width: 1rem;
+}
 
 .nested {
-  border-top: 1px solid var(--line, #23262c);
-  margin-top: 1rem;
-  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+}
+
+.account-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-1);
+}
+.account-head h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.account-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem var(--space-3);
+  margin: var(--space-3) 0 0;
 }
 
 /* The one place a credential is ever rendered.
@@ -788,89 +1552,253 @@ p {
  * `user-select: all` so a single click selects the whole value: a secret that
  * is half-copied is a support conversation, and the alternative — a copy button
  * — needs the clipboard API and a permission prompt to do the same job. */
-.notice-strong { border-color: #b8ff5a; }
-
 .secret {
   display: block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--mono);
   font-size: 0.9rem;
   margin: 0.6rem 0;
+  padding: 0.5rem 0.65rem;
   overflow-wrap: anywhere;
   user-select: all;
 }
 
-/* ------------------------------------------------- governance — Phase 17C */
-/*
- * A form whose sections are cards, because the four things it sets — quotas,
- * models, cards, machines — are independent decisions and reading them as one
- * wall of inputs is how somebody changes the wrong one.
- */
-.stack { display: flex; flex-direction: column; gap: 1.25rem; }
-.stack > fieldset { border: 0; margin: 0; padding: 0; display: flex;
-                    flex-direction: column; gap: 1.25rem; }
-.stack > fieldset:disabled { opacity: 0.72; }
+/* ============================================================== governance
 
-.grid-3 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
-.grid-3 .field { margin-bottom: 0; }
-.grid-3 input { width: 100%; background: var(--bg); border: 1px solid var(--line-strong);
-                border-radius: 9px; color: var(--text); font: inherit; padding: 0.5rem 0.7rem; }
+   A form whose sections are panels, because the four things it sets —
+   quotas, models, cards, machines — are independent decisions, and reading
+   them as one wall of inputs is how somebody changes the wrong one. Each
+   section is one column: what it is, the question, then the answer. */
 
-.field-error { color: #e0806f; display: block; font-size: 0.85rem; margin-top: 0.3rem; }
+.gov-section {
+  margin-bottom: 0;
+}
+.gov-section-head {
+  margin-bottom: var(--space-4);
+}
+.gov-section-head h2 {
+  margin-bottom: var(--space-1);
+}
+.gov-section-head p {
+  margin: 0;
+  max-width: 70ch;
+}
+.gov-section > .muted.small,
+.gov-section .gov-note {
+  max-width: 70ch;
+  margin: var(--space-4) 0 0;
+}
 
-.choice-row { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0.5rem 0 0.9rem; }
-.choice-row label { display: flex; align-items: center; gap: 0.35rem; }
+.quota-grid {
+  display: grid;
+  gap: var(--space-4) var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+}
+.quota-grid .field {
+  margin-bottom: 0;
+}
+.quota-grid input {
+  max-width: none;
+}
 
-.choice-list { list-style: none; margin: 0.5rem 0; padding: 0;
-               display: flex; flex-direction: column; gap: 0.45rem; }
-.choice-list label { display: flex; align-items: baseline; gap: 0.35rem; flex-wrap: wrap; }
+/* "Any" or "only these", as two answers side by side. The question is
+   explicit because `null` and `[]` are opposite intentions. */
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+}
+.choice-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: var(--bg-raised);
+  cursor: pointer;
+  transition:
+    border-color var(--ease),
+    background-color var(--ease);
+}
+.choice-row label:hover {
+  border-color: var(--text-3);
+}
+.choice-row label:has(input:checked) {
+  border-color: var(--accent-line);
+  background: var(--accent-quiet);
+}
+.choice-row label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
-.actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.gov-models {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 44rem;
+}
+.gov-models .field {
+  margin: 0;
+}
+.gov-models textarea {
+  max-width: none;
+}
 
-/* --------------------------------------------------------- the model select
+/* Cards and machines to tick, as tiles: the name is read first, the
+   identifier second, and neither is squeezed. */
+.choice-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+}
+.choice-list label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  column-gap: 0.7rem;
+  height: 100%;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  cursor: pointer;
+  transition:
+    border-color var(--ease),
+    background-color var(--ease);
+}
+.choice-list label:hover {
+  border-color: var(--text-3);
+}
+.choice-list label:has(input:checked) {
+  border-color: var(--accent-line);
+  background: var(--accent-quiet);
+}
+.choice-list label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.choice-list input {
+  margin-top: 0.2rem;
+}
+.choice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.choice-title {
+  font-weight: 600;
+}
+.choice-sub {
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.choice-id {
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+
+.gov-list-warning {
+  margin-top: var(--space-4);
+}
+
+.save-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.save-bar .muted {
+  max-width: 60ch;
+}
+
+/* ========================================================== the model select
 
    A combobox, because a model is CHOSEN and not typed. The list can be long
    and is grouped, so the popup is a positioned panel rather than a native
    <select> — which cannot carry a second line, a group note or a refusal.
 
-   Every colour here is a token. The refusal line is warn rather than error:
-   an organisation's own policy excluding a model is a decision somebody made,
-   not a fault. */
+   The popup is never narrower than a readable row. It used to take exactly
+   the width of its field, and a field in a narrow column produced a list one
+   word wide. The refusal line is warn rather than error: an organisation's own
+   policy excluding a model is a decision somebody made, not a fault. */
 
-.combo-shell { position: relative; max-width: 26rem; }
+.combo-shell {
+  position: relative;
+  width: 100%;
+  max-width: var(--control-max);
+}
+.combo-shell > p {
+  margin: 0.4rem 0 0;
+}
+.combo-shell > .btn {
+  margin-top: var(--space-2);
+}
 
-.combo { position: relative; display: flex; align-items: center; }
-.combo-input { padding-right: 2.2rem; }
+.combo {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.combo-input {
+  padding-right: 2.4rem;
+  max-width: none;
+}
 .combo-toggle {
   position: absolute;
-  right: 0.55rem;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
   background: none;
   border: 0;
-  color: var(--text-3);
+  border-radius: 6px;
+  color: var(--text-2);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   line-height: 1;
-  padding: 0.2rem;
+  padding: 0;
+}
+.combo-toggle:hover {
+  color: var(--text);
+  background: var(--panel-2);
 }
 
 .combo-list {
   position: absolute;
-  z-index: 20;
-  top: calc(100% + 0.3rem);
+  z-index: 40;
+  top: calc(100% + 0.35rem);
   left: 0;
-  right: 0;
-  max-height: 22rem;
+  width: max(100%, 24rem);
+  max-width: min(36rem, calc(100vw - 2 * var(--gutter)));
+  max-height: min(26rem, 60vh);
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--panel);
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
   padding: 0.35rem;
 }
 
-.combo-group + .combo-group { border-top: 1px solid var(--line); margin-top: 0.35rem; }
+.combo-group + .combo-group {
+  border-top: 1px solid var(--line);
+  margin-top: 0.35rem;
+}
 .combo-group-label {
   color: var(--text-3);
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0.6rem 0.6rem 0.2rem;
@@ -884,45 +1812,251 @@ p {
 .combo-option {
   display: grid;
   gap: 0.1rem;
-  padding: 0.45rem 0.6rem;
+  padding: 0.5rem 0.65rem;
   border-radius: 7px;
   cursor: pointer;
 }
-.combo-option.is-active { background: var(--panel-2); }
-.combo-option[aria-selected='true'] { box-shadow: inset 0 0 0 1px var(--accent-line); }
-.combo-option.is-disabled { cursor: not-allowed; opacity: 0.72; }
+.combo-option.is-active {
+  background: var(--panel-2);
+}
+.combo-option[aria-selected='true'] {
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+}
+.combo-option.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
 
-.combo-option-name { color: var(--text); font-weight: 600; }
-.combo-option-meta { color: var(--text-2); font-size: 0.82rem; }
+.combo-option-name {
+  color: var(--text);
+  font-weight: 600;
+}
+.combo-option-meta {
+  color: var(--text-2);
+  font-size: 0.82rem;
+}
 /* The canonical id, which is what is submitted. Monospace because it is an
    identifier a person may be comparing with their terminal, character by
    character. */
-.combo-option-id { color: var(--text-3); font-family: var(--mono); font-size: 0.75rem; }
-.combo-option-refusal { color: var(--warn); font-size: 0.78rem; margin-top: 0.15rem; }
-
-.combo-manual .combo-option-name { font-weight: 500; }
-.combo-none { margin: 0.6rem; }
-
-.field-warning {
+.combo-option-id {
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+}
+.combo-option-refusal {
   color: var(--warn);
-  display: block;
-  font-size: 0.85rem;
-  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
 }
 
-/* Long ids must not push the panel wider than its field. */
+.combo-manual .combo-option-name {
+  font-weight: 500;
+}
+.combo-none {
+  margin: 0.6rem;
+}
+
+/* Long ids wrap inside a row rather than widening the popup. */
 .combo-option-id,
 .combo-option-meta,
 .combo-option-name {
   overflow-wrap: anywhere;
 }
 
-@media (max-width: 40rem) {
-  .combo-shell { max-width: 100%; }
-  .combo-list { max-height: 60vh; }
-}
-
 /* The policy list's "add one" control: an action beside the list it appends
    to, not a second place the policy lives. */
-.model-adder { margin: 0.75rem 0 0.25rem; }
-.model-adder > label { display: block; margin-bottom: 0.3rem; }
+.model-adder > label {
+  display: block;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+/* ===================================================================== usage */
+
+/* One choice from a few, pressed rather than selected. */
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: calc(var(--radius-control) + 3px);
+  background: var(--bg-raised);
+  align-self: flex-start;
+}
+.segmented button {
+  min-height: 2rem;
+  padding: 0.3rem 0.85rem;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--ease),
+    color var(--ease);
+}
+.segmented button:hover {
+  color: var(--text);
+}
+.segmented button[aria-pressed='true'] {
+  background: var(--panel-2);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+.segmented button:focus-visible {
+  outline-offset: 0;
+}
+
+.usage-total h2 {
+  font-size: clamp(1.4rem, 1.2rem + 1vw, 1.9rem);
+  letter-spacing: -0.02em;
+}
+
+.rate-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+.rate-row .inline-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.rate-row .inline-field input {
+  width: 11rem;
+  font-weight: 400;
+}
+.rate-row .inline-field input.currency {
+  width: 6rem;
+  text-transform: uppercase;
+}
+.rate-note {
+  margin: var(--space-3) 0 0;
+}
+
+.filter-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 var(--space-4);
+  cursor: pointer;
+}
+
+/* ============================================================== narrow views */
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 1rem;
+  }
+  .app-main {
+    padding-top: var(--space-6);
+  }
+  .app-user {
+    max-width: 60vw;
+  }
+  .detail,
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.1rem 0;
+  }
+  .detail dd,
+  .facts dd {
+    margin-bottom: var(--space-3);
+  }
+  .panel {
+    padding: var(--space-5) var(--space-4);
+  }
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .card-aside {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .fleet-head {
+    padding: var(--space-4) var(--space-4) 0;
+  }
+  .fleet-headline {
+    margin-inline: var(--space-4);
+  }
+  .fleet-card > .muted {
+    margin-inline: var(--space-4);
+  }
+  .machine-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0.8rem var(--space-4);
+  }
+  .machine-row .machine-gpus {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .machine-row .machine-badges {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-content: flex-start;
+  }
+  .machine-row .row-chevron {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .btn-row .btn,
+  .form-actions .btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* A table of people becomes a list of people below a tablet's width. Each
+   cell names its column, because there is no room for the header row — and a
+   four-column table at 768px squeezed a name and an address into a column
+   one word wide. */
+@media (max-width: 900px) {
+  .table-stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .table-stack,
+  .table-stack tbody,
+  .table-stack tr,
+  .table-stack td {
+    display: block;
+    width: 100%;
+  }
+  .table-stack tr {
+    border-top: 1px solid var(--line);
+    padding: var(--space-3) 0;
+  }
+  .table-stack td {
+    border-top: 0;
+    padding: 0.25rem 0;
+  }
+  .table-stack td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--text-3);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .table-stack .actions-cell {
+    text-align: left;
+    padding-top: var(--space-2);
+  }
+  .table-stack tbody tr:hover td {
+    background: none;
+  }
+}

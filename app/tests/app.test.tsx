@@ -408,6 +408,39 @@ describe('the plan page', () => {
     expect(screen.getByText(/Run batch jobs/i)).toBeInTheDocument();
   });
 
+  it('never shows the per-machine GPU limit as a fleet total', async () => {
+    // Home Pro is three machines and two cards IN EACH. The legacy key is
+    // issued beside the explicit one, and "GPUs: 2" beside "Machines: 3" read
+    // as two cards in total.
+    reply('GET', '/v1/me', ME);
+    reply('GET', '/v1/organizations/org1/plan', {
+      ...HOME_PLAN,
+      id: 'home-pro',
+      displayName: 'Nodeau Home Pro',
+      status: 'active',
+      features: ['MultiNode'],
+      limits: { MaxNodes: 3, MaxGPUs: 2, MaxGPUsPerMachine: 2 },
+    });
+    reply('GET', '/v1/organizations/org1/plans', { plans: [] });
+    window.history.pushState({}, '', '/plan');
+    render(<App />);
+
+    expect(await screen.findByText('Machines')).toBeInTheDocument();
+    expect(screen.getAllByText('GPUs in one machine')).toHaveLength(1);
+    expect(screen.queryByText('GPUs')).not.toBeInTheDocument();
+    expect(screen.queryByText('MaxGPUsPerMachine')).not.toBeInTheDocument();
+  });
+
+  it('labels the legacy GPU limit for what it means when it is the only one', async () => {
+    reply('GET', '/v1/me', ME);
+    reply('GET', '/v1/organizations/org1/plan', { ...HOME_PLAN, limits: { MaxNodes: 1, MaxGPUs: 1 } });
+    reply('GET', '/v1/organizations/org1/plans', { plans: [] });
+    window.history.pushState({}, '', '/plan');
+    render(<App />);
+
+    expect(await screen.findByText('GPUs in one machine')).toBeInTheDocument();
+  });
+
   it('shows an unrecognised capability rather than a blank bullet', async () => {
     // An old build reading a newer plan. Rendering nothing would be a silently
     // shorter list.

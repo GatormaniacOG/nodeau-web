@@ -143,13 +143,19 @@ export function InstallationDetailPage({
 
   return (
     <section>
+      <a
+        className="back"
+        href={hrefFor.installations()}
+        onClick={(e) => {
+          e.preventDefault();
+          navigate(hrefFor.installations());
+        }}
+      >
+        ← Installations
+      </a>
       <header className="page-head">
-        <a className="back" href={hrefFor.installations()}
-           onClick={(e) => { e.preventDefault(); navigate(hrefFor.installations()); }}>
-          ← Installations
-        </a>
         <h1>{i.name}</h1>
-        <p><InstallationBadge installation={i} /></p>
+        <InstallationBadge installation={i} />
       </header>
 
       <dl className="detail">

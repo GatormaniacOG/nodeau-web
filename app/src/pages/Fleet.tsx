@@ -102,7 +102,7 @@ function FleetCard({
   const gpus = inst.machines.reduce((n, m) => n + (m.gpus?.length ?? 0), 0);
 
   return (
-    <article className="card fleet-card">
+    <article className="panel fleet-card">
       <header className="fleet-head">
         <div>
           <h2>{inst.name}</h2>
@@ -147,6 +147,9 @@ function FleetCard({
                   <PresenceBadge presence={m.presence} compact />
                   <HealthBadge machine={m} />
                   <SchedulingBadge machine={m} />
+                </span>
+                <span className="row-chevron" aria-hidden="true">
+                  ›
                 </span>
               </a>
             </li>
@@ -245,17 +248,16 @@ export function FleetMachinePage({
 
   return (
     <section>
-      <p className="muted small">
-        <a
-          href={hrefFor.fleet()}
-          onClick={(e) => {
-            e.preventDefault();
-            navigate(hrefFor.fleet());
-          }}
-        >
-          ← Your fleet
-        </a>
-      </p>
+      <a
+        className="back"
+        href={hrefFor.fleet()}
+        onClick={(e) => {
+          e.preventDefault();
+          navigate(hrefFor.fleet());
+        }}
+      >
+        ← Your fleet
+      </a>
 
       <div className="page-head">
         <div>
@@ -349,7 +351,7 @@ export function FleetMachinePage({
                   <Badge tone="neutral">not scheduled on</Badge>
                 )}
               </div>
-              <p className="muted small mono">{g.uuid}</p>
+              <p className="gpu-uuid">{g.uuid}</p>
               <p className="muted small">
                 {g.vramTotalMib ? `${g.vramTotalMib.toLocaleString()} MiB` : 'memory not reported'}
                 {g.vramUsedMib !== undefined && g.vramTotalMib
@@ -361,6 +363,17 @@ export function FleetMachinePage({
                 {g.powerWatts !== undefined ? ` · ${g.powerWatts} W` : ''}
                 {g.powerLimitWatts !== undefined ? ` of ${g.powerLimitWatts} W` : ''}
               </p>
+              {/* The same two reported numbers, drawn. Only when BOTH were
+                  reported: a bar with a missing side would be a guess. */}
+              {g.vramTotalMib !== undefined && g.vramTotalMib > 0 && g.vramUsedMib !== undefined && (
+                <div className="meter" aria-hidden="true">
+                  <span
+                    style={{
+                      width: `${Math.min(100, Math.max(0, (g.vramUsedMib / g.vramTotalMib) * 100))}%`,
+                    }}
+                  />
+                </div>
+              )}
               {/* The machine's own words for why a card is not being used. */}
               {g.note && <p className="muted small">{g.note}</p>}
             </li>
@@ -499,7 +512,7 @@ function MachineService({
           <label htmlFor="maintenance-reason" className="muted small">
             Or take it out for maintenance, with a reason
           </label>
-          <div className="rename-row">
+          <div className="inline-control">
             <input
               id="maintenance-reason"
               type="text"
@@ -569,7 +582,7 @@ function RenameMachine({
       <label htmlFor="display-name" className="muted small">
         What to call this machine here
       </label>
-      <div className="rename-row">
+      <div className="inline-control">
         <input
           id="display-name"
           type="text"
