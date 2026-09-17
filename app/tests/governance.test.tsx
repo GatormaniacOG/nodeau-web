@@ -259,3 +259,23 @@ describe('the governance page', () => {
     expect(screen.getByText(/larger than Nodeau stores/)).toBeTruthy();
   });
 });
+
+describe('a long card identifier', () => {
+  it('is shortened on screen and kept whole for a screen reader and a tooltip', async () => {
+    const { Identifier } = await import('../src/components/ui');
+    const uuid = 'GPU-c080d9be-9a09-0895-7162-fdb28011a7fd';
+    const { container } = render(<Identifier value={uuid} />);
+    const outer = container.firstElementChild as HTMLElement;
+    expect(outer.title).toBe(uuid);
+    const visible = outer.querySelector('[aria-hidden="true"]')!;
+    expect(visible.textContent).toBe('GPU-c080d9be…fdb28011a7fd');
+    expect(outer.querySelector('.visually-hidden')!.textContent).toBe(uuid);
+  });
+
+  it('shows a short identifier exactly as it is', async () => {
+    const { Identifier } = await import('../src/components/ui');
+    const { container } = render(<Identifier value="GPU-e2e-a1" />);
+    expect(container.textContent).toBe('GPU-e2e-a1');
+    expect((container.firstElementChild as HTMLElement).title).toBe('');
+  });
+});

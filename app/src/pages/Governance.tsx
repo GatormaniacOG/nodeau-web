@@ -7,7 +7,7 @@ import {
   type Organization,
 } from '../lib/api';
 import { useResource } from '../lib/useResource';
-import { Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
+import { Empty, ErrorNotice, Identifier, relativeTime, Spinner } from '../components/ui';
 import { ModelSelect } from '../components/ModelSelect';
 
 /**
@@ -321,7 +321,7 @@ function GovernanceForm({
                             <span className="choice-sub">
                               on {d.machineName ?? 'an unnamed machine'}
                             </span>{' '}
-                            <span className="choice-id">{d.uuid}</span>
+                            <Identifier className="choice-id" value={d.uuid} />
                           </span>
                         </label>
                       </li>

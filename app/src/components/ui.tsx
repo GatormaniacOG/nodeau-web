@@ -131,6 +131,38 @@ export function Badge({
   return <span className={`badge badge-${tone}`}>{children}</span>;
 }
 
+/**
+ * Identifier shows a long stable id without letting it set a layout's width.
+ *
+ * A GPU UUID is 40 characters. Printed whole in a narrow tile it wraps into a
+ * block that is harder to compare than a short form, so a long id shows its
+ * start and its end — the parts people compare with a terminal — and the whole
+ * value stays in the tooltip and in what a screen reader announces. Short ids
+ * are shown as they are.
+ */
+export function Identifier({ value, className }: { value: string; className?: string }) {
+  const long = value.length > 28;
+  // A UUID is read by its groups: the prefix and first group, then the last.
+  const groups = value.split('-');
+  const shown = !long
+    ? value
+    : groups.length >= 3
+      ? `${groups[0]}-${groups[1]}…${groups[groups.length - 1]}`
+      : `${value.slice(0, 12)}…${value.slice(-8)}`;
+  return (
+    <span className={className} title={long ? value : undefined}>
+      {long ? (
+        <>
+          <span aria-hidden="true">{shown}</span>
+          <span className="visually-hidden">{value}</span>
+        </>
+      ) : (
+        value
+      )}
+    </span>
+  );
+}
+
 /** relativeTime renders a timestamp the way a person reads one. */
 export function relativeTime(iso?: string): string {
   if (!iso) return 'never';

@@ -92,6 +92,16 @@ export function FleetRunPage({
 
   return (
     <section className="narrow">
+      <a
+        className="back"
+        href={hrefFor.fleetWorkloads()}
+        onClick={(e) => {
+          e.preventDefault();
+          navigate(hrefFor.fleetWorkloads());
+        }}
+      >
+        ← Workloads
+      </a>
       <h1>Run a workload</h1>
       <p className="muted">
         Nodeau picks the machine and the accelerator. It will refuse rather than start
