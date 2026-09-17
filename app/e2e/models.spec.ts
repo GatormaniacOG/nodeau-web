@@ -209,12 +209,19 @@ test.describe('the model selector', () => {
     // The hardware ladder is visible in the order, which is the curation
     // surviving the trip to a browser.
     await expect(list.getByText('Qwen3.5-4B Q4_K_M')).toBeVisible();
-    await expect(list.getByText('Qwen3-Embedding 0.6B Q8_0')).toBeVisible();
     await expect(list.getByRole('group', { name: 'Nodeau models' })).toBeVisible();
 
     // A deprecated model is listed and told apart, because somebody's fleet
     // may be serving one.
     await expect(list.getByRole('group', { name: 'Superseded' })).toBeVisible();
+
+    // The same catalogue under another task. This used to be asserted on the
+    // CHAT form, which is the defect: an embedding model offered for a chat
+    // run is refused by the machine a moment later.
+    await page.keyboard.press('Escape');
+    await page.selectOption('#run-task', 'embed');
+    await page.getByRole('combobox', { name: 'Model' }).click();
+    await expect(page.getByRole('listbox').getByText('Qwen3-Embedding 0.6B Q8_0')).toBeVisible();
   });
 
   test('sends the canonical id, and the fleet is told to run exactly that', async ({ page }) => {
@@ -282,6 +289,17 @@ test.describe('the model selector', () => {
         WHERE subject_kind = 'workload' AND subject_id = 'never-started'`,
     );
     expect(stored).toBe('0');
+  });
+
+  test('a chat run offers only what can chat', async ({ page }) => {
+    await page.goto('/fleet/run');
+
+    await page.getByRole('combobox', { name: 'Model' }).click();
+    const list = page.getByRole('listbox');
+    await expect(list.getByText('Qwen3.5-9B Q4_K_M')).toBeVisible();
+    // The task select reads "chat" and its value is empty. An embedding model
+    // offered here would be refused by the machine a moment later.
+    await expect(list.getByText('Qwen3-Embedding 0.6B Q8_0')).toHaveCount(0);
   });
 
   test('asks the server for the task rather than filtering in the browser', async ({ page }) => {

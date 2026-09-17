@@ -55,7 +55,11 @@ export interface ModelSelectProps {
   value: string;
   onChange: (id: string) => void;
   /** Offer only models that can be STARTED for this task. Empty means chat,
-   *  which is what an unset task means everywhere else in the product. */
+   *  which is what an unset task means everywhere else in the product.
+   *
+   *  ABSENT is not empty: with no `task` at all every model is offered, which
+   *  is what a model POLICY needs — it names models for any task. A run form
+   *  always has a task, and its "chat" is the empty string. */
   task?: string;
   required?: boolean;
   /** What the control announces itself as, for assistive technology. The
@@ -73,9 +77,13 @@ export function ModelSelect({
   required,
   ariaLabel,
 }: ModelSelectProps) {
+  // EMPTY MEANS CHAT, AND IS ASKED FOR AS CHAT. Sending no filter for it
+  // offered an embedding model and a reranker on a chat run — both refused by
+  // the machine a moment later, for a choice this list presented.
+  const asked = task === undefined ? undefined : task === '' ? 'chat' : task;
   const [catalog, reload] = useResource<ModelCatalog>(
-    (signal) => api.models(orgId, task ? { task } : undefined, signal),
-    [orgId, task],
+    (signal) => api.models(orgId, asked ? { task: asked } : undefined, signal),
+    [orgId, asked],
   );
 
   if (catalog.status === 'loading') {
@@ -128,7 +136,7 @@ export function ModelSelect({
       models={catalog.data.models}
       value={value}
       onChange={onChange}
-      task={task}
+      task={asked}
       required={required}
       ariaLabel={ariaLabel}
       policyApplied={catalog.data.policyApplied}

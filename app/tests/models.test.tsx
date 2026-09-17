@@ -356,6 +356,23 @@ describe('the model selector', () => {
     expect(asked?.url).toContain('task=embed');
   });
 
+  it('asks for chat when the task is empty, because empty IS chat', async () => {
+    render(<Harness task="" />);
+    await screen.findByRole('combobox', { name: /model/i });
+
+    const asked = calls.find((c) => c.url.includes('/models'));
+    expect(asked?.url).toContain('task=chat');
+  });
+
+  it('asks for every model when no task is given at all, which a policy needs', async () => {
+    render(<Harness />);
+    await screen.findByRole('combobox', { name: /model/i });
+
+    const asked = calls.find((c) => c.url.includes('/models'));
+    expect(asked).toBeDefined();
+    expect(asked?.url).not.toContain('task=');
+  });
+
   it('says it is loading rather than showing an empty dropdown', async () => {
     // A request that never resolves: the state under test is the one before an
     // answer, and an empty list here reads as "you have no models".
