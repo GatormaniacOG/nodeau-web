@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # the rendered-ish source of every page.
 RETIRED = [
     (r"v0\.1\.0-alpha\.[0-9]",
-     "hard-coded version; use <span data-release></span> (RELEASE lives in assets/nodeau.js)"),
+     "hard-coded version; use <span data-release></span>, which assets/nodeau.js fills from the live channel"),
     (r"0\.[67]\.0-phase",
      "development build number must never appear on the public site"),
     (r"[Ss]ingle GPU today",
@@ -697,6 +697,23 @@ def main() -> int:
         warnings.append(f"sitemap.xml: {missing} is not listed")
     for extra in sorted(listed - public):
         errors.append(f"sitemap.xml: {extra} is listed but no page exists")
+
+    # --------------------------------------------------------------- version
+    # THE VERSION IS READ, NEVER WRITTEN. A constant in nodeau.js named a beta
+    # from 2026-08 on every page for a month after the channel moved twelve
+    # releases on. Checked against the SCRIPT, because a pattern matched only
+    # against the HTML pages could never see it — a rule that cannot match
+    # passes for ever.
+    js = (ROOT / "assets" / "nodeau.js").read_text()
+    if re.search(r"const\s+RELEASE\s*=|v\d+\.\d+\.\d+-(alpha|beta)\.\d+", js):
+        errors.append("assets/nodeau.js: a release version is written into the script; "
+                      "the version comes from /channel/beta.json")
+    if "/channel/beta.json" not in js:
+        errors.append("assets/nodeau.js: [data-release] is not filled from /channel/beta.json")
+    toml = (ROOT / "netlify.toml").read_text()
+    if not re.search(r'from = "/channel/beta\.json"\s*\n\s*to = "https://get\.nodeau\.ai/channel/beta\.json"\s*\n\s*status = 200', toml):
+        errors.append("netlify.toml: /channel/beta.json is not proxied to get.nodeau.ai, "
+                      "so every page's version would stay empty")
 
     # ----------------------------------------------------------------- report
     for w in warnings:

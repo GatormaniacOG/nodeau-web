@@ -166,21 +166,38 @@
 
   /* --------------------------------------------------------------- release */
 
-  // The single place the published version is written down. Every page carries
-  // an empty <span data-release></span>; no page hard-codes the number, so a
-  // release bump is one edit instead of nine files that drift apart.
+  // The published version, READ FROM THE CHANNEL rather than written here.
   //
-  // This is the version on the PUBLIC beta channel at get.nodeau.ai. It is
-  // deliberately not whatever the development build happens to be running —
-  // the site describes what a visitor can install, not what is on a branch.
+  // This used to be a constant, "the single place the published version is
+  // written down" — and it named a beta from 2026-08 on every page for a month
+  // while the channel moved twelve releases on, so the roadmap told visitors
+  // that everything it lists is in that build. One place to edit is still
+  // a place somebody has to remember to edit.
   //
-  // With JavaScript disabled the span stays empty and the surrounding
-  // whitespace collapses, so the sentence still reads correctly without it.
-  const RELEASE = "v0.2.0-beta.2";
-
-  document.querySelectorAll("[data-release]").forEach((el) => {
-    el.textContent = RELEASE;
-  });
+  // So the page asks the channel a visitor would install from.
+  // `/channel/beta.json` is proxied to get.nodeau.ai by netlify.toml, which
+  // keeps the request same-origin. The site describes what a visitor can
+  // install, never what is on a branch, and the channel is exactly that.
+  //
+  // UNKNOWN SHOWS NOTHING. Offline, blocked or malformed, the slots stay empty
+  // and anything marked [data-release-note] stays hidden, so no sentence ever
+  // carries a number nobody checked.
+  const releaseSlots = document.querySelectorAll("[data-release]");
+  if (releaseSlots.length && window.fetch) {
+    fetch("/channel/beta.json", { headers: { Accept: "application/json" } })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((manifest) => {
+        const v = manifest && manifest.version;
+        if (typeof v !== "string" || !/^v\d+\.\d+\.\d+(-[a-z]+\.\d+)?$/.test(v)) return;
+        releaseSlots.forEach((el) => {
+          el.textContent = v;
+        });
+        document.querySelectorAll("[data-release-note]").forEach((el) => {
+          el.hidden = false;
+        });
+      })
+      .catch(() => {});
+  }
 
   /* -------------------------------------------------- contact preselection */
 

@@ -90,6 +90,17 @@
   to = "/install/"
   status = 301
 
+# The version every page shows is read from the channel a visitor would install
+# from. A 200 here is a PROXY, not a redirect: the browser sees a same-origin
+# response, so the site needs no cross-origin permission from get.nodeau.ai and
+# the installer's own configuration is untouched. Nothing else of get.nodeau.ai
+# is exposed here.
+[[redirects]]
+  from = "/channel/beta.json"
+  to = "https://get.nodeau.ai/channel/beta.json"
+  status = 200
+  force = true
+
 # Convenience: `curl nodeau.ai/install.sh` should do what everyone expects it
 # to do rather than 404.
 [[redirects]]
