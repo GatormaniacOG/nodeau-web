@@ -82,7 +82,7 @@ RETIRED = [
     (r"Self-Hosted Alpha|Experimental Alpha|experimental Alpha",
      "retired positioning: the site names the build, it does not brand itself an alpha"),
     (r"In&nbsp;Alpha|In Alpha",
-     "retired label: the roadmap says 'Manual setup' (see the key on /roadmap/)"),
+     "retired label: the roadmap's states are Available, In progress, Planned and Exploring"),
     (r"href=[\"']/alpha/",
      "the install guide moved to /install/; /alpha/ is a redirect, not a link target"),
     (r"[Tt]wo (plans|tiers)",
@@ -96,6 +96,13 @@ RETIRED = [
     # contradicted the pricing page, which lists two cards in a machine as an
     # included Home Pro capability — so a paying customer reading the FAQ was
     # told they did not have what they had bought.
+    # Retired 2026-09-17, when the roadmap settled on four states. Nothing had
+    # been labelled "Manual setup" since multi-machine became two commands, and
+    # "Working on it" is "In progress". A key naming a state no row uses is a
+    # promise the page no longer keeps.
+    (r"Working on it|pill-inalpha|Manual setup",
+     "retired label: the roadmap's states are Available, In progress, Planned and Exploring"),
+
     (r"[Nn]odeau works with one GPU per machine",
      "stale since Phase 9: every qualified card in a machine is scheduled independently"),
     (r"one GPU per machine, however many machines",
@@ -143,7 +150,7 @@ FORBIDDEN = [
 # qualifying is what Nodeau genuinely does not do — which is the list below.
 NEEDS_DISCLAIMER = [
     ("failover", r"not|no\b|does not|will not|never|absent|Planned|pill-planned|unbuilt|nothing"),
-    ("heterogeneous", r"pill-inalpha|Manual setup|validated|qualified|reason"),
+    ("heterogeneous", r"validated|qualified|reason"),
 ]
 # Measured against the page with its markup stripped, because the distance that
 # matters is how far a READER travels between a claim and its qualifier, not how
@@ -290,10 +297,18 @@ REQUIRED = [
      "the roadmap must say plainly that failover does not exist"),
     ("roadmap/index.html", "no automatic failover",
      "the roadmap must state the limit next to the multi-machine capabilities"),
-    ("roadmap/index.html", "Manual setup",
-     "the roadmap must keep the state for things that ship but are not yet one command"),
     ("roadmap/index.html", "Available",
      "the roadmap must keep the state that means 'in the published build'"),
+    ("roadmap/index.html", "In progress",
+     "the roadmap must keep the state that means 'under way, not in the build'"),
+    ("roadmap/index.html", "Planned",
+     "the roadmap must keep the state that means 'designed for, not built'"),
+    ("roadmap/index.html", "Exploring",
+     "the roadmap must keep the state that means 'intent, not plan'"),
+    # 17B IS NOT IN THE PUBLISHED BUILD, and the rows that describe it say so in
+    # words rather than leaving it to the colour of a pill.
+    ("roadmap/index.html", "Not in the published build",
+     "the organisation rows must say they are not in the build (CLAUDE.md §2.3, 17B)"),
 
     # The marketing pages describe the product; the FAQ and the About page are
     # where somebody goes to find the edges. Both must keep the one boundary a
