@@ -1883,6 +1883,13 @@ button:not([class]):disabled {
   margin-bottom: 0.35rem;
 }
 
+/* ==================================================================== sign-in */
+
+.signin > .btn,
+.signin > p:has(> .btn) {
+  margin-bottom: var(--space-8);
+}
+
 /* ===================================================================== usage */
 
 /* One choice from a few, pressed rather than selected. */
