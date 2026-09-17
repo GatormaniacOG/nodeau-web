@@ -1863,6 +1863,16 @@ button:not([class]):disabled {
   overflow-wrap: anywhere;
 }
 
+/* On a phone the field already spans the form, so the popup takes exactly its
+   width: anchored at the field's left edge, anything wider ran past the
+   screen's right edge. */
+@media (max-width: 40rem) {
+  .combo-list {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 /* The policy list's "add one" control: an action beside the list it appends
    to, not a second place the policy lives. */
 .model-adder > label {

@@ -297,7 +297,8 @@ async function measure(page: Page, label: string, viewport: string): Promise<Fin
   const raw = await page.evaluate(() => {
     const out: { kind: string; detail: string }[] = [];
     const doc = document.documentElement;
-    if (doc.scrollWidth > window.innerWidth + 1) {
+    // No tolerance: a popup one pixel past the edge is a page that scrolls.
+    if (doc.scrollWidth > window.innerWidth) {
       out.push({ kind: 'overflow', detail: `scrollWidth ${doc.scrollWidth} > ${window.innerWidth}` });
     }
     const luminance = (css: string): number | null => {
