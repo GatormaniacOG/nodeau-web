@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # the rendered-ish source of every page.
 RETIRED = [
     (r"v0\.1\.0-alpha\.[0-9]",
-     "hard-coded version; use <span data-release></span> (RELEASE lives in assets/nodeau.js)"),
+     "hard-coded version; use <span data-release></span>, which assets/nodeau.js fills from the live channel"),
     (r"0\.[67]\.0-phase",
      "development build number must never appear on the public site"),
     (r"[Ss]ingle GPU today",
@@ -82,7 +82,7 @@ RETIRED = [
     (r"Self-Hosted Alpha|Experimental Alpha|experimental Alpha",
      "retired positioning: the site names the build, it does not brand itself an alpha"),
     (r"In&nbsp;Alpha|In Alpha",
-     "retired label: the roadmap says 'Manual setup' (see the key on /roadmap/)"),
+     "retired label: the roadmap's states are Available, In progress, Planned and Exploring"),
     (r"href=[\"']/alpha/",
      "the install guide moved to /install/; /alpha/ is a redirect, not a link target"),
     (r"[Tt]wo (plans|tiers)",
@@ -96,6 +96,13 @@ RETIRED = [
     # contradicted the pricing page, which lists two cards in a machine as an
     # included Home Pro capability — so a paying customer reading the FAQ was
     # told they did not have what they had bought.
+    # Retired 2026-09-17, when the roadmap settled on four states. Nothing had
+    # been labelled "Manual setup" since multi-machine became two commands, and
+    # "Working on it" is "In progress". A key naming a state no row uses is a
+    # promise the page no longer keeps.
+    (r"Working on it|pill-inalpha|Manual setup",
+     "retired label: the roadmap's states are Available, In progress, Planned and Exploring"),
+
     (r"[Nn]odeau works with one GPU per machine",
      "stale since Phase 9: every qualified card in a machine is scheduled independently"),
     (r"one GPU per machine, however many machines",
@@ -143,7 +150,7 @@ FORBIDDEN = [
 # qualifying is what Nodeau genuinely does not do — which is the list below.
 NEEDS_DISCLAIMER = [
     ("failover", r"not|no\b|does not|will not|never|absent|Planned|pill-planned|unbuilt|nothing"),
-    ("heterogeneous", r"pill-inalpha|Manual setup|validated|qualified|reason"),
+    ("heterogeneous", r"validated|qualified|reason"),
 ]
 # Measured against the page with its markup stripped, because the distance that
 # matters is how far a READER travels between a claim and its qualifier, not how
@@ -290,10 +297,18 @@ REQUIRED = [
      "the roadmap must say plainly that failover does not exist"),
     ("roadmap/index.html", "no automatic failover",
      "the roadmap must state the limit next to the multi-machine capabilities"),
-    ("roadmap/index.html", "Manual setup",
-     "the roadmap must keep the state for things that ship but are not yet one command"),
     ("roadmap/index.html", "Available",
      "the roadmap must keep the state that means 'in the published build'"),
+    ("roadmap/index.html", "In progress",
+     "the roadmap must keep the state that means 'under way, not in the build'"),
+    ("roadmap/index.html", "Planned",
+     "the roadmap must keep the state that means 'designed for, not built'"),
+    ("roadmap/index.html", "Exploring",
+     "the roadmap must keep the state that means 'intent, not plan'"),
+    # 17B IS NOT IN THE PUBLISHED BUILD, and the rows that describe it say so in
+    # words rather than leaving it to the colour of a pill.
+    ("roadmap/index.html", "Not in the published build",
+     "the organisation rows must say they are not in the build (CLAUDE.md §2.3, 17B)"),
 
     # The marketing pages describe the product; the FAQ and the About page are
     # where somebody goes to find the edges. Both must keep the one boundary a
@@ -682,6 +697,23 @@ def main() -> int:
         warnings.append(f"sitemap.xml: {missing} is not listed")
     for extra in sorted(listed - public):
         errors.append(f"sitemap.xml: {extra} is listed but no page exists")
+
+    # --------------------------------------------------------------- version
+    # THE VERSION IS READ, NEVER WRITTEN. A constant in nodeau.js named a beta
+    # from 2026-08 on every page for a month after the channel moved twelve
+    # releases on. Checked against the SCRIPT, because a pattern matched only
+    # against the HTML pages could never see it — a rule that cannot match
+    # passes for ever.
+    js = (ROOT / "assets" / "nodeau.js").read_text()
+    if re.search(r"const\s+RELEASE\s*=|v\d+\.\d+\.\d+-(alpha|beta)\.\d+", js):
+        errors.append("assets/nodeau.js: a release version is written into the script; "
+                      "the version comes from /channel/beta.json")
+    if "/channel/beta.json" not in js:
+        errors.append("assets/nodeau.js: [data-release] is not filled from /channel/beta.json")
+    toml = (ROOT / "netlify.toml").read_text()
+    if not re.search(r'from = "/channel/beta\.json"\s*\n\s*to = "https://get\.nodeau\.ai/channel/beta\.json"\s*\n\s*status = 200', toml):
+        errors.append("netlify.toml: /channel/beta.json is not proxied to get.nodeau.ai, "
+                      "so every page's version would stay empty")
 
     # ----------------------------------------------------------------- report
     for w in warnings:

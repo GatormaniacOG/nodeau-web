@@ -77,10 +77,9 @@
       </details>
       <details class="qa" id="labels">
         <summary>What do the labels on the roadmap mean?</summary>
-        <div class="answer"><p>Five, and we keep them apart on purpose.</p><p><strong>Available</strong> means it is in the published build. Install
-        it and you have it.</p><p><strong>Manual setup</strong> means it is in that same build and it
-        works, though getting it going still takes steps we have yet to turn into
-        a single command. Running across several machines is the one thing here.</p><p><strong>Working on it</strong> means under way right now.</p><p><strong>Planned</strong> and <strong>Exploring</strong> are where the
+        <div class="answer"><p>Four, and we keep them apart on purpose.</p><p><strong>Available</strong> means it is in the published build. Install
+        it and you have it.</p><p><strong>In progress</strong> means under way right now, and not in the
+        published build yet.</p><p><strong>Planned</strong> and <strong>Exploring</strong> are where the
         ideas live before they are built.</p><p>The <a href='/roadmap/'>roadmap</a> labels every capability, so you can always check where something stands rather than taking a marketing page's word for it.</p></div>
       </details>
       <details class="qa">
@@ -245,8 +244,8 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>What is the difference between Home and Home Pro?</summary>
-        <div class="answer"><p>Machines. Home is one person and one machine with one GPU, free. Home Pro is the same person with several machines they own, and it adds batch inference across them. Remote management ships: you can see and operate your machines from a browser anywhere. Model replication and scheduled batch are planned for it and are not built yet. <strong>Business</strong> is the next line along: an organisation with several people in it. Members, roles, quotas, audit and single sign-on are what it is
-        <em>for</em>, and those are what we are building with design partners now. Full comparison on <a href='/pricing/'>pricing</a>.</p></div>
+        <div class="answer"><p>Machines. Home is one person and one machine with one GPU, free. Home Pro is the same person with several machines they own, and it adds batch inference across them. Remote management ships: you can see and operate your machines from a browser anywhere. Model replication and scheduled batch are planned for it and are not built yet. <strong>Business</strong> is the next line along: an organisation with several people in it. Members, roles and single sign-on are what it is
+        <em>for</em>, and those are in progress with design partners now. Your own limits on what a fleet may run, and a record of what changed, are already in the published build. Full comparison on <a href='/pricing/'>pricing</a>.</p></div>
       </details>
     </div>
     <div class="faq-group">
@@ -317,15 +316,15 @@ nodeau quickstart</code></pre></div><p style='margin-top:.75rem'>The <a href='/i
       </details>
       <details class="qa">
         <summary>Can teams share GPU infrastructure?</summary>
-        <div class="answer"><p>The machine side is there: several machines, one control plane, one place that decides where things run. The organisational side is being built. Members, role-based access control, quotas and policy are <strong>Planned</strong> Business capabilities, and design partners are shaping them now.</p></div>
+        <div class="answer"><p>The machine side is there: several machines, one control plane, one place that decides where things run. So are your organisation's own limits on what that fleet may run, and a record of what changed. Several people with their own roles, and single sign-on, are <strong>In progress</strong> as Business capabilities, and design partners are shaping them now.</p></div>
       </details>
       <details class="qa">
         <summary>Will Nodeau support quotas and policies?</summary>
-        <div class="answer"><p>Quotas, placement policy and organisation RBAC are <strong>Planned</strong> Business capabilities. The <a href='/roadmap/'>roadmap</a> tracks them.</p></div>
+        <div class="answer"><p>Yes, today. Your organisation can set its own limits on what its fleet may run, inside what your plan already allows: how many workloads at once, how many graphics cards, how many batch workers, which models, which cards and which machines. Set them with <code>nodeau governance</code> on a machine, or from your account on the web with Home Pro or Business. Lowering a limit never stops anything that is already running. Roles for several people are <strong>In progress</strong>; the <a href='/roadmap/'>roadmap</a> tracks them.</p></div>
       </details>
       <details class="qa">
         <summary>Will Nodeau support audit and enterprise access controls?</summary>
-        <div class="answer"><p>Audit history and organisation-level access control are <strong>Planned</strong>. No dates.</p></div>
+        <div class="answer"><p>Audit, yes: your organisation can see what changed and who changed it, including what was refused, kept for a year. Organisation-level access control, with several people each in their own role, is <strong>In progress</strong>. No dates.</p></div>
       </details>
       <details class="qa">
         <summary>Will Nodeau support cloud overflow?</summary>
