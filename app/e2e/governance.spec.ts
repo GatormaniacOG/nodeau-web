@@ -205,7 +205,16 @@ test('the policy survives a refresh, because it is stored rather than held in th
   await expect(page.getByRole('heading', { name: 'Governance', level: 1 })).toBeVisible();
 
   await page.getByLabel('Workloads at once').fill('5');
+  // WAIT FOR THE WRITE, not for text the page may already show (#144). The
+  // previous test left a saved policy, so "Saved, not yet in force" is on the
+  // page before this save is even sent — asserting it let the reload cancel the
+  // PUT mid-flight, which the server logged as a 500 and the field read back 2.
+  // The server answers a policy write with 202: the fleet still has to apply it.
+  const written = page.waitForResponse(
+    (r) => r.request().method() === 'PUT' && r.url().endsWith('/fleet/governance'),
+  );
   await page.getByRole('button', { name: 'Save policy' }).click();
+  expect((await written).status()).toBe(202);
   await expect(page.getByTestId('governance-status')).toContainText('Saved', { timeout: 10_000 });
 
   await page.reload();
