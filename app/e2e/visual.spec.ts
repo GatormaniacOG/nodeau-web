@@ -347,16 +347,20 @@ async function measure(page: Page, label: string, viewport: string): Promise<Fin
       return { lines: tops.size, text: text.replace(/\s+/g, ' ').trim() };
     };
     const texts = document.querySelectorAll(
-      'label, [role="option"], .choice-list li, .field > span, legend, .badge, button, td, th, .cap, dd, dt',
+      'h1, h2, h3, label, [role="option"], .choice-list li, .field > span, legend, .badge, button, td, th, .cap, dd, dt',
     );
     for (const el of Array.from(texts)) {
       if (!visible(el)) continue;
       const { lines, text } = lineCount(el);
-      if (text.length < 12) continue;
+      if (text.length < 6) continue;
       const words = text.split(' ').length;
       const width = Math.round(el.getBoundingClientRect().width);
       if (lines >= 3 && lines >= Math.min(words, 4) && width < 140) {
         out.push({ kind: 'ribbon', detail: `"${text.slice(0, 48)}" in ${lines} lines, ${width}px wide` });
+      } else if (/^H[1-3]$/.test(el.tagName) && lines > words) {
+        // More lines than words means a word was split: a machine's name
+        // squeezed to "node / au-c" by a badge beside it.
+        out.push({ kind: 'ribbon', detail: `heading "${text.slice(0, 48)}" split a word over ${lines} lines, ${width}px wide` });
       }
     }
     // A control narrower than the text it is showing: its value is cut off.
@@ -383,12 +387,52 @@ async function measure(page: Page, label: string, viewport: string): Promise<Fin
   return raw.map((f) => ({ page: label, viewport, kind: f.kind as Finding['kind'], detail: f.detail }));
 }
 
-const PAGES: { label: string; path: () => string; prepare?: (page: Page) => Promise<void> }[] = [
+interface AuditPage {
+  label: string;
+  path: () => string;
+  prepare?: (page: Page) => Promise<void>;
+  /** Runs before the page is opened, with `teardown` after it, for a state the
+   *  seed does not leave the fleet in. */
+  setup?: () => void;
+  teardown?: () => void;
+}
+
+/** A fleet whose connector last reported three minutes ago reads "not heard from
+ *  recently" — the longest presence badge, and the one that squeezed a
+ *  machine's name into three lines of three letters on a phone. */
+function fleetLastSync(ago: string) {
+  // Both clocks move together: a machine is reported AT a sync, so a fleet
+  // last heard from three minutes ago has machines last reported then too.
+  psql(
+    e2e.scopedDSN,
+    `UPDATE fleet_sync_state SET last_sync_at = now() - interval '${ago}'
+      WHERE installation_id = '${seeded.installationId}'`,
+  );
+  psql(
+    e2e.scopedDSN,
+    `UPDATE fleet_machines SET last_reported_at = now() - interval '${ago}'
+      WHERE installation_id = '${seeded.installationId}'`,
+  );
+}
+
+const PAGES: AuditPage[] = [
   { label: 'dashboard', path: () => '/' },
   { label: 'installations', path: () => '/installations' },
   { label: 'installation', path: () => `/installations/${seeded.installationId}` },
   { label: 'fleet', path: () => '/fleet' },
   { label: 'machine', path: () => `/fleet/machines/${seeded.machineId}` },
+  {
+    label: 'machine-stale',
+    path: () => `/fleet/machines/${seeded.machineId}`,
+    setup: () => fleetLastSync('3 minutes'),
+    teardown: () => fleetLastSync('0 seconds'),
+  },
+  {
+    label: 'fleet-stale',
+    path: () => '/fleet',
+    setup: () => fleetLastSync('3 minutes'),
+    teardown: () => fleetLastSync('0 seconds'),
+  },
   { label: 'workloads', path: () => '/fleet/workloads' },
   { label: 'run', path: () => '/fleet/run' },
   { label: 'governance', path: () => '/fleet/governance' },
@@ -446,6 +490,20 @@ const PAGES: { label: string; path: () => string; prepare?: (page: Page) => Prom
   { label: 'notfound', path: () => '/no-such-page' },
 ];
 
+async function runPage(page: Page, p: AuditPage, viewport: string) {
+  await page.goto(p.path());
+  await page.waitForLoadState('networkidle');
+  await expect(page.locator('main, [role="main"], body').first()).toBeVisible();
+  if (p.prepare) await p.prepare(page);
+  mkdirSync(OUT, { recursive: true });
+  await page.screenshot({ path: resolve(OUT, `${p.label}-${viewport}.png`), fullPage: true });
+  const found = await measure(page, p.label, viewport);
+  findings.push(...found);
+  if (STRICT) {
+    expect(found, JSON.stringify(found, null, 1)).toEqual([]);
+  }
+}
+
 for (const vp of VIEWPORTS) {
   test.describe(`at ${vp.width}×${vp.height}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
@@ -453,16 +511,11 @@ for (const vp of VIEWPORTS) {
     for (const p of PAGES) {
       test(`${p.label}`, async ({ page, context }) => {
         await signIn(context);
-        await page.goto(p.path());
-        await page.waitForLoadState('networkidle');
-        await expect(page.locator('main, [role="main"], body').first()).toBeVisible();
-        if (p.prepare) await p.prepare(page);
-        mkdirSync(OUT, { recursive: true });
-        await page.screenshot({ path: resolve(OUT, `${p.label}-${vp.name}.png`), fullPage: true });
-        const found = await measure(page, p.label, vp.name);
-        findings.push(...found);
-        if (STRICT) {
-          expect(found, JSON.stringify(found, null, 1)).toEqual([]);
+        p.setup?.();
+        try {
+          await runPage(page, p, vp.name);
+        } finally {
+          p.teardown?.();
         }
       });
     }

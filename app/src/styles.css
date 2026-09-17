@@ -1968,6 +1968,15 @@ button:not([class]):disabled {
   :root {
     --gutter: 1rem;
   }
+  /* The title gets the whole width; what sits beside it on a wide screen goes
+     under it. Beside it, a presence badge squeezed "nodeau-c" into three
+     lines of three letters. */
+  .page-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page-head > :not(h1, p, .page-lede, div:first-child) {
+    justify-self: start;
+  }
   .app-main {
     padding-top: var(--space-6);
   }
