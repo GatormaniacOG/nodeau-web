@@ -2,13 +2,16 @@ import { useCallback, useState } from 'react';
 import {
   api,
   ApiError,
+  type FleetGPUView,
   type FleetInstallation,
   type FleetMachineView,
   type FleetPresence,
+  type FleetWorkloadView,
   type Organization,
 } from '../lib/api';
 import { hrefFor } from '../lib/router';
 import { Badge, Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
+import { CapacityBar, Reading, ReadingRow, StatusPill } from '../components/viz';
 import { useResource } from '../lib/useResource';
 
 /**
@@ -240,11 +243,18 @@ export function FleetMachinePage({
     (signal) => api.fleetMachine(org.id, id, signal),
     [org.id, id],
   );
+  // The workloads are a SECOND request and a soft one: this page is about a
+  // machine, and it must render completely when the workload list is slow or
+  // fails. So the join below degrades to "no workloads listed" rather than to
+  // an error page about something the reader did not ask for.
+  const [running] = useResource((signal) => api.fleetWorkloads(org.id, signal), [org.id]);
 
   if (machine.status === 'loading') return <Spinner label="Reading this machine…" />;
   if (machine.status === 'error') return <ErrorNotice error={machine.error} onRetry={reload} />;
 
   const m = machine.data;
+  const workloads =
+    running.status === 'ready' ? running.data.workloads.filter((w) => w.machineId === m.id) : [];
 
   return (
     <section>
@@ -337,50 +347,126 @@ export function FleetMachinePage({
       <MachineService org={org} machine={m} onChanged={reload} />
 
       <h2>Accelerators</h2>
+      {/* DELIBERATELY NO FLEET OR MACHINE MEMORY TOTAL, and this is a rule
+          rather than an omission. VRAM is a PER-DEVICE CONJUNCTION, never a
+          sum: a pair of cards whose combined free memory looks ample can have
+          one card that cannot hold a workload's share, and a single bar adding
+          them up would say the opposite of what admission decides. Each card
+          is drawn on its own, at its own scale. */}
       {(m.gpus?.length ?? 0) === 0 ? (
         <p className="muted">This machine has not reported an accelerator.</p>
       ) : (
         <ul className="gpu-list">
           {m.gpus!.map((g) => (
-            <li key={g.uuid} className="gpu">
-              <div className="gpu-head">
-                <strong>{g.model ?? g.uuid}</strong>
-                {g.schedulable ? (
-                  <Badge tone="ok">available for work</Badge>
-                ) : (
-                  <Badge tone="neutral">not scheduled on</Badge>
-                )}
-              </div>
-              <p className="gpu-uuid">{g.uuid}</p>
-              <p className="muted small">
-                {g.vramTotalMib ? `${g.vramTotalMib.toLocaleString()} MiB` : 'memory not reported'}
-                {g.vramUsedMib !== undefined && g.vramTotalMib
-                  ? ` · ${g.vramUsedMib.toLocaleString()} MiB in use`
-                  : ''}
-                {/* Absent means UNOBSERVED, not zero. An idle card at 0% and a
-                    card whose driver did not answer are different facts. */}
-                {g.temperatureC !== undefined ? ` · ${g.temperatureC} °C` : ''}
-                {g.powerWatts !== undefined ? ` · ${g.powerWatts} W` : ''}
-                {g.powerLimitWatts !== undefined ? ` of ${g.powerLimitWatts} W` : ''}
-              </p>
-              {/* The same two reported numbers, drawn. Only when BOTH were
-                  reported: a bar with a missing side would be a guess. */}
-              {g.vramTotalMib !== undefined && g.vramTotalMib > 0 && g.vramUsedMib !== undefined && (
-                <div className="meter" aria-hidden="true">
-                  <span
-                    style={{
-                      width: `${Math.min(100, Math.max(0, (g.vramUsedMib / g.vramTotalMib) * 100))}%`,
-                    }}
-                  />
-                </div>
-              )}
-              {/* The machine's own words for why a card is not being used. */}
-              {g.note && <p className="muted small">{g.note}</p>}
-            </li>
+            <AcceleratorCard key={g.uuid} gpu={g} workloads={workloadsOn(workloads, g.uuid)} />
           ))}
         </ul>
       )}
     </section>
+  );
+}
+
+/** workloadsOn is the join: which of this fleet's workloads name this card.
+ *
+ *  Both sides are reported — a workload's `deviceUuids` is the machine's own
+ *  record of what the scheduler gave it — so this is a join of two facts and
+ *  not an inference about either. A workload Nodeau has not placed names no
+ *  card and appears under none. */
+function workloadsOn(workloads: FleetWorkloadView[], uuid: string): FleetWorkloadView[] {
+  return workloads.filter((w) => (w.deviceUuids ?? []).includes(uuid));
+}
+
+/**
+ * One accelerator, drawn.
+ *
+ * # What the bar can and cannot say
+ *
+ * A machine reports ONE used figure per card, covering every process on it —
+ * Nodeau's model servers, a desktop compositor, anything else with a CUDA
+ * context. So the bar has two segments, and the legend says which is which in
+ * those terms rather than implying Nodeau accounted for the whole of it.
+ *
+ * Nodeau's OWN share of that figure is real, and the machine knows it: the
+ * reservation ledger holds a per-device MiB figure for every workload it
+ * admitted. It is not in `GPUObservation`, so it is not drawn here — a segment
+ * labelled "Nodeau" whose width came from anywhere else would be the second
+ * place for this product to be wrong about memory. What IS reported is WHICH
+ * workloads hold the card, and that is listed underneath: a name a person
+ * recognises is more use than a number they cannot check.
+ */
+function AcceleratorCard({
+  gpu: g,
+  workloads,
+}: {
+  gpu: FleetGPUView;
+  workloads: FleetWorkloadView[];
+}) {
+  const memoryKnown =
+    typeof g.vramTotalMib === 'number' && g.vramTotalMib > 0 && typeof g.vramUsedMib === 'number';
+
+  return (
+    <li className="gpu">
+      <div className="gpu-head">
+        <strong>{g.model ?? g.uuid}</strong>
+        {g.schedulable ? (
+          <StatusPill tone="ok" title="Nodeau may place work on this card.">
+            available for work
+          </StatusPill>
+        ) : (
+          <StatusPill tone="neutral" title={g.note ?? 'Nodeau is not placing work on this card.'}>
+            not scheduled on
+          </StatusPill>
+        )}
+      </div>
+      <p className="gpu-uuid">{g.uuid}</p>
+
+      <CapacityBar
+        unit="MiB"
+        total={g.vramTotalMib}
+        unreportedLabel="This machine did not report this card's memory."
+        caption={<span>memory</span>}
+        remainderLabel="free"
+        segments={
+          memoryKnown
+            ? [
+                {
+                  key: 'used',
+                  label: 'in use',
+                  value: g.vramUsedMib!,
+                  tone: 'neutral',
+                  hint: 'every process on the card, not only Nodeau',
+                },
+              ]
+            : []
+        }
+      />
+
+      {/* Absent means UNOBSERVED, not zero — an idle card at 0 % and a card
+          whose driver did not answer are different facts, and Reading is where
+          that distinction is kept rather than repeated at each call site. */}
+      <ReadingRow>
+        <Reading label="utilisation" value={g.utilizationPercent} unit="%" />
+        <Reading label="temperature" value={g.temperatureC} unit=" °C" />
+        <Reading label="power" value={g.powerWatts} of={g.powerLimitWatts} unit=" W" />
+      </ReadingRow>
+
+      {workloads.length > 0 && (
+        <div className="gpu-workloads">
+          <span className="gpu-workloads-label">Nodeau is running here</span>
+          <ul>
+            {workloads.map((w) => (
+              <li key={w.name}>
+                <span className="gpu-workload-name">{w.name}</span>
+                {w.model && <span className="muted small"> · {w.model}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* The machine's own words for why a card is not being used. */}
+      {g.note && <p className="muted small gpu-note">{g.note}</p>}
+    </li>
   );
 }
 

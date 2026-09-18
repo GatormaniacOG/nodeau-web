@@ -9,7 +9,8 @@ import {
   type Organization,
 } from '../lib/api';
 import { hrefFor } from '../lib/router';
-import { Badge, Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
+import { Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
+import { StatusPill, type StatusTone } from '../components/viz';
 import { useResource } from '../lib/useResource';
 
 /**
@@ -46,6 +47,37 @@ export const operationTone: Record<
   failed: { done: false, failed: true, label: 'failed' },
   expired: { done: false, failed: true, label: 'expired' },
 };
+
+/**
+ * How a workload's state reads, as a tone.
+ *
+ * The machine's own vocabulary, mapped once. This used to be a ternary — ok for
+ * "serving" or "running", warn for everything else — which painted "starting"
+ * and "stopping" the same colour as a refusal, so an ordinary cold start looked
+ * like a fault for the forty seconds it took.
+ *
+ * `default: 'warn'` is deliberate and the safe direction: a state this build
+ * has not seen is worth a person's eye, not a quiet green. The machine may be
+ * running a newer Nodeau than the console.
+ */
+export function stateTone(state: string): StatusTone {
+  switch (state) {
+    case 'serving':
+    case 'running':
+    case 'finished':
+      return 'ok';
+    case 'starting':
+    case 'submitted':
+    case 'stopping':
+      return 'neutral';
+    case 'failed':
+      return 'danger';
+    default:
+      // "degraded", "refused — too big", "waiting for a GPU", and anything a
+      // newer machine invents.
+      return 'warn';
+  }
+}
 
 export function FleetWorkloadsPage({
   org,
@@ -193,33 +225,70 @@ function WorkloadRow({
   return (
     <li className="workload">
       <div className="workload-head">
-        <div>
+        <div className="workload-title">
           <strong>{workload.name}</strong>
           <span className="muted small">
-            {' '}
             {workload.model ?? 'model not reported'}
             {workload.task ? ` · ${workload.task}` : ''}
           </span>
         </div>
-        <Badge tone={workload.state === 'serving' || workload.state === 'running' ? 'ok' : 'warn'}>
-          {workload.state}
-        </Badge>
+        <StatusPill tone={stateTone(workload.state)}>{workload.state}</StatusPill>
       </div>
 
-      <p className="muted small">
-        {workload.machineName ?? 'not placed yet'}
-        {(workload.deviceUuids?.length ?? 0) > 0 && ` · ${workload.deviceUuids!.length} accelerator${workload.deviceUuids!.length === 1 ? '' : 's'}`}
-        {workload.schedulingMode ? ` · ${workload.schedulingMode}` : ''}
-        {workload.lastReportedAt ? ` · reported ${relativeTime(workload.lastReportedAt)}` : ''}
-      </p>
+      {/* WHERE IT IS, as a set of named facts rather than a run-on sentence.
+          A machine name, a count of cards and a scheduling mode answer three
+          different questions, and separating them is what lets a long model id
+          or a renamed machine grow without pushing the rest off a phone. */}
+      <dl className="placement-facts">
+        <div>
+          <dt>Machine</dt>
+          <dd>{workload.machineName ?? 'not placed yet'}</dd>
+        </div>
+        {(workload.deviceUuids?.length ?? 0) > 0 && (
+          <div>
+            <dt>Accelerators</dt>
+            <dd>
+              {workload.deviceUuids!.length}
+              {workload.deviceUuids!.length === 1 ? ' card' : ' cards'}
+            </dd>
+          </div>
+        )}
+        {workload.schedulingMode && (
+          <div>
+            <dt>Scheduling</dt>
+            <dd>{workload.schedulingMode}</dd>
+          </div>
+        )}
+        {workload.lastReportedAt && (
+          <div>
+            <dt>Reported</dt>
+            <dd>{relativeTime(workload.lastReportedAt)}</dd>
+          </div>
+        )}
+      </dl>
 
-      {/* The scheduler's own explanation, verbatim. There is no cloud-side
-          explanation generator, so this cannot disagree with the decision. */}
+      {/* THE NOTE IS SHOWN WHENEVER THERE IS ONE, including for a workload that
+          is serving. It used to be hidden unless the state was not "serving",
+          which threw away the one case that matters most: a machine taken out
+          of service keeps its workload running and Nodeau will not re-place it
+          there — the model works, and its owner still needs to know (#154). */}
+      {workload.reasonDetail && <p className="workload-note">{workload.reasonDetail}</p>}
+
+      {/* The scheduler's own explanation, verbatim and ALWAYS VISIBLE.
+          There is no cloud-side explanation generator, so this cannot disagree
+          with the decision that was actually taken.
+
+          It was briefly put behind a disclosure to shorten the row, and the
+          browser test caught it. "Every decision is explainable" is the claim
+          that makes this more than a Kubernetes dashboard, and an explanation
+          one click away is one nobody reads. The row was hard to scan because
+          the explanation was styled as trailing muted text, not because it was
+          present — so it is LABELLED and set as its own block instead. */}
       {workload.placementSummary && (
-        <p className="muted small placement">{workload.placementSummary}</p>
-      )}
-      {workload.reasonDetail && workload.state !== 'serving' && (
-        <p className="muted small">{workload.reasonDetail}</p>
+        <div className="placement-why">
+          <span className="placement-why-label">Why here</span>
+          <p className="placement">{workload.placementSummary}</p>
+        </div>
       )}
 
       <div className="workload-actions">
