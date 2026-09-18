@@ -312,6 +312,76 @@ describe('operations', () => {
   });
 });
 
+describe('a stop is about the copy on the screen (#132)', () => {
+  it('submits the incarnation of the row it shows, never just the name', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [
+        {
+          name: 'reuse-me',
+          state: 'serving',
+          machineName: 'nodeforge',
+          incarnation: 'k4tq3mfxzz2a7c5bnwe6r4yupd',
+        },
+      ],
+    });
+    reply('POST', '/v1/organizations/org1/fleet/operations', {
+      id: 'op1',
+      kind: 'workload.stop',
+      state: 'requested',
+      requestedAt: new Date().toISOString(),
+    });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+
+    await screen.findByText('reuse-me');
+    await userEvent.click(screen.getByRole('button', { name: 'Stop' }));
+
+    await waitFor(() => {
+      const call = (fetch as unknown as ReturnType<typeof vi.fn>).mock.calls.find(
+        ([, init]) => (init as RequestInit | undefined)?.method === 'POST',
+      );
+      expect(call).toBeDefined();
+      const body = JSON.parse(String((call?.[1] as RequestInit).body));
+      expect(body).toMatchObject({
+        kind: 'workload.stop',
+        workloadName: 'reuse-me',
+        workloadIncarnation: 'k4tq3mfxzz2a7c5bnwe6r4yupd',
+      });
+    });
+    // The token is for the server, not for a person.
+    expect(screen.queryByText('k4tq3mfxzz2a7c5bnwe6r4yupd')).not.toBeInTheDocument();
+  });
+
+  it('says so in the server’s own words when that copy was replaced', async () => {
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [
+        { name: 'reuse-me', state: 'serving', incarnation: 'k4tq3mfxzz2a7c5bnwe6r4yupd' },
+      ],
+    });
+    reply(
+      'POST',
+      '/v1/organizations/org1/fleet/operations',
+      {
+        code: 'CONFLICT',
+        message:
+          'The copy of reuse-me you stopped is no longer the one running: it was replaced by ' +
+          'a newer copy with the same name. Nothing was stopped. Refresh to see the copy ' +
+          'running now, and stop that one if you mean to.',
+      },
+      409,
+    );
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+
+    await screen.findByText('reuse-me');
+    await userEvent.click(screen.getByRole('button', { name: 'Stop' }));
+    await waitFor(() =>
+      expect(screen.getByText(/replaced by a newer copy with the same name/i)).toBeInTheDocument(),
+    );
+    expect(screen.queryByText(/\b409\b/)).not.toBeInTheDocument();
+  });
+});
+
 describe('the run form', () => {
   it('asks for a model and never for a machine or a card', async () => {
     window.history.pushState({}, '', '/fleet/run');
