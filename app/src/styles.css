@@ -1276,9 +1276,14 @@ button:not([class]):disabled {
 
 /* An accelerator: a card of its own, because a machine's cards are the thing
    a fleet is made of. */
+/* auto-FIT, not auto-fill. auto-fill keeps the empty tracks it created, so a
+   machine with one card left that card stranded at 20rem in a 1120px page with
+   three empty columns beside it. auto-fit collapses the empty tracks and lets
+   the real one take the width — and a two-card machine still gets two
+   columns, which is the layout this grid exists for. */
 .gpu-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   gap: var(--space-4);
 }
 .gpu {
@@ -1347,8 +1352,12 @@ button:not([class]):disabled {
   margin-top: var(--space-3);
   flex-wrap: wrap;
 }
+/* NOT italic. This is the scheduler's full explanation — two or three lines
+   naming machines and memory figures — and italic at that length is measurably
+   slower to read and renders poorly for dyslexic readers. Emphasis is the job
+   of the label above it. */
 .placement {
-  font-style: italic;
+  font-style: normal;
 }
 
 .logs {
@@ -2085,4 +2094,356 @@ button:not([class]):disabled {
   .table-stack tbody tr:hover td {
     background: none;
   }
+}
+
+/* ==========================================================================
+   Visual modules — capacity bars, readings, status pills
+   --------------------------------------------------------------------------
+   Drawn from tokens only. Three rules hold this together:
+
+     * COLOUR IS A SIGNAL. `--accent` marks what Nodeau itself is responsible
+       for, `--neutral` what it merely observes, and the free segment is a
+       surface rather than a colour. A bar with five bright colours is a
+       decoration that makes the reader look for a meaning in each.
+     * A BAR IS NEVER THE ONLY COPY OF A NUMBER. Every figure drawn is also in
+       the legend as text, so the bar is `aria-hidden` and nothing is lost when
+       it cannot be seen or is too small to compare.
+     * THE UNREPORTED STATE IS STYLED, not omitted. A card whose driver did not
+       answer must look different from one reading zero.
+   ========================================================================== */
+
+.capacity {
+  margin-top: var(--space-3);
+}
+.capacity-caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.capacity-track {
+  display: flex;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--control-bg);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.capacity-compact .capacity-track {
+  height: 6px;
+}
+.capacity-seg {
+  display: block;
+  height: 100%;
+  /* A segment narrower than this is invisible; a hairline still says "some".
+     Widths are percentages so the sum stays right at every viewport. */
+  min-width: 2px;
+}
+.capacity-seg + .capacity-seg {
+  border-left: 1px solid var(--bg);
+}
+
+.capacity-accent { background: var(--accent); }
+.capacity-neutral { background: var(--neutral); }
+.capacity-warn { background: var(--warn); }
+.capacity-danger { background: var(--danger); }
+.capacity-free { background: var(--panel-2); }
+
+.capacity-legend {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: grid;
+  /* Two columns where there is room, one on a phone. A legend that wrapped
+     mid-entry would put a value under somebody else's label.
+
+     The track is CAPPED as well as floored, and the cap is what makes this
+     readable on a wide card: with `1fr` a two-entry legend on a 1040px card
+     put "in use" at the left edge and "312 MiB" half a screen away, which is
+     exactly the distance that makes a person check twice which number belongs
+     to which label. `justify-content: start` keeps the capped columns together
+     rather than spreading them. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 22rem));
+  justify-content: start;
+  gap: var(--space-1) var(--space-5);
+}
+.capacity-compact .capacity-legend {
+  margin-top: var(--space-2);
+}
+.capacity-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  /* `align-content: start` is load-bearing, not tidiness. Grid's default is to
+     STRETCH auto-sized rows, and each entry is stretched by the legend to the
+     height of the tallest entry beside it — so in a row where a neighbour
+     carried a hint, this entry's single row grew and the centred dot floated
+     to the middle of it, a clear line below its own label. Packing the rows to
+     the top makes an entry render the same whatever sits next to it. */
+  align-content: start;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  line-height: 1.7;
+}
+/* EVERY CELL IS PLACED EXPLICITLY. An entry with a hint is two rows tall, and
+   grid makes every entry in that row as tall — so a dot centred across the
+   ITEM floated below its own label whenever a NEIGHBOUR had a hint. Pinning
+   the first row makes each entry read the same whatever sits beside it. */
+.capacity-dot {
+  grid-row: 1;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  align-self: center;
+}
+.capacity-label,
+.capacity-value {
+  grid-row: 1;
+}
+.capacity-dot.capacity-free {
+  border: 1px solid var(--line-strong);
+}
+.capacity-label {
+  color: var(--text-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.capacity-value {
+  color: var(--text);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.capacity-hint {
+  grid-row: 2;
+  grid-column: 2 / -1;
+  color: var(--text-3);
+  margin-top: -0.2rem;
+}
+
+.capacity-empty {
+  margin: 0;
+  padding: var(--space-3) 0;
+  color: var(--text-3);
+  font-size: var(--text-xs);
+  border-top: 1px dashed var(--line-strong);
+}
+
+/* ------------------------------------------------------------- readings */
+
+.reading-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+.reading {
+  flex: 1 1 auto;
+  min-width: 6.5rem;
+  padding: var(--space-2) var(--space-3);
+  background: var(--control-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.reading-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.reading-value {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+.reading-unit {
+  color: var(--text-2);
+  margin-left: 0.15rem;
+}
+.reading-of {
+  color: var(--text-3);
+}
+/* An unobserved reading is visibly a GAP, not a value. */
+.reading-unknown .reading-value {
+  font-family: var(--font);
+  font-size: var(--text-xs);
+  color: var(--text-3);
+}
+
+/* ----------------------------------------------------------------- pills */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.pill-ok {
+  color: var(--accent-text);
+  background: var(--accent-quiet);
+  border-color: var(--accent-line);
+}
+.pill-accent {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.pill-warn {
+  color: var(--warn);
+  background: var(--warn-quiet);
+  border-color: var(--warn-line);
+}
+.pill-danger {
+  color: var(--danger);
+  background: var(--danger-quiet);
+  border-color: var(--danger-line);
+}
+.pill-neutral {
+  color: var(--neutral);
+  background: var(--neutral-quiet);
+  border-color: var(--neutral-line);
+}
+
+/* Which of this fleet's workloads hold a card. A join of two reported facts —
+   the card's UUID and the workload's own `deviceUuids` — and never an
+   inference about either. */
+.gpu-workloads {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+.gpu-workloads-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.gpu-workloads ul {
+  list-style: none;
+  margin: var(--space-1) 0 0;
+  padding: 0;
+}
+.gpu-workloads li {
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  /* A long workload name and a long model id must not push the card wide. */
+  overflow-wrap: anywhere;
+}
+.gpu-workload-name {
+  color: var(--text);
+  font-weight: 600;
+}
+.gpu-note {
+  margin-top: var(--space-3);
+}
+
+/* ------------------------------------------------- workload placement facts */
+
+/* Named facts rather than a run-on muted sentence. Each pair answers its own
+   question, so a long model id or a renamed machine grows without pushing the
+   others off a phone — the failure the console audit measured as text squeezed
+   to a word a line. */
+.workload-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.workload-title strong {
+  overflow-wrap: anywhere;
+}
+
+.placement-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: var(--space-3) 0 0;
+}
+.placement-facts > div {
+  min-width: 0;
+}
+.placement-facts dt {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.placement-facts dd {
+  margin: 0.1rem 0 0;
+  font-size: var(--text-sm);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+/* The machine's note. Shown for a SERVING workload too: a drained machine keeps
+   its workload running and will not be re-placed on, which its owner needs to
+   read even though nothing is broken (#154). */
+.workload-note {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: 2px solid var(--line-strong);
+  background: var(--bg-raised);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: var(--text-sm);
+  color: var(--text-2);
+}
+
+/* The scheduler's own explanation is long by design — it names every machine
+   and why each lost — and it is ALWAYS VISIBLE. "Every decision is
+   explainable" is what makes this more than a Kubernetes dashboard, and an
+   explanation behind a click is one nobody reads.
+
+   The row was hard to scan because this was styled as trailing muted text, so
+   it is given a label and a measure instead. Never truncated: half a sentence
+   about a placement is worse than none. */
+.placement-why {
+  margin-top: var(--space-3);
+}
+.placement-why-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.placement-why .placement {
+  margin: var(--space-1) 0 0;
+  /* A measure. Long explanatory prose across a 1120px page is genuinely hard
+     to read; this keeps it to a comfortable line length on a desktop and
+     changes nothing on a phone. */
+  max-width: 68ch;
+  font-size: var(--text-sm);
+  color: var(--text-2);
+  line-height: 1.65;
 }
