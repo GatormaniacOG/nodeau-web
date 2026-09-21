@@ -221,6 +221,11 @@ export interface FleetWorkloadView {
   restartCount?: number;
   generation?: number;
   lastReportedAt?: string;
+  /** WHICH COPY of the workload this row is (issue #132): an opaque token the
+   *  machine minted. Never displayed — a person reads the name — and always
+   *  SUBMITTED with a stop, so the stop is about the copy this row showed and
+   *  never about a later one that took the same name. */
+  incarnation?: string;
 }
 
 export type OperationState =

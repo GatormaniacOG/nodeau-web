@@ -295,7 +295,16 @@ function WorkloadRow({
         <button
           className="btn btn-ghost btn-sm"
           disabled={busy}
-          onClick={() => act({ kind: 'workload.stop', workloadName: workload.name })}
+          onClick={() =>
+            // The COPY this row shows, not just its name (#132). If the fleet
+            // has replaced it since this page loaded, the server refuses with
+            // a sentence saying so, rather than stopping a copy nobody saw.
+            act({
+              kind: 'workload.stop',
+              workloadName: workload.name,
+              workloadIncarnation: workload.incarnation,
+            })
+          }
         >
           Stop
         </button>
