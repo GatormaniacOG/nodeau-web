@@ -747,11 +747,20 @@ def main() -> int:
     for script, what in (
         ("build-docs.py", "docs/ is not current with docs-src/"),
         ("check-cli-coverage.py", "the CLI reference does not match the shipped command tree"),
+        # A PAGE THAT LINKS AN UNSTAMPED ASSET IS A BROKEN PAGE FOR ANYBODY WHO
+        # VISITED IN THE LAST HOUR. /docs shipped that way: netlify.toml serves
+        # HTML as must-revalidate and /assets/* as max-age=3600 under a filename
+        # that never changes, so a returning visitor got new markup with the
+        # previous stylesheet — a wall of unstyled text, on one browser and not
+        # another, purely by which one had the file cached.
+        ("stamp-assets.py", "a page references an asset version that is not current"),
     ):
         path = ROOT / "tools" / script
         if not path.exists():
             continue
-        args = [sys.executable, str(path)] + (["--check"] if script == "build-docs.py" else [])
+        args = [sys.executable, str(path)] + (
+            ["--check"] if script in ("build-docs.py", "stamp-assets.py") else []
+        )
         proc = subprocess.run(args, capture_output=True, text=True)
         if proc.returncode != 0:
             detail = (proc.stdout + proc.stderr).strip()

@@ -116,8 +116,17 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
 
-# Static assets are content-addressed by name changes only, so keep the cache
-# short enough that a redeploy is visible without a hard refresh.
+# Every page references these with ?v=<first 8 of the file's sha256>, stamped by
+# tools/stamp-assets.py and asserted by tools/check-site.py. Change the file and
+# every page's URL changes with it, so a cached copy is not found rather than
+# being trusted.
+#
+# THE STAMP IS THE GUARANTEE, NOT THIS NUMBER. Before it existed, this header
+# said the assets were "content-addressed by name changes only" — and the names
+# never changed. /docs shipped with a restructured stylesheet, and anyone who
+# had visited in the previous hour got the new markup with the old CSS.
+# max-age stays an hour because the URL now changes when the bytes do; raising
+# it would be safe and is not worth the argument.
 [[headers]]
   for = "/assets/*"
   [headers.values]

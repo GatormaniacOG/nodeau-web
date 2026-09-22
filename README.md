@@ -122,9 +122,28 @@ assets/docs.js         sidebar drawer, search, platform tabs, scrollspy
 ```bash
 python3 tools/build-docs.py           # write docs/
 python3 tools/build-docs.py --check   # fail if docs/ is not current
+python3 tools/stamp-assets.py         # re-stamp asset URLs after changing CSS or JS
 python3 tools/check-cli-coverage.py   # fail if a shipped command is undocumented
-python3 tools/check-site.py           # the existing structural + editorial checks
+python3 tools/check-site.py           # everything, including the three above
 ```
+
+### Shared assets are cache-stamped, and it is not optional
+
+Every page links `/assets/nodeau.css`, `nodeau.js` and `docs.js` with
+`?v=<first 8 of the file's sha256>`.
+
+**This is load-bearing.** `netlify.toml` serves HTML as
+`max-age=0, must-revalidate` and `/assets/*` as `max-age=3600`, under filenames
+that never change. When `/docs` first shipped, anyone who had visited in the
+previous hour got the new markup with the **previous stylesheet** — a wall of
+unstyled text, on one browser and not another, purely by which one had the file
+cached. It reads as a browser bug and is not one.
+
+After changing any file in `assets/`, run `tools/stamp-assets.py`.
+`tools/check-site.py` asserts it, and `tools/build-docs.py` stamps its own
+output from the same function, so the generated and hand-written pages cannot
+disagree. The version is computed from the bytes — there is no number to
+remember to bump.
 
 **Why a generator here and not elsewhere.** The rest of the site is nine pages
 with a hand-copied header, which is the honest cost of having no build step.

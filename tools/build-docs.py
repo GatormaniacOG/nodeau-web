@@ -30,6 +30,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import assetstamp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "docs-src"
 OUT = ROOT / "docs"
@@ -702,7 +705,9 @@ def build() -> dict[str, str]:
         prev_page = order[pos - 1] if pos > 0 else None
         next_page = order[pos + 1] if pos + 1 < len(order) else None
         rel = "index.html" if doc.slug == "overview" else f"{doc.slug}/index.html"
-        files[rel] = page_html(doc, nav, (prev_page, next_page))
+        # Stamped here rather than by a later pass, so the generated pages and
+        # the hand-written ones are produced by one function.
+        files[rel] = assetstamp.rewrite(page_html(doc, nav, (prev_page, next_page)))
         index.extend(index_entries(doc))
 
     # Internal /docs links are resolved here as well as by check-site.py, so a
