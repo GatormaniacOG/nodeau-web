@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Updating Nodeau and release channels</title>
+<meta name="description" content="Check your version, update in place, what an upgrade preserves, how a fleet&#x27;s machines relate to each other, and what Nodeau deliberately does not do automatically.">
+<link rel="canonical" href="https://nodeau.ai/docs/updates/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/updates/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Updating Nodeau and release channels">
+<meta property="og:description" content="Check your version, update in place, what an upgrade preserves, how a fleet&#x27;s machines relate to each other, and what Nodeau deliberately does not do automatically.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations" open><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" aria-current="page" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Operations</p>
+      <h1 class="doc-title">Updating and release channels</h1>
+      <p class="lede doc-lede">Nodeau never updates itself in the background, and a machine that cannot reach the internet keeps working exactly as it is.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#what-am-i-running">What am I running?</a></li><li><a href="#is-there-something-newer">Is there something newer?</a></li><li><a href="#updating">Updating</a></li><li><a href="#release-channels">Release channels</a></li><li><a href="#downgrading-and-rollback">Downgrading and rollback</a></li><li><a href="#machines-that-are-offline">Machines that are offline</a></li><li><a href="#a-failed-update">A failed update</a></li></ul></nav>
+      <h2 id="what-am-i-running" class="doc-h">What am I running?<a class="doc-anchor" href="#what-am-i-running" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-1"><code>nodeau version
+nodeau version --json</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="updates-code-2"><code>nodeau v0.X.Y-beta.N (commit 68fcaa1, built 2026-09-21, channel beta, go1.26.5, linux/amd64)</code></pre></div>
+<p>The version in that sample is a placeholder. The build this documentation describes is <span data-release>the current beta channel</span>, read from the channel you would install from rather than typed into the page.</p>
+<p>The <strong>commit is compiled in</strong>, so two builds of the same tree from different commits are different binaries. That is why the version string carries both.</p>
+<h2 id="is-there-something-newer" class="doc-h">Is there something newer?<a class="doc-anchor" href="#is-there-something-newer" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-3"><code>nodeau update
+nodeau update --json</code></pre></div>
+<p>By default it only looks. It compares this machine's Nodeau with the published release channel, and — if a cluster is reachable — also shows what every machine in your fleet is running.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--download</code></td><td data-label="Default">off</td><td data-label="Meaning">Also fetch the new build and check it against the published checksum, refusing to keep anything that does not match</td></tr><tr><td data-label="Flag"><code>--channel &lt;name&gt;</code></td><td data-label="Default">this build's</td><td data-label="Meaning">Which channel to check</td></tr><tr><td data-label="Flag"><code>--base-url &lt;url&gt;</code></td><td data-label="Default"><code>https://get.nodeau.ai</code></td><td data-label="Meaning">Where releases are published</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Default">off</td><td data-label="Meaning">Machine-readable</td></tr></tbody></table></div>
+<aside class="callout callout-note"><p class="callout-kind">Machines are not expected to match</p><p>Nodeau's own components deliberately sit on different versions when one of them did not change. A controller and an agent showing different versions is normal.</p>
+<p>What is worth acting on is <strong>machines disagreeing with each other</strong> — that means an update was applied to some of them and not the rest.</p></aside>
+<h2 id="updating" class="doc-h">Updating<a class="doc-anchor" href="#updating" aria-label="Link to this section">#</a></h2>
+<p>The same command that installed it:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-4"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau install</code></pre></div>
+<ul class="doc-list"><li>The bootstrap replaces the binaries in place, verifying the new archive's SHA-256 against the published manifest first.</li><li><code>nodeau install</code> is idempotent: it re-checks everything, skips what is done, and picks up anything the new release added — a new control-plane component, a new driver, a schema change.</li></ul>
+<h3 id="what-an-upgrade-preserves" class="doc-h">What an upgrade preserves<a class="doc-anchor" href="#what-an-upgrade-preserves" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th></th></tr></thead><tbody><tr><td data-label="">Your <strong>API key</strong></td><td data-label="">Never regenerated</td></tr><tr><td data-label="">Your <strong>downloaded models</strong></td><td data-label="">Never re-downloaded</td></tr><tr><td data-label="">Your <strong>entitlement</strong></td><td data-label="">Untouched</td></tr><tr><td data-label="">Your <strong>cluster</strong></td><td data-label="">Adopted components stay adopted; ownership is never re-decided</td></tr><tr><td data-label="">Your <strong>batch inputs and results</strong></td><td data-label="">Untouched</td></tr><tr><td data-label=""><strong>Running workloads</strong></td><td data-label="">Not restarted by the upgrade itself. A controller roll is a control-plane change</td></tr></tbody></table></div>
+<h3 id="a-replaced-file-is-not-a-replaced-process" class="doc-h">A replaced file is not a replaced process<a class="doc-anchor" href="#a-replaced-file-is-not-a-replaced-process" aria-label="Link to this section">#</a></h3>
+<p>Replacing a binary does not replace a process that is already running: it keeps executing the file it started with, even after the name is gone.</p>
+<p>The installer restarts a <strong>fleet connector</strong> whose binary it replaced, and <code>nodeau doctor</code> reports what was left behind:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>CONNECTOR_BINARY_REPLACED</code></td><td data-label="Meaning">The connector is running a binary that has since been replaced on disk</td></tr><tr><td data-label="Code"><code>ENDPOINT_BINARY_REPLACED</code></td><td data-label="Meaning">A local endpoint is</td></tr></tbody></table></div>
+<p>The remedy is to restart the thing named. A package manager, a hand copy, or an install that could not reach the service manager all leave the same state, and the machine looks entirely healthy while in it.</p>
+<h3 id="order-when-several-machines-are-involved" class="doc-h">Order, when several machines are involved<a class="doc-anchor" href="#order-when-several-machines-are-involved" aria-label="Link to this section">#</a></h3>
+<p>Update one machine at a time and check it before moving on:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-5"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau install
+nodeau doctor
+nodeau update            # does this machine now agree with the others?</code></pre></div>
+<p>For a machine you are about to take offline for a while, drain it first — <code>nodeau scheduling drain --node &lt;machine&gt;</code> — so nothing new is placed there. Then undrain it afterwards. Draining is not eviction: what is already running keeps running.</p>
+<h2 id="release-channels" class="doc-h">Release channels<a class="doc-anchor" href="#release-channels" aria-label="Link to this section">#</a></h2>
+<p>A channel is a named pointer to a version. <code>beta</code> is what <code>https://get.nodeau.ai/install.sh</code> resolves by default.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-6"><code>NODEAU_CHANNEL=beta  bash install-nodeau.sh    # choose a channel
+NODEAU_VERSION=v0.X.Y-beta.N bash install-nodeau.sh  # pin an exact version</code></pre></div>
+<p>A <strong>channel only ever moves forward.</strong> A version that was published and then withdrawn is never re-advertised.</p>
+<p>You can record which build a fleet should be on, and see which build it is on. That is a statement of intent that you can read back — it does <strong>not</strong> upgrade anything. Nodeau does not upgrade a fleet remotely, and the capability to do so is not built.</p>
+<h2 id="downgrading-and-rollback" class="doc-h">Downgrading and rollback<a class="doc-anchor" href="#downgrading-and-rollback" aria-label="Link to this section">#</a></h2>
+<p>There is no <code>nodeau downgrade</code>, and rollback is not a supported operation.</p>
+<p>Pinning an older version with <code>NODEAU_VERSION</code> fetches that version's artifacts if they are still published, which is not guaranteed for a superseded build. A control plane that has already applied a newer schema is not returned to an older one by installing an older binary.</p>
+<p>If a release causes you a problem, the useful thing is a <a href="/docs/support/">support bundle</a> and a message — not a downgrade that leaves the machine in a state nothing has been tested against.</p>
+<h2 id="machines-that-are-offline" class="doc-h">Machines that are offline<a class="doc-anchor" href="#machines-that-are-offline" aria-label="Link to this section">#</a></h2>
+<p>An offline machine keeps working exactly as it is. It does not phone home, it does not degrade, and its entitlement keeps verifying offline until it expires — see <a href="/docs/accounts/#expiry-and-grace">expiry and grace</a>.</p>
+<p>To update one with no internet, carry the archive to it yourself and run the bootstrap with <code>NODEAU_BASE_URL</code> pointed at wherever you put it. The checksum check is the same either way.</p>
+<h2 id="a-failed-update" class="doc-h">A failed update<a class="doc-anchor" href="#a-failed-update" aria-label="Link to this section">#</a></h2>
+<p>The bootstrap installs nothing if the checksum does not match, and says so. If <code>nodeau install</code> stops partway through, run it again: it re-checks everything and resumes, and the ownership ledger means it never re-decides who owns a component.</p>
+<p>If the machine is in a state you cannot explain:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-7"><code>nodeau doctor
+nodeau support bundle</code></pre></div>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/accounts/"><span>Previous</span>Accounts, plans and entitlements</a><a class="doc-next" href="/docs/uninstall/"><span>Next</span>Uninstalling</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

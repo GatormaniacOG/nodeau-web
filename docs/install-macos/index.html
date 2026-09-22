@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install Nodeau on an Apple Silicon Mac</title>
+<meta name="description" content="The complete Apple Silicon install — Metal, no Kubernetes and no password, unified memory, what a Mac can and cannot do, quarantine, PATH and uninstall.">
+<link rel="canonical" href="https://nodeau.ai/docs/install-macos/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/install-macos/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Install Nodeau on an Apple Silicon Mac">
+<meta property="og:description" content="The complete Apple Silicon install — Metal, no Kubernetes and no password, unified memory, what a Mac can and cannot do, quarantine, PATH and uninstall.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started" open><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" aria-current="page" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Getting started</p>
+      <h1 class="doc-title">Install on macOS</h1>
+      <p class="lede doc-lede">On a Mac, Nodeau runs models directly on the GPU through Metal. There is no Kubernetes, no Docker, no NVIDIA tooling and nothing that needs your password.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#what-a-mac-can-and-cannot-do">What a Mac can and cannot do</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#step-1-get-the-cli">Step 1 — get the CLI</a></li><li><a href="#step-2-look-at-the-machine">Step 2 — look at the machine</a></li><li><a href="#step-3-set-it-up">Step 3 — set it up</a></li><li><a href="#step-4-run-a-model">Step 4 — run a model</a></li><li><a href="#unified-memory">Unified memory</a></li><li><a href="#where-things-live">Where things live</a></li><li><a href="#the-model-runtime">The model runtime</a></li><li><a href="#upgrading">Upgrading</a></li><li><a href="#uninstalling">Uninstalling</a></li><li><a href="#if-something-went-wrong">If something went wrong</a></li></ul></nav>
+      <aside class="callout callout-macos"><p class="callout-kind">macOS / Apple Silicon only</p><p>This page is the Apple Silicon path. It is not the Linux instructions with a footnote: the execution plane underneath is different, and so is most of what happens. The Linux path is <a href="/docs/install-linux/">here</a>.</p></aside>
+<h2 id="what-a-mac-can-and-cannot-do" class="doc-h">What a Mac can and cannot do<a class="doc-anchor" href="#what-a-mac-can-and-cannot-do" aria-label="Link to this section">#</a></h2>
+<p>Nodeau on Apple Silicon is <strong>qualified with named exclusions</strong>, and the exclusions are the honest half of that word.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>On a Mac</th></tr></thead><tbody><tr><td data-label="">Run a model on the GPU, with a local OpenAI-compatible endpoint</td><td data-label="On a Mac">Yes, through Metal</td></tr><tr><td data-label="">The curated catalog, downloads and SHA-256 verification</td><td data-label="On a Mac">Yes</td></tr><tr><td data-label="">Admission — predicting whether a model fits before starting it</td><td data-label="On a Mac">Yes</td></tr><tr><td data-label="">Bring your own model</td><td data-label="On a Mac">Not qualified. It builds and passes its checks on darwin; no Mac has run it, and it needs a cluster a Mac deliberately does not have</td></tr><tr><td data-label="">Join a fleet</td><td data-label="On a Mac"><strong>No.</strong> A Mac runs standalone. It is not a Kubernetes node, and Nodeau will not pretend otherwise</td></tr><tr><td data-label="">Batch inference</td><td data-label="On a Mac"><strong>No.</strong> Absent on darwin, and refused by name rather than half-working</td></tr><tr><td data-label="">Several GPUs in one machine</td><td data-label="On a Mac"><strong>No.</strong> A Mac has one integrated GPU</td></tr><tr><td data-label="">Scheduling modes, power limits, fleet health and governance</td><td data-label="On a Mac"><strong>No.</strong> These are fleet capabilities and a Mac has no fleet</td></tr></tbody></table></div>
+<h2 id="requirements" class="doc-h">Requirements<a class="doc-anchor" href="#requirements" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li>An <strong>Apple Silicon (M-series) Mac</strong>. Intel Macs are refused by name — Metal execution needs an M-series chip.</li><li>About <strong>20 GB free disk</strong>. There are no container images on macOS, so the footprint is the binaries plus your models.</li><li>Outbound HTTPS to install and to download a model.</li><li><strong>No password.</strong> Nothing on this path needs <code>sudo</code>.</li></ul>
+<p>Nodeau checks no macOS version number anywhere. If you are on an earlier release than we have tried, that is untested rather than unsupported, and the choice is left to you.</p>
+<h2 id="step-1-get-the-cli" class="doc-h">Step 1 — get the CLI<a class="doc-anchor" href="#step-1-get-the-cli" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-1"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash</code></pre></div>
+<p>Or read it first:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-2"><code>curl -fsSL https://get.nodeau.ai/install.sh -o install-nodeau.sh
+less install-nodeau.sh
+bash install-nodeau.sh</code></pre></div>
+<p>This downloads <code>nodeau-darwin-arm64.tar.gz</code>, <strong>verifies its SHA-256 against the published manifest</strong>, and puts <code>nodeau</code> into <code>~/.local/bin</code>. It refuses to run as root and calls no <code>sudo</code>.</p>
+<p>The macOS archive also carries a <strong>Metal model runtime</strong>, which the script stages beside the binary so <code>nodeau install</code> can find it. There is nothing for you to build or supply.</p>
+<aside class="callout callout-warning"><p class="callout-kind">Use the install command, not a browser download</p><p>macOS tags anything a browser saves as quarantined. Nodeau is not signed with an Apple Developer ID, so Gatekeeper refuses to run a quarantined copy — and from a terminal there is no dialog and no message: the process is killed with signal 9 and you see an empty line and <strong>exit code 137</strong>.</p>
+<p><code>curl</code> does not set the quarantine flag, so the command above has nothing to clear. If you already fetched the archive another way, see <a href="/docs/troubleshooting/#on-a-mac-nodeau-prints-nothing-and-exits-137">the fix</a>.</p></aside>
+<h2 id="step-2-look-at-the-machine" class="doc-h">Step 2 — look at the machine<a class="doc-anchor" href="#step-2-look-at-the-machine" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-3"><code>nodeau doctor</code></pre></div>
+<p>Read-only. It reports the chip, the Metal accelerator, memory, the state directory, whether a model runtime is installed and verified, and what is running.</p>
+<h2 id="step-3-set-it-up" class="doc-h">Step 3 — set it up<a class="doc-anchor" href="#step-3-set-it-up" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-4"><code>nodeau install --dry-run     # what would change
+nodeau install               # the same, then asks</code></pre></div>
+<p>It checks four things and then acts:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Check</th><th>Blocking?</th></tr></thead><tbody><tr><td data-label="Check"><strong>Apple Silicon</strong> — the machine reports <code>arm64</code></td><td data-label="Blocking?">Yes</td></tr><tr><td data-label="Check"><strong>Metal accelerator</strong> — a usable GPU is present</td><td data-label="Blocking?">Yes</td></tr><tr><td data-label="Check"><strong>Model runtime</strong> — a prepared runtime is available, bundled or named</td><td data-label="Blocking?">Yes, if none can be found</td></tr><tr><td data-label="Check"><strong>Storage safety</strong> — the state directory lands on a writable, native filesystem</td><td data-label="Blocking?">Yes</td></tr></tbody></table></div>
+<p>Then it creates its directories, installs the model runtime, copies the <code>nodeau</code> binary into Nodeau's own directory, warms the Metal shader cache so the first model run is not mistaken for a hang, and offers to add one line to your login profile.</p>
+<p>There is no Kubernetes, no container runtime, no virtual machine and no privileged step. Everything lives in your own Library folder.</p>
+<h3 id="options" class="doc-h">Options<a class="doc-anchor" href="#options" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>What it does</th></tr></thead><tbody><tr><td data-label="Flag"><code>--dry-run</code></td><td data-label="What it does">Show what would change and stop</td></tr><tr><td data-label="Flag"><code>--yes</code>, <code>-y</code></td><td data-label="What it does">Do not ask anything</td></tr><tr><td data-label="Flag"><code>--runtime &lt;path&gt;</code></td><td data-label="What it does">Install a prepared model runtime from a directory or <code>.tar.gz</code>. An explicit path always wins over the bundled one</td></tr><tr><td data-label="Flag"><code>--skip-path</code></td><td data-label="What it does">Do not offer to add Nodeau to your shell <code>PATH</code></td></tr><tr><td data-label="Flag"><code>--skip-binary</code></td><td data-label="What it does">Do not copy the Nodeau binary into Nodeau's own directory</td></tr><tr><td data-label="Flag"><code>--state &lt;path&gt;</code></td><td data-label="What it does">Path to the install ledger</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="What it does">Machine-readable output. It does <strong>not</strong> imply consent — a pipeline says yes with <code>--yes</code></td></tr></tbody></table></div>
+<h3 id="the-path-line" class="doc-h">The PATH line<a class="doc-anchor" href="#the-path-line" aria-label="Link to this section">#</a></h3>
+<p>macOS has no user-writable directory on the default <code>PATH</code>, so one line has to go into your login profile. Nodeau shows you the exact text and asks before appending it. Declining costs nothing: the line is printed, and <code>nodeau</code> still works by full path.</p>
+<p>It goes in <strong><code>~/.zprofile</code></strong>, not <code>~/.zshrc</code>. Terminal.app runs login shells, so a <code>PATH</code> line in <code>.zshrc</code> works by hand and fails in a script, an <code>ssh</code> command or a LaunchAgent.</p>
+<p>It takes effect in a <strong>new</strong> terminal window.</p>
+<h2 id="step-4-run-a-model" class="doc-h">Step 4 — run a model<a class="doc-anchor" href="#step-4-run-a-model" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-5"><code>nodeau model list          # what you can run
+nodeau run &lt;model&gt;         # download it, admit it, serve it
+nodeau ps                  # what is running</code></pre></div>
+<p><code>nodeau run</code> is the supported vocabulary on both platforms. It resolves the model from the catalog, asks before downloading, runs admission, starts the model on the Mac's GPU and brings up the loopback endpoint. Then call it exactly as on Linux — see <a href="/docs/api/">the API</a>.</p>
+<p>The endpoint runs as a <strong>launchd user agent</strong> in <code>~/Library/LaunchAgents</code>, so it survives closing the terminal.</p>
+<aside class="callout callout-note"><p class="callout-kind">`nodeau quickstart` is the Linux flow</p><p>Quickstart creates a Kubernetes <code>GPUService</code>. On a Mac, <code>nodeau run &lt;model&gt;</code> does the equivalent job through the native plane.</p></aside>
+<h2 id="unified-memory" class="doc-h">Unified memory<a class="doc-anchor" href="#unified-memory" aria-label="Link to this section">#</a></h2>
+<p>This is the one thing about a Mac that surprises people, and it is worth understanding rather than working around.</p>
+<p>On Apple Silicon the system, your applications and the GPU share <strong>one</strong> pool of memory. So "will this model fit" is not a fixed property of the machine — it depends on what else is open.</p>
+<p>Nodeau reads two separate numbers:</p>
+<ul class="doc-list"><li>a <strong>static ceiling</strong>, the most the GPU is allowed to hold. This is a property of the device and does not move, even when free memory swings by gigabytes.</li><li>a <strong>live figure</strong> for what is actually free right now.</li></ul>
+<p>Admission uses the smaller, minus a system reserve. The consequence is real and correct:</p>
+<blockquote class="doc-quote"><p>A model that started yesterday can be refused today, because you now have a browser and a video call open. Close something and try again.</p></blockquote>
+<p>That is Nodeau reading the machine honestly. Nodeau will never quietly reduce its own safety margin to make something fit — an out-of-memory kill on a machine whose display is driven by the same GPU is worse than a refusal.</p>
+<p>If you want to accept that risk for one workload, <code>nodeau run</code> takes <code>--accept-estimate-risk</code> and <code>--spend-safety-reserve</code>. Both are explicit, both are per-workload, and both are recorded.</p>
+<h2 id="where-things-live" class="doc-h">Where things live<a class="doc-anchor" href="#where-things-live" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Path</th><th>What</th></tr></thead><tbody><tr><td data-label="Path"><code>~/.local/bin/nodeau</code></td><td data-label="What">The CLI, as the bootstrap installed it</td></tr><tr><td data-label="Path"><code>~/Library/Application Support/Nodeau/</code></td><td data-label="What">Nodeau's own directory</td></tr><tr><td data-label="Path"><code>~/Library/Application Support/Nodeau/state/models/</code></td><td data-label="What">Model cache</td></tr><tr><td data-label="Path"><code>~/Library/Application Support/Nodeau/state/runtimes/</code></td><td data-label="What">The Metal model runtime</td></tr><tr><td data-label="Path"><code>~/Library/Application Support/Nodeau/api-key</code></td><td data-label="What">Your local API key, mode <code>0600</code></td></tr><tr><td data-label="Path"><code>~/Library/LaunchAgents/</code></td><td data-label="What">The endpoint's user agent</td></tr></tbody></table></div>
+<p><code>XDG_CONFIG_HOME</code> and <code>XDG_STATE_HOME</code> are honoured when explicitly set.</p>
+<aside class="callout callout-note"><p class="callout-kind">Never `~/Library/Caches`</p><p>Nodeau does not put the model cache there. macOS may purge that directory, and a cache the operating system can silently delete would break the guarantee that a verified artifact stays verified.</p></aside>
+<h2 id="the-model-runtime" class="doc-h">The model runtime<a class="doc-anchor" href="#the-model-runtime" aria-label="Link to this section">#</a></h2>
+<p>On Linux a runtime is a container image with a digest, which answers for itself. A directory does not, so on macOS the runtime carries a manifest — version, engine, backend, os/arch, a SHA-256 for every file, and the upstream commit — and <strong>fails closed</strong> if it does not verify.</p>
+<p>Installing one is verify-then-promote: a failed install leaves the previous runtime serving. <code>nodeau doctor</code> reports <code>RUNTIME_MISSING</code>, <code>RUNTIME_CORRUPT</code>, <code>RUNTIME_UNVERIFIED</code> and <code>RUNTIME_UNMANAGED</code> separately, because they need different answers.</p>
+<h2 id="upgrading" class="doc-h">Upgrading<a class="doc-anchor" href="#upgrading" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-6"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau install</code></pre></div>
+<p><code>nodeau update</code> checks first. See <a href="/docs/updates/">updating and release channels</a>.</p>
+<h2 id="uninstalling" class="doc-h">Uninstalling<a class="doc-anchor" href="#uninstalling" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-7"><code>nodeau uninstall --dry-run
+nodeau uninstall</code></pre></div>
+<p>It removes what <code>nodeau install</code> put here and nothing else. A model runtime you assembled yourself, a <code>PATH</code> line you wrote, or a copy of <code>nodeau</code> you manage are all left alone, and the plan says so.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>What it does</th></tr></thead><tbody><tr><td data-label="Flag"><code>--dry-run</code></td><td data-label="What it does">Show what would be removed and stop</td></tr><tr><td data-label="Flag"><code>--yes</code>, <code>-y</code></td><td data-label="What it does">Do not ask anything</td></tr><tr><td data-label="Flag"><code>--models</code></td><td data-label="What it does">Also delete downloaded model weights</td></tr><tr><td data-label="Flag"><code>--keep-path</code></td><td data-label="What it does">Leave the <code>PATH</code> line in your login profile</td></tr><tr><td data-label="Flag"><code>--state &lt;path&gt;</code></td><td data-label="What it does">Path to the install ledger</td></tr></tbody></table></div>
+<p>Your downloaded models are <strong>kept</strong> unless you pass <code>--models</code>. Uninstalling the software and throwing away gigabytes of downloads are different decisions.</p>
+<h2 id="if-something-went-wrong" class="doc-h">If something went wrong<a class="doc-anchor" href="#if-something-went-wrong" aria-label="Link to this section">#</a></h2>
+<p><a href="/docs/troubleshooting/#macos">Troubleshooting has a macOS section</a>.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/install-linux/"><span>Previous</span>Install on Linux / NVIDIA</a><a class="doc-next" href="/docs/quickstart/"><span>Next</span>Quickstart</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

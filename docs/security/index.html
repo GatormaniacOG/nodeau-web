@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nodeau security and privacy</title>
+<meta name="description" content="What crosses each boundary and what does not — local inference, the loopback bind, the API key, Nodeau Cloud, telemetry, model weights, support bundles and entitlements.">
+<link rel="canonical" href="https://nodeau.ai/docs/security/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/security/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Nodeau security and privacy">
+<meta property="og:description" content="What crosses each boundary and what does not — local inference, the loopback bind, the API key, Nodeau Cloud, telemetry, model weights, support bundles and entitlements.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations" open><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" aria-current="page" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Operations</p>
+      <h1 class="doc-title">Security and privacy</h1>
+      <p class="lede doc-lede">Precisely what crosses each boundary, and what does not. Not "100% private" — a list of things, each of which is checkable.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#the-shape-of-it">The shape of it</a></li><li><a href="#inference-is-local">Inference is local</a></li><li><a href="#the-endpoint-binds-loopback-and-that-is-not-a-setting">The endpoint binds loopback, and that is not a setting</a></li><li><a href="#the-local-api-key">The local API key</a></li><li><a href="#model-weights">Model weights</a></li><li><a href="#what-crosses-the-boundary-to-nodeau-cloud">What crosses the boundary to Nodeau Cloud</a></li><li><a href="#telemetry">Telemetry</a></li><li><a href="#logs">Logs</a></li><li><a href="#support-bundles">Support bundles</a></li><li><a href="#entitlements">Entitlements</a></li><li><a href="#what-nodeau-installs-and-the-trust-you-have-to-extend">What Nodeau installs, and the trust you have to extend</a></li><li><a href="#your-own-boundaries">Your own boundaries</a></li><li><a href="#reporting-a-vulnerability">Reporting a vulnerability</a></li></ul></nav>
+      <h2 id="the-shape-of-it" class="doc-h">The shape of it<a class="doc-anchor" href="#the-shape-of-it" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="security-code-1"><code>  your client ──HTTP──▶ 127.0.0.1:8080 ──▶ model server ──▶ your GPU
+                                             (your machine)
+
+  your machines ──outbound HTTPS──▶ api.nodeau.ai        (optional)
+                  ◀── nothing ever connects in</code></pre></div>
+<h2 id="inference-is-local" class="doc-h">Inference is local<a class="doc-anchor" href="#inference-is-local" aria-label="Link to this section">#</a></h2>
+<p>Your prompts go to a model running on <strong>your own GPU</strong>, reached over <code>127.0.0.1</code>. They do not traverse your network, and they do not reach Nodeau.</p>
+<p>On a fleet, a request to a model on another machine you own crosses <strong>your own network</strong> to that machine, the same way any service on your LAN would. It does not leave for us.</p>
+<h2 id="the-endpoint-binds-loopback-and-that-is-not-a-setting" class="doc-h">The endpoint binds loopback, and that is not a setting<a class="doc-anchor" href="#the-endpoint-binds-loopback-and-that-is-not-a-setting" aria-label="Link to this section">#</a></h2>
+<p>The local endpoint binds <code>127.0.0.1</code> and nothing else. Not <code>0.0.0.0</code>, not a LAN address. There is no configuration option to bind another interface.</p>
+<p>This is enforced in code, and covered by a test that finds the machine's routable address and asserts the endpoint does <strong>not</strong> answer there.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#security-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="security-code-2"><code>ss -tlnp | grep nodeau      # the address must be 127.0.0.1:&lt;port&gt;</code></pre></div>
+<p><code>nodeau doctor</code> reports <code>NETWORK_EXPOSURE</code> if something on the machine makes a model reachable from off it. <strong>Nodeau never creates one</strong> — if you see it, something else did, and it is worth knowing about.</p>
+<h2 id="the-local-api-key" class="doc-h">The local API key<a class="doc-anchor" href="#the-local-api-key" aria-label="Link to this section">#</a></h2>
+<p>Generated with a CSPRNG on first use, stored <code>0600</code> in your Nodeau config directory. It never leaves the machine: there is no server to register it with and nothing to log in to.</p>
+<p>It exists so that <strong>any process on the machine cannot use your GPU just by knowing the port</strong>.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#security-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="security-code-3"><code>nodeau auth show      # print it
+nodeau auth rotate    # replace it</code></pre></div>
+<p>It is excluded from support bundles by <strong>both</strong> path and content scanning.</p>
+<p>This is a different thing from your Nodeau account — see <a href="/docs/accounts/#two-different-credentials">two different credentials</a>.</p>
+<h2 id="model-weights" class="doc-h">Model weights<a class="doc-anchor" href="#model-weights" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th></th></tr></thead><tbody><tr><td data-label=""><strong>Curated models</strong></td><td data-label="">Downloaded from the <strong>publisher</strong>, over HTTPS, from a URL pinned to an immutable revision, and verified against a SHA-256. Nodeau never republishes them, and no account or token is needed</td></tr><tr><td data-label=""><strong>Your own models</strong></td><td data-label="">Copied from one directory to another <strong>on your own machine</strong>. Not uploaded, the name is not reported, and the questions qualification asks the model — and the answers it gives — go no further than machines you own</td></tr></tbody></table></div>
+<p>Nodeau does not fetch or replicate a custom model, which is why no message will ever tell you to "re-download" one.</p>
+<h2 id="what-crosses-the-boundary-to-nodeau-cloud" class="doc-h">What crosses the boundary to Nodeau Cloud<a class="doc-anchor" href="#what-crosses-the-boundary-to-nodeau-cloud" aria-label="Link to this section">#</a></h2>
+<p>Nodeau Cloud is <strong>optional</strong> and nothing about inference depends on it. If it is unreachable, or you never connect, your models keep serving and your scheduler keeps scheduling.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>What you do</th><th>What leaves the machine</th></tr></thead><tbody><tr><td data-label="What you do">Nothing</td><td data-label="What leaves the machine"><strong>Nothing.</strong> No telemetry, no analytics, no crash reporting, no licence check</td></tr><tr><td data-label="What you do"><code>install.sh</code></td><td data-label="What leaves the machine">A request for the release archive and its checksum</td></tr><tr><td data-label="What you do"><code>nodeau install</code></td><td data-label="What leaves the machine">Requests for container images and packages, from their publishers</td></tr><tr><td data-label="What you do"><code>nodeau model install</code></td><td data-label="What leaves the machine">A request for the weights, from the model's publisher</td></tr><tr><td data-label="What you do"><code>nodeau model import</code></td><td data-label="What leaves the machine"><strong>Nothing</strong></td></tr><tr><td data-label="What you do"><code>nodeau model qualify</code></td><td data-label="What leaves the machine"><strong>Nothing</strong></td></tr><tr><td data-label="What you do"><code>nodeau login</code></td><td data-label="What leaves the machine">An account association and this installation's name; you receive an installation credential</td></tr><tr><td data-label="What you do"><code>nodeau plan refresh</code></td><td data-label="What leaves the machine">A request for a freshly signed entitlement</td></tr><tr><td data-label="What you do"><code>nodeau fleet connect</code></td><td data-label="What leaves the machine">Fleet state: which machines exist, what is plugged into them, what is running, and whether anything is wrong</td></tr></tbody></table></div>
+<h3 id="what-fleet-connect-does-and-does-not-send" class="doc-h">What <code>fleet connect</code> does and does not send<a class="doc-anchor" href="#what-fleet-connect-does-and-does-not-send" aria-label="Link to this section">#</a></h3>
+<p><strong>Sends</strong>: machine and GPU inventory, workload names, phases and placements, plan and version, whether anything needs attention.</p>
+<p><strong>Does not send</strong>: prompts, completions, embeddings, images, batch inputs, batch results, model weights, your API key, or the contents of anything you compute. Machine health readings stay on your hardware too — the machines appear in the hosted console; those readings do not.</p>
+<h3 id="the-arrow-only-points-out" class="doc-h">The arrow only points out<a class="doc-anchor" href="#the-arrow-only-points-out" aria-label="Link to this section">#</a></h3>
+<p>Your machines reach <strong>out</strong> to <code>api.nodeau.ai</code>. Nothing ever connects <strong>in</strong>:</p>
+<ul class="doc-list"><li>no inbound port on your machine,</li><li>no port forwarding on your router,</li><li>no callback,</li><li>no remote shell, and no arbitrary remote command,</li><li>no way for Nodeau Cloud to initiate a connection into your network.</li></ul>
+<p>Operating a machine from the browser works by your machine asking what it should do, on its own schedule.</p>
+<h2 id="telemetry" class="doc-h">Telemetry<a class="doc-anchor" href="#telemetry" aria-label="Link to this section">#</a></h2>
+<p>There is none. Nodeau sends nothing anywhere unless you run one of the commands in the table above.</p>
+<p>If opt-in telemetry is ever added it will be off by default, will state exactly what it sends, and will never include prompts or responses. Nothing of the kind exists.</p>
+<h2 id="logs" class="doc-h">Logs<a class="doc-anchor" href="#logs" aria-label="Link to this section">#</a></h2>
+<p><strong>Prompts, completions and batch records are never written to a log</strong>, by design. So they cannot appear in <code>nodeau logs</code>, in a container log, or in a support bundle — not because a filter removes them, but because they were never written.</p>
+<h2 id="support-bundles" class="doc-h">Support bundles<a class="doc-anchor" href="#support-bundles" aria-label="Link to this section">#</a></h2>
+<p>Generated only when you run <code>nodeau support bundle</code>, written to your disk, and sent nowhere. Model weights, your API key, kubeconfig credentials, SSH keys, PEM material and node tokens are excluded by path; everything collected is scrubbed for credential patterns and then <strong>re-scanned</strong>, and a match after scrubbing aborts the bundle rather than writing it.</p>
+<p>It is a plain <code>.tar.gz</code>. Open it and look before you send it. See <a href="/docs/support/">support bundles</a>.</p>
+<h2 id="entitlements" class="doc-h">Entitlements<a class="doc-anchor" href="#entitlements" aria-label="Link to this section">#</a></h2>
+<p>An entitlement is a <strong>signed public claim</strong> about what a plan allows. It is not a credential, it cannot be used to sign in, and it gives nobody access to an account. Nothing secret is in it, which is why <code>nodeau plan export</code> can write one to a file you carry on a stick.</p>
+<p>It is verified <strong>offline</strong>, against keys compiled into the binary. Nodeau Cloud is not consulted at verification time, so a network outage cannot change what your hardware is allowed to do.</p>
+<p>Nodeau Cloud <strong>cannot reproduce a credential it issued</strong> — only a SHA-256 is stored.</p>
+<h2 id="what-nodeau-installs-and-the-trust-you-have-to-extend" class="doc-h">What Nodeau installs, and the trust you have to extend<a class="doc-anchor" href="#what-nodeau-installs-and-the-trust-you-have-to-extend" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li><code>install.sh</code> downloads one archive, <strong>verifies its SHA-256</strong> against the published manifest, and unpacks it into a directory you own. It <strong>refuses to run as root</strong> and calls no <code>sudo</code>. A checksum mismatch installs nothing.</li><li><code>nodeau install</code> shows what it intends to change and asks first. Every privileged command is printed in full. It uses your distribution's official package sources and pinned versions, and verifies NVIDIA's signing key against a known fingerprint.</li><li>K3s is checked against a SHA-256 <strong>compiled into the Nodeau binary</strong> before anything runs it. No install script is fetched and piped into a shell.</li><li>It will not modify your NVIDIA driver, Secure Boot, the bootloader, partitions, or a Kubernetes cluster it did not create.</li><li>No privileged container is ever run.</li></ul>
+<h2 id="your-own-boundaries" class="doc-h">Your own boundaries<a class="doc-anchor" href="#your-own-boundaries" aria-label="Link to this section">#</a></h2>
+<p>Two things Nodeau assumes, which are worth stating plainly:</p>
+<ul class="doc-list"><li><strong>Nodeau assumes the people with access to a machine are trusted.</strong> Someone with a shell on your machine can read the API key file, import different bytes under an existing model alias, and change local policy.</li><li><strong>If you put a reverse proxy in front of the loopback endpoint</strong>, its TLS, its authentication and its exposure are yours. Nodeau does not create one and cannot reason about one.</li></ul>
+<h2 id="reporting-a-vulnerability" class="doc-h">Reporting a vulnerability<a class="doc-anchor" href="#reporting-a-vulnerability" aria-label="Link to this section">#</a></h2>
+<p>Email <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>. Please do not open a public issue for a security problem. Include what you did, what happened, and what you expected; if it is remotely exploitable, say so in the subject line.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/support/"><span>Previous</span>Support bundles</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

@@ -7,4 +7,29 @@
   <url><loc>https://nodeau.ai/about/</loc><lastmod>2026-08-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/faq/</loc><lastmod>2026-08-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/contact/</loc><lastmod>2026-08-13</lastmod><priority>0.6</priority></url>
+  <!-- docs:start -->
+  <url><loc>https://nodeau.ai/docs/</loc><priority>0.9</priority></url>
+  <url><loc>https://nodeau.ai/docs/requirements/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/install-linux/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/install-macos/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/quickstart/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/api/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/concepts/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/scheduling/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/cli/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/models/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/byom/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/multi-gpu/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/batch/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/fleet/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/governance/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/health/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/power/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/accounts/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/updates/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/uninstall/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/troubleshooting/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/support/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/security/</loc><priority>0.7</priority></url>
+  <!-- docs:end -->
 </urlset>

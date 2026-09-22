@@ -14,6 +14,7 @@ It reports every problem it finds and exits non-zero if any are errors.
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -334,6 +335,27 @@ def text_of(html: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+def content_of(html: str) -> str:
+    """The page's own words, with navigation and the footer removed.
+
+    A LINK IS NOT A CLAIM, and the platform rule below is about claims. /docs
+    carries a sidebar on every page listing "Install on macOS", and a footer
+    listing it again — so every one of twenty-three pages "named a platform",
+    including pages whose body never mentions one. Satisfying the rule there
+    would have meant pasting an exclusions paragraph onto the uninstall page,
+    which is the failure mode the rule exists to prevent in reverse: words
+    added to quiet a checker rather than to inform a reader.
+
+    Stripping chrome is strictly more correct for the marketing pages too, and
+    changes none of their results: their navigation names no platform and no
+    exclusion. The FORBIDDEN and RETIRED lists still run against the whole
+    source, because a retired phrase in a nav label is still a retired phrase.
+    """
+    t = re.sub(r"<(nav|footer|header)\b.*?</\1>", " ", html, flags=re.S | re.I)
+    t = re.sub(r'<aside class="doc-sidebar".*?</aside>', " ", t, flags=re.S | re.I)
+    return text_of(t)
+
+
 class Page(HTMLParser):
     """Collects the handful of facts the checks need from one page."""
 
@@ -643,8 +665,10 @@ def main() -> int:
         # keeps this from firing on every honest mention.
         plain = text_of(src)
         # Per-page: naming a platform obliges the page to say what it excludes.
-        if re.search(PLATFORM_WORDS, plain, re.IGNORECASE) and not re.search(
-                PLATFORM_EXCLUSIONS, plain, re.IGNORECASE):
+        # Measured against the page's OWN WORDS — see content_of.
+        body = content_of(src)
+        if re.search(PLATFORM_WORDS, body, re.IGNORECASE) and not re.search(
+                PLATFORM_EXCLUSIONS, body, re.IGNORECASE):
             errors.append(
                 f"{name}: names a platform but states no exclusions — "
                 "a page that says where Nodeau runs must say what it does not do there")
@@ -714,6 +738,25 @@ def main() -> int:
     if not re.search(r'from = "/channel/beta\.json"\s*\n\s*to = "https://get\.nodeau\.ai/channel/beta\.json"\s*\n\s*status = 200', toml):
         errors.append("netlify.toml: /channel/beta.json is not proxied to get.nodeau.ai, "
                       "so every page's version would stay empty")
+
+    # ------------------------------------------------------------------ /docs
+    # THE DOCS ARE GENERATED, AND A GENERATED TREE THAT NOBODY REGENERATES IS A
+    # STALE ROW WITH EXTRA STEPS. Both checks run here so that one command
+    # covers the whole site: `docs/` equal to `docs-src/`, and every shipped
+    # CLI command documented. Each is also runnable on its own.
+    for script, what in (
+        ("build-docs.py", "docs/ is not current with docs-src/"),
+        ("check-cli-coverage.py", "the CLI reference does not match the shipped command tree"),
+    ):
+        path = ROOT / "tools" / script
+        if not path.exists():
+            continue
+        args = [sys.executable, str(path)] + (["--check"] if script == "build-docs.py" else [])
+        proc = subprocess.run(args, capture_output=True, text=True)
+        if proc.returncode != 0:
+            detail = (proc.stdout + proc.stderr).strip()
+            errors.append(f"{what} — run tools/{script}\n" + "\n".join(
+                "        " + line for line in detail.splitlines()))
 
     # ----------------------------------------------------------------- report
     for w in warnings:

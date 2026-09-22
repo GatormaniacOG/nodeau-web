@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accounts, plans and entitlements</title>
+<meta name="description" content="Nodeau without an account, signing in, how a paid plan reaches a machine, offline verification, expiry and grace, air-gapped delivery, and the two kinds of credential.">
+<link rel="canonical" href="https://nodeau.ai/docs/accounts/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/accounts/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Accounts, plans and entitlements">
+<meta property="og:description" content="Nodeau without an account, signing in, how a paid plan reaches a machine, offline verification, expiry and grace, air-gapped delivery, and the two kinds of credential.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account" open><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" aria-current="page" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Account</p>
+      <h1 class="doc-title">Accounts, plans and entitlements</h1>
+      <p class="lede doc-lede">Nodeau runs completely without an account. Signing in adds an account association, a registered installation and a signed entitlement — which is how a paid plan reaches a machine.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#nodeau-without-an-account">Nodeau without an account</a></li><li><a href="#two-different-credentials">Two different credentials</a></li><li><a href="#signing-in">Signing in</a></li><li><a href="#plans">Plans</a></li><li><a href="#how-an-entitlement-works">How an entitlement works</a></li><li><a href="#what-an-account-adds-beyond-entitlements">What an account adds beyond entitlements</a></li><li><a href="#removing-an-installation">Removing an installation</a></li><li><a href="#what-nodeau-cloud-cannot-do">What Nodeau Cloud cannot do</a></li></ul></nav>
+      <h2 id="nodeau-without-an-account" class="doc-h">Nodeau without an account<a class="doc-anchor" href="#nodeau-without-an-account" aria-label="Link to this section">#</a></h2>
+<p>Local inference, the model catalog, batch's local half, the dashboard, artifact verification, admission and safe scheduling all work with <strong>no connection to Nodeau Cloud at all</strong>, and none of them will ask for one.</p>
+<p>An installation with no entitlement runs the free <strong>Home</strong> plan. Nothing that protects you is disabled: admission, artifact verification, authentication and every integrity check are identical on every plan.</p>
+<h2 id="two-different-credentials" class="doc-h">Two different credentials<a class="doc-anchor" href="#two-different-credentials" aria-label="Link to this section">#</a></h2>
+<p>This is the distinction most worth getting right, because the two live in different security domains.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>The local API key</th><th>The Nodeau account</th></tr></thead><tbody><tr><td data-label=""><strong>What it protects</strong></td><td data-label="The local API key">Your model endpoint, on this machine</td><td data-label="The Nodeau account">Your Nodeau Cloud account</td></tr><tr><td data-label=""><strong>Who issues it</strong></td><td data-label="The local API key">Your own machine, with a CSPRNG</td><td data-label="The Nodeau account">Nodeau Cloud</td></tr><tr><td data-label=""><strong>Where it lives</strong></td><td data-label="The local API key"><code>0600</code> in your Nodeau config directory</td><td data-label="The Nodeau account">An installation credential, also local</td></tr><tr><td data-label=""><strong>Does it leave the machine?</strong></td><td data-label="The local API key"><strong>Never</strong></td><td data-label="The Nodeau account">The installation credential is issued to this machine and stays here</td></tr><tr><td data-label=""><strong>Commands</strong></td><td data-label="The local API key"><code>nodeau auth show</code>, <code>token</code>, <code>rotate</code>, <code>publish</code></td><td data-label="The Nodeau account"><code>nodeau login</code>, <code>logout</code>, <code>plan …</code></td></tr><tr><td data-label=""><strong>Needed for inference</strong></td><td data-label="The local API key">Yes</td><td data-label="The Nodeau account">No</td></tr></tbody></table></div>
+<p>Signing in to Nodeau Cloud does not change your API key, and rotating your API key does not touch your account.</p>
+<h3 id="the-local-api-key" class="doc-h">The local API key<a class="doc-anchor" href="#the-local-api-key" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-1"><code>nodeau auth show            # print it, creating one on first use
+nodeau auth show --quiet    # only the key, nothing on stderr
+nodeau auth rotate          # replace it</code></pre></div>
+<p>It is generated with a CSPRNG on first use and stored <code>0600</code>. It never leaves the machine: there is no server to register it with and nothing to log in to.</p>
+<p><code>auth show</code> prints your <strong>local</strong> key, which is not automatically the key any particular service enforces — that depends on which Secret the service references.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-2"><code>nodeau auth token qwen-local    # the token that service will actually accept
+nodeau auth publish qwen-local  # make your local key the one it enforces</code></pre></div>
+<p><code>auth publish</code> restarts the workload, because the model server reads its key file once at startup. Expect a short gap while the model reloads.</p>
+<p>After <code>auth rotate</code>, every saved <code>curl</code> command and SDK configuration using the old key stops working immediately, and a <strong>running</strong> service keeps enforcing the key it started with until it restarts:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-3"><code>nodeau auth publish qwen-local   # or: nodeau restart qwen-local</code></pre></div>
+<p>The endpoint itself does not need restarting — it forwards whatever <code>Authorization</code> header it receives and never reads the key file.</p>
+<h2 id="signing-in" class="doc-h">Signing in<a class="doc-anchor" href="#signing-in" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-4"><code>nodeau login</code></pre></div>
+<p>You are never asked to paste a token. Nodeau shows a short code, you approve it in a browser you are already signed in to, and this machine receives its own credential directly.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--show</code></td><td data-label="Meaning">Show this machine's account status and exit</td></tr><tr><td data-label="Flag"><code>--name &lt;name&gt;</code></td><td data-label="Meaning">Name for this installation (default: this machine's hostname)</td></tr><tr><td data-label="Flag"><code>--no-browser</code></td><td data-label="Meaning">Print the URL and code instead of opening a browser</td></tr><tr><td data-label="Flag"><code>--wait &lt;d&gt;</code></td><td data-label="Meaning">How long to wait for approval (default <code>10m</code>)</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Meaning">Machine-readable</td></tr></tbody></table></div>
+<p>Signing in gives you:</p>
+<ul class="doc-list"><li>an <strong>account association</strong>,</li><li>a <strong>registered installation</strong>,</li><li>a <strong>signed entitlement</strong>, which is how a paid plan reaches the machine.</li></ul>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-5"><code>nodeau logout</code></pre></div>
+<p>Removes the account link. It does not stop anything: inference, batch and every local capability keep working, on the free Home plan. It is a <strong>local</strong> operation — the installation still exists in your Nodeau account until you remove it there, which is deliberate: a machine that has lost its network connection must still be able to unlink itself.</p>
+<h2 id="plans" class="doc-h">Plans<a class="doc-anchor" href="#plans" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-6"><code>nodeau plan show
+nodeau plan show --json</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="accounts-code-7"><code>Nodeau Home Pro
+  Make all my GPUs work together.
+
+  status        valid
+  refreshed     2026-09-22 03:14 UTC (automatic)
+
+Limits
+  LIMIT                  ALLOWED
+  MaxNodes               3
+  MaxGPUs                2
+  MaxGPUsPerMachine      2
+  MaxUsers               1
+  MaxConcurrentServices  unlimited
+  MaxBatchJobs           unlimited</code></pre></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>Home (free)</th><th>Home Pro</th><th>Business</th></tr></thead><tbody><tr><td data-label="">Machines</td><td data-label="Home (free)">1</td><td data-label="Home Pro">3</td><td data-label="Business">Unlimited</td></tr><tr><td data-label="">GPUs in any one machine</td><td data-label="Home (free)">1</td><td data-label="Home Pro">2</td><td data-label="Business">Unlimited</td></tr><tr><td data-label="">Models serving at once</td><td data-label="Home (free)">2</td><td data-label="Home Pro">Unlimited</td><td data-label="Business">Unlimited</td></tr><tr><td data-label="">Batch jobs</td><td data-label="Home (free)">—</td><td data-label="Home Pro">Unlimited</td><td data-label="Business">Unlimited</td></tr><tr><td data-label="">Users</td><td data-label="Home (free)">1</td><td data-label="Home Pro">1</td><td data-label="Business">Unlimited</td></tr><tr><td data-label="">Several machines</td><td data-label="Home (free)">—</td><td data-label="Home Pro">Yes</td><td data-label="Business">Yes</td></tr><tr><td data-label="">Several GPUs in one machine</td><td data-label="Home (free)">—</td><td data-label="Home Pro">Yes</td><td data-label="Business">Yes</td></tr><tr><td data-label="">Batch inference</td><td data-label="Home (free)">—</td><td data-label="Home Pro">Yes</td><td data-label="Business">Yes</td></tr><tr><td data-label="">Operating a fleet from a browser</td><td data-label="Home (free)">—</td><td data-label="Home Pro">Yes</td><td data-label="Business">Yes</td></tr></tbody></table></div>
+<p><strong>Seeing</strong> your machines from a browser is free on every plan; <strong>changing</strong> one from there is what a paid plan buys.</p>
+<p>Home Pro is on sale. Business is priced per organisation and the way to it is <a href="/contact/?type=business">contact</a> — there is no self-service checkout, by design.</p>
+<h3 id="capabilities-nodeau-has-named-and-not-built" class="doc-h">Capabilities Nodeau has named and not built<a class="doc-anchor" href="#capabilities-nodeau-has-named-and-not-built" aria-label="Link to this section">#</a></h3>
+<p><code>nodeau plan show</code> lists these under <strong>Coming soon</strong>: scheduled batch, priority queues, model replication across machines, team RBAC, SSO and audit as a plan difference. <strong>No plan grants them until they exist</strong> — a signed entitlement is the one place the product cannot later disown a claim, so nothing is granted on a promise.</p>
+<h2 id="how-an-entitlement-works" class="doc-h">How an entitlement works<a class="doc-anchor" href="#how-an-entitlement-works" aria-label="Link to this section">#</a></h2>
+<p>An entitlement is a <strong>signed statement of what an installation may do</strong>, verified <strong>offline</strong> against keys compiled into the binary. Nothing is asked of Nodeau Cloud at verification time, so a network outage cannot change what your hardware is allowed to do.</p>
+<p>It carries the features and limits <strong>themselves</strong>, not a plan name — so an installation that has not updated cannot have what it is entitled to change retroactively when the plan table moves. The plan id rides along for display.</p>
+<h3 id="refreshing" class="doc-h">Refreshing<a class="doc-anchor" href="#refreshing" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-8"><code>nodeau plan refresh</code></pre></div>
+<p>Run it after changing plan, and to renew before the current entitlement expires. It asks Nodeau Cloud for a freshly signed entitlement, checks the signature, and stores it <strong>only if it verifies</strong>.</p>
+<p>An installation that has been set up also refreshes on a timer, roughly every six hours with jitter.</p>
+<aside class="callout callout-note"><p class="callout-kind">A missed refresh is never an outage</p><p>Verification is offline, so a failed refresh changes nothing: the entitlement already on the machine keeps working until it expires, and an installation with no entitlement at all runs the free Home plan with every safety and integrity check intact.</p></aside>
+<h3 id="expiry-and-grace" class="doc-h">Expiry and grace<a class="doc-anchor" href="#expiry-and-grace" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>State</th><th>What it means</th></tr></thead><tbody><tr><td data-label="State"><code>valid</code></td><td data-label="What it means">Current</td></tr><tr><td data-label="State"><code>grace</code></td><td data-label="What it means">Past its expiry and inside the grace window. <strong>Everything still works</strong>, and you are told</td></tr><tr><td data-label="State"><code>expired</code></td><td data-label="What it means">Past the grace window. Paid capabilities stop being granted and the installation falls back to the free Home plan</td></tr><tr><td data-label="State"><code>invalid</code></td><td data-label="What it means">An entitlement is present and cannot be accepted — wrong signature, wrong installation, wrong organisation</td></tr></tbody></table></div>
+<p>A signed entitlement is current for about a month, with a further couple of weeks of grace. Nothing stops working the moment it expires.</p>
+<p><code>nodeau doctor</code> reports <code>PLAN_REFRESH_STALLED</code> when an installation is linked to an account and has stopped learning what that account entitles it to — which is the condition that precedes a surprise, and the one you want to see early.</p>
+<h3 id="a-machine-with-no-internet" class="doc-h">A machine with no internet<a class="doc-anchor" href="#a-machine-with-no-internet" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#accounts-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="accounts-code-9"><code># on a machine that can reach api.nodeau.ai
+nodeau plan export -o entitlement.txt
+
+# carry the file across, then on the offline machine
+nodeau plan import entitlement.txt</code></pre></div>
+<p>The file holds exactly the bytes Nodeau Cloud signed. It goes through <strong>exactly the same checks</strong> a fetched entitlement does — the signature against keys compiled into the binary, the installation and organisation it names against this machine's, and an entitlement older than the one already held is refused. <strong>An entitlement carried on a stick is never less verified than one fetched.</strong></p>
+<p>The entitlement names the installation and organisation it was issued for, so a file exported from one machine is <strong>not a licence another machine can use</strong>. This is a way to deliver an entitlement without a network, not a way to copy one.</p>
+<p><strong>Nothing secret is in the file.</strong> An entitlement is a signed public claim about what a plan allows — it is not a credential, it cannot be used to sign in, and it gives nobody access to an account.</p>
+<p>There is also <code>nodeau plan set --from-file</code>, for a token issued to you out of band. The token is read from a file or stdin, never from a command-line argument, so it does not reach your shell history or the process list.</p>
+<h3 id="when-a-plan-changes" class="doc-h">When a plan changes<a class="doc-anchor" href="#when-a-plan-changes" aria-label="Link to this section">#</a></h3>
+<p>A change reaches a machine when <code>nodeau plan refresh</code> runs — from the timer, or because you ran it. Until then the machine keeps the entitlement it has.</p>
+<p><strong>Lowering a plan never stops a running workload.</strong> The new entitlement decides what may start.</p>
+<h2 id="what-an-account-adds-beyond-entitlements" class="doc-h">What an account adds beyond entitlements<a class="doc-anchor" href="#what-an-account-adds-beyond-entitlements" aria-label="Link to this section">#</a></h2>
+<p>Signing in and <a href="/docs/fleet/#seeing-the-fleet-from-a-browser">connecting a fleet</a> gives you <code>app.nodeau.ai</code>: your machines, what is running on them, and — with <code>FeatureRemoteManagement</code> — the ability to operate them from a browser.</p>
+<p>Three things live there rather than in the CLI.</p>
+<h3 id="what-your-hardware-has-been-doing" class="doc-h">What your hardware has been doing<a class="doc-anchor" href="#what-your-hardware-has-been-doing" aria-label="Link to this section">#</a></h3>
+<p>Nodeau can tell you which workloads held which accelerators, for how long, added up across the machines you own.</p>
+<p>The figure is <strong>accelerator-time taken from the scheduler's own record of what was reserved</strong> — not sampled from the cards. There is no GPU-utilisation measurement behind it, and none is claimed.</p>
+<p>If you tell Nodeau what an accelerator-hour is worth to you, it multiplies your number by what it measured. <strong>Until you do, it shows nothing at all.</strong></p>
+<aside class="callout callout-note"><p class="callout-kind">Absent is not zero</p><p>A cost appears only where somebody entered a rate. A zero would render as "this cost you nothing", which is a claim Nodeau is in no position to make; an absence renders as nothing, which is the truth. A rate you deliberately set to zero is a number you chose, and it survives.</p></aside>
+<p>This is not billing. Nodeau does not meter, invoice or charge anything, does not know what power, hardware or a cloud instance costs, and never produces an amount due.</p>
+<h3 id="what-changed-and-who-changed-it" class="doc-h">What changed, and who changed it<a class="doc-anchor" href="#what-changed-and-who-changed-it" aria-label="Link to this section">#</a></h3>
+<p>Your organisation can see what changed and who changed it — <strong>including what was refused</strong>, which is the event an investigation usually starts from. Kept for a year.</p>
+<p>It records the action, the actor and the outcome. It does not record a key, a token, a prompt, a reply, or the contents of anything you computed.</p>
+<aside class="callout callout-note"><p class="callout-kind">An event with no result is not a success</p><p>Events written before the trail recorded outcomes have none, and the console shows <strong>"not recorded"</strong> rather than "applied". Rendering a missing outcome as a success would invent a fact about every event that predates the field, in the direction that hides a refusal.</p></aside>
+<p>It is an append-oriented table with no delete route. That is not the same as a tamper-evident or cryptographically immutable log, and Nodeau does not describe it as one.</p>
+<h3 id="which-build-your-fleet-should-be-on" class="doc-h">Which build your fleet should be on<a class="doc-anchor" href="#which-build-your-fleet-should-be-on" aria-label="Link to this section">#</a></h3>
+<p>You can record which build your fleet should be on, and see which build it is on. <strong>A channel only ever moves forward.</strong></p>
+<p>You can also say when Nodeau may act on your machines on its own, in your own time zone.</p>
+<aside class="callout callout-warning"><p class="callout-kind">Recording a desired build does not upgrade anything</p><p>It is a statement of intent you can read back. Nodeau does not upgrade a fleet remotely — the capability is not built — and a maintenance window does not schedule work. Updating is <a href="/docs/updates/">the installer, on each machine</a>.</p></aside>
+<p>None of this is qualified on Apple Silicon: a Mac runs standalone and cannot join a fleet, usage travels as a fleet report, and audit is a hosted surface.</p>
+<h2 id="removing-an-installation" class="doc-h">Removing an installation<a class="doc-anchor" href="#removing-an-installation" aria-label="Link to this section">#</a></h2>
+<p>From <code>app.nodeau.ai</code>, or by running <code>nodeau logout</code> on the machine. The two do different halves: <code>logout</code> removes the local link, the console removes the account-side record and frees the slot.</p>
+<h2 id="what-nodeau-cloud-cannot-do" class="doc-h">What Nodeau Cloud cannot do<a class="doc-anchor" href="#what-nodeau-cloud-cannot-do" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li>It cannot <strong>reproduce a credential it issued</strong>. Only a SHA-256 is stored.</li><li>It cannot <strong>initiate a connection</strong> to your machine. There is no inbound port, no callback and no remote shell.</li><li>It cannot <strong>see what you compute</strong>. Prompts, completions, embeddings, images and batch records never leave your hardware.</li></ul>
+<p>See <a href="/docs/security/">security and privacy</a>.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/power/"><span>Previous</span>Power limits and budgets</a><a class="doc-next" href="/docs/updates/"><span>Next</span>Updating and release channels</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding and operating Nodeau machines</title>
+<meta name="description" content="Add a second machine with two commands, see the whole fleet, drain for maintenance, remove a machine, and connect the fleet to a browser — with every edge case.">
+<link rel="canonical" href="https://nodeau.ai/docs/fleet/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/fleet/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Adding and operating Nodeau machines">
+<meta property="og:description" content="Add a second machine with two commands, see the whole fleet, drain for maintenance, remove a machine, and connect the fleet to a browser — with every edge case.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines" open><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" aria-current="page" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Your machines</p>
+      <h1 class="doc-title">Adding and operating machines</h1>
+      <p class="lede doc-lede">Your fleet is the machines Nodeau can place work on. Adding one is two commands, and Nodeau handles the cluster membership, the credential and its expiry.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#before-you-start">Before you start</a></li><li><a href="#adding-a-machine">Adding a machine</a></li><li><a href="#edge-cases">Edge cases</a></li><li><a href="#seeing-the-fleet">Seeing the fleet</a></li><li><a href="#draining-for-maintenance">Draining for maintenance</a></li><li><a href="#removing-a-machine">Removing a machine</a></li><li><a href="#what-nodeau-does-not-do-across-machines">What Nodeau does not do across machines</a></li><li><a href="#seeing-the-fleet-from-a-browser">Seeing the fleet from a browser</a></li><li><a href="#disconnecting-versus-logging-out">Disconnecting versus logging out</a></li></ul></nav>
+      <aside class="callout callout-linux"><p class="callout-kind">Linux / NVIDIA only</p><p>Everything on this page is Linux with NVIDIA GPUs. <strong>A Mac runs standalone</strong>: it is a native execution plane, not a Kubernetes node, and it does not join a fleet. Nodeau will not pretend otherwise — a machine listed as capacity that nothing can schedule onto reads as capacity and is not.</p></aside>
+<p>Adding a machine needs <code>FeatureMultiNode</code> — <strong>Home Pro</strong> (up to 3 machines) or <strong>Business</strong> (unlimited). The free Home plan is one machine, and everything works on it.</p>
+<h2 id="before-you-start" class="doc-h">Before you start<a class="doc-anchor" href="#before-you-start" aria-label="Link to this section">#</a></h2>
+<p>On the <strong>new</strong> machine you need:</p>
+<ul class="doc-list"><li>Ubuntu 24.04 LTS on x86_64</li><li>An NVIDIA GPU with a <strong>working driver</strong></li><li>Network reachability to the existing machine, on your own LAN</li><li>About 20 GB free disk</li></ul>
+<p>Nothing else has to be set up first. If the new machine already runs a cluster of its own, Nodeau <strong>stops and says so</strong> rather than destroying it.</p>
+<h3 id="ports-and-connectivity" class="doc-h">Ports and connectivity<a class="doc-anchor" href="#ports-and-connectivity" aria-label="Link to this section">#</a></h3>
+<p>Machines talk to each other <strong>on your own network</strong>. Nodeau opens nothing to the internet, and joining needs no port forwarding and no inbound rule on your router.</p>
+<p>The new machine reaches the existing one at the address the invitation names — by default that machine's LAN address, overridable with <code>--address</code>.</p>
+<h2 id="adding-a-machine" class="doc-h">Adding a machine<a class="doc-anchor" href="#adding-a-machine" aria-label="Link to this section">#</a></h2>
+<h3 id="on-the-machine-that-already-runs-nodeau" class="doc-h">On the machine that already runs Nodeau<a class="doc-anchor" href="#on-the-machine-that-already-runs-nodeau" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-1"><code>nodeau fleet invite</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="fleet-code-2"><code>Add a machine to your fleet
+
+On the new machine, install Nodeau and run:
+
+  curl -fsSL https://get.nodeau.ai/install.sh | bash
+  nodeau join NDJ1.eyJ…
+
+This code expires in 15m0s.</code></pre></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--expires-in &lt;d&gt;</code></td><td data-label="Default"><code>15m</code></td><td data-label="Meaning">How long the invitation stands</td></tr><tr><td data-label="Flag"><code>--address &lt;host&gt;</code></td><td data-label="Default">this machine's LAN address</td><td data-label="Meaning">The address the new machine should reach this one on</td></tr></tbody></table></div>
+<aside class="callout callout-security"><p class="callout-kind">The code is a credential while it lives</p><p>Paste it into the other machine's terminal, not into a chat log. It expires on its own whether or not anyone uses it, and an already-joined machine never needs it again. An invitation with no expiry is refused outright.</p></aside>
+<h3 id="on-the-new-machine" class="doc-h">On the new machine<a class="doc-anchor" href="#on-the-new-machine" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-3"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau join NDJ1.eyJ…</code></pre></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--dry-run</code></td><td data-label="Meaning">Show what would happen and change nothing</td></tr><tr><td data-label="Flag"><code>--verbose</code></td><td data-label="Meaning">Print every command that would run</td></tr><tr><td data-label="Flag"><code>--yes</code>, <code>-y</code></td><td data-label="Meaning">Do not ask for confirmation</td></tr><tr><td data-label="Flag"><code>--cache-dir &lt;path&gt;</code></td><td data-label="Meaning">Where this machine keeps model files</td></tr></tbody></table></div>
+<p>Joining installs <strong>what a worker needs</strong> and nothing a control plane needs: the container toolkit, a Kubernetes agent pointed at the invited fleet, and the state directory. Everything else arrives from the cluster it joins — the device plugin and Nodeau's hardware agent are delivered by the control plane, not installed by hand.</p>
+<p>The new machine's <strong>model cache starts empty</strong>. Nodeau does not replicate weights between machines; the new machine downloads what it is asked to run, or you download it there explicitly with <code>nodeau model install</code>.</p>
+<p>Its <strong>entitlement comes from the fleet</strong>, not from a second login.</p>
+<h3 id="check-it-worked" class="doc-h">Check it worked<a class="doc-anchor" href="#check-it-worked" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-4"><code>nodeau fleet list</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="fleet-code-5"><code>MY NODEAU
+  nodeau-c   online   worker
+    NVIDIA GeForce RTX 3080  9,877 MiB
+    nodeau-agent v0.X.Y-beta.N, reported 35s ago
+
+  nodeforge   online   control-plane
+    NVIDIA GeForce RTX 5060 Ti  15,827 MiB
+    nodeau-agent v0.X.Y-beta.N, reported 29s ago</code></pre></div>
+<p>Then <code>nodeau doctor</code>, which checks every machine's agent and whether each one's GPU report is fresh enough to schedule against.</p>
+<h2 id="edge-cases" class="doc-h">Edge cases<a class="doc-anchor" href="#edge-cases" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>What happened</th><th>What you see</th></tr></thead><tbody><tr><td data-label="What happened"><strong>The invitation expired</strong></td><td data-label="What you see"><em>"This invitation expired at …. Invitations last 15m0s by design"</em>. Mint a new one</td></tr><tr><td data-label="What happened"><strong>The code is damaged</strong></td><td data-label="What you see"><em>"The enrollment code is damaged; copy it again in one piece."</em> It is one token — a line break in the middle breaks it</td></tr><tr><td data-label="What happened"><strong>It is not a Nodeau code</strong></td><td data-label="What you see">Refused by shape, before anything is attempted</td></tr><tr><td data-label="What happened"><strong>The code is from a newer Nodeau</strong></td><td data-label="What you see">Refused by version, naming the version it is</td></tr><tr><td data-label="What happened"><strong>The invitation names no address, or no credential</strong></td><td data-label="What you see">Refused. An invitation that cannot work is refused rather than half-applied</td></tr><tr><td data-label="What happened"><strong>The plan machine limit is reached</strong></td><td data-label="What you see"><code>nodeau fleet invite</code> refuses <strong>before minting anything</strong>: <em>"this installation cannot add another machine … Nothing has been created, and every machine you already have keeps working"</em></td></tr><tr><td data-label="What happened"><strong>The new machine already runs a cluster</strong></td><td data-label="What you see">Nodeau stops and says so. It will not reconfigure or delete a cluster it did not create</td></tr><tr><td data-label="What happened"><strong>The new machine has no NVIDIA driver</strong></td><td data-label="What you see">Refused. Nodeau does not install drivers</td></tr><tr><td data-label="What happened"><strong>A required program is missing</strong></td><td data-label="What you see">Refused up front, naming the programs and the command that installs them — rather than failing at step four</td></tr><tr><td data-label="What happened"><strong>The join is interrupted</strong></td><td data-label="What you see">Run <code>nodeau join</code> again with a fresh invitation. The ledger records what was done</td></tr><tr><td data-label="What happened"><strong>The machine is offline afterwards</strong></td><td data-label="What you see">It shows as not reporting. Work already on it keeps running; nothing new is placed there</td></tr><tr><td data-label="What happened"><strong>The machine comes back after a reboot</strong></td><td data-label="What you see">It reconnects on its own. <strong>No new invitation is needed</strong> — reconnection is authenticated by the machine's own stored credential</td></tr><tr><td data-label="What happened"><strong>A GPU is moved between machines</strong></td><td data-label="What you see">Nodeau believes the <strong>newest</strong> report of a card. The machine that lost it stops offering it; a workload whose placement names a card its machine no longer reports is withdrawn, and its service is kept so it can start again</td></tr><tr><td data-label="What happened"><strong>Versions differ between machines</strong></td><td data-label="What you see">Expected. Nodeau's components deliberately sit on different versions when one of them did not change. What is worth acting on is <strong>machines disagreeing with each other</strong> — <code>nodeau update</code> shows the fleet</td></tr></tbody></table></div>
+<h2 id="seeing-the-fleet" class="doc-h">Seeing the fleet<a class="doc-anchor" href="#seeing-the-fleet" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-6"><code>nodeau fleet list                 # machines, GPUs, agent versions, freshness
+nodeau ps -A                      # every workload, everywhere
+nodeau status                     # workloads and local endpoints
+nodeau model status               # which machine holds which weights, verified or not
+nodeau health                     # processor, memory, storage, network, alerts
+nodeau doctor                     # is everything working, and what to do if not
+nodeau placement explain &lt;name&gt;   # why a workload is where it is
+nodeau update                     # what each machine is running</code></pre></div>
+<h2 id="draining-for-maintenance" class="doc-h">Draining for maintenance<a class="doc-anchor" href="#draining-for-maintenance" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-7"><code>nodeau scheduling drain --node nodeau-c</code></pre></div>
+<p>Nodeau stops choosing that machine for anything new, and says so when it explains a placement.</p>
+<p><strong>Nothing running on it is stopped, moved or disturbed.</strong> Draining is not eviction. To empty the machine:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-8"><code>nodeau scheduling drain --node nodeau-c
+nodeau ps -A                       # see what is on it
+nodeau stop &lt;name&gt; --workload      # stop each one you want gone</code></pre></div>
+<p>Batch jobs already running on a drained machine run to completion; new ones are not placed there.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-9"><code>nodeau scheduling undrain --node nodeau-c</code></pre></div>
+<p>Undraining puts the machine back into service. It does <strong>not</strong> move anything back: a healthy workload is never restarted for a better score, and undrain must not become a back door around that rule.</p>
+<h2 id="removing-a-machine" class="doc-h">Removing a machine<a class="doc-anchor" href="#removing-a-machine" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-10"><code>nodeau fleet remove nodeau-c --dry-run
+nodeau fleet remove nodeau-c</code></pre></div>
+<p>For a machine that is gone for good — retired, failed or sold. Nodeau removes its cluster membership, the storage and identity it generated for it, and the credential that let it reconnect, then frees the plan slot it was using.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--dry-run</code></td><td data-label="Meaning">Show what would be removed and change nothing</td></tr><tr><td data-label="Flag"><code>--force</code></td><td data-label="Meaning">Remove it even though workloads are placed on it</td></tr><tr><td data-label="Flag"><code>--yes</code></td><td data-label="Meaning">Do not ask for confirmation</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Meaning">Machine-readable</td></tr></tbody></table></div>
+<p><strong>Workloads placed on the machine block removal</strong>, because a workload on a machine you are about to delete is work somebody expects to still be running. Stop them first, or pass <code>--force</code> if the machine is already gone and they can never come back.</p>
+<p>The machine's own installation is <strong>not</strong> touched — run <code>nodeau uninstall</code> there if you still can.</p>
+<p>Rejoining afterwards needs a fresh <code>nodeau fleet invite</code>. That is the point: a removed machine must not be able to reappear on its own.</p>
+<h2 id="what-nodeau-does-not-do-across-machines" class="doc-h">What Nodeau does not do across machines<a class="doc-anchor" href="#what-nodeau-does-not-do-across-machines" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li><strong>No failover.</strong> If a machine goes away, what was on it stops. Nodeau does not move it, restart it elsewhere or recover it on its own.</li><li><strong>No migration</strong>, no live repartitioning, no rebalancing.</li><li><strong>No model replication.</strong> Each machine holds what it holds.</li><li><strong>No sharding a model across machines.</strong> Several cards in <em>one</em> machine, yes — see <a href="/docs/multi-gpu/">several GPUs in one machine</a>.</li><li><strong>No remote shell or arbitrary remote command</strong>, ever.</li></ul>
+<p>A workload on a machine whose telemetry has gone stale is <strong>held</strong>, not moved, and that hold has no timeout.</p>
+<h2 id="seeing-the-fleet-from-a-browser" class="doc-h">Seeing the fleet from a browser<a class="doc-anchor" href="#seeing-the-fleet-from-a-browser" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-code-11"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-code-11"><code>nodeau login            # link this installation to an account
+nodeau fleet connect    # start reporting
+nodeau fleet status     # is it reporting?
+nodeau fleet disconnect # stop</code></pre></div>
+<p>Your machines reach <strong>out</strong> to Nodeau Cloud. <strong>Nothing ever connects in</strong>: no inbound port, no callback, no remote shell, and <code>fleet connect</code> opens none.</p>
+<p>What leaves is what a person operating machines needs — which machines exist, what is plugged into them, what is running, and whether anything is wrong. <strong>What you compute never does</strong>: prompts, completions, embeddings, images and batch records stay on your hardware.</p>
+<p>Nothing about inference depends on it. If Nodeau Cloud is unreachable, or you disconnect, your models keep serving and your scheduler keeps scheduling.</p>
+<p><strong>Seeing</strong> your machines is free on every plan. <strong>Changing</strong> one from the browser needs <code>FeatureRemoteManagement</code> — Home Pro or Business.</p>
+<p>From the browser you can run and stop workloads, set scheduling policy, drain a machine for maintenance, read bounded logs and recover a stranded workload.</p>
+<p>You cannot set a physical power limit or upgrade a fleet remotely. Those are not built, and the command that would do them does not exist.</p>
+<aside class="callout callout-note"><p class="callout-kind">A stop recorded in the cloud is a standing order</p><p>Stopping a workload from the browser records desired state. It is re-applied on every sync to that <strong>copy</strong> of that workload — identified by more than its name, so a later workload you create locally with the same name is not caught by an old stop.</p></aside>
+<h2 id="disconnecting-versus-logging-out" class="doc-h">Disconnecting versus logging out<a class="doc-anchor" href="#disconnecting-versus-logging-out" aria-label="Link to this section">#</a></h2>
+<p>They are different, and doing the wrong one is an inconvenience rather than a disaster.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>What it does</th></tr></thead><tbody><tr><td data-label=""><code>nodeau fleet disconnect</code></td><td data-label="What it does">Stops reporting to Nodeau Cloud. The machine <strong>stays linked</strong> to your account for entitlements</td></tr><tr><td data-label=""><code>nodeau logout</code></td><td data-label="What it does">Removes the account link. Everything keeps running, on the free Home plan</td></tr></tbody></table></div>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/batch/"><span>Previous</span>Batch inference</a><a class="doc-next" href="/docs/governance/"><span>Next</span>Organisation limits</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

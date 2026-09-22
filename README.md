@@ -101,6 +101,63 @@ tools/generate-pages.py   one-off generator (see below)
 Pages are directories with an `index.html`, so `/about` works on Netlify and
 under any plain static server without redirect rules.
 
+### /docs is generated; everything else is hand-written
+
+`/docs` is the product documentation: installation on both platforms, the
+complete CLI reference, concepts, models, BYOM, fleets, scheduling, batch, the
+API, governance, health, accounts, upgrades, uninstall, troubleshooting, support
+bundles and security.
+
+It is **generated**, and the output is committed, so Netlify still builds
+nothing:
+
+```
+docs-src/*.md          the content — one file per page, with front matter
+docs-src/nav.json      THE navigation. Sidebar, order, prev/next and sitemap
+docs-src/cli-commands.txt   every public command, generated from the binary
+tools/build-docs.py    docs-src -> docs/*/index.html + docs/search-index.json
+assets/docs.js         sidebar drawer, search, platform tabs, scrollspy
+```
+
+```bash
+python3 tools/build-docs.py           # write docs/
+python3 tools/build-docs.py --check   # fail if docs/ is not current
+python3 tools/check-cli-coverage.py   # fail if a shipped command is undocumented
+python3 tools/check-site.py           # the existing structural + editorial checks
+```
+
+**Why a generator here and not elsewhere.** The rest of the site is nine pages
+with a hand-copied header, which is the honest cost of having no build step.
+Twenty-three pages sharing one sidebar, one search index and one prev/next chain
+is past where that trade is affordable — and unlike `generate-pages.py`, this one
+is idempotent and `--check` runs in the site check, so the committed HTML cannot
+drift from its source.
+
+**Editing.** Change the Markdown, run `build-docs.py`, commit both. Never edit
+`docs/**/index.html` by hand: `--check` will fail, which is the point.
+
+**Adding a page.** Create `docs-src/<slug>.md` with front matter
+(`title`, `heading`, `nav`, `description`, `lede`) and add it to `nav.json`. The
+sidebar, the prev/next links, the search index and the sitemap follow from that
+one entry.
+
+**The CLI reference cannot quietly go stale.** `docs-src/cli-commands.txt` is
+generated from the binary by the platform repository's
+`scripts/docs/dump-cli-commands.sh` — one line per command, then a tab, then
+every flag it accepts. `check-cli-coverage.py` reports three things: a command
+that ships and is not documented, a `nodeau …` command the docs name that is not
+in the tree, and a `--flag` on ANY docs page that no command accepts. All three
+failure modes are verified to fail rather than assumed to.
+
+Regenerate the list whenever the CLI grows a command or a flag; the list is
+produced on Linux, and the five macOS-only flags are declared in the checker with
+the source file that proves each one.
+
+**`get.nodeau.ai/docs/*.md` are pointers into this**, not a second copy. Two
+authoritative sets of install instructions drift, and that pair did — the
+download site said macOS was unsupported for a month after Apple Silicon
+shipped.
+
 ### tools/generate-pages.py
 
 A one-off script used to generate the sub-pages with a consistent header and

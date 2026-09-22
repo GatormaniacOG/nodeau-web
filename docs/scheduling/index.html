@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admission, scheduling and placement</title>
+<meta name="description" content="How Nodeau decides whether a workload can run and where it should run — the VRAM arithmetic, safety margins, scheduling modes, holds, drains and every reason code.">
+<link rel="canonical" href="https://nodeau.ai/docs/scheduling/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/scheduling/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Admission, scheduling and placement">
+<meta property="og:description" content="How Nodeau decides whether a workload can run and where it should run — the VRAM arithmetic, safety margins, scheduling modes, holds, drains and every reason code.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts" open><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" aria-current="page" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Concepts</p>
+      <h1 class="doc-title">Admission, scheduling and placement</h1>
+      <p class="lede doc-lede">Two separate decisions. Admission asks whether a workload can safely run; placement asks where. Both are recorded, and both can be replayed.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#admission-comes-first">Admission comes first</a></li><li><a href="#placement">Placement</a></li><li><a href="#what-nodeau-will-not-do">What Nodeau will not do</a></li><li><a href="#drain">Drain</a></li><li><a href="#reason-codes">Reason codes</a></li><li><a href="#suggested-actions">Suggested actions</a></li></ul></nav>
+      <h2 id="admission-comes-first" class="doc-h">Admission comes first<a class="doc-anchor" href="#admission-comes-first" aria-label="Link to this section">#</a></h2>
+<p>Before anything is created, Nodeau predicts the peak GPU memory a workload will need and compares it with what a card can actually offer. A workload that would not fit is <strong>refused</strong>, with the arithmetic and with remedies — rather than started and left to be killed.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#scheduling-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="scheduling-code-1"><code>nodeau service explain qwen-local</code></pre></div>
+<p>That prints the decision the controller recorded when it made it. It does not re-run the calculation: if it did, it could disagree with the controller, and you would have two answers with no way to know which one the platform acted on.</p>
+<h3 id="the-arithmetic" class="doc-h">The arithmetic<a class="doc-anchor" href="#the-arithmetic" aria-label="Link to this section">#</a></h3>
+<p>What the card can offer:</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="scheduling-code-2"><code>  CUDA-addressable VRAM          15,827 MiB
+− what else is already on it      5,950 MiB   your desktop, another program
+− safety reserve                    512 MiB
+= available                       9,365 MiB</code></pre></div>
+<p>What the workload needs:</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="scheduling-code-3"><code>  model weights                   4,280 MiB   from the artifact and quantisation
++ KV cache                          512 MiB   context size × parallel sequences
++ runtime overhead                  300 MiB   the engine&#x27;s own buffers
+= predicted peak                  5,092 MiB
++ prediction margin                 256 MiB
++ estimate margin                   768 MiB   ONLY on unmeasured hardware
+= required                        6,116 MiB</code></pre></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Margin</th><th>Size</th><th>When</th></tr></thead><tbody><tr><td data-label="Margin">Safety reserve</td><td data-label="Size">512 MiB</td><td data-label="When">Always, per card. What Nodeau keeps back for whatever else is on it</td></tr><tr><td data-label="Margin">Prediction margin</td><td data-label="Size">256 MiB</td><td data-label="When">Always. The error bar on the prediction</td></tr><tr><td data-label="Margin">Estimate margin</td><td data-label="Size">768 MiB</td><td data-label="When">Only when the configuration has not been measured on hardware like yours</td></tr><tr><td data-label="Margin">Multi-device allowance</td><td data-label="Size">128 MiB per device</td><td data-label="When">Only for a workload spanning several cards</td></tr></tbody></table></div>
+<aside class="callout callout-warning"><p class="callout-kind">VRAM is a per-device conjunction, never a sum</p><p>Two 8 GB cards are not a 16 GB card. Per-device overhead is <strong>replicated</strong>, not shared, and the smaller card runs out first. A pair whose total looks ample can have one card that cannot hold its share.</p></aside>
+<h3 id="estimated-and-measured" class="doc-h">Estimated and measured<a class="doc-anchor" href="#estimated-and-measured" aria-label="Link to this section">#</a></h3>
+<p>Where Nodeau has a measurement for this model, this configuration and hardware like yours, it uses the measurement. Where it does not, it computes a figure from the model's architecture and artifact size, adds the 768 MiB estimate margin, and <strong>labels the decision estimated</strong>.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#scheduling-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="scheduling-code-4"><code>nodeau model info &lt;model&gt;    # which configurations have actually been measured</code></pre></div>
+<p>An empty measurement list is a real answer: it means every decision about that model is computed rather than observed. Each row also states its <strong>scope</strong> — whether the figure counted the whole device or one process — because the two are different quantities.</p>
+<h3 id="accepting-the-risk-yourself" class="doc-h">Accepting the risk yourself<a class="doc-anchor" href="#accepting-the-risk-yourself" aria-label="Link to this section">#</a></h3>
+<p>Two flags, on <code>nodeau run</code> and <code>nodeau model qualify</code>. Both are explicit, both are per-workload, and both are recorded permanently.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>What you are accepting</th></tr></thead><tbody><tr><td data-label="Flag"><code>--accept-estimate-risk</code></td><td data-label="What you are accepting">Drop only the extra margin Nodeau adds for hardware nobody has measured this on. You accept that it may not fit</td></tr><tr><td data-label="Flag"><code>--spend-safety-reserve</code></td><td data-label="What you are accepting">Let this workload use the memory Nodeau keeps back for whatever else is on the card. If that GPU also drives your display, an out-of-memory kill takes it too</td></tr></tbody></table></div>
+<p>There is no <code>--force</code>, and admission cannot be bypassed. An unverified artifact, an unentitled device, stale hardware or a busy card are <strong>not</strong> overridable by either flag. Batch deliberately supports neither.</p>
+<p>Nodeau will never spend a margin on your behalf. A qualifier that quietly shrank the margin until a model fit would always succeed and prove nothing.</p>
+<h3 id="ordering" class="doc-h">Ordering<a class="doc-anchor" href="#ordering" aria-label="Link to this section">#</a></h3>
+<p>A <strong>capability</strong> refusal is decided before the capacity arithmetic, so <em>"this model cannot embed"</em> can never reach you as <em>"insufficient VRAM"</em>.</p>
+<p>An organisation's <a href="/docs/governance/">governance policy</a> narrows the candidate set <strong>before</strong> any capacity arithmetic too — so a workload refused by a quota is told it was a quota, in your organisation's own terms, and never as though it did not fit.</p>
+<h2 id="placement" class="doc-h">Placement<a class="doc-anchor" href="#placement" aria-label="Link to this section">#</a></h2>
+<p>Among the candidates admission accepted, placement chooses. It reports what it chose and what the alternatives would have cost.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#scheduling-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="scheduling-code-5"><code>nodeau placement explain qwen-local</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="scheduling-code-6"><code>Selected   nodeforge / NVIDIA GeForce RTX 5060 Ti (GPU-c080d9be-9a0…)
+Mode       balanced   (fleet-default)
+Work       output tokens
+
+  WHY
+    it was already here and still fits — Nodeau does not move a
+    running workload for a better score
+    predicted 80.8 output tokens/s   confidence observed
+    predicted 166 W
+
+  NOT SELECTED
+    nodeau-c     NVIDIA GeForce RTX 3080    predicted 114.0/s
+
+  Hardware data 2026-09-hw.3, decided 2026-09-21T06:17:37Z</code></pre></div>
+<h3 id="what-it-weighs" class="doc-h">What it weighs<a class="doc-anchor" href="#what-it-weighs" aria-label="Link to this section">#</a></h3>
+<ul class="doc-list"><li>Which machines and cards are <strong>eligible</strong> — healthy, reporting fresh telemetry, not drained, not excluded by policy, big enough.</li><li>Whether the machine already has the model's <strong>weights</strong> verified locally.</li><li>A <strong>prediction</strong> of how the workload will perform there, from observations collected on your own machines.</li><li>The <strong>scheduling mode</strong>.</li><li>Any <strong>hard constraints</strong> you set on that machine.</li></ul>
+<h3 id="scheduling-modes" class="doc-h">Scheduling modes<a class="doc-anchor" href="#scheduling-modes" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#scheduling-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="scheduling-code-7"><code>nodeau scheduling mode                      # show
+nodeau scheduling mode balanced             # set for the fleet
+nodeau scheduling mode performance --node nodeau-c   # set for one machine</code></pre></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Mode</th><th>Means</th></tr></thead><tbody><tr><td data-label="Mode"><code>efficiency</code></td><td data-label="Means">The most work per unit of energy, never much slower</td></tr><tr><td data-label="Mode"><code>balanced</code></td><td data-label="Means">Fastest, while staying near the best efficiency. <strong>The default</strong></td></tr><tr><td data-label="Mode"><code>performance</code></td><td data-label="Means">Fastest, whatever it costs</td></tr><tr><td data-label="Mode"><code>legacy</code></td><td data-label="Means">The pre-Phase-13 tightest-safe-fit scorer</td></tr></tbody></table></div>
+<p>A mode change affects <strong>new placements only</strong>. Holds and stickiness run before any scorer, so a fleet that changes its mode moves nothing that is running.</p>
+<aside class="callout callout-note"><p class="callout-kind">It is not a learned model</p><p>Nodeau's prediction is medians, ratios and linear interpolation over observations collected where the traffic is — on your own machines. It is not an "AI scheduler", it does not promise an exact figure, and it does not claim energy savings. What it promises is a ranking plus a bounded error, and it tells you the confidence it has.</p></aside>
+<h3 id="hard-constraints" class="doc-h">Hard constraints<a class="doc-anchor" href="#hard-constraints" aria-label="Link to this section">#</a></h3>
+<p>Constraints are <strong>hard</strong>: Nodeau refuses to place work rather than exceed one, and no mode can score around them.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#scheduling-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="scheduling-code-8"><code>nodeau scheduling constraints --node nodeforge --power-budget 400
+nodeau scheduling constraints --node nodeforge --deny-device GPU-c080d9be-…
+nodeau scheduling constraints --node nodeforge --clear</code></pre></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>What it bounds</th></tr></thead><tbody><tr><td data-label="Flag"><code>--power-budget &lt;W&gt;</code></td><td data-label="What it bounds">The most <strong>predicted</strong> power Nodeau may have running on this machine</td></tr><tr><td data-label="Flag"><code>--idle-watts &lt;W&gt;</code></td><td data-label="What it bounds">What the machine draws with nothing running, so waking it counts as a cost</td></tr><tr><td data-label="Flag"><code>--max-accelerators &lt;n&gt;</code></td><td data-label="What it bounds">The most cards one workload may use here</td></tr><tr><td data-label="Flag"><code>--deny-device &lt;uuid&gt;</code></td><td data-label="What it bounds">Withhold one card from scheduling; it stays visible</td></tr><tr><td data-label="Flag"><code>--allow-device &lt;uuid&gt;</code></td><td data-label="What it bounds">Return a withheld card</td></tr><tr><td data-label="Flag"><code>--clear</code></td><td data-label="What it bounds">Remove every constraint from this machine</td></tr></tbody></table></div>
+<aside class="callout callout-important"><p class="callout-kind">A scheduling power budget is not a physical cap</p><p>It changes where work goes. It changes nothing about what any card draws, needs no privilege, and works on hardware where power-limit mutation is unsupported. For the physical setting see <a href="/docs/power/">power limits</a>.</p></aside>
+<h2 id="what-nodeau-will-not-do" class="doc-h">What Nodeau will not do<a class="doc-anchor" href="#what-nodeau-will-not-do" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li><strong>It does not move a running workload.</strong> Placement decides once and then holds. A workload on a machine whose telemetry has gone stale is <strong>held</strong>, not moved, and that hold has no timeout — giving up after N minutes would be automatic failover acquired by accident.</li><li><strong>It does not fail over, migrate or reschedule.</strong> If a card genuinely leaves a machine, Nodeau <strong>withdraws</strong> the workload that can no longer start and keeps the service, which starts again when a placement is possible. That is not failover.</li><li><strong>It does not re-split a healthy workload</strong> for a better fit.</li><li><strong>It does not share a card.</strong> No time-slicing, no MIG, no preemption, no priority queues.</li></ul>
+<p><code>nodeau restart &lt;name&gt;</code> is how you ask for a workload to be placed again.</p>
+<h2 id="drain" class="doc-h">Drain<a class="doc-anchor" href="#drain" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#scheduling-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="scheduling-code-9"><code>nodeau scheduling drain --node nodeau-c</code></pre></div>
+<p>Nothing running is stopped, moved or disturbed. Nodeau stops choosing that machine for anything new, and says so when it explains a placement. To empty the machine, drain it and then stop what you want gone — <code>nodeau ps</code> shows what is on it.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#scheduling-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="scheduling-code-10"><code>nodeau scheduling undrain --node nodeau-c</code></pre></div>
+<p>Undraining does not bring anything back.</p>
+<h2 id="reason-codes" class="doc-h">Reason codes<a class="doc-anchor" href="#reason-codes" aria-label="Link to this section">#</a></h2>
+<p>Every refusal and every scheduling decision carries a machine-readable code and a readable explanation. The same code means the same thing in the CLI, in <code>--json</code>, and in the dashboard.</p>
+<h3 id="the-model" class="doc-h">The model<a class="doc-anchor" href="#the-model" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th><th>Usually</th></tr></thead><tbody><tr><td data-label="Code"><code>MODEL_NOT_INSTALLED</code></td><td data-label="Meaning">The weights are not on the machine that would run them</td><td data-label="Usually"><code>nodeau model install &lt;id&gt;</code></td></tr><tr><td data-label="Code"><code>MODEL_VERIFICATION_PENDING</code></td><td data-label="Meaning">Present; the digest is still being established</td><td data-label="Usually">Wait — it clears by itself</td></tr><tr><td data-label="Code"><code>MODEL_ARTIFACT_INVALID</code></td><td data-label="Meaning">The file on disk is not what was pinned</td><td data-label="Usually">Re-download it</td></tr><tr><td data-label="Code"><code>MODEL_UNVERIFIED</code></td><td data-label="Meaning">Present, right size, digest not established</td><td data-label="Usually"><code>nodeau model verify &lt;id&gt;</code></td></tr><tr><td data-label="Code"><code>MODEL_UNSUPPORTED</code></td><td data-label="Meaning">No profile for this model, or none for this configuration on this hardware</td><td data-label="Usually">Change the configuration, or choose another model</td></tr></tbody></table></div>
+<h3 id="the-gpu" class="doc-h">The GPU<a class="doc-anchor" href="#the-gpu" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th><th>Usually</th></tr></thead><tbody><tr><td data-label="Code"><code>GPU_TOO_SMALL</code></td><td data-label="Meaning">The arithmetic says it will not fit</td><td data-label="Usually">Smaller context, or a smaller model</td></tr><tr><td data-label="Code"><code>GPU_ALREADY_ALLOCATED</code></td><td data-label="Meaning">A whole GPU is reserved by another workload</td><td data-label="Usually"><code>nodeau ps</code>, then wait or stop something</td></tr><tr><td data-label="Code"><code>GPU_UNAVAILABLE</code></td><td data-label="Meaning">No healthy GPU was reported at all</td><td data-label="Usually"><code>nodeau doctor</code></td></tr><tr><td data-label="Code"><code>ACCELERATOR_SET_UNSUPPORTED</code></td><td data-label="Meaning">The <strong>shape</strong> of the request cannot be run — not a memory problem</td><td data-label="Usually">Ask for a different set of cards</td></tr><tr><td data-label="Code"><code>HARDWARE_STALE</code></td><td data-label="Meaning">A GPU report is too old to be evidence about the card now</td><td data-label="Usually">Check the machine is reporting</td></tr><tr><td data-label="Code"><code>MACHINE_DRAINING</code></td><td data-label="Meaning">The machine is deliberately not taking new work</td><td data-label="Usually"><code>nodeau scheduling undrain</code></td></tr></tbody></table></div>
+<h3 id="the-task" class="doc-h">The task<a class="doc-anchor" href="#the-task" aria-label="Link to this section">#</a></h3>
+<p>Three codes rather than one, because the three sources of capability truth fail for different reasons and are fixed by different things.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>TASK_UNKNOWN</code></td><td data-label="Meaning">Not a word Nodeau knows. A typo, or a manifest for a newer Nodeau</td></tr><tr><td data-label="Code"><code>MODEL_CAPABILITY_UNSUPPORTED</code></td><td data-label="Meaning">These weights cannot do this task</td></tr><tr><td data-label="Code"><code>RUNTIME_CAPABILITY_UNSUPPORTED</code></td><td data-label="Meaning">This engine cannot drive this task</td></tr><tr><td data-label="Code"><code>PLATFORM_CAPABILITY_UNSUPPORTED</code></td><td data-label="Meaning">The runtime installed on <strong>this machine</strong> was not built with it</td></tr></tbody></table></div>
+<h3 id="being-patient-and-being-gone" class="doc-h">Being patient, and being gone<a class="doc-anchor" href="#being-patient-and-being-gone" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>WORKLOAD_STARTING</code></td><td data-label="Meaning">It is coming up. Not a refusal</td></tr><tr><td data-label="Code"><code>QUEUED</code></td><td data-label="Meaning">Evaluated, correct, waiting for a card to free</td></tr><tr><td data-label="Code"><code>WORKLOAD_STOPPED</code></td><td data-label="Meaning">Nodeau has a record and the machine does not have the process. Holds nothing</td></tr><tr><td data-label="Code"><code>WORKLOAD_SUPERSEDED</code></td><td data-label="Meaning">Decided at a placement generation the fleet has moved past</td></tr></tbody></table></div>
+<h3 id="entitlement" class="doc-h">Entitlement<a class="doc-anchor" href="#entitlement" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th><th>Remedy belongs to</th></tr></thead><tbody><tr><td data-label="Code"><code>FEATURE_NOT_ENTITLED</code></td><td data-label="Meaning">The plan does not grant the capability</td><td data-label="Remedy belongs to">A purchase</td></tr><tr><td data-label="Code"><code>LIMIT_REACHED</code></td><td data-label="Meaning">The capability is granted and a numeric limit is spent</td><td data-label="Remedy belongs to">A purchase</td></tr><tr><td data-label="Code"><code>ENTITLEMENT_INVALID</code></td><td data-label="Meaning">An entitlement exists and cannot be accepted</td><td data-label="Remedy belongs to"><code>nodeau plan refresh</code></td></tr></tbody></table></div>
+<h3 id="governance" class="doc-h">Governance<a class="doc-anchor" href="#governance" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th><th>Remedy belongs to</th></tr></thead><tbody><tr><td data-label="Code"><code>QUOTA_EXCEEDED</code></td><td data-label="Meaning">Your organisation's own policy, inside what the plan grants</td><td data-label="Remedy belongs to">A colleague</td></tr><tr><td data-label="Code"><code>POOL_RESTRICTED</code></td><td data-label="Meaning">A GPU pool or fleet group left no eligible machine</td><td data-label="Remedy belongs to">A colleague</td></tr><tr><td data-label="Code"><code>MODEL_NOT_PERMITTED</code></td><td data-label="Meaning">An organisation's model policy disallows this model</td><td data-label="Remedy belongs to">A colleague</td></tr><tr><td data-label="Code"><code>BATCH_QUOTA_EXHAUSTED</code></td><td data-label="Meaning">The organisation's batch allowance is spent</td><td data-label="Remedy belongs to">A colleague</td></tr></tbody></table></div>
+<h3 id="batch" class="doc-h">Batch<a class="doc-anchor" href="#batch" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>BATCH_INPUT_INVALID</code></td><td data-label="Meaning">The submitted records are missing, unreadable, or do not match the digest recorded at submission</td></tr><tr><td data-label="Code"><code>BATCH_FAILED</code></td><td data-label="Meaning">An attempt failed for an infrastructure reason and no attempts remain</td></tr><tr><td data-label="Code"><code>BATCH_WORKER_UNAVAILABLE</code></td><td data-label="Meaning">The worker was placed and its container never started</td></tr><tr><td data-label="Code"><code>BATCH_CANCELLED</code></td><td data-label="Meaning">You asked for it to stop</td></tr></tbody></table></div>
+<h3 id="everything-else" class="doc-h">Everything else<a class="doc-anchor" href="#everything-else" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>OK</code></td><td data-label="Meaning">Nothing is wrong</td></tr><tr><td data-label="Code"><code>INTERNAL_ERROR</code></td><td data-label="Meaning">Nodeau itself failed. Every other code above is Nodeau working correctly</td></tr><tr><td data-label="Code"><code>UNKNOWN</code></td><td data-label="Meaning">A reason this build has not been taught about. The original text is preserved rather than blanked</td></tr></tbody></table></div>
+<h2 id="suggested-actions" class="doc-h">Suggested actions<a class="doc-anchor" href="#suggested-actions" aria-label="Link to this section">#</a></h2>
+<p>Alongside the code, every explanation carries a machine-readable suggested action, so the CLI and the dashboard render the same remedy without pattern-matching prose: <code>NONE</code>, <code>WAIT</code>, <code>INSTALL_MODEL</code>, <code>REINSTALL_MODEL</code>, <code>VERIFY_MODEL</code>, <code>CHOOSE_SMALLER_MODEL</code>, <code>REDUCE_CONTEXT</code>, <code>WAIT_OR_STOP_WORKLOAD</code>, <code>CHECK_NODE</code>, <code>UNDRAIN_MACHINE</code>, <code>REVIEW_ENTITLEMENT</code>, <code>REVIEW_QUOTA</code>, <code>REVIEW_POLICY</code>, <code>FIX_INPUT</code>, <code>RUN_DOCTOR</code>, <code>UPDATE_RUNTIME</code>, <code>RUN</code>, <code>CONTACT_SUPPORT</code>.</p>
+<p><code>REVIEW_ENTITLEMENT</code> is deliberately not "upgrade": which plan, and whether to sell you one, is not the scheduler's call.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/concepts/"><span>Previous</span>Core concepts</a><a class="doc-next" href="/docs/cli/"><span>Next</span>CLI reference</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bring your own model (BYOM)</title>
+<meta name="description" content="Import a GGUF file of your own, then qualify it on your hardware — what import reads, what it never executes, what qualification proves, and every failure case.">
+<link rel="canonical" href="https://nodeau.ai/docs/byom/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/byom/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Bring your own model (BYOM)">
+<meta property="og:description" content="Import a GGUF file of your own, then qualify it on your hardware — what import reads, what it never executes, what qualification proves, and every failure case.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use" open><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" aria-current="page" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Everyday use</p>
+      <h1 class="doc-title">Bring your own model</h1>
+      <p class="lede doc-lede">Give Nodeau a GGUF file of your own. It reads the header to work out what the model needs, hashes the bytes so the file is its own identity, and then measures and probes it on a real card before saying what it can do.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#the-whole-flow">The whole flow</a></li><li><a href="#import">Import</a></li><li><a href="#qualification">Qualification</a></li><li><a href="#running-an-imported-model">Running an imported model</a></li><li><a href="#where-a-diagnosis-points">Where a diagnosis points</a></li></ul></nav>
+      <aside class="callout callout-linux"><p class="callout-kind">Linux / NVIDIA only</p><p>BYOM is qualified on Linux with an NVIDIA GPU. It builds and passes its checks on macOS, and no Mac has run it — qualification needs a cluster a Mac deliberately does not have. Treat it as unproven there.</p></aside>
+<h2 id="the-whole-flow" class="doc-h">The whole flow<a class="doc-anchor" href="#the-whole-flow" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#byom-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="byom-code-1"><code>nodeau model import ./my-model.gguf --alias finance-model
+nodeau model qualify finance-model
+nodeau run finance-model</code></pre></div>
+<p>Or in one step:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#byom-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="byom-code-2"><code>nodeau model import ./my-model.gguf --alias finance-model --qualify</code></pre></div>
+<hr class="doc-rule">
+<h2 id="import" class="doc-h">Import<a class="doc-anchor" href="#import" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#byom-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="byom-code-3"><code>nodeau model import PATH --alias NAME [flags]</code></pre></div>
+<p>Import reads the file's header to work out what the model is — its architecture, the shape its KV cache depends on, its quantisation, whether it carries a chat template — hashes the bytes, copies them into the model cache, and registers the result under the name you choose.</p>
+<h3 id="what-the-bytes-are-is-the-identity" class="doc-h">What the bytes are is the identity<a class="doc-anchor" href="#what-the-bytes-are-is-the-identity" aria-label="Link to this section">#</a></h3>
+<p>A model is identified by the <strong>SHA-256 of its contents</strong>, not by its filename, the alias you give it, or where it came from.</p>
+<ul class="doc-list"><li>Importing the <strong>same bytes</strong> twice costs no extra disk.</li><li>Importing <strong>different bytes</strong> under a name you have used before creates a **new artifact and says so**. It never silently repoints the old one, and the previous qualification evidence does not carry across — because it was evidence about different bytes.</li></ul>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="byom-code-4"><code>NOTE: &quot;finance-model&quot; previously pointed at different bytes. This is a NEW
+artifact with its own identity; the previous qualification evidence no
+longer applies and is not carried across.</code></pre></div>
+<h3 id="nothing-in-the-file-is-executed" class="doc-h">Nothing in the file is executed<a class="doc-anchor" href="#nothing-in-the-file-is-executed" aria-label="Link to this section">#</a></h3>
+<p>A GGUF is data. Nodeau reads the header and stops, and the model runs on Nodeau's own pinned runtime. There is no <code>trust_remote_code</code>, no publisher script and no download hook. The tensor offset is discarded so nothing can be tempted to seek there, and every length declared in the file is treated as hostile until bounded.</p>
+<h3 id="importing-is-not-qualifying" class="doc-h">Importing is not qualifying<a class="doc-anchor" href="#importing-is-not-qualifying" aria-label="Link to this section">#</a></h3>
+<p>After an import, Nodeau knows what your file <strong>says about itself</strong>. It does not yet know what the model can actually do on your hardware. That is what <a href="#qualification">qualification</a> is for.</p>
+<h3 id="what-you-get-back" class="doc-h">What you get back<a class="doc-anchor" href="#what-you-get-back" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="byom-code-5"><code>alias         finance-model
+digest        9f2c4e…
+architecture  llama
+quantisation  Q4_K_M
+parameters    7.6B
+max context   32768
+chat template yes
+
+What the file suggests it can do — these are HINTS, not proof:
+  chat              the file carries a chat template
+  embed             the architecture is an encoder</code></pre></div>
+<p>Hints come from metadata and are never evidence. <strong>Tools and structured output are never hinted at all</strong>: no key distinguishes a tool-trained model, and the runtime will apply a grammar to anything and produce valid nonsense.</p>
+<p>Nothing is inferred from a model's name, family or id.</p>
+<h3 id="flags" class="doc-h">Flags<a class="doc-anchor" href="#flags" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--alias &lt;name&gt;</code></td><td data-label="Default"><strong>required</strong></td><td data-label="Meaning">The name you will type to run this model</td></tr><tr><td data-label="Flag"><code>--namespace</code>, <code>-n</code></td><td data-label="Default"><code>nodeau-dev</code></td><td data-label="Meaning">Where to register it. <strong>Must be where its workloads run</strong></td></tr><tr><td data-label="Flag"><code>--sha256 &lt;digest&gt;</code></td><td data-label="Default">—</td><td data-label="Meaning">The digest you expect. A mismatch refuses the import and copies nothing</td></tr><tr><td data-label="Flag"><code>--qualify</code></td><td data-label="Default">off</td><td data-label="Meaning">Run qualification immediately after importing</td></tr><tr><td data-label="Flag"><code>--probe &lt;list&gt;</code></td><td data-label="Default">—</td><td data-label="Meaning">Capabilities to try during qualification, beyond what the file suggests</td></tr><tr><td data-label="Flag"><code>--no-register</code></td><td data-label="Default">off</td><td data-label="Meaning">Place and verify the weights on this machine only, without registering a model — for a worker that should be able to run a model the control plane registered</td></tr><tr><td data-label="Flag"><code>--cache-dir &lt;path&gt;</code></td><td data-label="Default"><code>/var/lib/nodeau/models</code></td><td data-label="Meaning">Model cache directory</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Default">off</td><td data-label="Meaning">Machine-readable</td></tr></tbody></table></div>
+<p><code>--alias</code> and <code>--no-register</code> cannot be used together.</p>
+<h3 id="what-import-cannot-do" class="doc-h">What import cannot do<a class="doc-anchor" href="#what-import-cannot-do" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th></th></tr></thead><tbody><tr><td data-label=""><strong>GGUF only</strong></td><td data-label="">No Safetensors, no PyTorch, no ONNX. There is <strong>no conversion step</strong></td></tr><tr><td data-label=""><strong>One file</strong></td><td data-label="">A <strong>split multi-part GGUF</strong> is not supported. Nodeau fetches and verifies one file against one SHA-256</td></tr><tr><td data-label=""><strong>No vision</strong></td><td data-label="">A vision model is two files — the weights and a multimodal projector — and Nodeau imports one. The model registers and serves <strong>text</strong>; image input is refused up front rather than started and broken later</td></tr><tr><td data-label=""><strong>No licence review</strong></td><td data-label="">Nodeau did not choose your file and has not reviewed its licence. Custom models are listed separately from curated ones for exactly that reason</td></tr><tr><td data-label=""><strong>Nothing is uploaded</strong></td><td data-label="">Your file is copied from one directory to another on your own machine. It is not sent to Nodeau Cloud, its name is not reported, and Nodeau will never tell you to "re-download" it — because it never downloaded it</td></tr></tbody></table></div>
+<h3 id="import-failure-cases" class="doc-h">Import failure cases<a class="doc-anchor" href="#import-failure-cases" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>What happened</th><th>What Nodeau does</th></tr></thead><tbody><tr><td data-label="What happened">The file is not a GGUF</td><td data-label="What Nodeau does">Refused: magic mismatch, naming what it found instead</td></tr><tr><td data-label="What happened">An unsupported GGUF container version</td><td data-label="What Nodeau does">Refused, stating which versions this reader accepts</td></tr><tr><td data-label="What happened">The header is truncated, or declares a length past the end</td><td data-label="What Nodeau does">Refused. Every length in the file is bounded before it is trusted</td></tr><tr><td data-label="What happened">A metadata key appears twice</td><td data-label="What Nodeau does">Refused</td></tr><tr><td data-label="What happened">The path is not a regular file</td><td data-label="What Nodeau does">Refused</td></tr><tr><td data-label="What happened"><code>--sha256</code> was given and does not match</td><td data-label="What Nodeau does">Refused, and <strong>nothing is copied</strong></td></tr><tr><td data-label="What happened">Not enough free disk</td><td data-label="What Nodeau does">Refused before copying, with a margin</td></tr><tr><td data-label="What happened">The file declares no shape Nodeau can size</td><td data-label="What Nodeau does"><strong>Imported and intact.</strong> Admission will refuse to schedule it rather than invent a memory figure — a guess that is too low is an out-of-memory kill</td></tr><tr><td data-label="What happened">A valid GGUF whose architecture the runtime does not implement</td><td data-label="What Nodeau does">Imports cleanly, phase <code>Unsupported</code>. <strong>Your file is fine</strong>, and a later Nodeau with a newer runtime may well run it</td></tr></tbody></table></div>
+<p>The last two are worth reading twice. <strong>Unknown is not unsupported, and unsupported is not corrupt.</strong></p>
+<hr class="doc-rule">
+<h2 id="qualification" class="doc-h">Qualification<a class="doc-anchor" href="#qualification" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#byom-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="byom-code-6"><code>nodeau model qualify finance-model [flags]</code></pre></div>
+<p>Nodeau starts the model, watches how much memory it really takes, exercises each capability with a probe designed to fail if the model cannot do it, cleans up, and records what it proved.</p>
+<h3 id="loading-is-not-qualifying-and-http-200-is-not-a-capability" class="doc-h">Loading is not qualifying, and HTTP 200 is not a capability<a class="doc-anchor" href="#loading-is-not-qualifying-and-http-200-is-not-a-capability" aria-label="Link to this section">#</a></h3>
+<p>Every probe asserts something a model without the capability would fail:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Capability</th><th>What the probe asserts</th></tr></thead><tbody><tr><td data-label="Capability"><code>chat</code></td><td data-label="What the probe asserts"><strong>Non-empty content first</strong>, then a coherent answer. A 200 with nothing in it is the failure this exists for</td></tr><tr><td data-label="Capability"><code>tools</code></td><td data-label="What the probe asserts">A tool call whose arguments <strong>parse</strong> and reflect the question — it names the city you asked about</td></tr><tr><td data-label="Capability"><code>embed</code></td><td data-label="What the probe asserts">Related texts really do score <strong>closer</strong> than unrelated ones: repeatable, finite, and not a constant vector</td></tr><tr><td data-label="Capability"><code>rerank</code></td><td data-label="What the probe asserts">The ordering responds to the query</td></tr><tr><td data-label="Capability"><code>structured-output</code></td><td data-label="What the probe asserts">A <code>json_schema</code> reply <strong>checked against the schema</strong>, because the runtime constrains sampling and does not post-validate</td></tr><tr><td data-label="Capability"><code>vision-input</code></td><td data-label="What the probe asserts"><strong>Two different images</strong> under a byte-identical prompt must give different answers</td></tr></tbody></table></div>
+<h3 id="it-will-not-waive-safety-on-your-behalf" class="doc-h">It will not waive safety on your behalf<a class="doc-anchor" href="#it-will-not-waive-safety-on-your-behalf" aria-label="Link to this section">#</a></h3>
+<p>If the model does not fit under the ordinary arithmetic, the run <strong>reports that and stops</strong>. It will never quietly reduce Nodeau's safety margin to make a model fit — a qualifier that spent the margin would always succeed and prove nothing.</p>
+<p>Accepting that risk is a decision only you can make, with <code>--accept-estimate-risk</code> or <code>--spend-safety-reserve</code>, spelled exactly as they are on <code>nodeau run</code>. A qualification run that used either <strong>records the fact permanently</strong>, and prediction, waived amount, which waivers were used and observed peak are four separate fields — so a number you chose is never printed as something Nodeau measured.</p>
+<h3 id="it-uses-free-capacity" class="doc-h">It uses free capacity<a class="doc-anchor" href="#it-uses-free-capacity" aria-label="Link to this section">#</a></h3>
+<p>Qualification never evicts a healthy workload. If your cards are busy, admission refuses and the run reports it rather than waiting for ever.</p>
+<h3 id="flags-2" class="doc-h">Flags<a class="doc-anchor" href="#flags-2" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--probe &lt;list&gt;</code></td><td data-label="Default">what the model declares</td><td data-label="Meaning">Which capabilities to probe</td></tr><tr><td data-label="Flag"><code>--task &lt;task&gt;</code></td><td data-label="Default"><code>chat</code>, or the model's own</td><td data-label="Meaning">Task to qualify</td></tr><tr><td data-label="Flag"><code>--context-size &lt;n&gt;</code></td><td data-label="Default"><code>4096</code></td><td data-label="Meaning">Context window to qualify at</td></tr><tr><td data-label="Flag"><code>--parallel &lt;n&gt;</code></td><td data-label="Default"><code>1</code></td><td data-label="Meaning">Concurrent sequences to qualify at</td></tr><tr><td data-label="Flag"><code>--gpus &lt;n&gt;</code></td><td data-label="Default"><code>1</code></td><td data-label="Meaning">Accelerators for this one workload</td></tr><tr><td data-label="Flag"><code>--dry-run</code></td><td data-label="Default">off</td><td data-label="Meaning">Print the plan and stop, without touching a GPU</td></tr><tr><td data-label="Flag"><code>--ready-timeout &lt;d&gt;</code></td><td data-label="Default"><code>8m</code></td><td data-label="Meaning">Bound on how long the runtime may take to start</td></tr><tr><td data-label="Flag"><code>--timeout &lt;d&gt;</code></td><td data-label="Default"><code>20m</code></td><td data-label="Meaning">Bound on the whole run</td></tr><tr><td data-label="Flag"><code>--namespace</code>, <code>-n</code></td><td data-label="Default"><code>nodeau-dev</code></td><td data-label="Meaning">Namespace the qualification workload runs in</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Default">off</td><td data-label="Meaning">Machine-readable</td></tr></tbody></table></div>
+<h3 id="outcomes" class="doc-h">Outcomes<a class="doc-anchor" href="#outcomes" aria-label="Link to this section">#</a></h3>
+<p>Each model ends in one phase, and each capability gets its own result.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Phase</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Phase"><code>Imported</code></td><td data-label="Meaning">The bytes are verified and registered. Nothing is known about what they can do</td></tr><tr><td data-label="Phase"><code>Inspected</code></td><td data-label="Meaning">The header was read and a profile synthesised. Admission arithmetic is possible; the model has not been proven to run</td></tr><tr><td data-label="Phase"><code>Qualifying</code></td><td data-label="Meaning">A qualification run owns this model right now</td></tr><tr><td data-label="Phase"><code>Qualified</code></td><td data-label="Meaning">Every capability that was probed passed</td></tr><tr><td data-label="Phase"><code>Partial</code></td><td data-label="Meaning">The model runs, some probed capabilities passed and others did not. <strong>A first-class outcome</strong></td></tr><tr><td data-label="Phase"><code>Unsupported</code></td><td data-label="Meaning">A valid artifact this build cannot serve. Not an error — your file is fine</td></tr><tr><td data-label="Phase"><code>Failed</code></td><td data-label="Meaning">Qualification ran and the model could not serve</td></tr><tr><td data-label="Phase"><code>Disabled</code></td><td data-label="Meaning">Taken out of service by its owner. Evidence is kept</td></tr></tbody></table></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Capability result</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Capability result"><code>Pass</code></td><td data-label="Meaning">Probed, and the probe's own assertions held</td></tr><tr><td data-label="Capability result"><code>Fail</code></td><td data-label="Meaning">Probed, and they did not</td></tr><tr><td data-label="Capability result"><code>Untested</code></td><td data-label="Meaning">Not probed. The zero-information state, and never rendered as a pass</td></tr><tr><td data-label="Capability result"><code>NotApplicable</code></td><td data-label="Meaning">The question does not arise for this model</td></tr><tr><td data-label="Capability result"><code>Unsupported</code></td><td data-label="Meaning">The runtime or platform cannot do it here</td></tr></tbody></table></div>
+<aside class="callout callout-important"><p class="callout-kind">Partial is not a pass, and it is not a failure either</p><p>A model whose chat passed and whose tool calling failed is claimed <strong>for chat and for nothing else</strong>. It stays usable for exactly what it proved. Nodeau will not imply that an imported model supports a capability it has not demonstrated.</p></aside>
+<h3 id="the-evidence-is-keyed-to-an-execution-not-to-a-model" class="doc-h">The evidence is keyed to an execution, not to a model<a class="doc-anchor" href="#the-evidence-is-keyed-to-an-execution-not-to-a-model" aria-label="Link to this section">#</a></h3>
+<p>A qualification record names the bytes, the runtime digest, the task, the context size, the parallelism, the cards and the schema version. Change any of those and the record stops describing what would happen.</p>
+<p>Concretely: <strong>4K-context evidence never claims 128K</strong>. Qualify again at the configuration you intend to run.</p>
+<p>You should re-qualify when:</p>
+<ul class="doc-list"><li>you change the <strong>context size</strong> or <strong>parallelism</strong> you intend to serve at;</li><li>you change the <strong>hardware</strong> — a different card, or a card moved between machines;</li><li>you re-import <strong>different bytes</strong> under the same alias (the evidence is dropped automatically, and Nodeau says so);</li><li>Nodeau's <strong>runtime</strong> changes in a release.</li></ul>
+<h3 id="if-a-run-is-interrupted" class="doc-h">If a run is interrupted<a class="doc-anchor" href="#if-a-run-is-interrupted" aria-label="Link to this section">#</a></h3>
+<p>The model stays in whatever phase it had reached, and the workload is cleaned up. Run <code>nodeau model qualify</code> again — nothing is left holding a card.</p>
+<hr class="doc-rule">
+<h2 id="running-an-imported-model" class="doc-h">Running an imported model<a class="doc-anchor" href="#running-an-imported-model" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#byom-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="byom-code-7"><code>nodeau run finance-model
+nodeau run finance-model --task embed --port 8081</code></pre></div>
+<p>Exactly like a curated model, and through the same admission engine. It is refused the same way and for the same reasons.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#byom-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="byom-code-8"><code>nodeau model list             # your own models are listed separately
+nodeau model info finance-model</code></pre></div>
+<p>A custom model is <strong>custom qualified</strong>, never "Nodeau curated". Different trust classes, listed separately, and the origin is stamped by the loader rather than declared by the file — so the claim cannot be forged, and a forgotten stamp reads as unknown rather than as curated.</p>
+<h2 id="where-a-diagnosis-points" class="doc-h">Where a diagnosis points<a class="doc-anchor" href="#where-a-diagnosis-points" aria-label="Link to this section">#</a></h2>
+<p>If Nodeau cannot run your model, the message says <strong>whose gap it is</strong>. "A gap in Nodeau's catalog" is true for a curated model and wrong for a file you supplied, and a remedy that sends you to fix the wrong thing costs you an afternoon.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/models/"><span>Previous</span>Models and the catalog</a><a class="doc-next" href="/docs/multi-gpu/"><span>Next</span>Several GPUs in one machine</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

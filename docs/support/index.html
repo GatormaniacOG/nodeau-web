@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nodeau support bundles</title>
+<meta name="description" content="What nodeau support bundle collects, what it deliberately excludes, how redaction works, and how to inspect one before you send it.">
+<link rel="canonical" href="https://nodeau.ai/docs/support/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/support/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Nodeau support bundles">
+<meta property="og:description" content="What nodeau support bundle collects, what it deliberately excludes, how redaction works, and how to inspect one before you send it.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations" open><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" aria-current="page" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Operations</p>
+      <h1 class="doc-title">Support bundles</h1>
+      <p class="lede doc-lede">Collect what somebody would need in order to help, and nothing else. The bundle is written to your disk and sent nowhere.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#nothing-is-uploaded">Nothing is uploaded</a></li><li><a href="#what-is-in-it">What is in it</a></li><li><a href="#what-is-deliberately-excluded">What is deliberately excluded</a></li><li><a href="#how-redaction-works">How redaction works</a></li><li><a href="#before-you-send-one">Before you send one</a></li></ul></nav>
+      <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#support-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="support-code-1"><code>nodeau support bundle</code></pre></div>
+<p>Writes <code>nodeau-support-&lt;timestamp&gt;.tar.gz</code> to the current directory.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--output</code>, <code>-o</code></td><td data-label="Meaning">Write to this path instead of a timestamped name</td></tr><tr><td data-label="Flag"><code>--namespace</code>, <code>-n</code></td><td data-label="Meaning">Namespace to collect workloads from</td></tr></tbody></table></div>
+<h2 id="nothing-is-uploaded" class="doc-h">Nothing is uploaded<a class="doc-anchor" href="#nothing-is-uploaded" aria-label="Link to this section">#</a></h2>
+<p>The bundle stays on your disk. <strong>Nodeau has no endpoint to upload it to</strong>, and nothing in the product sends one. If you want us to see it, you attach it to an email yourself.</p>
+<h2 id="what-is-in-it" class="doc-h">What is in it<a class="doc-anchor" href="#what-is-in-it" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Path in the archive</th><th>What</th></tr></thead><tbody><tr><td data-label="Path in the archive"><code>nodeau/version.txt</code></td><td data-label="What">The build identity of this binary</td></tr><tr><td data-label="Path in the archive"><code>nodeau/install-state.json</code></td><td data-label="What">The ownership ledger — what Nodeau installed and what it adopted</td></tr><tr><td data-label="Path in the archive"><code>host/environment.yaml</code></td><td data-label="What">OS, kernel, processor, memory, GPUs, network, disk classification</td></tr><tr><td data-label="Path in the archive"><code>host/doctor.yaml</code></td><td data-label="What">Every doctor check, with its code and detail</td></tr><tr><td data-label="Path in the archive"><code>host/container-stack.txt</code></td><td data-label="What">The container runtime and Kubernetes versions</td></tr><tr><td data-label="Path in the archive"><code>user/paths.txt</code></td><td data-label="What">Where Nodeau's directories are on this machine</td></tr><tr><td data-label="Path in the archive"><code>user/endpoints.txt</code></td><td data-label="What">Recorded local endpoints</td></tr><tr><td data-label="Path in the archive"><code>cluster/gpuservices.yaml</code></td><td data-label="What">Your services and the decisions recorded on them</td></tr><tr><td data-label="Path in the archive"><code>cluster/gpunodes.yaml</code></td><td data-label="What">Each machine's hardware report</td></tr><tr><td data-label="Path in the archive"><code>logs/runtime-*.txt</code></td><td data-label="What">Recent endpoint and runtime output</td></tr></tbody></table></div>
+<p>A step that could not run is recorded as an <strong>error entry</strong> rather than being omitted, so a missing section is never mistaken for a section with nothing in it.</p>
+<h2 id="what-is-deliberately-excluded" class="doc-h">What is deliberately excluded<a class="doc-anchor" href="#what-is-deliberately-excluded" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>How</th></tr></thead><tbody><tr><td data-label=""><strong>Model weights</strong></td><td data-label="How">By path. They are gigabytes and they are not diagnostic</td></tr><tr><td data-label=""><strong>Your API key file</strong></td><td data-label="How">By path, and the bundle records that it was skipped</td></tr><tr><td data-label=""><strong>The cluster-admin kubeconfig</strong></td><td data-label="How">By path, recorded as skipped: <em>"it is a cluster-admin credential, excluded by path"</em></td></tr><tr><td data-label=""><strong>Kubernetes Secrets</strong></td><td data-label="How">Never collected. Nodeau's CLI has no read access to them by design</td></tr><tr><td data-label=""><strong>SSH keys, PEM material, node tokens</strong></td><td data-label="How">By path and by pattern</td></tr><tr><td data-label=""><strong>Prompts and model responses</strong></td><td data-label="How">Nodeau <strong>never collects them at all</strong> — they are not written to a log in the first place</td></tr><tr><td data-label=""><strong>Batch inputs and results</strong></td><td data-label="How">Not collected</td></tr></tbody></table></div>
+<h2 id="how-redaction-works" class="doc-h">How redaction works<a class="doc-anchor" href="#how-redaction-works" aria-label="Link to this section">#</a></h2>
+<p>Redaction is a <strong>final pass over the assembled text</strong>, not something each collector is trusted to do. A new collector added later that forgets to redact still gets scrubbed.</p>
+<p>Every secret is replaced with one fixed placeholder, so you can tell at a glance that redaction ran, and so a diff between two bundles does not turn into noise. Where a rule can, it <strong>keeps the setting name and replaces only the value</strong> — <code>api_key: [REDACTED]</code> tells a support engineer which setting was present, which a blank line does not.</p>
+<p>The rules are deliberately broad: Nodeau's own key format, <code>Authorization</code> and <code>Proxy-Authorization</code> headers however they are spelled, bearer tokens, and generic credential assignments in JSON, YAML and environment-variable form. <strong>A false positive costs a support engineer one question; a false negative costs you a credential rotation.</strong></p>
+<h3 id="it-re-scans-and-aborts-rather-than-writing" class="doc-h">It re-scans, and aborts rather than writing<a class="doc-anchor" href="#it-re-scans-and-aborts-rather-than-writing" aria-label="Link to this section">#</a></h3>
+<p>After scrubbing, the assembled content is <strong>scanned again</strong>. A match after scrubbing <strong>aborts the bundle</strong> rather than writing it — because a support archive is the one file most likely to be emailed to a stranger without being read first.</p>
+<aside class="callout callout-important"><p class="callout-kind">Redaction is a safety net, not a guarantee about a file nobody has seen</p><p>It is a plain <code>.tar.gz</code>. Please do look inside before sending it.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#support-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="support-code-2"><code>tar tzf nodeau-support-*.tar.gz          # what is in it
+tar xzf nodeau-support-*.tar.gz -C /tmp  # read it</code></pre></div></aside>
+<h2 id="before-you-send-one" class="doc-h">Before you send one<a class="doc-anchor" href="#before-you-send-one" aria-label="Link to this section">#</a></h2>
+<p>Worth including in the message, because it saves a round trip:</p>
+<ul class="doc-list"><li>what you ran, and what you expected,</li><li>what happened instead, with the exact text if it is short,</li><li>whether it is reproducible,</li><li>the reason code, if there was one.</li></ul>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#support-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="support-code-3"><code>nodeau doctor --json &gt; doctor.json
+nodeau support bundle</code></pre></div>
+<p>Send them to <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>, or use the <a href="/contact/?type=install">contact form</a>.</p>
+<p>A report from a machine we have never seen is the most useful thing we get.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/troubleshooting/"><span>Previous</span>Troubleshooting</a><a class="doc-next" href="/docs/security/"><span>Next</span>Security and privacy</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

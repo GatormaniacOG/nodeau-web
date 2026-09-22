@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uninstalling Nodeau</title>
+<meta name="description" content="What nodeau uninstall removes, what it deliberately keeps, how the ownership ledger decides, and what is left behind on purpose.">
+<link rel="canonical" href="https://nodeau.ai/docs/uninstall/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/uninstall/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Uninstalling Nodeau">
+<meta property="og:description" content="What nodeau uninstall removes, what it deliberately keeps, how the ownership ledger decides, and what is left behind on purpose.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations" open><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" aria-current="page" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Operations</p>
+      <h1 class="doc-title">Uninstalling</h1>
+      <p class="lede doc-lede">Nodeau removes only what Nodeau installed, and refuses to remove anything else even if you ask. That is what the ownership ledger is for.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#look-first">Look first</a></li><li><a href="#the-ownership-ledger">The ownership ledger</a></li><li><a href="#linux">Linux</a></li><li><a href="#macos">macOS</a></li><li><a href="#your-account-and-your-fleet">Your account and your fleet</a></li><li><a href="#what-is-left-behind-on-purpose">What is left behind, on purpose</a></li><li><a href="#checking-afterwards">Checking afterwards</a></li></ul></nav>
+      <h2 id="look-first" class="doc-h">Look first<a class="doc-anchor" href="#look-first" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#uninstall-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="uninstall-code-1"><code>nodeau uninstall --dry-run</code></pre></div>
+<p>The full plan is printed before anything happens, and each destructive option is named for exactly what it destroys. There is deliberately <strong>no flag that means "remove more" without saying what</strong>.</p>
+<h2 id="the-ownership-ledger" class="doc-h">The ownership ledger<a class="doc-anchor" href="#the-ownership-ledger" aria-label="Link to this section">#</a></h2>
+<p>When <code>nodeau install</code> runs, it records — at <code>/var/lib/nodeau/install-state.json</code> on Linux — which components it <strong>installed</strong> and which it <strong>adopted</strong> because they were already there.</p>
+<p>Uninstall reads that ledger. A component Nodeau adopted is left exactly as it was found. This is why <code>nodeau install</code> never re-decides who owns a component when you run it again: changing that record retroactively would change what a later uninstall is allowed to touch.</p>
+<p>The removal set is derived from the <strong>same</strong> manifests the install applies, so a component Nodeau installs and does not know how to remove fails the build rather than being left behind silently.</p>
+<p>Ownership is also resolved <strong>per entry</strong> in the model cache and the runtime directory, and the policy is conservative toward <strong>keep</strong>: an entry with no manifest is never removed, whatever the ledger says.</p>
+<h2 id="linux" class="doc-h">Linux<a class="doc-anchor" href="#linux" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#uninstall-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="uninstall-code-2"><code>nodeau uninstall</code></pre></div>
+<h3 id="removed" class="doc-h">Removed<a class="doc-anchor" href="#removed" aria-label="Link to this section">#</a></h3>
+<ul class="doc-list"><li>Nodeau's controller and node agent</li><li>Its custom resource definitions</li><li>Its namespaces</li><li>Your local endpoint services</li><li>The per-device GPU driver and device plugin, if Nodeau installed them</li></ul>
+<h3 id="kept-by-default" class="doc-h">Kept by default<a class="doc-anchor" href="#kept-by-default" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>Why</th></tr></thead><tbody><tr><td data-label="">Your <strong>NVIDIA driver</strong></td><td data-label="Why">Always, under every flag. Nodeau never owned it</td></tr><tr><td data-label="">Your <strong>downloaded models</strong></td><td data-label="Why">Gigabytes you chose to fetch</td></tr><tr><td data-label="">Your <strong>batch inputs and results</strong></td><td data-label="Why">They exist nowhere else</td></tr><tr><td data-label=""><strong>Kubernetes</strong></td><td data-label="Why">If it was here before Nodeau</td></tr><tr><td data-label="">The <strong>NVIDIA Container Toolkit</strong></td><td data-label="Why">For the same reason</td></tr><tr><td data-label="">Your <strong>API key</strong> and account link</td><td data-label="Why">Local files you own</td></tr></tbody></table></div>
+<h3 id="removing-more-explicitly" class="doc-h">Removing more, explicitly<a class="doc-anchor" href="#removing-more-explicitly" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>What it destroys</th></tr></thead><tbody><tr><td data-label="Flag"><code>--remove-models</code></td><td data-label="What it destroys">Downloaded model weights. Gigabytes; you will re-download them</td></tr><tr><td data-label="Flag"><code>--remove-batch-data</code></td><td data-label="What it destroys">Every batch job's input records and results. <strong>These exist nowhere else</strong> — unlike model weights they cannot be downloaded again</td></tr><tr><td data-label="Flag"><code>--remove-managed-k3s</code></td><td data-label="What it destroys">K3s, <strong>and only if Nodeau installed it</strong></td></tr><tr><td data-label="Flag"><code>--remove-toolkit</code></td><td data-label="What it destroys">The NVIDIA Container Toolkit, <strong>and only if Nodeau installed it</strong></td></tr><tr><td data-label="Flag"><code>--purge</code></td><td data-label="What it destroys">Every option above at once</td></tr></tbody></table></div>
+<p>Other flags: <code>--dry-run</code>, <code>--yes</code>/<code>-y</code>, <code>--namespace</code>/<code>-n</code>, <code>--state &lt;path&gt;</code>.</p>
+<aside class="callout callout-danger"><p class="callout-kind">`--purge` is not reversible</p><p>It removes models you will have to download again and batch records that exist nowhere else. Run <code>--dry-run --purge</code> first and read the plan.</p></aside>
+<h3 id="removing-kubernetes" class="doc-h">Removing Kubernetes<a class="doc-anchor" href="#removing-kubernetes" aria-label="Link to this section">#</a></h3>
+<p>If Nodeau installed K3s, <code>--remove-managed-k3s</code> removes it. Nodeau also <strong>prints</strong> the root commands that clean up what a K3s removal can leave behind — for example directories under <code>/run</code> — for you to run yourself.</p>
+<aside class="callout callout-warning"><p class="callout-kind">Those printed commands have not been executed for you</p><p>They are printed for you to inspect and run. <code>--dry-run</code> does not print them. Read them before running them: they are root commands on your own machine.</p></aside>
+<h2 id="macos" class="doc-h">macOS<a class="doc-anchor" href="#macos" aria-label="Link to this section">#</a></h2>
+<p>A Mac runs standalone — it never joined a fleet, so there is no membership to remove and no other machine to tell.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#uninstall-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="uninstall-code-3"><code>nodeau uninstall --dry-run
+nodeau uninstall</code></pre></div>
+<p>It removes what <code>nodeau install</code> put here and nothing else. A model runtime you assembled yourself, a <code>PATH</code> line you wrote, or a copy of <code>nodeau</code> you manage are all left alone, and the plan says so.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>What it does</th></tr></thead><tbody><tr><td data-label="Flag"><code>--dry-run</code></td><td data-label="What it does">Show what would be removed and stop</td></tr><tr><td data-label="Flag"><code>--yes</code>, <code>-y</code></td><td data-label="What it does">Do not ask anything</td></tr><tr><td data-label="Flag"><code>--models</code></td><td data-label="What it does">Also delete downloaded model weights</td></tr><tr><td data-label="Flag"><code>--keep-path</code></td><td data-label="What it does">Leave the <code>PATH</code> line in your login profile</td></tr><tr><td data-label="Flag"><code>--state &lt;path&gt;</code></td><td data-label="What it does">Path to the install ledger</td></tr></tbody></table></div>
+<p>Your downloaded models are <strong>kept</strong> unless you pass <code>--models</code>. Uninstalling the software and throwing away gigabytes of downloads are different decisions.</p>
+<h2 id="your-account-and-your-fleet" class="doc-h">Your account and your fleet<a class="doc-anchor" href="#your-account-and-your-fleet" aria-label="Link to this section">#</a></h2>
+<p><code>nodeau uninstall</code> is a <strong>local</strong> operation. It does not:</p>
+<ul class="doc-list"><li>remove the installation from your Nodeau account,</li><li>remove the machine from a fleet,</li><li>cancel a subscription.</li></ul>
+<p>Do those separately:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#uninstall-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="uninstall-code-4"><code>nodeau logout                       # unlink this machine locally
+nodeau fleet remove &lt;machine&gt;       # from the machine that runs the control plane</code></pre></div>
+<p>Removing a machine from a fleet is done from another machine, because a machine that is gone cannot do it for itself. See <a href="/docs/fleet/#removing-a-machine">removing a machine</a>.</p>
+<h2 id="what-is-left-behind-on-purpose" class="doc-h">What is left behind, on purpose<a class="doc-anchor" href="#what-is-left-behind-on-purpose" aria-label="Link to this section">#</a></h2>
+<p>After a plain uninstall you will still have:</p>
+<ul class="doc-list"><li><code>~/.local/bin/nodeau</code> and <code>nodeau-fleet</code> — the binaries the bootstrap installed into a directory you own. Delete them yourself if you want them gone.</li><li><code>~/.config/nodeau/</code> — your API key, account link and entitlement.</li><li><code>/var/lib/nodeau/models/</code> — your downloaded weights.</li><li><code>/var/lib/nodeau/batch/</code> — your batch records.</li><li>Your NVIDIA driver, Secure Boot configuration, bootloader and partitions, untouched.</li></ul>
+<h2 id="checking-afterwards" class="doc-h">Checking afterwards<a class="doc-anchor" href="#checking-afterwards" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#uninstall-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="uninstall-code-5"><code>nodeau doctor --host-only</code></pre></div>
+<p>On a machine Nodeau has been removed from, <code>NODEAU_NOT_INSTALLED</code> is the correct answer rather than a fault.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/updates/"><span>Previous</span>Updating and release channels</a><a class="doc-next" href="/docs/troubleshooting/"><span>Next</span>Troubleshooting</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

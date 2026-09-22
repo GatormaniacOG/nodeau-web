@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Health, doctor and diagnostics</title>
+<meta name="description" content="The difference between doctor, health, status, ps and logs, what each machine actually measures, alert states, retention, and every doctor code.">
+<link rel="canonical" href="https://nodeau.ai/docs/health/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/health/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Health, doctor and diagnostics">
+<meta property="og:description" content="The difference between doctor, health, status, ps and logs, what each machine actually measures, alert states, retention, and every doctor code.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines" open><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" aria-current="page" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Your machines</p>
+      <h1 class="doc-title">Health and diagnostics</h1>
+      <p class="lede doc-lede">Five commands answer five different questions. Using the wrong one is the commonest reason a real problem looks invisible.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#which-command-answers-which-question">Which command answers which question</a></li><li><a href="#nodeau-doctor">nodeau doctor</a></li><li><a href="#nodeau-health">nodeau health</a></li><li><a href="#nodeau-status">nodeau status</a></li><li><a href="#nodeau-ps">nodeau ps</a></li><li><a href="#nodeau-logs">nodeau logs</a></li><li><a href="#the-local-dashboard">The local dashboard</a></li></ul></nav>
+      <h2 id="which-command-answers-which-question" class="doc-h">Which command answers which question<a class="doc-anchor" href="#which-command-answers-which-question" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Command</th><th>Question</th><th>Platform</th></tr></thead><tbody><tr><td data-label="Command"><code>nodeau doctor</code></td><td data-label="Question"><strong>Is anything wrong, and what do I do about it?</strong></td><td data-label="Platform">Both</td></tr><tr><td data-label="Command"><code>nodeau health</code></td><td data-label="Question"><strong>How are my machines doing</strong> — processor, memory, storage, network</td><td data-label="Platform">Linux</td></tr><tr><td data-label="Command"><code>nodeau status</code></td><td data-label="Question"><strong>What is Nodeau running right now</strong>, and does the endpoint answer?</td><td data-label="Platform">Both</td></tr><tr><td data-label="Command"><code>nodeau ps</code></td><td data-label="Question"><strong>What is holding a GPU</strong> — services and batch jobs</td><td data-label="Platform">Both</td></tr><tr><td data-label="Command"><code>nodeau logs</code></td><td data-label="Question"><strong>What is a workload printing?</strong></td><td data-label="Platform">Linux</td></tr></tbody></table></div>
+<p><code>doctor</code> is the one to start with. It is read-only, it names problems in typed codes, and every result that is not a pass carries something to do about it.</p>
+<hr class="doc-rule">
+<h2 id="nodeau-doctor" class="doc-h"><code>nodeau doctor</code><a class="doc-anchor" href="#nodeau-doctor" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#health-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="health-code-1"><code>nodeau doctor
+nodeau doctor --json          # every result, code, explanation and remedy
+nodeau doctor --host-only     # this machine only, without contacting the cluster
+nodeau doctor --node nodeau-c # one machine, plus installation-wide checks</code></pre></div>
+<p><strong>Every check is read-only.</strong> Doctor never installs, configures, mounts, starts or stops anything; it only looks.</p>
+<p>Two halves:</p>
+<ul class="doc-list"><li><strong>The host</strong> — is this machine capable of running Nodeau: operating system, processor, memory, whether it is bare metal, storage safety, the state directory, Secure Boot, the GPU on the PCI bus, the driver, VRAM, network.</li><li><strong>The installation</strong> — is Nodeau itself working: its control plane, the agent on each machine, whether every GPU report is fresh enough to schedule against, whether the models on disk still verify, and what your services and batch jobs are doing.</li></ul>
+<p>Exit <code>0</code> everything passed or only warnings · <code>1</code> something failed · <code>2</code> called wrongly.</p>
+<h3 id="doctor-codes" class="doc-h">Doctor codes<a class="doc-anchor" href="#doctor-codes" aria-label="Link to this section">#</a></h3>
+<p>Stable, machine-readable, and the same in <code>--json</code> as in the human report.</p>
+<p><strong>Reaching the cluster</strong></p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>CLUSTER_UNREACHABLE</code></td><td data-label="Meaning">Nodeau cannot talk to Kubernetes at all</td></tr><tr><td data-label="Code"><code>API_FORBIDDEN</code></td><td data-label="Meaning">The cluster answered and refused this identity</td></tr><tr><td data-label="Code"><code>NODEAU_NOT_INSTALLED</code></td><td data-label="Meaning">A Nodeau component is absent. On a machine that has not been set up, this is the correct answer rather than a fault</td></tr><tr><td data-label="Code"><code>NODEAU_CRDS_MISSING</code></td><td data-label="Meaning">The Nodeau resource types are not registered</td></tr><tr><td data-label="Code"><code>CONTROLLER_NOT_RUNNING</code></td><td data-label="Meaning">The control plane is not available</td></tr><tr><td data-label="Code"><code>AGENT_NOT_RUNNING</code></td><td data-label="Meaning">No hardware agent is reporting on some machine</td></tr><tr><td data-label="Code"><code>COMPONENT_DEGRADED</code></td><td data-label="Meaning">A component is running below its desired count</td></tr></tbody></table></div>
+<p><strong>Hardware</strong></p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>NO_GPU_NODES</code></td><td data-label="Meaning">No machine has published a GPU</td></tr><tr><td data-label="Code"><code>HARDWARE_REPORT_STALE</code></td><td data-label="Meaning">A machine's GPU report is older than the controller will accept, so admission fails closed for that machine</td></tr><tr><td data-label="Code"><code>GPU_UNHEALTHY</code></td><td data-label="Meaning">A reported GPU says it is not healthy</td></tr><tr><td data-label="Code"><code>DEVICES_NOT_INDEPENDENT</code></td><td data-label="Meaning">A machine holds more than one GPU and cannot schedule them independently. Not a fault — the state every machine is in until it opts in</td></tr><tr><td data-label="Code"><code>DEVICE_DRIVER_MISSING</code></td><td data-label="Meaning">A machine is switched to per-device scheduling and nothing offers its GPUs</td></tr><tr><td data-label="Code"><code>DEVICE_ALLOCATORS_OVERLAP</code></td><td data-label="Meaning">A machine is serving GPU work through <strong>both</strong> allocators. This one <strong>is</strong> a fault, and the dangerous kind — two independent allocators over the same cards</td></tr><tr><td data-label="Code"><code>HOST_CHECK_FAILED</code></td><td data-label="Meaning">A host-level precondition failed</td></tr><tr><td data-label="Code"><code>STORAGE_LOW</code></td><td data-label="Meaning">The model cache filesystem is running out of room</td></tr></tbody></table></div>
+<p><strong>Models</strong></p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>NO_MODELS</code></td><td data-label="Meaning">Nothing has been downloaded yet</td></tr><tr><td data-label="Code"><code>MODEL_CACHE_NOT_OBSERVED</code></td><td data-label="Meaning">A GPU machine has no model-cache observation</td></tr><tr><td data-label="Code"><code>MODEL_CACHE_ERROR</code></td><td data-label="Meaning">The observer ran and could not read the cache</td></tr><tr><td data-label="Code"><code>MODEL_CACHE_VERIFYING</code></td><td data-label="Meaning">A hash is in progress. Clears by itself</td></tr><tr><td data-label="Code"><code>MODEL_CORRUPT</code></td><td data-label="Meaning">A cached artifact does not match the catalog digest</td></tr></tbody></table></div>
+<p><strong>Workloads</strong></p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>SERVICE_NOT_ADMITTED</code></td><td data-label="Meaning">A service exists and Nodeau refused it. <strong>Not an installation fault</strong> — the product working, reported so you can see it without going looking</td></tr><tr><td data-label="Code"><code>SERVICE_NOT_READY</code></td><td data-label="Meaning">Admitted and not yet serving</td></tr><tr><td data-label="Code"><code>WORKLOAD_STOPPED</code></td><td data-label="Meaning">A workload Nodeau has a record of is not running</td></tr><tr><td data-label="Code"><code>BATCH_JOB_FAILED</code></td><td data-label="Meaning">A batch job ended in failure</td></tr></tbody></table></div>
+<p><strong>Local endpoints</strong></p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>ENDPOINT_NOT_ANSWERING</code></td><td data-label="Meaning">A local endpoint is recorded and does not answer</td></tr><tr><td data-label="Code"><code>ENDPOINT_UPSTREAM_LOST</code></td><td data-label="Meaning">It answers and cannot reach the model behind it</td></tr><tr><td data-label="Code"><code>ENDPOINT_ORPHANED</code></td><td data-label="Meaning">Endpoint units exist for workloads that do not</td></tr><tr><td data-label="Code"><code>ENDPOINT_UNRECORDED</code></td><td data-label="Meaning">An endpoint is running and Nodeau has no record of it, so <code>nodeau status</code> does not list it</td></tr><tr><td data-label="Code"><code>ENDPOINT_BINARY_REPLACED</code></td><td data-label="Meaning">A local endpoint is running a program that has since been replaced on disk</td></tr><tr><td data-label="Code"><code>NETWORK_EXPOSURE</code></td><td data-label="Meaning">Something makes a model reachable from off this machine. <strong>Nodeau never creates one</strong></td></tr></tbody></table></div>
+<p><strong>Account and plan</strong></p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>ENTITLEMENT_INVALID</code></td><td data-label="Meaning">An entitlement exists and was not accepted</td></tr><tr><td data-label="Code"><code>PLAN_REFRESH_STALLED</code></td><td data-label="Meaning">This installation is linked to an account and has stopped learning what that account entitles it to</td></tr><tr><td data-label="Code"><code>FLEET_NOT_REPORTING</code></td><td data-label="Meaning">The fleet connector is not reporting. A <strong>warning at worst</strong> — a cloud outage costs you nothing</td></tr><tr><td data-label="Code"><code>FLEET_REPORT_STALE</code></td><td data-label="Meaning">Reporting, and the last report is older than the cadence the server asked for</td></tr><tr><td data-label="Code"><code>FLEET_PROTOCOL_MISMATCH</code></td><td data-label="Meaning">This build and Nodeau Cloud cannot exchange fleet state. An update fixes it; a network never will</td></tr><tr><td data-label="Code"><code>CONNECTOR_BINARY_REPLACED</code></td><td data-label="Meaning">The connector is running a binary that has since been replaced on disk</td></tr></tbody></table></div>
+<p><strong>macOS</strong></p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Code"><code>RUNTIME_MISSING</code></td><td data-label="Meaning">No model runtime is installed, so nothing can be executed</td></tr><tr><td data-label="Code"><code>RUNTIME_CORRUPT</code></td><td data-label="Meaning">The installed runtime's bytes no longer match the digests recorded when it was installed</td></tr><tr><td data-label="Code"><code>RUNTIME_UNVERIFIED</code></td><td data-label="Meaning">Installed, and its integrity was <strong>not checked on this run</strong>. Deliberately not a pass: "was not checked" and "is intact" are different claims</td></tr><tr><td data-label="Code"><code>RUNTIME_UNMANAGED</code></td><td data-label="Meaning">A runtime Nodeau did not install, so it has no version, no backend and no digests</td></tr><tr><td data-label="Code"><code>NOT_ON_PATH</code></td><td data-label="Meaning">The binary is installed and a shell will not find it</td></tr></tbody></table></div>
+<hr class="doc-rule">
+<h2 id="nodeau-health" class="doc-h"><code>nodeau health</code><a class="doc-anchor" href="#nodeau-health" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#health-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="health-code-2"><code>nodeau health
+nodeau health --json
+nodeau health history --machine nodeforge --since 6h</code></pre></div>
+<aside class="callout callout-linux"><p class="callout-kind">Linux / NVIDIA only</p><p><code>health</code> and <code>health history</code> refuse on a native installation and say so. They read the fleet datastore, and a Mac runs standalone — it is not a Kubernetes node and has no fleet to report on. The codes under <strong>macOS</strong> below are the ones a Mac does produce, through <code>nodeau doctor</code>.</p></aside>
+<p>The current state of every machine — <strong>processor, memory, storage and network</strong> — alongside the GPU readings already there, together with anything that needs attention.</p>
+<p><strong>Every reading was taken by the machine it describes</strong>, and stays on your own hardware. Telemetry is not sent to Nodeau Cloud, and there is no field for it in the protocol that talks to Nodeau Cloud at all.</p>
+<h3 id="missing-is-not-zero" class="doc-h">Missing is not zero<a class="doc-anchor" href="#missing-is-not-zero" aria-label="Link to this section">#</a></h3>
+<p>A value shown as <strong>"not collected"</strong> is missing, which is a different thing from zero. A card reporting 0% utilisation is idle; a card Nodeau could not read is unknown, and the two must never look the same.</p>
+<p><code>health history</code> follows the same rule: an interval with no observations is <strong>absent</strong> rather than zero, so a gap in the output is a gap in what was observed. Nodeau does not fill one in.</p>
+<h3 id="history-flags" class="doc-h"><code>history</code> flags<a class="doc-anchor" href="#history-flags" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--machine &lt;name&gt;</code></td><td data-label="Default">the first with any history</td><td data-label="Meaning">Which machine</td></tr><tr><td data-label="Flag"><code>--since &lt;d&gt;</code></td><td data-label="Default"><code>1h</code></td><td data-label="Meaning">How far back to look</td></tr><tr><td data-label="Flag"><code>--resolution &lt;w&gt;</code></td><td data-label="Default">—</td><td data-label="Meaning">A named window, e.g. <code>1m</code> or <code>15m</code></td></tr><tr><td data-label="Flag"><code>--metric &lt;name&gt;</code></td><td data-label="Default">all</td><td data-label="Meaning">Restrict to a metric. Repeatable</td></tr><tr><td data-label="Flag"><code>--device &lt;uuid&gt;</code></td><td data-label="Default">all</td><td data-label="Meaning">Restrict to a GPU UUID. Repeatable</td></tr><tr><td data-label="Flag"><code>--max-points &lt;n&gt;</code></td><td data-label="Default">—</td><td data-label="Meaning">The most intervals to print per series</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Default">off</td><td data-label="Meaning">Machine-readable</td></tr></tbody></table></div>
+<h3 id="retention" class="doc-h">Retention<a class="doc-anchor" href="#retention" aria-label="Link to this section">#</a></h3>
+<p><strong>24 hours</strong>, uniformly. It is not a plan difference, and no plan gets more.</p>
+<p>History lives in the Kubernetes datastore — which is <strong>the control-plane machine's disk</strong>. It is not replicated anywhere. If that disk is lost, the history goes with it.</p>
+<h3 id="what-health-does-not-do" class="doc-h">What health does not do<a class="doc-anchor" href="#what-health-does-not-do" aria-label="Link to this section">#</a></h3>
+<ul class="doc-list"><li><strong>No disk health and no SMART.</strong> Nodeau reads no drive attribute. It reports how full a filesystem is, and says so. It will not tell you a disk is failing.</li><li><strong>No per-process CPU or memory</strong>, no process list, no command lines, no connection table.</li><li><strong>No telemetry to Nodeau Cloud.</strong> The machines appear in the hosted console; these readings do not.</li><li><strong>No external alert delivery.</strong> No email, no webhook, no pager.</li><li><strong>Not qualified on Apple Silicon.</strong></li></ul>
+<h3 id="alerts" class="doc-h">Alerts<a class="doc-anchor" href="#alerts" aria-label="Link to this section">#</a></h3>
+<p>The controller reconciles a small set of conditions and reports what needs attention:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Condition</th><th>About</th></tr></thead><tbody><tr><td data-label="Condition"><code>MachineOffline</code></td><td data-label="About">A machine has stopped reporting</td></tr><tr><td data-label="Condition"><code>HostTelemetryUnavailable</code></td><td data-label="About">The machine is there and its readings are not</td></tr><tr><td data-label="Condition"><code>HostMemoryPressure</code></td><td data-label="About">System memory</td></tr><tr><td data-label="Condition"><code>HostFilesystemLow</code></td><td data-label="About">A filesystem filling up</td></tr><tr><td data-label="Condition"><code>AcceleratorUnhealthy</code></td><td data-label="About">A card reporting a fault</td></tr><tr><td data-label="Condition"><code>AcceleratorMemoryExhausted</code></td><td data-label="About">A card's memory</td></tr><tr><td data-label="Condition"><code>AcceleratorTemperatureHigh</code></td><td data-label="About">Temperature</td></tr><tr><td data-label="Condition"><code>AcceleratorThermalThrottling</code></td><td data-label="About">The card reducing clocks to stay within limits</td></tr><tr><td data-label="Condition"><code>InsufficientVRAM</code></td><td data-label="About">A workload that cannot be placed</td></tr><tr><td data-label="Condition"><code>WorkloadNotReady</code></td><td data-label="About">A workload that is not serving</td></tr></tbody></table></div>
+<p>An alert has <strong>three</strong> states:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>State</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="State"><code>Pending</code></td><td data-label="Meaning">The condition is holding and counting toward its debounce window</td></tr><tr><td data-label="State"><code>Active</code></td><td data-label="Meaning">It held for the full window</td></tr><tr><td data-label="State"><code>Resolved</code></td><td data-label="Meaning">It was there and stopped</td></tr></tbody></table></div>
+<p><strong>Only <code>Active</code> is counted anywhere</strong> — no badge, tile or <code>nodeau health</code> line moves for a <code>Pending</code> alert. That is what makes the third state additive rather than a claim.</p>
+<aside class="callout callout-note"><p class="callout-kind">An alert is not health</p><p>A healthy machine can carry a warning, and a machine with no alerts can still be unable to run what you want. They answer different questions.</p></aside>
+<hr class="doc-rule">
+<h2 id="nodeau-status" class="doc-h"><code>nodeau status</code><a class="doc-anchor" href="#nodeau-status" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#health-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="health-code-3"><code>nodeau status</code></pre></div>
+<p><strong>Nothing here is read from a cache.</strong> The workload state comes from the cluster, the endpoint state from the service manager, and "answering" from an actual connection to the port — so a stale record cannot make this report something that is not true.</p>
+<p>It also lists anything that makes a model reachable <strong>from your network</strong>, if something on the machine does. Nodeau does not create those, and saying so is the point.</p>
+<hr class="doc-rule">
+<h2 id="nodeau-ps" class="doc-h"><code>nodeau ps</code><a class="doc-anchor" href="#nodeau-ps" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#health-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="health-code-4"><code>nodeau ps            # everything holding a GPU
+nodeau ps --all      # including finished batch jobs
+nodeau ps -A         # across all namespaces</code></pre></div>
+<p>Services and batch jobs alike, with where each one is and what it is doing.</p>
+<hr class="doc-rule">
+<h2 id="nodeau-logs" class="doc-h"><code>nodeau logs</code><a class="doc-anchor" href="#nodeau-logs" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#health-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="health-code-5"><code>nodeau logs qwen-local -f
+nodeau logs my-batch
+nodeau logs --system nodeau-controller</code></pre></div>
+<p>Nodeau's own components are under <code>--system</code>; everything else is looked up in your workload namespace.</p>
+<p><strong>Prompts, completions and batch records are never written to a log</strong>, so they cannot appear here.</p>
+<hr class="doc-rule">
+<h2 id="the-local-dashboard" class="doc-h">The local dashboard<a class="doc-anchor" href="#the-local-dashboard" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#health-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="health-code-6"><code>nodeau dashboard</code></pre></div>
+<p>The same information in a browser: hardware, models, running services, alerts and plan. Bound to loopback, protected by a token, compiled into the binary, and it works with no internet connection at all.</p>
+<p>It is read-only apart from one action — it can stop a batch job.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/governance/"><span>Previous</span>Organisation limits</a><a class="doc-next" href="/docs/power/"><span>Next</span>Power limits and budgets</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+# Every public command in the `nodeau` tree, generated from the binary.
+#
+# Regenerate from the platform repository:
+#     ./scripts/docs/dump-cli-commands.sh > ../nodeau-web/docs-src/cli-commands.txt
+#
+# tools/check-cli-coverage.py fails when a command here is not documented in
+# docs-src/cli.md. The failure this prevents is the ordinary one: a command
+# ships, nobody remembers the reference page, and /docs is quietly incomplete
+# with nothing to say so.
+#
+# Produced on Linux, which is the floor. `nodeau install` and `nodeau uninstall`
+# carry extra flags on darwin and `nodeau native` exists only there; /docs
+# covers those and this list cannot see them.
+nodeau auth	--help
+nodeau auth publish	--help --namespace --yes
+nodeau auth rotate	--help --yes
+nodeau auth show	--help --quiet
+nodeau auth token	--export --help --namespace
+nodeau batch cancel	--help --namespace
+nodeau batch	--help
+nodeau batch list	--all-namespaces --help --json --namespace
+nodeau batch results	--help --namespace --output --stdout
+nodeau batch status	--help --json --namespace
+nodeau batch submit	--context-size --gpus --help --max-attempts --model --name --namespace --parallel --task --workers
+nodeau batch wait	--help --namespace --timeout
+nodeau dashboard	--addr --cache-dir --help
+nodeau doctor	--help --host-only --json --namespace --node
+nodeau endpoint	--help
+nodeau endpoint serve	--help --model --namespace --port --service --upstream
+nodeau environment	--help --json
+nodeau fleet connect	--help --no-linger --yes
+nodeau fleet disconnect	--help
+nodeau fleet	--help
+nodeau fleet invite	--address --expires-in --help
+nodeau fleet list	--help --json
+nodeau fleet remove	--dry-run --force --help --json --yes
+nodeau fleet status	--help --json
+nodeau governance	--allow-device --allow-model --allow-node --clear --help --json --max-batch-workers --max-gpus --max-workloads
+nodeau health	--help --json
+nodeau health history	--device --help --json --machine --max-points --metric --resolution --since
+nodeau install	--agent-image --batch-runner-image --cache-dir --channel --controller-image --dry-run --help --print-manifests --scheduling-mode --scheduling-selection --server-dry-run --skip-k3s --skip-toolkit --state --verbose --yes
+nodeau join	--cache-dir --dry-run --help --verbose --yes
+nodeau login	--api --help --json --name --no-browser --show --wait
+nodeau logout	--help --json
+nodeau logs	--container --follow --help --namespace --previous --system --tail
+nodeau model	--help
+nodeau model import	--alias --cache-dir --help --json --namespace --no-register --probe --qualify --sha256
+nodeau model info	--cache-dir --help --json --namespace
+nodeau model install	--cache-dir --consent --help --verify
+nodeau model list	--all --cache-dir --help --json --namespace
+nodeau model qualify	--accept-estimate-risk --context-size --dry-run --gpus --help --json --namespace --parallel --probe --ready-timeout --spend-safety-reserve --task --timeout
+nodeau model remove	--cache-dir --help --namespace --yes
+nodeau model status	--cache-dir --context-size --help --json --namespace --parallel
+nodeau model verify	--cache-dir --help --namespace
+nodeau placement explain	--help --json --namespace
+nodeau placement	--help
+nodeau plan export	--help --output
+nodeau plan	--help
+nodeau plan import	--help --json
+nodeau plan refresh	--help --json
+nodeau plan set	--from-file --help
+nodeau plan show	--help --json
+nodeau power	--help --json
+nodeau power set	--clear --device --help --limit
+nodeau ps	--all --all-namespaces --help --json --namespace
+nodeau quickstart	--consent --context-size --help --model --name --namespace --parallel --port --timeout --yes
+nodeau restart	--help --namespace --timeout --wait
+nodeau run	--accept-estimate-risk --batch-tokens --cache-dir --context-size --foreground --gpus --gpus-auto --help --json --max-gpus --mode --name --namespace --parallel --port --pull --spend-safety-reserve --task --timeout --topology --yes
+nodeau scheduling constraints	--allow-device --clear --deny-device --help --idle-watts --json --max-accelerators --node --power-budget
+nodeau scheduling drain	--help --node
+nodeau scheduling	--help
+nodeau scheduling mode	--help --json --node
+nodeau scheduling undrain	--help --node
+nodeau service apply	--filename --help --namespace
+nodeau service explain	--help --namespace
+nodeau service get	--all-namespaces --help --json --namespace
+nodeau service	--help
+nodeau status	--all-namespaces --help --json --namespace
+nodeau stop	--endpoint-only --help --namespace --remove --workload --yes
+nodeau support bundle	--help --namespace --output
+nodeau support	--help
+nodeau uninstall	--dry-run --help --namespace --purge --remove-batch-data --remove-managed-k3s --remove-models --remove-toolkit --state --yes
+nodeau update	--base-url --channel --download --help --json
+nodeau version	--help --json

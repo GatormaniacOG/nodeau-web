@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nodeau core concepts</title>
+<meta name="description" content="The vocabulary Nodeau uses — machine, GPU, fleet, workload, service, endpoint, model cache, admission, reservation, qualification, entitlement, drain and control plane.">
+<link rel="canonical" href="https://nodeau.ai/docs/concepts/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/concepts/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Nodeau core concepts">
+<meta property="og:description" content="The vocabulary Nodeau uses — machine, GPU, fleet, workload, service, endpoint, model cache, admission, reservation, qualification, entitlement, drain and control plane.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts" open><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" aria-current="page" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Concepts</p>
+      <h1 class="doc-title">Core concepts</h1>
+      <p class="lede doc-lede">Nodeau's words mean specific things, and several of them mean something narrower than they do elsewhere. Each one is defined once here.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#machine-node-gpu">Machine, node, GPU</a></li><li><a href="#fleet">Fleet</a></li><li><a href="#model-artifact-alias">Model, artifact, alias</a></li><li><a href="#model-cache">Model cache</a></li><li><a href="#workload-service-batch-job">Workload, service, batch job</a></li><li><a href="#endpoint">Endpoint</a></li><li><a href="#admission">Admission</a></li><li><a href="#reservation">Reservation</a></li><li><a href="#estimated-and-measured">Estimated and measured</a></li><li><a href="#qualification">Qualification</a></li><li><a href="#task-and-capability">Task and capability</a></li><li><a href="#scheduling-policy">Scheduling policy</a></li><li><a href="#drain">Drain</a></li><li><a href="#limit-quota-permission">Limit, quota, permission</a></li><li><a href="#entitlement">Entitlement</a></li><li><a href="#control-plane">Control plane</a></li><li><a href="#the-local-dashboard">The local dashboard</a></li><li><a href="#nodeau-cloud">Nodeau Cloud</a></li></ul></nav>
+      <h2 id="machine-node-gpu" class="doc-h">Machine, node, GPU<a class="doc-anchor" href="#machine-node-gpu" aria-label="Link to this section">#</a></h2>
+<p>A <strong>machine</strong> is one physical computer running Nodeau. On Linux it is also a Kubernetes <strong>node</strong>; the two words are used interchangeably in the CLI, and <code>nodeau fleet list</code> shows them.</p>
+<p>A <strong>GPU</strong> is one physical graphics card, identified by its <strong>UUID</strong> — never by an index, which moves. A card that is moved between machines keeps its UUID, and the newest report of it is the one Nodeau believes.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#concepts-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="concepts-code-1"><code>nodeau fleet list
+nodeau environment       # what this machine has, read-only</code></pre></div>
+<h2 id="fleet" class="doc-h">Fleet<a class="doc-anchor" href="#fleet" aria-label="Link to this section">#</a></h2>
+<p>Your <strong>fleet</strong> is the set of machines Nodeau can place work on. One machine is a fleet of one, and everything works.</p>
+<p>Adding a machine is two commands — <code>nodeau fleet invite</code> here, <code>nodeau join</code> there. See <a href="/docs/fleet/">adding and operating machines</a>.</p>
+<p>A <strong>Mac is not part of a fleet.</strong> It runs standalone on its own execution plane and is not a Kubernetes node.</p>
+<h2 id="model-artifact-alias" class="doc-h">Model, artifact, alias<a class="doc-anchor" href="#model-artifact-alias" aria-label="Link to this section">#</a></h2>
+<p>A <strong>model</strong> is a set of weights Nodeau can serve. Two kinds:</p>
+<ul class="doc-list"><li><strong>Curated</strong> — from Nodeau's catalog, downloaded from the publisher, pinned to an immutable revision, with a SHA-256 Nodeau checks.</li><li><strong>Custom</strong> — a GGUF file you imported yourself. See <a href="/docs/byom/">bring your own model</a>.</li></ul>
+<p>An <strong>artifact</strong> is the bytes. <strong>A model's identity is the SHA-256 of its contents</strong> — not its filename, not the name you gave it, not where it came from. Two identical byte streams are one artifact however they arrived; a different quantisation is a different artifact.</p>
+<p>An <strong>alias</strong> is the name you type to run an imported model. Re-importing different bytes under an alias you have used before creates a <strong>new artifact</strong> and says so; it never silently repoints the old one, and the previous qualification evidence does not carry across.</p>
+<h2 id="model-cache" class="doc-h">Model cache<a class="doc-anchor" href="#model-cache" aria-label="Link to this section">#</a></h2>
+<p>Each machine keeps its own copy of the weights it needs, in a <strong>model cache</strong>.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th></th></tr></thead><tbody><tr><td data-label="">Linux</td><td data-label=""><code>/var/lib/nodeau/models/</code></td></tr><tr><td data-label="">macOS</td><td data-label=""><code>~/Library/Application Support/Nodeau/state/models/</code></td></tr></tbody></table></div>
+<p>Nodeau does not replicate models between machines. Each machine downloads or imports what it needs.</p>
+<p><strong>Downloaded and verified are different columns</strong>, deliberately. A file of the right name and the right size served coherent answers for a day on one machine while being the wrong bytes. Only a computed SHA-256 that matches counts as verified, and only a verified copy can be placed against.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#concepts-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="concepts-code-2"><code>nodeau model status        # which machine holds what, and whether it verifies
+nodeau model verify &lt;id&gt;   # re-read this machine&#x27;s copy and recompute</code></pre></div>
+<h2 id="workload-service-batch-job" class="doc-h">Workload, service, batch job<a class="doc-anchor" href="#workload-service-batch-job" aria-label="Link to this section">#</a></h2>
+<p>A <strong>workload</strong> is anything that holds a GPU. There are two kinds:</p>
+<ul class="doc-list"><li>a <strong>service</strong> (a <code>GPUService</code>) — a model serving indefinitely, with an endpoint;</li><li>a <strong>batch job</strong> (a <code>BatchJob</code>) — a finite set of requests that runs and finishes.</li></ul>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#concepts-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="concepts-code-3"><code>nodeau ps     # every workload holding a GPU, of either kind</code></pre></div>
+<p>A GPU is held by exactly one workload at a time. Nodeau does not share a card, time-slice it or partition it.</p>
+<h2 id="endpoint" class="doc-h">Endpoint<a class="doc-anchor" href="#endpoint" aria-label="Link to this section">#</a></h2>
+<p>The <strong>local endpoint</strong> is an HTTP reverse proxy from <code>127.0.0.1</code> to the model server, so you can call an OpenAI-compatible API without knowing anything about cluster addressing.</p>
+<p>It binds loopback and nothing else, and that is not a setting. It runs as a <strong>user service</strong> — systemd on Linux, launchd on macOS — so it survives closing the terminal.</p>
+<p>The workload and its endpoint are separate. <code>nodeau stop &lt;name&gt;</code> stops the endpoint and leaves the model loaded, so starting again is instant; <code>--workload</code> stops the model too and frees the card.</p>
+<h2 id="admission" class="doc-h">Admission<a class="doc-anchor" href="#admission" aria-label="Link to this section">#</a></h2>
+<p><strong>Admission</strong> is the decision <em>can this safely run?</em> It happens <strong>before</strong> anything is created, from a prediction of peak VRAM, and it is recorded.</p>
+<p><strong>Placement</strong> is the separate decision <em>where should it run?</em> It only gets to choose among candidates admission has already accepted.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#concepts-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="concepts-code-4"><code>nodeau service explain &lt;name&gt;     # the admission arithmetic
+nodeau placement explain &lt;name&gt;   # why this machine and this card</code></pre></div>
+<p>Both are covered in <a href="/docs/scheduling/">admission, scheduling and placement</a>.</p>
+<h2 id="reservation" class="doc-h">Reservation<a class="doc-anchor" href="#reservation" aria-label="Link to this section">#</a></h2>
+<p>When Nodeau admits a workload it records a <strong>reservation</strong>: this workload holds this much memory on this card. That ledger — not a reading taken from the card — is how Nodeau attributes memory, because a workload still pulling its image genuinely holds nothing yet, and crediting it would hide real usage by something else.</p>
+<h2 id="estimated-and-measured" class="doc-h">Estimated and measured<a class="doc-anchor" href="#estimated-and-measured" aria-label="Link to this section">#</a></h2>
+<p>Where a configuration has been <strong>measured</strong> on hardware like yours, Nodeau uses the measurement. Where it has not, it computes a figure from the model's own architecture and artifact size, adds a further margin, and labels the decision <strong>estimated</strong>.</p>
+<p>An estimate is never presented as a measurement. <code>nodeau model info &lt;model&gt;</code> lists which configurations have actually been measured, and an empty list is a real answer.</p>
+<h2 id="qualification" class="doc-h">Qualification<a class="doc-anchor" href="#qualification" aria-label="Link to this section">#</a></h2>
+<p><strong>Qualification</strong> applies to imported models. It is the physical run that establishes what a model can actually do on your hardware: Nodeau starts it, watches how much memory it really takes, and exercises each capability with a probe designed to fail if the model cannot do it.</p>
+<p><strong>Importing is not qualifying, and loading is not qualified.</strong> A model claims a capability only after it has proved it. See <a href="/docs/byom/#qualification">bring your own model</a>.</p>
+<h2 id="task-and-capability" class="doc-h">Task and capability<a class="doc-anchor" href="#task-and-capability" aria-label="Link to this section">#</a></h2>
+<p>A <strong>task</strong> is what a workload is started to do: <code>chat</code>, <code>embed</code>, <code>rerank</code>. It decides which API routes the endpoint answers.</p>
+<p>A <strong>capability</strong> is finer: <code>chat</code>, <code>embed</code>, <code>rerank</code>, <code>tools</code>, <code>structured-output</code>, <code>vision-input</code>. A model may have some and not others, and qualification reports them one at a time — a model whose chat passed and whose tool calling failed is claimed for chat and for nothing else.</p>
+<h2 id="scheduling-policy" class="doc-h">Scheduling policy<a class="doc-anchor" href="#scheduling-policy" aria-label="Link to this section">#</a></h2>
+<p>How Nodeau chooses between candidates. One choice, fleet-wide or per machine:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Mode</th><th>Means</th></tr></thead><tbody><tr><td data-label="Mode"><code>efficiency</code></td><td data-label="Means">The most work per unit of energy, never much slower</td></tr><tr><td data-label="Mode"><code>balanced</code></td><td data-label="Means">Fastest, while staying near the best efficiency — <strong>the default</strong></td></tr><tr><td data-label="Mode"><code>performance</code></td><td data-label="Means">Fastest, whatever it costs</td></tr></tbody></table></div>
+<p>A change to the mode affects <strong>new placements only</strong>. Nothing already running moves.</p>
+<h2 id="drain" class="doc-h">Drain<a class="doc-anchor" href="#drain" aria-label="Link to this section">#</a></h2>
+<p><strong>Draining</strong> a machine stops Nodeau choosing it for anything new. Nothing running on it is stopped, moved or disturbed.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#concepts-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="concepts-code-5"><code>nodeau scheduling drain --node &lt;machine&gt;
+nodeau scheduling undrain --node &lt;machine&gt;</code></pre></div>
+<p>Undraining does not move anything back, deliberately: a healthy workload is never restarted for a better score, and undrain must not become a back door around that rule.</p>
+<h2 id="limit-quota-permission" class="doc-h">Limit, quota, permission<a class="doc-anchor" href="#limit-quota-permission" aria-label="Link to this section">#</a></h2>
+<p>Three different things, and sending somebody to the wrong one wastes their day.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>What it is</th><th>Who changes it</th></tr></thead><tbody><tr><td data-label=""><strong>Limit</strong></td><td data-label="What it is">What your plan grants — machines, GPUs per machine, services at once</td><td data-label="Who changes it">A purchase</td></tr><tr><td data-label=""><strong>Quota</strong></td><td data-label="What it is">Your organisation's own number, set <em>inside</em> the limit</td><td data-label="Who changes it">A colleague, this minute</td></tr><tr><td data-label=""><strong>Permission</strong></td><td data-label="What it is">What a principal in your organisation may do</td><td data-label="Who changes it">An administrator</td></tr></tbody></table></div>
+<p>Every refusal says which of the three it was, with its own reason code. See <a href="/docs/governance/">organisation limits</a>.</p>
+<h2 id="entitlement" class="doc-h">Entitlement<a class="doc-anchor" href="#entitlement" aria-label="Link to this section">#</a></h2>
+<p>An <strong>entitlement</strong> is a signed statement of what an installation may do. It is verified <strong>offline</strong>, against keys compiled into the binary, so a network outage cannot change what your hardware is allowed to do.</p>
+<p>No entitlement, or one that cannot be accepted, means the free Home plan. Nothing that protects you is ever withheld: admission, artifact verification, authentication and every integrity check are identical on every plan.</p>
+<h2 id="control-plane" class="doc-h">Control plane<a class="doc-anchor" href="#control-plane" aria-label="Link to this section">#</a></h2>
+<p>On Linux, Nodeau's <strong>control plane</strong> is a controller and a node agent running in your own Kubernetes cluster, in the <code>nodeau-system</code> namespace. The controller makes the decisions; the agent on each machine reports that machine's hardware.</p>
+<p>Inference traffic never crosses the control plane. A control plane that is down does not stop a model that is already serving — though it does stop new decisions being made, and a batch job's records are read through it.</p>
+<p>On macOS there is no control plane. The same decisions are made in-process by the native execution plane.</p>
+<h2 id="the-local-dashboard" class="doc-h">The local dashboard<a class="doc-anchor" href="#the-local-dashboard" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#concepts-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="concepts-code-6"><code>nodeau dashboard</code></pre></div>
+<p>A read-only view of hardware, models, running services, alerts and plan, bound to loopback and protected by a token. The page is compiled into the binary: nothing to install, nothing to download, works with no internet connection. It is read-only apart from one action — it can stop a batch job.</p>
+<h2 id="nodeau-cloud" class="doc-h">Nodeau Cloud<a class="doc-anchor" href="#nodeau-cloud" aria-label="Link to this section">#</a></h2>
+<p><code>app.nodeau.ai</code> and <code>api.nodeau.ai</code>. Optional, and nothing about inference depends on it.</p>
+<p>Signing in gives you an account association, a registered installation and a signed entitlement. Connecting a fleet additionally lets you see and operate your machines from a browser.</p>
+<p><strong>Your machines reach out. Nothing ever connects in.</strong> There is no inbound port, no callback and no remote shell. What you compute never leaves: prompts, completions, embeddings, images and batch records stay on your hardware. See <a href="/docs/security/">security and privacy</a>.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/api/"><span>Previous</span>The API and your first request</a><a class="doc-next" href="/docs/scheduling/"><span>Next</span>Admission, scheduling and placement</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js" defer></script>
+<script src="/assets/docs.js" defer></script>
+</body>
+</html>
