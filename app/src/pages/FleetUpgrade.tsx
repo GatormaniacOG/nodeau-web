@@ -149,7 +149,7 @@ function PlanPanel({
 
   return (
     <section className="panel" aria-labelledby="plan-head">
-      <header className="panel-head">
+      <header className="rollout-head">
         <h2 id="plan-head">Plan an upgrade</h2>
         <p className="muted small">Planning changes nothing. It shows what would happen, and why.</p>
       </header>
@@ -310,7 +310,7 @@ function RolloutPanel({
 
   return (
     <section className={previous ? 'panel quiet' : 'panel'} aria-label={previous ? 'The last rollout' : 'This rollout'}>
-      <header className="panel-head">
+      <header className="rollout-head">
         <h2>
           {previous ? 'The last rollout' : 'Rollout'} to {op.target.version}{' '}
           <RolloutStateBadge state={op.state} />

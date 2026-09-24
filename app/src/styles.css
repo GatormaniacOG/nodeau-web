@@ -2482,3 +2482,21 @@ button:not([class]):disabled {
 .digest-list code {
   overflow-wrap: anywhere;
 }
+
+/* A rollout panel's header STACKS: a heading carrying a state badge, and a
+   sentence under it. `.panel-head` is a row made for a short heading and a
+   button, and a sentence beside the heading squeezed it to a ribbon at phone
+   width (the layout audit's finding, 390px). */
+.rollout-head {
+  margin-bottom: var(--space-4);
+}
+.rollout-head h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+.rollout-head p {
+  margin: 0;
+}
