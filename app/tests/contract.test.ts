@@ -47,6 +47,8 @@ const CONTRACT_FILES = [
   // The model catalogue the run form and the governance policy list choose
   // from.
   'modelcatalog.go',
+  // Phase 18B — fleet rollouts.
+  'lifecycle.go',
 ].map((f) =>
   resolve(PLATFORM_REPO, 'pkg/cloudapi', f),
 );
@@ -137,6 +139,17 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     // changed it.
     'ModelCatalog',
     'CatalogModel',
+    // Phase 18B — what /fleet/lifecycle/operations returns. A field the
+    // server sends that this file never mentions is a rollout the console
+    // cannot fully show — and for a rollout that is somebody reading a machine
+    // as upgraded without the fact that would have said it was not.
+    'LifecycleOperationList',
+    'LifecycleOperationView',
+    'LifecycleObservedMachine',
+    'LifecycleOperation',
+    'LifecycleStep',
+    'LifecycleStepRef',
+    'LifecycleTarget',
   ];
 
   for (const typeName of responseTypes) {

@@ -80,9 +80,23 @@ export function FleetPage({
     <section>
       <div className="page-head">
         <h1>Your fleet</h1>
-        <button className="btn btn-ghost btn-sm" onClick={reload}>
-          Refresh
-        </button>
+        <div className="row-actions">
+          {/* Phase 18B: moving the fleet to a release, one machine at a time. */}
+          <a
+            className="btn btn-ghost btn-sm"
+            href={hrefFor.fleetUpgrade()}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+              e.preventDefault();
+              navigate(hrefFor.fleetUpgrade());
+            }}
+          >
+            Upgrade
+          </a>
+          <button className="btn btn-ghost btn-sm" onClick={reload}>
+            Refresh
+          </button>
+        </div>
       </div>
       {installations.map((inst) => (
         <FleetCard key={inst.id} inst={inst} navigate={navigate} />

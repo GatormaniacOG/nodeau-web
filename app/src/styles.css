@@ -2447,3 +2447,38 @@ button:not([class]):disabled {
   color: var(--text-2);
   line-height: 1.65;
 }
+
+/* Fleet rollouts — Phase 18B. One row per machine, in the order it goes. */
+.rollout-steps {
+  list-style: decimal;
+  margin: var(--space-4) 0;
+  padding-left: 1.4rem;
+}
+.rollout-step {
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.rollout-step:first-child {
+  border-top: 0;
+}
+.rollout-step > p {
+  margin: 0.25rem 0 0;
+}
+.rollout-step-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+.panel .check {
+  align-items: flex-start;
+}
+.panel .check input {
+  margin-top: 0.2rem;
+  flex: 0 0 auto;
+}
+.digest-list code {
+  overflow-wrap: anywhere;
+}
