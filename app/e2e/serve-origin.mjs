@@ -1,3 +1,4 @@
+/* global process, URL */
 // A loopback release origin for the browser tests (Phase 18B): serves the
 // fixture channel under e2e/fixtures/release-origin, so the plan the console
 // renders is the real API's, computed from a channel the test controls, with
