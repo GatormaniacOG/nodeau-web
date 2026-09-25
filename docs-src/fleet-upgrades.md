@@ -47,6 +47,14 @@ build, not whatever the channel points at later.
 cluster), the command **exits non-zero in both forms**; `--json` still prints the
 reason in `error`.
 
+:::note A machine's `key` is its identity, not its name
+In `--json`, each machine's `key` is its stable identity — the Kubernetes node's
+UID — so a plan made here and one made in Nodeau Cloud name a machine the same
+way, and a machine removed and joined again under the same name is a different
+machine. Its name is `name`. **Before v0.15.0-beta.6, `key` carried the name**: a
+script that read `key` as the machine's name should read `name`.
+:::
+
 ## 2. Authorise
 
 ```bash
