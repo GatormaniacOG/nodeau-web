@@ -786,6 +786,56 @@ nodeau fleet status [--json]
 
 Whether this fleet is reporting to Nodeau Cloud. **Linux.**
 
+
+### `nodeau fleet upgrade` {#nodeau-fleet-upgrade}
+
+Move the machines in a fleet to a Nodeau release, one at a time, workers first
+and the control plane last. **Linux**; a Mac is updated on the machine itself.
+The whole procedure is in [Upgrading a fleet](/docs/fleet-upgrades/).
+
+### `nodeau fleet upgrade plan` {#nodeau-fleet-upgrade-plan}
+
+```bash
+nodeau fleet upgrade plan [flags]
+```
+
+Explain what moving this fleet to a release would involve — which machines would
+change, which already match, which cannot and why, the order, and what it costs
+the workloads running there. Changes nothing. A plan that could not be made exits
+non-zero, in `--json` too.
+
+Flags: `--to`, `--channel`, `--machine`, `--fleet-group`, `--max-report-age`,
+`--base-url`, `--json`.
+
+### `nodeau fleet upgrade apply` {#nodeau-fleet-upgrade-apply}
+
+```bash
+nodeau fleet upgrade apply [flags]
+```
+
+Print the plan and ask Nodeau Cloud to carry out **that** plan. Refused if
+anything changed since you looked. Needs remote management.
+
+Flags: the plan's flags, `--override-window` (act outside your organisation's
+maintenance window, recorded as your decision), `--yes`.
+
+### `nodeau fleet upgrade status` {#nodeau-fleet-upgrade-status}
+
+```bash
+nodeau fleet upgrade status [--json]
+```
+
+The rollout as Nodeau Cloud last described it: each machine's step and what the
+machine itself reported.
+
+### `nodeau fleet upgrade cancel` {#nodeau-fleet-upgrade-cancel}
+
+Stop the rollout before its next machine. A machine already in its step is not
+interrupted; the rollout ends canceled, never complete.
+
+### `nodeau fleet upgrade resume` {#nodeau-fleet-upgrade-resume}
+
+Retry a held rollout's failed machine, after checking everything again.
 ### `nodeau scheduling mode` {#nodeau-scheduling-mode}
 
 ```bash

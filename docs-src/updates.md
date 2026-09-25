@@ -52,7 +52,9 @@ an update was applied to some of them and not the rest.
 
 ## Updating
 
-The same command that installed it:
+To move several machines in a fleet — one at a time, the control plane last —
+see [Upgrading a fleet](/docs/fleet-upgrades/). On one machine, the same command
+that installed it:
 
 ```bash
 curl -fsSL https://get.nodeau.ai/install.sh | bash

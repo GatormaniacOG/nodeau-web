@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upgrading a fleet</title>
+<meta name="description" content="Plan and authorise a Nodeau upgrade across your machines — one at a time, the control plane last — and what is checked, interrupted, and not done.">
+<link rel="canonical" href="https://nodeau.ai/docs/fleet-upgrades/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/fleet-upgrades/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Upgrading a fleet">
+<meta property="og:description" content="Plan and authorise a Nodeau upgrade across your machines — one at a time, the control plane last — and what is checked, interrupted, and not done.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/nodeau.css?v=13cbe303">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+      Nodeau
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/#home">For home</a></li>
+        <li><a href="/#business">For business</a></li>
+        <li><a href="/install/">Install</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines" open><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/fleet-upgrades/" aria-current="page" data-nav-title="Upgrading a fleet">Upgrading a fleet</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Your machines</p>
+      <h1 class="doc-title">Upgrading a fleet</h1>
+      <p class="lede doc-lede">Nodeau can move the machines you own to a new Nodeau release, one at a time, and it tells you what that will cost before anything moves. It upgrades Nodeau itself — never Kubernetes, the NVIDIA driver or the kernel.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#1-plan">1. Plan</a></li><li><a href="#2-authorise">2. Authorise</a></li><li><a href="#3-follow">3. Follow</a></li><li><a href="#maintenance-windows-and-channel-policy">Maintenance windows and channel policy</a></li><li><a href="#when-a-step-fails">When a step fails</a></li><li><a href="#stopping-a-rollout">Stopping a rollout</a></li><li><a href="#what-nodeau-does-not-do">What Nodeau does not do</a></li></ul></nav>
+      <aside class="callout callout-linux"><p class="callout-kind">Linux / NVIDIA only</p><p>Fleet upgrades are for Linux machines in a fleet. A Mac runs Nodeau standalone and is not part of a fleet: a plan names it and says so, and you update it on the machine itself with <code>nodeau update</code>.</p></aside>
+<p>Rollouts need <strong>Nodeau v0.15.0-beta.6 or later</strong> on every machine — the release that carries them. A fleet with an older fleet connector anywhere is refused rather than left waiting; update that machine the ordinary way first (<a href="/docs/updates/">Updating</a>).</p>
+<h2 id="1-plan" class="doc-h">1. Plan<a class="doc-anchor" href="#1-plan" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-upgrades-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-upgrades-code-1"><code>nodeau fleet upgrade plan
+nodeau fleet upgrade plan --json
+nodeau fleet upgrade plan --to v0.15.0-beta.6     # one version the channel serves</code></pre></div>
+<p>A plan changes nothing. It says, for every machine:</p>
+<ul class="doc-list"><li>whether it <strong>would change</strong>, and from which build to which;</li><li>whether it <strong>already matches</strong>, and is left alone;</li><li>whether it <strong>cannot be changed</strong>, and why — a machine that has never said which build it runs, one that last reported too long ago, one draining for maintenance, one that is not healthy, a release with no build for its platform, a target older than what it runs (Nodeau never moves a machine backwards), or a Mac;</li><li>the <strong>order</strong> it would go in — workers first, **the control-plane machine last**;</li><li>which <strong>workloads</strong> run there, and that they would stop and start again on that machine.</li></ul>
+<p>A release is resolved <strong>once</strong> — to a version, a commit, and the checksum or digest of every archive and image it names — so a plan describes one specific build, not whatever the channel points at later.</p>
+<p><code>--json</code> carries the same facts. When a plan <strong>cannot be made</strong> (no network, no cluster), the command <strong>exits non-zero in both forms</strong>; <code>--json</code> still prints the reason in <code>error</code>.</p>
+<h2 id="2-authorise" class="doc-h">2. Authorise<a class="doc-anchor" href="#2-authorise" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-upgrades-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-upgrades-code-2"><code>nodeau fleet upgrade apply            # prints the plan, asks, then authorises it
+nodeau fleet upgrade apply --yes      # for scripts: the plan is still printed</code></pre></div>
+<p>or <strong>Fleet → Upgrade</strong> in your account at <code>app.nodeau.ai</code>.</p>
+<p>You authorise <strong>the plan you were shown</strong>, and only that plan. If anything changed since you looked — a machine reported in, the channel moved, a policy changed — it is refused and you are asked to look again.</p>
+<p>Authorising needs a subscription that includes remote management, and, in an organisation, the <code>fleet.upgrade</code> permission.</p>
+<h2 id="3-follow" class="doc-h">3. Follow<a class="doc-anchor" href="#3-follow" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-upgrades-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-upgrades-code-3"><code>nodeau fleet upgrade status
+nodeau fleet upgrade status --json</code></pre></div>
+<p>Each machine's step and what the machine itself last reported. Machines move <strong>one at a time</strong>. On each one Nodeau:</p>
+<ol class="doc-list"><li>downloads the release from <code>get.nodeau.ai</code> and checks every archive against the release's published checksum <strong>and</strong> the digest recorded when you authorised it — a mismatch refuses the step;</li><li>replaces <strong>only Nodeau's own components</strong> on that machine;</li><li>checks itself, and the step is **complete only when the machine reports the new build** — not when a download finished or a command returned.</li></ol>
+<h3 id="what-is-interrupted" class="doc-h">What is interrupted<a class="doc-anchor" href="#what-is-interrupted" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Machine</th><th>Workloads</th></tr></thead><tbody><tr><td data-label="Machine"><strong>A worker</strong></td><td data-label="Workloads">Keep running while Nodeau's own components are replaced. If one of them restarted, the step counts as <strong>failed</strong> and the machine is put back</td></tr><tr><td data-label="Machine"><strong>The control-plane machine</strong></td><td data-label="Workloads">Scheduling and reporting pause until it returns, and workloads on that machine may restart. <strong>Expect downtime there</strong></td></tr></tbody></table></div>
+<p>Nodeau does <strong>not</strong> move a workload to another machine to keep it available.</p>
+<h2 id="maintenance-windows-and-channel-policy" class="doc-h">Maintenance windows and channel policy<a class="doc-anchor" href="#maintenance-windows-and-channel-policy" aria-label="Link to this section">#</a></h2>
+<p>If your organisation sets a <strong>maintenance window</strong> (<a href="/docs/governance/">Organisation limits</a>), a machine <strong>waits</strong> for it: an authorised rollout starts a machine only inside the window. <strong>Fleet → Upgrade</strong> in the console says why a machine is waiting and when the window next opens; <code>nodeau fleet upgrade status</code> shows that machine as pending. A release from a channel your <strong>channel policy</strong> does not follow is refused, naming both channels.</p>
+<p>When Nodeau <strong>cannot see</strong> your organisation's settings — the fleet connector is not connected, or has not heard from Nodeau Cloud for a while — it treats the policy as <strong>unknown</strong>, not as absent: a plan marks every machine that would move as blocked, and a rollout's machines wait. It clears once the policy reaches the machine again.</p>
+<h2 id="when-a-step-fails" class="doc-h">When a step fails<a class="doc-anchor" href="#when-a-step-fails" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li><strong>A worker</strong> is put back onto <strong>exactly the versions it was running before</strong> — the ones its own pods ran — and the rollout <strong>holds</strong>: nothing else moves.</li><li><strong>The control-plane machine</strong> is <strong>not</strong> rolled back automatically. The rollout holds and says where the previous version was kept and how to restore it.</li></ul>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-upgrades-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-upgrades-code-4"><code>nodeau fleet upgrade resume     # checks everything again, then retries the held machine</code></pre></div>
+<h2 id="stopping-a-rollout" class="doc-h">Stopping a rollout<a class="doc-anchor" href="#stopping-a-rollout" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fleet-upgrades-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fleet-upgrades-code-5"><code>nodeau fleet upgrade cancel</code></pre></div>
+<p>It stops the rollout <strong>before its next machine</strong>. A machine <strong>already in the middle of its step is not interrupted</strong> — it finishes or fails first, and the rollout then ends <strong>canceled</strong>, never complete. A machine that had been handed its step but had not begun it is never started, and says so.</p>
+<p>Authorising a new rollout while one is unfinished is refused. Cancel the unfinished one first; the next plan you authorise then starts fresh.</p>
+<h2 id="what-nodeau-does-not-do" class="doc-h">What Nodeau does not do<a class="doc-anchor" href="#what-nodeau-does-not-do" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li>upgrade Kubernetes (K3s), the NVIDIA driver, the kernel, firmware or the OS;</li><li>move a machine to an older release;</li><li>move workloads between machines, or promise zero downtime;</li><li>roll the control plane back automatically;</li><li>upgrade a Mac from a fleet;</li><li>choose a version, check for one, or act on a plan, on its own.</li></ul>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/fleet/"><span>Previous</span>Adding and operating machines</a><a class="doc-next" href="/docs/governance/"><span>Next</span>Organisation limits</a></nav>
+      <p class="doc-foot">Documentation for the current published build,
+      <span data-release>the beta channel</span>. Something here wrong or missing?
+      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" style="margin-bottom:0.75rem">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
+      </svg>
+          Nodeau
+        </a>
+        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#home">For home</a></li>
+          <li><a href="/#business">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Docs</h4>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Linux install</a></li>
+          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+<script src="/assets/docs.js?v=1501ca71" defer></script>
+</body>
+</html>

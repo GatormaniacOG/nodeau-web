@@ -1,16 +1,3 @@
-# Every public command in the `nodeau` tree, generated from the binary.
-#
-# Regenerate from the platform repository:
-#     ./scripts/docs/dump-cli-commands.sh > ../nodeau-web/docs-src/cli-commands.txt
-#
-# tools/check-cli-coverage.py fails when a command here is not documented in
-# docs-src/cli.md. The failure this prevents is the ordinary one: a command
-# ships, nobody remembers the reference page, and /docs is quietly incomplete
-# with nothing to say so.
-#
-# Produced on Linux, which is the floor. `nodeau install` and `nodeau uninstall`
-# carry extra flags on darwin and `nodeau native` exists only there; /docs
-# covers those and this list cannot see them.
 nodeau auth	--help
 nodeau auth publish	--help --namespace --yes
 nodeau auth rotate	--help --yes
@@ -35,10 +22,16 @@ nodeau fleet invite	--address --expires-in --help
 nodeau fleet list	--help --json
 nodeau fleet remove	--dry-run --force --help --json --yes
 nodeau fleet status	--help --json
+nodeau fleet upgrade apply	--base-url --channel --fleet-group --help --machine --max-report-age --override-window --to --yes
+nodeau fleet upgrade cancel	--help
+nodeau fleet upgrade	--help
+nodeau fleet upgrade plan	--base-url --channel --fleet-group --help --json --machine --max-report-age --to
+nodeau fleet upgrade resume	--help
+nodeau fleet upgrade status	--help --json
 nodeau governance	--allow-device --allow-model --allow-node --clear --help --json --max-batch-workers --max-gpus --max-workloads
 nodeau health	--help --json
 nodeau health history	--device --help --json --machine --max-points --metric --resolution --since
-nodeau install	--agent-image --batch-runner-image --cache-dir --channel --controller-image --dry-run --help --print-manifests --scheduling-mode --scheduling-selection --server-dry-run --skip-k3s --skip-toolkit --state --verbose --yes
+nodeau install	--agent-image --batch-runner-image --cache-dir --channel --controller-image --dry-run --help --lifecycle-prepare --print-manifests --scheduling-mode --scheduling-selection --server-dry-run --skip-k3s --skip-toolkit --state --verbose --yes
 nodeau join	--cache-dir --dry-run --help --verbose --yes
 nodeau login	--api --help --json --name --no-browser --show --wait
 nodeau logout	--help --json

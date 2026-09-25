@@ -31,6 +31,7 @@
     "group": "Your machines",
     "pages": [
       {"slug": "fleet", "nav": "Adding and operating machines"},
+      {"slug": "fleet-upgrades", "nav": "Upgrading a fleet"},
       {"slug": "governance", "nav": "Organisation limits"},
       {"slug": "health", "nav": "Health and diagnostics"},
       {"slug": "power", "nav": "Power limits and budgets"}

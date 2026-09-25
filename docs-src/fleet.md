@@ -240,10 +240,11 @@ disconnect, your models keep serving and your scheduler keeps scheduling.
 needs `FeatureRemoteManagement` — Home Pro or Business.
 
 From the browser you can run and stop workloads, set scheduling policy, drain a
-machine for maintenance, read bounded logs and recover a stranded workload.
+machine for maintenance, read bounded logs, recover a stranded workload, and
+upgrade the fleet's Nodeau software — see [Upgrading a fleet](/docs/fleet-upgrades/).
 
-You cannot set a physical power limit or upgrade a fleet remotely. Those are not
-built, and the command that would do them does not exist.
+You cannot set a physical power limit remotely. That is not built, and the
+command that would do it does not exist.
 
 :::note A stop recorded in the cloud is a standing order
 Stopping a workload from the browser records desired state. It is re-applied on
