@@ -14,6 +14,7 @@ import { FleetMachinePage, FleetPage } from './pages/Fleet';
 import { FleetWorkloadsPage } from './pages/FleetWorkloads';
 import { FleetRunPage } from './pages/FleetRun';
 import { GovernancePage } from './pages/Governance';
+import { FleetUpgradePage } from './pages/FleetUpgrade';
 import { UsagePage } from './pages/Usage';
 
 /**
@@ -185,6 +186,8 @@ function Page({
       return <FleetRunPage org={org} navigate={navigate} />;
     case 'fleetGovernance':
       return <GovernancePage org={org} />;
+    case 'fleetUpgrade':
+      return <FleetUpgradePage org={org} />;
     case 'usage':
       return <UsagePage org={org} />;
     case 'settings':
@@ -273,7 +276,9 @@ function Shell({
                 href={hrefFor.fleet()}
                 onClick={go(hrefFor.fleet())}
                 aria-current={
-                  route?.name === 'fleet' || route?.name === 'fleetMachine' ? 'page' : undefined
+                  route?.name === 'fleet' || route?.name === 'fleetMachine' || route?.name === 'fleetUpgrade'
+                    ? 'page'
+                    : undefined
                 }
               >
                 Fleet

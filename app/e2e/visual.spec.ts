@@ -132,6 +132,9 @@ test.beforeAll(async ({ request }) => {
   const caps = [
     'fleet.report', 'policy.set', 'workload.run', 'workload.stop', 'logs.tail',
     'machine.drain', 'machine.maintenance', 'power.budget', 'governance.set',
+    // Phase 18B: a connector that runs rollouts, so the upgrade pages have a
+    // plan and a rollout to lay out.
+    'fleet.lifecycle',
   ];
   const response = await request.post(`${apiBase()}/v1/fleet/sync`, {
     headers: { Authorization: `Bearer ${seeded.credential}`, 'X-Nodeau-Request': '1' },
@@ -149,6 +152,7 @@ test.beforeAll(async ({ request }) => {
             role: 'control-plane',
             executionPlane: 'kubernetes',
             nodeauVersion: 'v0.14.0-beta.3',
+            agentVersion: 'v0.14.0-beta.3',
             capabilities: caps,
             schedulingState: 'active',
             health: 'healthy',
@@ -174,6 +178,7 @@ test.beforeAll(async ({ request }) => {
             role: 'worker',
             executionPlane: 'kubernetes',
             nodeauVersion: 'v0.14.0-beta.3',
+            agentVersion: 'v0.14.0-beta.3',
             capabilities: caps,
             schedulingState: 'active',
             schedulingMode: 'balanced',
@@ -455,6 +460,35 @@ const PAGES: AuditPage[] = [
       await page.locator('#run-model').click();
       await page.waitForTimeout(300);
     },
+  },
+  // Phase 18B — a plan on the page, and a rollout in progress. The rollout is
+  // authorised through the page itself on the first viewport and put back to
+  // "cancelled" afterwards, so every viewport lays out the same two states.
+  {
+    label: 'upgrade-plan',
+    path: () => '/fleet/upgrade',
+    prepare: async (page) => {
+      await page.getByRole('button', { name: 'Plan' }).click();
+      await page.getByRole('list', { name: /in the order they would go/ }).waitFor();
+    },
+  },
+  {
+    label: 'upgrade-rollout',
+    path: () => '/fleet/upgrade',
+    prepare: async (page) => {
+      await page.getByRole('button', { name: 'Plan' }).click();
+      await page.getByRole('checkbox', { name: /stop and start again/ }).check();
+      await page.getByRole('button', { name: /Authorise upgrading/ }).click();
+      await page.getByRole('list', { name: 'Machines, in order' }).waitFor();
+      await page.getByText('What this rollout installs').click();
+    },
+    teardown: () =>
+      psql(
+        e2e.scopedDSN,
+        `UPDATE fleet_lifecycle_operations
+            SET state = 'canceled', record = jsonb_set(record, '{state}', '"canceled"')
+          WHERE installation_id = '${seeded.installationId}' AND state IN ('authorized', 'in-progress', 'held')`,
+      ),
   },
   { label: 'usage', path: () => '/usage' },
   { label: 'organization', path: () => '/organization' },

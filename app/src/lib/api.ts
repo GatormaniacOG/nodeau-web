@@ -672,6 +672,104 @@ export interface ModelCatalog {
   policyApplied: boolean;
 }
 
+// -- fleet rollouts — Phase 18B ------------------------------------------------
+//
+// A PLAN IS A READ and an OPERATION is what a person authorised. The console
+// renders both as the server answered them: which machines move, in what
+// order, what it costs the work on them, and — once authorised — what each
+// machine REPORTS running, beside what it was asked to run. Nothing here
+// decides who may authorise: the list carries `mayUpgrade`, answered.
+
+/** A machine's disposition in a plan, in the server's own words. */
+export type RolloutMachineState = 'up-to-date' | 'ready' | 'waiting' | 'blocked' | 'unknown';
+
+export interface RolloutImpact {
+  workloads?: string[];
+  serving: number;
+  downtime: boolean;
+  alternateCapacity?: boolean;
+  summary: string;
+}
+
+export interface RolloutPlanMachine {
+  key: string;
+  name?: string;
+  controlPlane?: boolean;
+  state: RolloutMachineState;
+  from?: string;
+  to: string;
+  reason?: string;
+  explanation?: string;
+  impact: RolloutImpact;
+  order?: number;
+}
+
+/** A plan, as `POST .../fleet/lifecycle/plan` answers it. The target's fields
+ *  are capitalised because that is the released 18A JSON contract. */
+export interface RolloutPlan {
+  state: 'no-op' | 'ready' | 'waiting' | 'blocked';
+  target: { Channel: string; Version: string; Commit: string };
+  machines: RolloutPlanMachine[] | null;
+  notes?: string[];
+  hash: string;
+}
+
+export interface RolloutStep {
+  seq: number;
+  machineKey: string;
+  /** The machine's identity when the step was planned: a machine removed and
+   *  joined again is a new machine, and the step is not about it. */
+  machineIncarnation?: string;
+  machineName?: string;
+  controlPlane?: boolean;
+  from: string;
+  to: string;
+  state: 'pending' | 'in-progress' | 'complete' | 'failed' | 'skipped';
+  attempt: number;
+  phase?: string;
+  reason?: string;
+  detail?: string;
+  observedVersion?: string;
+}
+
+export interface RolloutOperation {
+  id: string;
+  generation: number;
+  state: 'authorized' | 'in-progress' | 'held' | 'complete' | 'canceled' | 'superseded';
+  /** Frozen when authorised: a version, a commit and the digests of every
+   *  archive and image it installs — never a URL. */
+  target: {
+    channel: string;
+    version: string;
+    commit: string;
+    artifacts?: Record<string, string>;
+    images?: Record<string, string>;
+  };
+  steps: RolloutStep[] | null;
+  run?: { seq: number; attempt: number };
+  cancelRequested?: boolean;
+  windowOverride?: boolean;
+  holdReason?: string;
+  holdDetail?: string;
+  authorizedBy?: string;
+  createdAt: string;
+}
+
+/** An operation, with each step's machine as it REPORTS itself. */
+export interface RolloutView {
+  operation: RolloutOperation;
+  observed: Record<string, { version?: string; reportedAt?: string; present: boolean }>;
+  /** Why the next machine has not started, when it is the maintenance window. */
+  waiting?: string;
+}
+
+export interface RolloutList {
+  operations: RolloutView[];
+  /** Whether THIS person may authorise, cancel or resume — the server's answer. */
+  mayUpgrade: boolean;
+  whyNot?: string;
+}
+
 export const apiBase: string =
   (import.meta.env.VITE_NODEAU_API_URL as string | undefined)?.replace(/\/$/, '') ??
   'http://localhost:8080';
@@ -1113,6 +1211,48 @@ export const api = {
       'PUT',
       `/v1/organizations/${encodeURIComponent(orgId)}/fleet/governance`,
       { governance },
+    ),
+
+  // -- fleet rollouts — Phase 18B --------------------------------------------
+
+  rollouts: (orgId: string, signal?: AbortSignal) =>
+    request<RolloutList>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/lifecycle/operations`,
+      undefined,
+      signal,
+    ),
+
+  /** A plan is a READ: nothing is stored and nothing moves. */
+  planRollout: (orgId: string, body: { channel: string; version?: string }) =>
+    request<RolloutPlan>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/lifecycle/plan`,
+      body,
+    ),
+
+  /** Authorise THE PLAN THAT WAS SHOWN, named by its identity. The server
+   *  recomputes its own and refuses with a sentence if they differ. */
+  authorizeRollout: (
+    orgId: string,
+    body: { channel: string; version?: string; planHash: string; windowOverride: boolean },
+  ) =>
+    request<RolloutView>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/lifecycle/operations`,
+      body,
+    ),
+
+  cancelRollout: (orgId: string, id: string) =>
+    request<RolloutView>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/lifecycle/operations/${encodeURIComponent(id)}/cancel`,
+    ),
+
+  resumeRollout: (orgId: string, id: string) =>
+    request<RolloutView>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/lifecycle/operations/${encodeURIComponent(id)}/resume`,
     ),
 
   fleetLogs: (orgId: string, opId: string, signal?: AbortSignal) =>

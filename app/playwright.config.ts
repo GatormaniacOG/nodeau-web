@@ -38,6 +38,7 @@ export const e2e = prepare();
 const platformRepo = process.env.NODEAU_PLATFORM_REPO ?? '../../nodeforge';
 const apiPort = process.env.NODEAU_E2E_API_PORT ?? '8099';
 const appPort = process.env.NODEAU_E2E_APP_PORT ?? '4173';
+const originPort = process.env.NODEAU_E2E_ORIGIN_PORT ?? '8098';
 const apiURL = `http://127.0.0.1:${apiPort}`;
 const appURL = `http://127.0.0.1:${appPort}`;
 
@@ -78,7 +79,17 @@ export default defineConfig({
         // the keys stamped into it at build time.
         NODEAU_ENTITLEMENT_SIGNING_KEY: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
         NODEAU_ENTITLEMENT_KEY_ID: 'e2e-dev',
+        // Phase 18B: plans read the fixture channel, not the real one.
+        NODEAU_RELEASE_BASE_URL: `http://127.0.0.1:${originPort}`,
       },
+    },
+    {
+      // The loopback release origin those plans read (e2e/serve-origin.mjs).
+      command: `node e2e/serve-origin.mjs`,
+      url: `http://127.0.0.1:${originPort}/channel/beta.json`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: { PORT: originPort },
     },
     {
       command: `npm run build && npx vite preview --port ${appPort} --strictPort`,

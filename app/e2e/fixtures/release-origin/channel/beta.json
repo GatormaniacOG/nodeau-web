@@ -1,0 +1,19 @@
+{
+  "channel": "beta",
+  "version": "v0.15.0-beta.9",
+  "commit": "9999999999999999999999999999999999999999",
+  "released": "2026-09-24T00:00:00Z",
+  "notes": "A FIXTURE for the browser tests: a release that does not exist, served on loopback so the plan the console shows is computed by the real API from a channel whose contents the test controls.",
+  "artifacts": {
+    "linux-amd64": {
+      "url": "http://127.0.0.1/never/nodeau-linux-amd64.tar.gz",
+      "sha256": "e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0",
+      "sizeBytes": 1
+    }
+  },
+  "images": {
+    "controller": { "reference": "ghcr.io/example/nodeau-controller:v0.15.0-beta.9", "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111" },
+    "agent": { "reference": "ghcr.io/example/nodeau-agent:v0.15.0-beta.9", "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222" },
+    "batchRunner": { "reference": "ghcr.io/example/nodeau-batch-runner:v0.15.0-beta.9", "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333" }
+  }
+}
