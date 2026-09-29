@@ -1,47 +1,48 @@
 ---
 title: Install Nodeau on an Apple Silicon Mac
-heading: Install on macOS
-nav: Install on macOS
-description: The complete Apple Silicon install — Metal, no Kubernetes and no password, unified memory, what a Mac can and cannot do, quarantine, PATH and uninstall.
-lede: On a Mac, Nodeau runs models directly on the GPU through Metal. There is no Kubernetes, no Docker, no NVIDIA tooling and nothing that needs your password.
+heading: Install on a Mac
+nav: Install on a Mac
+description: The Apple Silicon install: Metal, no containers and no password, running your first model, unified memory, the PATH line, upgrading and uninstalling.
+lede: On a Mac, Nodeau runs models directly on the GPU through Metal. No Kubernetes, no Docker, no NVIDIA tooling, and nothing that needs your password.
 ---
 
 :::macos
-This page is the Apple Silicon path. It is not the Linux instructions with a
-footnote: the execution plane underneath is different, and so is most of what
-happens. The Linux path is [here](/docs/install-linux/).
+This is the Apple Silicon path, and it's genuinely its own thing: the execution
+plane underneath is different, and so is most of what happens. The Linux path
+is [here](/docs/install-linux/).
 :::
 
-## What a Mac can and cannot do
+## What a Mac does {#what-a-mac-can-and-cannot-do}
 
-Nodeau on Apple Silicon is **qualified with named exclusions**, and the
-exclusions are the honest half of that word.
+A Mac makes a lovely private AI endpoint. Nodeau serves chat models on the
+Mac's own GPU, and the whole install needs no password. Nodeau on Apple Silicon
+is **qualified**, and this is its scope:
 
 | | On a Mac |
 |---|---|
-| Run a model on the GPU, with a local OpenAI-compatible endpoint | Yes, through Metal |
+| A chat model on the GPU, behind a local OpenAI-compatible endpoint | Yes, through Metal |
 | The curated catalog, downloads and SHA-256 verification | Yes |
-| Admission — predicting whether a model fits before starting it | Yes |
-| Bring your own model | Not qualified. It builds and passes its checks on darwin; no Mac has run it, and it needs a cluster a Mac deliberately does not have |
-| Join a fleet | **No.** A Mac runs standalone. It is not a Kubernetes node, and Nodeau will not pretend otherwise |
-| Batch inference | **No.** Absent on darwin, and refused by name rather than half-working |
-| Several GPUs in one machine | **No.** A Mac has one integrated GPU |
-| Scheduling modes, power limits, fleet health and governance | **No.** These are fleet capabilities and a Mac has no fleet |
+| The fit check before anything starts | Yes, against unified memory |
+| `run`, `ps`, `stop`, `logs`, `doctor` and `uninstall` | Yes |
+| Fleets, batch inference and bringing your own model | On your Linux machines with NVIDIA GPUs. A Mac runs standalone |
+| Embeddings, reranking, structured output, tool calling and image input | On your Linux machines today, with embeddings, reranking and image input for the Mac [in progress](/roadmap/) |
+| Several GPUs, scheduling modes, power limits, health, limits and policies | Part of a Linux fleet. A Mac has one integrated GPU |
 
 ## Requirements
 
-- An **Apple Silicon (M-series) Mac**. Intel Macs are refused by name — Metal
-  execution needs an M-series chip.
-- About **20 GB free disk**. There are no container images on macOS, so the
-  footprint is the binaries plus your models.
-- Outbound HTTPS to install and to download a model.
-- **No password.** Nothing on this path needs `sudo`.
+- An **Apple Silicon (M-series) Mac**. Metal execution needs an M-series chip,
+  so on an Intel Mac the installer stops and names that as the reason.
+- About **20 GB free disk**. A Mac needs no container images, so it's the
+  binaries plus your models.
+- Outbound HTTPS, to install and to download a model.
+- **No password.** Nothing on this path uses `sudo`.
 
-Nodeau checks no macOS version number anywhere. If you are on an earlier
-release than we have tried, that is untested rather than unsupported, and the
-choice is left to you.
+Nodeau has been run on M3 Pro Macs under macOS 26.5 and macOS 27. It checks no
+macOS version number anywhere, so if you're on another release you're welcome to
+try it: untested isn't the same as unsupported, and we'd love to hear how it
+goes.
 
-## Step 1 — get the CLI
+## Step 1: get the CLI
 
 ```bash
 curl -fsSL https://get.nodeau.ai/install.sh | bash
@@ -55,133 +56,150 @@ less install-nodeau.sh
 bash install-nodeau.sh
 ```
 
-This downloads `nodeau-darwin-arm64.tar.gz`, **verifies its SHA-256 against the
-published manifest**, and puts `nodeau` into `~/.local/bin`. It refuses to run as
-root and calls no `sudo`.
+This downloads `nodeau-darwin-arm64.tar.gz`, **checks its SHA-256 against the
+published manifest**, and puts `nodeau` into `~/.local/bin`. It runs as you and
+calls no `sudo`.
 
 The macOS archive also carries a **Metal model runtime**, which the script
-stages beside the binary so `nodeau install` can find it. There is nothing for
+places beside the binary so `nodeau install` can find it. There's nothing for
 you to build or supply.
 
-:::warning Use the install command, not a browser download
-macOS tags anything a browser saves as quarantined. Nodeau is not signed with an
-Apple Developer ID, so Gatekeeper refuses to run a quarantined copy — and from a
-terminal there is no dialog and no message: the process is killed with signal 9
-and you see an empty line and **exit code 137**.
+:::warning Install with the command rather than a browser download
+macOS marks anything a browser saves as quarantined. Nodeau isn't signed with
+an Apple Developer ID, so Gatekeeper won't run a quarantined copy, and from a
+terminal that looks like an empty line and **exit code 137** (the process is
+stopped with signal 9).
 
-`curl` does not set the quarantine flag, so the command above has nothing to
-clear. If you already fetched the archive another way, see
-[the fix](/docs/troubleshooting/#on-a-mac-nodeau-prints-nothing-and-exits-137).
+`curl` doesn't set the quarantine flag, so the command above has nothing to
+clear. If you already fetched the archive another way,
+[here's the fix](/docs/troubleshooting/#on-a-mac-nodeau-prints-nothing-and-exits-137).
 :::
 
-## Step 2 — look at the machine
+## Step 2: look at the machine
 
 ```bash
 nodeau doctor
 ```
 
-Read-only. It reports the chip, the Metal accelerator, memory, the state
-directory, whether a model runtime is installed and verified, and what is
+This only looks. It reports the chip, the Metal accelerator, memory, the state
+directory, whether a model runtime is installed and verified, and what's
 running.
 
-## Step 3 — set it up
+## Step 3: set it up
 
 ```bash
 nodeau install --dry-run     # what would change
-nodeau install               # the same, then asks
+nodeau install               # the same, then it asks
 ```
 
-It checks four things and then acts:
+It checks four things, then gets to work:
 
-| Check | Blocking? |
+| Check | What it looks for |
 |---|---|
-| **Apple Silicon** — the machine reports `arm64` | Yes |
-| **Metal accelerator** — a usable GPU is present | Yes |
-| **Model runtime** — a prepared runtime is available, bundled or named | Yes, if none can be found |
-| **Storage safety** — the state directory lands on a writable, native filesystem | Yes |
+| **Apple Silicon** | The machine reports `arm64` |
+| **Metal accelerator** | A usable GPU is present |
+| **Model runtime** | A prepared runtime is available, bundled or named with `--runtime` |
+| **Storage safety** | The state directory lands on a writable, native filesystem |
 
-Then it creates its directories, installs the model runtime, copies the `nodeau`
-binary into Nodeau's own directory, warms the Metal shader cache so the first
-model run is not mistaken for a hang, and offers to add one line to your login
-profile.
+All four need to pass. Then Nodeau creates its directories, installs the model
+runtime, copies the `nodeau` binary into its own directory, warms the Metal
+shader cache ahead of your first model run, and offers to add one line to your
+login profile.
 
-There is no Kubernetes, no container runtime, no virtual machine and no
-privileged step. Everything lives in your own Library folder.
+Everything lives in your own Library folder. There's no Kubernetes, no container
+runtime, no virtual machine and no privileged step.
 
 ### Options
 
 | Flag | What it does |
 |---|---|
 | `--dry-run` | Show what would change and stop |
-| `--yes`, `-y` | Do not ask anything |
-| `--runtime <path>` | Install a prepared model runtime from a directory or `.tar.gz`. An explicit path always wins over the bundled one |
-| `--skip-path` | Do not offer to add Nodeau to your shell `PATH` |
-| `--skip-binary` | Do not copy the Nodeau binary into Nodeau's own directory |
+| `--yes`, `-y` | Answer yes to every question |
+| `--runtime <path>` | Install a prepared model runtime from a directory or a `.tar.gz`. A path you give always wins over the bundled runtime |
+| `--skip-path` | Leave your shell `PATH` as it is |
+| `--skip-binary` | Leave the Nodeau binary where the bootstrap put it |
 | `--state <path>` | Path to the install ledger |
-| `--json` | Machine-readable output. It does **not** imply consent — a pipeline says yes with `--yes` |
+| `--json` | Machine-readable output. A pipeline still says yes with `--yes` |
 
 ### The PATH line
 
 macOS has no user-writable directory on the default `PATH`, so one line has to
 go into your login profile. Nodeau shows you the exact text and asks before
-appending it. Declining costs nothing: the line is printed, and `nodeau` still
-works by full path.
+appending it. If you'd rather not, the line is printed for you, and `nodeau`
+still works by its full path.
 
-It goes in **`~/.zprofile`**, not `~/.zshrc`. Terminal.app runs login shells, so
-a `PATH` line in `.zshrc` works by hand and fails in a script, an `ssh` command
-or a LaunchAgent.
+It goes in **`~/.zprofile`** rather than `~/.zshrc`. Terminal.app runs login
+shells, so a `PATH` line in `.zshrc` works by hand and then goes missing in a
+script, an `ssh` command or a LaunchAgent.
 
 It takes effect in a **new** terminal window.
 
-## Step 4 — run a model
+## Step 4: run a model
 
 ```bash
-nodeau model list          # what you can run
-nodeau run <model>         # download it, admit it, serve it
-nodeau ps                  # what is running
+nodeau model list                # what you can run
+nodeau run qwen3.5-4b-q4km       # download it, check the fit, serve it
+nodeau ps                        # what's running
 ```
 
-`nodeau run` is the supported vocabulary on both platforms. It resolves the
-model from the catalog, asks before downloading, runs admission, starts the
-model on the Mac's GPU and brings up the loopback endpoint. Then call it exactly
-as on Linux — see [the API](/docs/api/).
+`nodeau run` resolves the model from the catalog, asks before downloading
+anything, checks that it fits, starts it on the Mac's GPU and brings up the
+loopback endpoint. When it's ready you'll see:
 
-The endpoint runs as a **launchd user agent** in `~/Library/LaunchAgents`, so it
-survives closing the terminal.
+```text
+──────────────────────────────────────
+Nodeau is ready.
+──────────────────────────────────────
 
-:::note `nodeau quickstart` is the Linux flow
-Quickstart creates a Kubernetes `GPUService`. On a Mac, `nodeau run <model>`
-does the equivalent job through the native plane.
+Model
+  qwen3.5-4b-q4km
+
+Local API
+  http://127.0.0.1:8080/v1
+
+  Only this computer can reach it. It is not on your network.
+```
+
+Below that it prints a `curl` command you can paste as it is. From here, call it
+exactly as you would on Linux: see [the OpenAI-compatible API](/docs/api/).
+
+The endpoint runs as a **launchd user agent** in `~/Library/LaunchAgents`, so
+it keeps serving after you close the terminal.
+
+:::note On a Mac, `nodeau run` is your quickstart
+`nodeau quickstart` creates a Kubernetes workload, which is the Linux flow. On a
+Mac, `nodeau run <model>` does the same job through the native plane.
 :::
 
 ## Unified memory {#unified-memory}
 
-This is the one thing about a Mac that surprises people, and it is worth
-understanding rather than working around.
+This is the one thing about a Mac that surprises people, and it's worth a
+minute to understand.
 
 On Apple Silicon the system, your applications and the GPU share **one** pool of
-memory. So "will this model fit" is not a fixed property of the machine — it
+memory. So "will this model fit?" isn't a fixed property of the machine. It
 depends on what else is open.
 
 Nodeau reads two separate numbers:
 
-- a **static ceiling**, the most the GPU is allowed to hold. This is a property
-  of the device and does not move, even when free memory swings by gigabytes.
-- a **live figure** for what is actually free right now.
+- a **static ceiling**, the most the GPU is allowed to hold. It's a property of
+  the device, and it stays put even when free memory swings by gigabytes.
+- a **live figure** for what's actually free right now.
 
-Admission uses the smaller, minus a system reserve. The consequence is real and
-correct:
+The fit check uses the smaller of the two, minus a system reserve. That has a
+real, correct consequence:
 
-> A model that started yesterday can be refused today, because you now have a
-> browser and a video call open. Close something and try again.
+> A model that started yesterday can be turned away today, because you now have
+> a browser and a video call open. Close something and try again.
 
-That is Nodeau reading the machine honestly. Nodeau will never quietly reduce
-its own safety margin to make something fit — an out-of-memory kill on a
-machine whose display is driven by the same GPU is worse than a refusal.
+That's Nodeau reading the machine honestly. It keeps its safety margin whole,
+because an out-of-memory kill on a machine whose display runs on the same GPU
+is much worse than a clear "not right now".
 
 If you want to accept that risk for one workload, `nodeau run` takes
 `--accept-estimate-risk` and `--spend-safety-reserve`. Both are explicit, both
-are per-workload, and both are recorded.
+apply to one workload, and both are recorded. See
+[accepting the risk yourself](/docs/scheduling/#accepting-the-risk-yourself).
 
 ## Where things live
 
@@ -194,25 +212,26 @@ are per-workload, and both are recorded.
 | `~/Library/Application Support/Nodeau/api-key` | Your local API key, mode `0600` |
 | `~/Library/LaunchAgents/` | The endpoint's user agent |
 
-`XDG_CONFIG_HOME` and `XDG_STATE_HOME` are honoured when explicitly set.
+`XDG_CONFIG_HOME` and `XDG_STATE_HOME` are honoured when you set them
+explicitly.
 
-:::note Never `~/Library/Caches`
-Nodeau does not put the model cache there. macOS may purge that directory, and a
-cache the operating system can silently delete would break the guarantee that a
-verified artifact stays verified.
+:::note Why Application Support rather than Caches
+macOS may purge `~/Library/Caches` on its own, and a verified model should stay
+verified. So the model cache lives in Application Support, where only you and
+Nodeau decide what goes.
 :::
 
 ## The model runtime
 
-On Linux a runtime is a container image with a digest, which answers for itself.
-A directory does not, so on macOS the runtime carries a manifest — version,
-engine, backend, os/arch, a SHA-256 for every file, and the upstream commit — and
-**fails closed** if it does not verify.
+On Linux a runtime is a container image with a digest, which vouches for itself.
+A directory can't do that, so on macOS the runtime carries a manifest (version,
+engine, backend, OS and architecture, a SHA-256 for every file, and the upstream
+commit) and **fails closed** if it doesn't verify.
 
-Installing one is verify-then-promote: a failed install leaves the previous
-runtime serving. `nodeau doctor` reports `RUNTIME_MISSING`, `RUNTIME_CORRUPT`,
-`RUNTIME_UNVERIFIED` and `RUNTIME_UNMANAGED` separately, because they need
-different answers.
+Installing one is verify-then-promote: if a new runtime fails its checks, the
+previous one keeps serving. `nodeau doctor` reports `RUNTIME_MISSING`,
+`RUNTIME_CORRUPT`, `RUNTIME_UNVERIFIED` and `RUNTIME_UNMANAGED` separately,
+because each needs a different answer.
 
 ## Upgrading
 
@@ -221,8 +240,8 @@ curl -fsSL https://get.nodeau.ai/install.sh | bash
 nodeau install
 ```
 
-`nodeau update` checks first. See
-[updating and release channels](/docs/updates/).
+`nodeau update` checks whether there's something newer first. See
+[updates and release channels](/docs/updates/).
 
 ## Uninstalling
 
@@ -231,21 +250,22 @@ nodeau uninstall --dry-run
 nodeau uninstall
 ```
 
-It removes what `nodeau install` put here and nothing else. A model runtime you
-assembled yourself, a `PATH` line you wrote, or a copy of `nodeau` you manage
-are all left alone, and the plan says so.
+It removes what `nodeau install` put here and leaves everything else. A model
+runtime you assembled yourself, a `PATH` line you wrote, or a copy of `nodeau`
+you manage all stay, and the plan says so.
 
 | Flag | What it does |
 |---|---|
 | `--dry-run` | Show what would be removed and stop |
-| `--yes`, `-y` | Do not ask anything |
+| `--yes`, `-y` | Answer yes to every question |
 | `--models` | Also delete downloaded model weights |
 | `--keep-path` | Leave the `PATH` line in your login profile |
 | `--state <path>` | Path to the install ledger |
 
-Your downloaded models are **kept** unless you pass `--models`. Uninstalling the
-software and throwing away gigabytes of downloads are different decisions.
+Your downloaded models are **kept** unless you pass `--models`. Removing the
+software and throwing away gigabytes of downloads are different decisions, so
+they're different flags.
 
 ## If something went wrong
 
-[Troubleshooting has a macOS section](/docs/troubleshooting/#macos).
+[Troubleshooting has a section for Macs](/docs/troubleshooting/#macos).

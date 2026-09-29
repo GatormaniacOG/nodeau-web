@@ -3,547 +3,563 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nodeau · Private AI Infrastructure on GPUs You Already Own</title>
-<meta name="description" content="Chat, embeddings, reranking, structured output and image understanding on GPUs you own — including GGUF models you bring yourself. Nodeau works out whether a model fits before it starts anything, on Linux/NVIDIA and Apple Silicon.">
+<title>Nodeau · Your GPUs. One private AI cloud.</title>
+<meta name="description" content="Nodeau turns the GPUs and computers you already own into one private AI cloud. Run models on your own hardware, add machines as you go, and use an OpenAI-compatible API.">
 <link rel="canonical" href="https://nodeau.ai/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Nodeau · Private AI Infrastructure on GPUs You Already Own">
-<meta property="og:description" content="Local inference, batch jobs and a private OpenAI-compatible API on hardware you own. Nodeau checks the fit before it starts anything, and tells you how it decided.">
+<meta property="og:title" content="Nodeau · Your GPUs. One private AI cloud.">
+<meta property="og:description" content="Run models on the GPUs you already own, add machines as you go, and call it all through an OpenAI-compatible API. Linux with NVIDIA, and Apple Silicon Macs.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/nodeau.css?v=13cbe303">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header" data-header>
   <div class="wrap">
-    <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-      Nodeau
-    </a>
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
     <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <nav class="nav" id="site-nav" data-nav aria-label="Primary">
       <ul>
-        <li><a href="#home">For home</a></li>
-        <li><a href="#business">For business</a></li>
-        <li><a href="/install/">Install</a></li>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
         <li><a href="/docs/">Docs</a></li>
         <li><a href="/pricing/">Pricing</a></li>
         <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
         <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
       </ul>
     </nav>
     <div class="header-actions">
       <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
     </div>
   </div>
 </header>
 
 <main id="main">
 
-  <!-- ===================================================== hero =========== -->
-  <section class="hero">
+  <!-- ================================================================ hero -->
+  <section class="hero hero-home">
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <a class="release-tag" href="/install/">
+          <a class="release-tag" href="/roadmap/">
             <span class="dot" aria-hidden="true"></span>
-            Beta <span data-release></span> · Linux/NVIDIA · Apple Silicon
+            <span>Beta <span data-release></span> · Linux + NVIDIA · Apple Silicon</span>
           </a>
-          <h1>Turn the GPUs you already own into private AI infrastructure.</h1>
-          <p class="lede" style="margin-top:1.25rem">
-            You have a graphics card. Between that and a working AI endpoint sit
-            drivers, containers, quantisation and a great deal of VRAM
-            arithmetic. Nodeau handles all of that and hands you an
-            OpenAI-compatible API on your own machine.
+          <h1><span class="quiet">Your GPUs.</span> One private AI cloud.</h1>
+          <p class="lede">
+            You already have the hardware. Nodeau turns the GPUs and computers
+            you own into one private AI cloud. Run models on them, add machines
+            as you go, and call everything through the OpenAI-compatible API
+            your apps already speak.
           </p>
-          <p class="lede" style="margin-top:0.85rem;max-width:52ch">
-            There is more here than chat. Embeddings, reranking, structured
-            output, tool calling and image understanding all run from the same
-            catalog, on the same engine, with the same two commands.
-          </p>
-          <p class="lede" style="margin-top:0.85rem;max-width:52ch">
-            And the catalog is not the limit. Give Nodeau a <strong>GGUF</strong>
-            file of your own and it reads the header, works out what the model
-            needs, and tests it on your card before saying it works.
-          </p>
-          <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
-            Runs on Linux with an NVIDIA card, and on Apple Silicon through
-            Metal. A Mac runs standalone and is a fine way to work with chat
-            models. Fleets, batch work and the other workloads run on Linux
-            with NVIDIA, where they are measured.
-          </p>
-          <p style="color:var(--text-3);margin-top:0.85rem;max-width:52ch">
-            Three commands. No Kubernetes to learn.
-          </p>
-          <div class="btn-row" style="margin-top:2rem">
-            <a class="btn btn-primary" href="/install/">Install Nodeau</a>
-            <a class="btn btn-ghost" href="#business">Nodeau for Business</a>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="/install/">Get Nodeau</a>
+            <a class="btn btn-ghost" href="/product/">See how it works</a>
           </div>
+          <p class="hero-note">Free on one machine. No account needed to start.</p>
         </div>
 
-        <div class="code" aria-label="Example terminal session">
-          <div class="code-head"><span>terminal</span></div>
-<pre><code><span class="prompt">$</span> <span class="cmd">nodeau quickstart</span>
-
-<span class="dim">==&gt;</span> model            <span class="str">Qwen3.5-4B</span> <span class="ok">verified</span>
-<span class="dim">==&gt;</span> gpu              <span class="str">RTX 3080 · 7,005 MiB available</span>
-<span class="dim">==&gt;</span> admission        <span class="ok">Admit · needs 4,406 MiB · 2,599 MiB spare</span>
-<span class="dim">==&gt;</span> endpoint         <span class="str">http://127.0.0.1:8080/v1</span>
-
-<span class="ok">Nodeau is ready.</span></code></pre>
-        </div>
+        <figure class="fleetcard" aria-labelledby="fleet-caption">
+          <figcaption id="fleet-caption" class="visually-hidden">
+            An example Nodeau fleet: three machines with four NVIDIA GPUs between
+            them. One serves a chat model, one serves an embedding model, and one
+            splits a large model across its two cards. Each model has an
+            OpenAI-compatible endpoint.
+          </figcaption>
+          <div class="fc-head" aria-hidden="true">
+            <span class="fc-title">Example fleet</span>
+            <span class="fc-meta">3 machines · 4 GPUs</span>
+          </div>
+          <div class="machine" aria-hidden="true">
+            <div class="machine-head"><span class="machine-name">studio</span><span class="machine-role">control plane</span><span class="status-on">online</span></div>
+            <div class="gpu">
+              <div class="gpu-top"><span>RTX 5060 Ti</span><span class="mem">16 GB</span></div>
+              <span class="cap"><span style="--used:37%"></span></span>
+              <div class="wl"><span class="wl-model">qwen3.5-9b-q4km</span><span class="chip">chat</span><span class="chip chip-ok">serving</span></div>
+            </div>
+          </div>
+          <div class="machine" aria-hidden="true">
+            <div class="machine-head"><span class="machine-name">garage</span><span class="machine-role">worker</span><span class="status-on">online</span></div>
+            <div class="gpu">
+              <div class="gpu-top"><span>RTX 3080</span><span class="mem">10 GB</span></div>
+              <span class="cap"><span style="--used:14%"></span></span>
+              <div class="wl"><span class="wl-model">qwen3-embedding-0.6b</span><span class="chip">embeddings</span><span class="chip chip-ok">serving</span></div>
+            </div>
+          </div>
+          <div class="machine" aria-hidden="true">
+            <div class="machine-head"><span class="machine-name">lab</span><span class="machine-role">worker</span><span class="status-on">online</span></div>
+            <div class="gpu">
+              <div class="gpu-top"><span>RTX 3080</span><span class="mem">10 GB</span></div>
+              <span class="cap"><span style="--used:88%"></span></span>
+            </div>
+            <div class="gpu">
+              <div class="gpu-top"><span>RTX 5060 Ti</span><span class="mem">16 GB</span></div>
+              <span class="cap"><span style="--used:71%"></span></span>
+              <div class="wl"><span class="wl-model">qwen3.8-27b-q4km</span><span class="chip">split across both cards</span><span class="chip chip-ok">serving</span></div>
+            </div>
+          </div>
+          <div class="fc-foot" aria-hidden="true"><span>http://127.0.0.1:8080/v1</span><b>OpenAI-compatible</b></div>
+        </figure>
       </div>
     </div>
   </section>
 
-  <!-- ================================================= proof bar ========== -->
-  <div class="wrap">
-    <div class="proof">
-      <div class="proof-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 19v2M16 19v2"/></svg>
-        <div><strong>Runs on hardware you own</strong><span>Your GPU does the work.</span></div>
-      </div>
-      <div class="proof-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 4v6c0 4.5-3.4 7.3-8 8-4.6-.7-8-3.5-8-8V7z"/><path d="M9 12l2 2 4-4"/></svg>
-        <div><strong>Checks the fit first</strong><span>Before starting, not after it crashes.</span></div>
-      </div>
-      <div class="proof-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3"/></svg>
-        <div><strong>OpenAI-compatible API</strong><span>Change one line in your client.</span></div>
-      </div>
-      <div class="proof-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
-        <div><strong>Private by default</strong><span>Bound to 127.0.0.1, with a key.</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================== nodeau home =========== -->
-  <section id="home" class="divider reveal">
-    <div class="wrap">
-      <div class="grid grid-2" style="align-items:start">
-        <div>
-          <p class="eyebrow">Nodeau Home</p>
-          <h2>Put the GPU you already have to work.</h2>
-          <p class="lede" style="margin-top:1rem">
-            The card in your desktop is probably idle right now. It can run a
-            capable model locally, and the only thing standing in the way is
-            setup.
-          </p>
-          <p style="color:var(--text-2);margin-top:1rem;max-width:56ch">
-            Anyone who has tried knows how that goes. You want to ask a model a
-            question and you end up reading about container runtimes at
-            midnight. Nodeau takes that on: it checks your machine, works out
-            what will fit, fetches the weights, and starts something you can
-            actually send a request to.
-          </p>
-          <div class="btn-row" style="margin-top:1.75rem">
-            <a class="btn btn-primary" href="/install/">Install Nodeau</a>
-            <a class="link-arrow" href="/faq/" style="align-self:center">Read the FAQ</a>
-          </div>
-        </div>
-
-        <div class="grid" style="gap:1.4rem">
-          <div class="feature">
-            <h3>It checks the machine first</h3>
-            <p>Operating system, GPU, driver, disk, and whether Nodeau's own pieces are healthy. If something is missing it says what, and stops before changing anything.</p>
-          </div>
-          <div class="feature">
-            <h3>It works out whether the model fits</h3>
-            <p>Nodeau compares what your GPU can really give a workload against what the model needs. If it will fit you are told how much room is left. If it will not, you get the numbers and a plain explanation before anything starts loading.</p>
-          </div>
-          <div class="feature">
-            <h3>It fetches and verifies the model</h3>
-            <p>Straight from the publisher over HTTPS, pinned to an exact file, checked against a known SHA-256 before anything runs it. Cached locally, so you download it once.</p>
-          </div>
-          <div class="feature">
-            <h3>It gives you an ordinary API</h3>
-            <p>OpenAI-compatible, on <code>127.0.0.1</code>, with a key generated on your machine. Existing SDKs work by changing <code>base_url</code>.</p>
-          </div>
-          <div class="feature">
-            <h3>And it keeps track of what it changed</h3>
-            <p>Nodeau remembers what it installed and what was already there, and shows you the plan before it undoes anything. Your driver, your models and everything that predates Nodeau are left alone.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =============================================== simple flow ========== -->
+  <!-- ============================================================= why ==== -->
   <section class="tight divider reveal">
     <div class="wrap">
-      <div class="grid grid-2" style="align-items:start;gap:clamp(2rem,5vw,4rem)">
+      <div class="duo duo-top">
         <div>
-          <p class="eyebrow">Getting there</p>
-          <h2 style="font-size:var(--step-2)">From a spare GPU to a local endpoint.</h2>
-          <p style="color:var(--text-2);margin-top:0.9rem;max-width:44ch">
-            Three commands and a request. The long part is downloading the
-            model.
-          </p>
-          <a class="link-arrow" href="/install/" style="margin-top:1.25rem">Full install guide</a>
+          <p class="eyebrow">Why Nodeau</p>
+          <h2>The hard part was never the GPU.</h2>
         </div>
+        <div>
+          <p class="lede" style="max-width:none">
+            The card in your desktop can run a genuinely useful model today.
+            Getting there usually means drivers, containers, model formats and a
+            lot of memory math. Nodeau does that work for you.
+          </p>
+          <p>
+            It checks each model fits before it starts, downloads and verifies
+            the weights, and hands you an endpoint that works. Start with the
+            machine in front of you. Add another whenever you like, and they all
+            become one fleet you can see from anywhere.
+          </p>
+        </div>
+      </div>
 
-        <div class="steps">
-          <div class="step">
-            <h3>Install the CLI</h3>
-            <div class="code">
-              <div class="code-head">
-                <span>bash</span>
-                <button class="copy-btn" data-copy="#cmd-install" type="button"><span data-copy-label>Copy</span></button>
-              </div>
-<pre id="cmd-install"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash</code></pre>
-            </div>
+      <div class="proof" style="margin-top:clamp(2rem,5vw,3rem)">
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 19v2M16 19v2"/></svg>
+          <div><strong>Runs on hardware you own</strong><span>Your GPUs do the work, and your prompts stay with them.</span></div>
+        </div>
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 4v6c0 4.5-3.4 7.3-8 8-4.6-.7-8-3.5-8-8V7z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><strong>Checks the fit first</strong><span>Every model lands on a GPU that can hold it.</span></div>
+        </div>
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3"/></svg>
+          <div><strong>OpenAI-compatible</strong><span>Point the client you already use at it.</span></div>
+        </div>
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+          <div><strong>Private by default</strong><span>Bound to 127.0.0.1, with a key made on your machine.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= start ====== -->
+  <section class="divider reveal" id="start">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Getting started</p>
+        <h2>Three commands to your first model.</h2>
+        <p>Most of the time goes to downloading the model. On a Mac it's even simpler: no drivers and no password.</p>
+      </div>
+
+      <div class="duo duo-top">
+        <div class="flow">
+          <div class="flow-step">
+            <h3>Install Nodeau</h3>
+            <p>One small program, checksum verified, into a folder you own.</p>
+<pre><code>curl -fsSL https://get.nodeau.ai/install.sh | bash</code></pre>
           </div>
-
-          <div class="step">
-            <h3>Prepare the machine</h3>
-            <div class="code">
-              <div class="code-head">
-                <span>bash</span>
-                <button class="copy-btn" data-copy="#cmd-prepare" type="button"><span data-copy-label>Copy</span></button>
-              </div>
-<pre id="cmd-prepare"><code>nodeau install</code></pre>
-            </div>
+          <div class="flow-step">
+            <h3>Set up the machine</h3>
+            <p>Nodeau looks the machine over, shows you its plan and every command that needs sudo, and asks before it changes anything.</p>
+<pre><code>nodeau install</code></pre>
           </div>
-
-          <div class="step">
+          <div class="flow-step">
             <h3>Start a model</h3>
-            <div class="code">
-              <div class="code-head">
-                <span>bash</span>
-                <button class="copy-btn" data-copy="#cmd-quickstart" type="button"><span data-copy-label>Copy</span></button>
-              </div>
-<pre id="cmd-quickstart"><code>nodeau quickstart</code></pre>
-            </div>
+            <p>It offers a starter model, checks that it fits your GPU, downloads and verifies it, then starts it.</p>
+<pre><code>nodeau quickstart</code></pre>
           </div>
-
-          <div class="step">
+          <div class="flow-step">
             <h3>Use it</h3>
-            <p style="margin-bottom:0">
-              Nodeau prints a working <code>curl</code> command with your local
-              key. Or point any OpenAI client at
-              <code>http://127.0.0.1:8080/v1</code>.
-            </p>
+            <p>Point any OpenAI-compatible client at <code>http://127.0.0.1:8080/v1</code>. That's it. Your model is live!</p>
           </div>
+          <p style="color:var(--text-3);font-size:0.9rem;margin-top:0.5rem">
+            On a Mac, step three is <code>nodeau run qwen3.5-4b-q4km</code>.
+            <a class="link-arrow" href="/install/" style="margin-left:0.35rem">The full guide</a>
+          </p>
+        </div>
+
+        <div class="code term" aria-label="What nodeau quickstart prints">
+          <div class="code-head"><span>nodeau quickstart</span></div>
+<pre><code><span class="hl">Recommended starter model</span>
+
+  <span class="hl">Qwen3.5-4B Q4_K_M</span>
+
+  Download
+    ~2.55 GiB
+
+  License
+    Apache-2.0
+
+  Downloaded from
+    huggingface.co
+
+  Nodeau checked your graphics card and expects this to fit.
+
+<span class="dim">==&gt;</span> downloading Qwen3.5-4B-Q4_K_M.gguf
+<span class="dim">==&gt;</span> waiting for Nodeau to admit and start it
+<span class="dim">==&gt;</span> starting the local endpoint
+
+<span class="rule">──────────────────────────────────────</span>
+<span class="ok">Nodeau is ready.</span>
+<span class="rule">──────────────────────────────────────</span>
+
+<span class="hl">Model</span>
+  qwen3.5-4b-q4km
+
+<span class="hl">Local API</span>
+  <span class="str">http://127.0.0.1:8080/v1</span>
+
+  Only this computer can reach it.</code></pre>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================ day to day ============== -->
-  <section class="tight divider reveal">
+  <!-- ====================================================== hardware ====== -->
+  <section class="divider reveal" id="hardware">
     <div class="wrap">
-      <p class="eyebrow">Day to day</p>
-      <h2 style="font-size:var(--step-2)">The commands you'd expect, and nothing you wouldn't.</h2>
-      <p style="color:var(--text-2);margin-top:0.9rem;max-width:58ch">
-        Once it's running, the vocabulary is the one you already use for
-        anything else on a machine. Start something, see what's running, read
-        the logs, stop it, get the GPU back.
+      <div class="section-head">
+        <p class="eyebrow">Your hardware</p>
+        <h2>Bring the hardware you already have.</h2>
+        <p>
+          NVIDIA cards, Apple Silicon Macs, big cards and small ones. Nodeau
+          learns what each GPU can really give and places every model on one
+          that can actually run it.
+        </p>
+      </div>
+
+      <div class="duo">
+        <div class="tiles" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,14.5rem),1fr))">
+          <div class="tile">
+            <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 17v3M10 17v3M14 17v3M18 17v3"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/></svg></div>
+            <h3>NVIDIA GPUs on Linux</h3>
+            <p>Ubuntu 24.04 with a working NVIDIA driver. Nodeau has run on the RTX 5070 Ti, 5060 Ti, 3080 and 2080, and it estimates carefully for cards it's meeting for the first time.</p>
+          </div>
+          <div class="tile">
+            <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></div>
+            <h3>Apple Silicon Macs</h3>
+            <p>Models run natively on the Mac's own GPU through Metal. No drivers, no password. A Mac runs standalone as your own private chat endpoint.</p>
+          </div>
+          <div class="tile">
+            <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="8" height="18" rx="2"/><rect x="13" y="3" width="8" height="18" rx="2"/></svg></div>
+            <h3>Several GPUs in one machine</h3>
+            <p>Every card is scheduled on its own. Run a different model on each, or split a model that's too big for one card across two.</p>
+          </div>
+          <div class="tile">
+            <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/></svg></div>
+            <h3>Different cards, one fleet</h3>
+            <p>Mix sizes and generations. Each machine reports what it really has, and Nodeau matches every model to a GPU that fits it.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="fitcard" role="img" aria-labelledby="fit-caption">
+            <p id="fit-caption" class="visually-hidden">
+              Qwen3.5-9B checked against two cards. On an RTX 5060 Ti it needs
+              5,800 MiB, a measured figure, out of 15,315 MiB available. On an
+              RTX 3080 it needs 7,210 MiB, an estimate, out of 9,365 MiB
+              available. It fits on both.
+            </p>
+            <div aria-hidden="true">
+              <div class="fit-label" style="margin-bottom:0.9rem"><span style="color:var(--text)">Will <b>qwen3.5-9b-q4km</b> fit?</span></div>
+              <div class="fit-row">
+                <div class="fit-label"><span>RTX 5060 Ti · 5,800 of 15,315 MiB · measured</span><span class="chip chip-ok">fits</span></div>
+                <div class="fit-bar"><i class="fit-reserve" style="width:3.2%"></i><i class="fit-need" style="width:36.6%"></i></div>
+              </div>
+              <div class="fit-row">
+                <div class="fit-label"><span>RTX 3080 · 7,210 of 9,365 MiB · estimated</span><span class="chip chip-ok">fits</span></div>
+                <div class="fit-bar"><i class="fit-reserve" style="width:5.2%"></i><i class="fit-need" style="width:73%"></i></div>
+              </div>
+              <div class="fit-legend">
+                <span style="--c:var(--accent)">what the model needs</span>
+                <span style="--c:rgba(255,255,255,0.18)">safety reserve</span>
+              </div>
+              <div class="fit-verdict">
+                Real arithmetic from <code>nodeau model status</code>, before anything starts.
+              </div>
+            </div>
+          </div>
+          <p style="color:var(--text-2);margin-top:1.1rem;font-size:0.95rem">
+            A measurement when Nodeau has one, a careful estimate otherwise, and
+            it always tells you which. When a model is too big for a card,
+            you get the numbers and a suggestion instead of a crash.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== what to run ==== -->
+  <section class="divider reveal" id="models">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">What you can run</p>
+        <h2>Much more than a chat box.</h2>
+        <p>
+          Pick a model from the catalog, or bring your own. The same engine
+          serves chat, search, ranking, structured data and images, and the
+          same fit check guards all of it.
+        </p>
+      </div>
+
+      <div class="tiles">
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg></div>
+          <h3>Chat and completion</h3>
+          <p>Streaming included, and it works from any OpenAI client.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></div>
+          <h3>Embeddings</h3>
+          <p>Turn text into vectors for search, RAG and clustering, on your own GPU.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h10M4 12h7M4 18h4M17 5v14M14 16l3 3 3-3"/></svg></div>
+          <h3>Reranking</h3>
+          <p>Score documents against a query so the best answer comes first.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 4H6a2 2 0 00-2 2v4l-2 2 2 2v4a2 2 0 002 2h2M16 4h2a2 2 0 012 2v4l2 2-2 2v4a2 2 0 01-2 2h-2"/></svg></div>
+          <h3>Structured output</h3>
+          <p>Ask for JSON that follows your schema, and get exactly that shape back.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 005.4-5.4l-2.5 2.5-2.8-.7-.7-2.8z"/></svg></div>
+          <h3>Tool calling</h3>
+          <p>Let a model decide when to call your functions, with arguments your code can parse.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/></svg></div>
+          <h3>Vision</h3>
+          <p>Give a model an image and ask about what it sees.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/><path d="M18 16l2 2 3-3"/></svg></div>
+          <h3>Batch inference</h3>
+          <p>Hand over a file of requests. Your GPUs work through it and every result comes back matched to its input.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg></div>
+          <h3>Your own models</h3>
+          <p>Have a GGUF you love? Import it, and Nodeau tests what it can really do on your card before you rely on it.</p>
+        </div>
+      </div>
+
+      <p style="color:var(--text-3);font-size:0.9rem;margin-top:1.25rem;max-width:70ch">
+        Chat runs everywhere Nodeau runs. Embeddings, reranking, structured
+        output, tool calling, vision, batch jobs and your own models run on
+        Linux machines with NVIDIA GPUs.
       </p>
 
-      <div class="grid grid-2" style="margin-top:2.25rem;align-items:start;gap:clamp(2rem,5vw,3.5rem)">
+      <div class="ladder" style="margin-top:2.25rem" aria-label="The curated catalog by card size">
+        <div class="rung">
+          <div class="rung-size">8 GB <span>and up</span></div>
+          <ul>
+            <li>Qwen3.5-4B <small>starter</small></li>
+            <li>Gemma 4 E4B <small>vision</small></li>
+            <li>Qwen3 Embedding 0.6B</li>
+            <li>BGE Reranker v2 m3</li>
+          </ul>
+        </div>
+        <div class="rung">
+          <div class="rung-size">12 GB <span>and up</span></div>
+          <ul>
+            <li>Qwen3.5-9B</li>
+            <li>Gemma 4 12B <small>vision</small></li>
+          </ul>
+        </div>
+        <div class="rung">
+          <div class="rung-size">16 GB <span>and up</span></div>
+          <ul>
+            <li>GPT-OSS 20B <small>mixture of experts</small></li>
+          </ul>
+        </div>
+        <div class="rung">
+          <div class="rung-size">24 GB <span>or two cards</span></div>
+          <ul>
+            <li>Qwen3.8-27B <small>flagship</small></li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:1.25rem"><a class="link-arrow" href="/docs/models/">Browse the catalog</a></p>
+    </div>
+  </section>
+
+  <!-- ========================================================= fleet ====== -->
+  <section class="divider reveal" id="fleet">
+    <div class="wrap">
+      <div class="duo">
+        <div>
+          <p class="eyebrow">One fleet</p>
+          <h2>Add another machine when you're ready.</h2>
+          <p style="margin-top:1rem">
+            Run <code>nodeau fleet invite</code> on the machine you have and
+            <code>nodeau join</code> on the new one. That's the whole thing.
+            The new machine shows up in your fleet and Nodeau starts placing
+            work on it.
+          </p>
+          <ul class="checks">
+            <li><strong>See everything in one place.</strong> Every machine, card and model, from any browser.</li>
+            <li><strong>Know how each machine is doing.</strong> Processor, memory, storage, network and GPU, with alerts when something needs you.</li>
+            <li><strong>Set your own guardrails.</strong> Which models, which cards, which machines, and how much can run at once.</li>
+            <li><strong>See what your hardware did.</strong> Usage in accelerator-hours, and a record of who changed what.</li>
+            <li><strong>Plan an upgrade before you touch anything.</strong> Nodeau shows which machines would change, in what order, and what it means for the work on them.</li>
+          </ul>
+          <div class="arrowline" style="margin-top:1.5rem">
+            <span>your machines</span><b>→ connect out →</b><span>Nodeau Cloud</span>
+          </div>
+          <p style="color:var(--text-3);font-size:0.9rem;margin-top:0.75rem">
+            Your machines start every conversation with Nodeau Cloud, which keeps
+            your network boundary simple. Models keep serving whether or not
+            the cloud is there.
+          </p>
+          <div class="btn-row" style="margin-top:1.5rem">
+            <a class="btn btn-ghost" href="/business/">Nodeau for teams</a>
+            <a class="link-arrow" href="/docs/fleet/" style="align-self:center">Add a machine</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="code term" aria-label="What nodeau fleet list prints">
+          <div class="code-head"><span>nodeau fleet list</span></div>
+<pre><code><span class="hl">MY NODEAU</span>
+  fleet     2 of 3 machines (home-pro)
+
+  <span class="hl">garage</span>   <span class="ok">online</span>   worker
+    NVIDIA GeForce RTX 3080  9,877 MiB
+
+  <span class="hl">studio</span>   <span class="ok">online</span>   control-plane
+    NVIDIA GeForce RTX 5060 Ti  15,827 MiB
+
+  Add a machine:  nodeau fleet invite</code></pre>
+          </div>
+          <div class="code term" style="margin-top:1rem" aria-label="What nodeau health prints for one machine">
+            <div class="code-head"><span>nodeau health</span></div>
+<pre><code><span class="hl">garage</span>  (worker, ready, reported 6s ago)
+  CPU           0 %    16 threads
+  memory        12 %   1.9 GiB of 15.5 GiB in use
+  storage used  21 %   709.7 GiB free
+  network       7.5 KiB/s in, 2.9 KiB/s out
+  GPU           RTX 3080, 44 of 9,877 MiB used, <span class="ok">healthy</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== developers ====== -->
+  <section class="divider reveal" id="developers">
+    <div class="wrap">
+      <div class="duo">
         <div class="code">
           <div class="code-head">
-            <span>bash</span>
-            <button class="copy-btn" data-copy="#cmd-day" type="button"><span data-copy-label>Copy</span></button>
+            <span>python</span>
+            <button class="copy-btn" data-copy="#dev-python" type="button"><span data-copy-label>Copy</span></button>
           </div>
-<pre id="cmd-day"><code>nodeau run qwen3.5-4b-q4km
-nodeau ps
-nodeau logs qwen3.5-4b-q4km
-nodeau batch submit requests.jsonl --model qwen3.5-4b-q4km
-nodeau dashboard
-nodeau stop qwen3.5-4b-q4km --workload</code></pre>
+<pre id="dev-python"><code>import os
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://127.0.0.1:8080/v1",
+    api_key=os.environ["NODEAU_API_KEY"],
+)
+
+reply = client.chat.completions.create(
+    model="qwen3.5-4b-q4km",
+    messages=[
+        {"role": "user", "content": "Hello from my GPU!"}
+    ],
+)
+print(reply.choices[0].message.content)</code></pre>
         </div>
 
-        <div class="grid" style="gap:1.4rem">
-          <div class="feature">
-            <h3>Your own models, not just ours</h3>
-            <p><code>nodeau model import</code> takes a <strong>GGUF</strong> file
-            you already have. Nodeau reads its header to work out the architecture,
-            quantisation and memory it will need, hashes the bytes so the file is
-            its own identity, and registers it. Nothing in your file is executed —
-            a GGUF is data, and it runs on Nodeau's own pinned engine.</p>
-            <p style="margin-top:0.7rem"><code>nodeau model qualify</code> is the
-            half that matters. It starts your model on a real card, measures what
-            it actually took, and tries each capability with a probe built to fail
-            if the model can't do it — a tool call whose arguments have to parse,
-            JSON checked against the schema it was asked for. If chat works and
-            tool calling doesn't, you get chat, and Nodeau doesn't claim the rest.</p>
-          </div>
-          <div class="feature">
-            <h3>A local dashboard</h3>
-            <p>One command opens a read-only view of your models, workloads, GPU and decisions in a browser. It's served by Nodeau itself on your own machine, needs no extra install, and never holds cluster credentials.</p>
-          </div>
-          <div class="feature">
-            <h3>Batch work that runs while you sleep</h3>
-            <p>Hand Nodeau a file of prompts and it queues the job, waits for a GPU to be free, runs it, and writes the answers back correlated to your inputs. Cancel it and the card is released as soon as the process is really gone.</p>
-          </div>
-          <div class="feature">
-            <h3>Diagnosis that names the problem</h3>
-            <p><code>nodeau doctor</code> checks the installation, not just the hardware, and every refusal carries a reason code and a remedy in plain words. Scripts get <code>--json</code> and honest exit codes, so you always know where you stand.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================ nodeau business ========= -->
-  <section id="business" class="divider reveal">
-    <div class="wrap">
-      <p class="eyebrow">Nodeau Business</p>
-      <h2>Different machines, different cards, one set of decisions.</h2>
-      <p class="lede" style="margin-top:1rem">
-        Your organisation already owns GPU compute. The hard part is turning
-        unlike machines into infrastructure that can decide, safely, where a
-        workload should run.
-      </p>
-
-      <div class="grid grid-2" style="margin-top:2.75rem;align-items:center;gap:clamp(2rem,5vw,3.5rem)">
-        <div class="prose">
-          <p style="color:var(--text-2)">
-            Most organisations acquire GPUs faster than they acquire any way of
-            using them. Two workstations, a lab server, whatever was in the
-            budget in 2023. Owning all that tells you nothing about which box
-            could safely run the thing you want to run on Thursday.
-          </p>
-          <p style="color:var(--text-2)">
-            Nodeau asks every machine what it actually has, checks that its copy
-            of the model is the right one down to the hash, and then chooses.
-            It shows you why it picked that machine over the others.
-          </p>
-          <p style="color:var(--text-2)">
-            We run it on two machines here, deliberately mismatched, because
-            matched pairs hide everything. The useful cases are the ugly ones: a
-            card that is already busy, a model file that has quietly rotted, a
-            machine that reboots while it is holding a workload. Those are the
-            ones we test.
-          </p>
-          <div class="btn-row" style="margin-top:1.5rem">
-            <a class="btn btn-primary" href="/contact/?type=business">Become a design partner</a>
-            <a class="btn btn-ghost" href="/roadmap/">See the roadmap</a>
-          </div>
-        </div>
-
-        <div class="fleet" aria-label="Two unlike GPU machines evaluated by one control plane">
-          <div class="fleet-nodes">
-            <div class="fleet-node">
-              <span class="fleet-kind">GPU machine</span>
-              <strong>RTX 3080</strong>
-              <span class="fleet-fact">own hardware report</span>
-              <span class="fleet-fact">own verified model copy</span>
-            </div>
-            <div class="fleet-node">
-              <span class="fleet-kind">GPU machine</span>
-              <strong>RTX 2080</strong>
-              <span class="fleet-fact">own hardware report</span>
-              <span class="fleet-fact">own verified model copy</span>
-            </div>
-          </div>
-
-          <div class="fleet-join" aria-hidden="true"><span class="fleet-arrow"></span></div>
-
-          <div class="fleet-brain">
-            <span class="fleet-kind">One control plane</span>
-            <strong>Where does this fit?</strong>
-            <ul class="fleet-out">
-              <li>fit checked on each machine</li>
-              <li>tightest safe fit wins, unless you choose otherwise</li>
-              <li>every candidate keeps a reason</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-3 panels-even" style="margin-top:3rem">
-        <div class="panel">
-          <h3 style="font-size:1.05rem;margin-bottom:0.9rem">Hardware, understood</h3>
-          <ul class="checks" style="margin:0">
-            <li>Each machine reports its own GPU and what's really free on it</li>
-            <li>Cards from different generations are judged on their own merits</li>
-            <li>Each machine verifies its own copy of a model, by hash</li>
-            <li>Every machine has to vouch for itself before it is offered work</li>
-          </ul>
-        </div>
-
-        <div class="panel">
-          <h3 style="font-size:1.05rem;margin-bottom:0.9rem">Decisions, explained</h3>
-          <ul class="checks" style="margin:0">
-            <li>The same fit check runs once per machine, with no looser second rule</li>
-            <li>Every candidate keeps the reason it won or lost</li>
-            <li>A GPU already committed to one workload is not offered to another</li>
-            <li>Something running happily stays where it is</li>
-          </ul>
-        </div>
-
-        <div class="panel panel-quiet">
-          <h3 style="font-size:1.05rem;margin-bottom:0.9rem">Where we're heading</h3>
-          <ul class="checks checks-future" style="margin:0">
-            <li>Several people in one organisation, with roles and single sign-on</li>
-            <li>Getting model weights to the machine that needs them</li>
-            <li>Batch jobs that run on a schedule</li>
-            <li>Upgrading a whole fleet from one place</li>
-            <li>Health-aware rescheduling</li>
-          </ul>
-          <p style="color:var(--text-3);font-size:0.85rem">
-            The <a href="/roadmap/">roadmap</a> has the detail and the order.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======================================= technical differentiator ===== -->
-  <section class="divider reveal">
-    <div class="wrap">
-      <div class="grid grid-2" style="align-items:center;gap:clamp(2rem,5vw,4rem)">
         <div>
-          <p class="eyebrow">How it decides</p>
-          <h2>A scheduler should know more than “GPU: 1”.</h2>
-          <p style="color:var(--text-2);margin-top:1rem;max-width:52ch">
-            Most schedulers know one thing about your GPU: that it exists. Enough
-            to start something. Not enough to know it will survive.
+          <p class="eyebrow">For developers</p>
+          <h2>Change one line and your app runs on your hardware.</h2>
+          <p style="margin-top:1rem">
+            Nodeau speaks the OpenAI API, so the SDKs and tools you already use
+            just work. Set the base URL, use the key Nodeau made for you, and go.
           </p>
-          <p style="color:var(--text-2);max-width:52ch">
-            A 16&nbsp;GB card gives a model rather less than 16&nbsp;GB. Some of it
-            sits outside what the compute API can reach, your desktop is
-            holding a chunk,
-            and a model that fits with nothing spare dies the moment anything
-            else asks for memory. Nodeau does that subtraction before it starts
-            anything, and if the answer is negative it tells you by how much
-            instead of letting you find out sixty seconds into loading.
-          </p>
-          <p style="color:var(--text-2);max-width:52ch">
-            <strong style="color:var(--text)">It also tells you where its number
-            came from.</strong> If the configuration has been measured on
-            hardware like yours, Nodeau uses that measurement. If it hasn't, it
-            works out a deliberately cautious estimate from the model's own
-            shape, keeps extra room back, and says so on the decision. You never
-            get an estimate dressed up as a measurement.
-          </p>
-          <p style="color:var(--text-2);max-width:52ch">
-            Add more machines and the same sums simply run once for each one.
-            There's no looser second rule for choosing between them.
-          </p>
-          <p style="color:var(--text-2);max-width:52ch">
-            One more thing worth knowing: Nodeau stays out of the way of your
-            requests. It decides and manages, but the traffic goes straight to
-            the model. Restarting Nodeau leaves your traffic untouched.
-          </p>
-          <a class="link-arrow" href="/about/" style="margin-top:0.5rem">How this works</a>
-        </div>
-
-        <div class="admit" aria-label="How an admission decision is made">
-          <div class="admit-row"><span class="tag">GPU profile</span> <span class="val">CUDA-addressable VRAM</span></div>
-          <div class="admit-row"><span class="tag">Current usage</span> <span class="val">desktop + other processes</span></div>
-          <div class="admit-row"><span class="tag">Reservations</span> <span class="val">other Nodeau workloads</span></div>
-          <div class="admit-row"><span class="tag">Model need</span> <span class="val">measured, or labelled estimate</span></div>
-          <div class="admit-row"><span class="tag">Model on disk</span> <span class="val">verified by SHA-256</span></div>
-          <div class="admit-arrow" aria-hidden="true">↓</div>
-          <div class="admit-out">
-            <div class="yes">Admit and run it</div>
-            <div class="no">Refuse, and say why</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =================================================== account ========== -->
-  <section class="tight divider reveal">
-    <div class="wrap">
-      <div class="grid grid-2" style="align-items:center;gap:clamp(2rem,5vw,4rem)">
-        <div>
-          <p class="eyebrow">Your account</p>
-          <h2 style="font-size:var(--step-2)">Optional, and deliberately small.</h2>
-          <p style="color:var(--text-2);margin-top:0.9rem;max-width:52ch">
-            You don't need one. Nodeau installs and runs with no sign-in at all,
-            and we intend to keep it that way.
-          </p>
-          <p style="color:var(--text-2);max-width:52ch">
-            What an account gives you is a list of your machines and the plan
-            each is on, visible from a laptop with no GPU in it. Run
-            <code>nodeau login</code>, approve it in the browser, done. Your
-            prompts and results never come near it. If this site goes down, your
-            models carry on serving.
-          </p>
-          <div class="btn-row" style="margin-top:1.5rem">
-            <a class="btn btn-ghost" href="https://app.nodeau.ai/">Sign in</a>
-            <a class="link-arrow" href="/pricing/" style="align-self:center">See what's included</a>
-          </div>
-        </div>
-
-        <div class="panel">
-          <ul class="checks" style="margin:0">
-            <li>Your organisation and the machines linked to it</li>
-            <li>Approve a new installation from the browser</li>
-            <li>See which plan each installation is running under</li>
-            <li>Works offline: entitlements are signed, checked locally, and cached</li>
-            <li>No account needed to run Nodeau at all</li>
+          <ul class="checks">
+            <li>Chat, streaming, embeddings and reranking over plain HTTP</li>
+            <li>Every command that prints a table also speaks <code>--json</code></li>
+            <li>Exit codes that tell a refusal apart from a model that's still loading</li>
+            <li><code>nodeau placement explain</code> shows why a model landed where it did</li>
+            <li>A local dashboard, served by Nodeau on your own machine</li>
           </ul>
+          <p style="margin-top:1.25rem"><a class="link-arrow" href="/docs/api/">Read the API guide</a></p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- =================================================== pricing ========== -->
-  <section class="divider reveal">
+  <!-- ======================================================== plans ======= -->
+  <section class="divider reveal" id="plans">
     <div class="wrap">
-      <p class="eyebrow">Pricing</p>
-      <h2 style="font-size:var(--step-2)">Priced for infrastructure, not for tokens.</h2>
-      <p style="color:var(--text-2);margin-top:0.9rem;max-width:56ch">
-        Your hardware does the work. What you pay for is Nodeau managing it, so
-        nothing here is metered per prompt, per token or per request.
-      </p>
+      <div class="section-head">
+        <p class="eyebrow">Plans</p>
+        <h2>Start free. Grow when you're ready.</h2>
+        <p>Your hardware does the work, so nothing is metered by the token. Plans are about how many machines you run and how you run them.</p>
+      </div>
 
-      <div class="tiers" style="margin-top:2rem">
+      <div class="tiers">
         <div class="panel">
           <h3>Home</h3>
-          <p class="kicker">Make my GPU useful.</p>
+          <p class="kicker">One machine, one GPU.</p>
           <div class="price">Free</div>
-          <p class="price-note">One machine, one GPU. No card, no account.</p>
-          <a class="btn btn-ghost btn-sm" href="/install/">Install Nodeau</a>
+          <p class="plan-lede">A great way to turn a desktop or a Mac into your own AI endpoint.</p>
+          <p style="margin-top:1.25rem"><a class="btn btn-ghost btn-sm" href="/install/">Get Nodeau</a></p>
         </div>
         <div class="panel tier-featured">
           <h3>Home Pro</h3>
-          <p class="kicker">Make all my GPUs work together.</p>
+          <p class="kicker">Up to three machines, two GPUs in each.</p>
           <div class="price">$9.99<span class="price-unit"> / month</span></div>
-          <p class="price-note">Several machines you own, and batch inference across them.</p>
-          <a class="btn btn-primary btn-sm" href="https://app.nodeau.ai/plan">Get Home Pro</a>
+          <p class="plan-lede">For home labs and developers with more than one machine. Adds batch inference and remote control of your fleet.</p>
+          <p style="margin-top:1.25rem"><a class="btn btn-primary btn-sm" href="https://app.nodeau.ai/plan">Get Home Pro</a></p>
         </div>
         <div class="panel">
           <h3>Business</h3>
-          <p class="kicker">Private AI infrastructure for an organisation.</p>
-          <div class="price">Contact us</div>
-          <p class="price-note">For an organisation. Priced per organisation, with business support.</p>
-          <a class="btn btn-ghost btn-sm" href="/contact/?type=business">Talk to us</a>
+          <p class="kicker">Your organisation's private AI fleet.</p>
+          <div class="price">Let's talk</div>
+          <p class="plan-lede">As many machines and GPUs as you run, with business support and a hand planning the rollout.</p>
+          <p style="margin-top:1.25rem"><a class="btn btn-ghost btn-sm" href="/contact/?type=business">Talk to us</a></p>
         </div>
       </div>
       <p style="margin-top:1.25rem"><a class="link-arrow" href="/pricing/">Compare the plans</a></p>
     </div>
   </section>
 
-  <!-- ======================================================= cta ========== -->
+  <!-- ========================================================== cta ======= -->
   <section class="divider cta reveal">
     <div class="wrap">
-      <h2 style="font-size:var(--step-2)">Go and use that graphics card.</h2>
-      <p class="lede" style="margin:1rem auto 2rem;max-width:44ch">
-        It takes about ten minutes, most of which is downloading the model. If
-        your team has hardware sitting idle instead, we'd like to hear about it.
+      <h2 style="font-size:var(--step-3)">Your GPUs are already capable. Put them to work!</h2>
+      <p class="lede" style="margin:1rem auto 2rem;max-width:46ch">
+        About ten minutes from here to a model answering on your own hardware.
+        Got a room full of machines instead? We'd love to hear about it.
       </p>
       <div class="btn-row">
-        <a class="btn btn-primary" href="/install/">Install Nodeau</a>
+        <a class="btn btn-primary" href="/install/">Get Nodeau</a>
         <a class="btn btn-ghost" href="/contact/">Talk to us</a>
       </div>
     </div>
@@ -554,48 +570,45 @@ nodeau stop qwen3.5-4b-q4km --workload</code></pre>
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
-        <a class="brand" href="/" style="margin-bottom:0.75rem">
-          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-            <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-          </svg>
-          Nodeau
-        </a>
-        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
       </div>
       <div>
-        <h4>Product</h4>
+        <h2 class="footer-title">Product</h2>
         <ul>
-          <li><a href="/#home">For home</a></li>
-          <li><a href="/#business">For business</a></li>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
           <li><a href="/pricing/">Pricing</a></li>
           <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
         </ul>
       </div>
       <div>
-        <h4>Start</h4>
+        <h2 class="footer-title">Docs</h2>
         <ul>
-          <li><a href="/install/">Install guide</a></li>
           <li><a href="/docs/">Documentation</a></li>
-          <li><a href="https://app.nodeau.ai/">Sign in</a></li>
-          <li><a href="/docs/requirements/">Requirements</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
           <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
         </ul>
       </div>
       <div>
-        <h4>Company</h4>
+        <h2 class="footer-title">Company</h2>
         <ul>
           <li><a href="/about/">About</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
           <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> · your hardware, your models</span>
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
     </div>
   </div>
 </footer>

@@ -2,8 +2,8 @@
 title: Nodeau CLI reference
 heading: CLI reference
 nav: CLI reference
-description: Every public Nodeau command and subcommand — syntax, platform, plan requirements, flags, examples and the failure states each one can reach.
-lede: Every public command, with its flags, the platform it runs on, and what it does when it refuses. Anything not listed here does not exist in this build.
+description: Every public Nodeau command and subcommand, with its syntax, platform, plan, flags, examples and the exit codes it can return.
+lede: Every public command in the published build, with its flags, the platform it runs on, and what it tells you when it says no. Every flag here was read from the released binary.
 ---
 
 ## How to read this
@@ -13,53 +13,52 @@ nodeau <command> [arguments] [flags]
 nodeau <command> --help        # always current, for the binary you have
 ```
 
-Conventions used throughout:
+A few conventions run through the whole page:
 
-- **Platform** — `Linux` means Linux with an NVIDIA GPU; `macOS` means Apple
-  Silicon; `Both` means the command works the same on either.
-- **Plan** — only stated where a capability is actually gated. Most commands
-  need no account at all.
-- Arguments in `UPPER CASE` are required; `[BRACKETS]` are optional.
+- **Platform.** `Linux` means Linux with an NVIDIA GPU. `macOS` means an Apple
+  Silicon Mac. `Both` means the command works on either.
+- **Plan.** Mentioned only where a plan actually decides something. Most
+  commands need no account at all.
+- Arguments in `UPPER CASE` are required, and `[BRACKETS]` are optional.
 
 ### Namespaces
 
-Workload commands take `--namespace`/`-n`, defaulting to **`nodeau-dev`**. Unless
-you have created others, that is the only one you will use. `-A` /
-`--all-namespaces` looks across all of them where it is offered.
+Workload commands take `--namespace` or `-n`, and the default is
+**`nodeau-dev`**. Unless you've created others, it's the only one you'll ever
+use. Where it's offered, `-A` or `--all-namespaces` looks across all of them.
 
 ### Exit codes {#exit-codes}
 
-Five, deliberately. A script needs to answer three questions without parsing
-text: did it work, is this my fault, and should I try again?
+There are five, on purpose. A script needs three answers without reading any
+text: did it work, was it called wrongly, and is it worth trying again?
 
 | Code | Name | Meaning |
 |---|---|---|
 | `0` | OK | It worked |
 | `1` | Error | Nodeau itself failed, or something unexpected did |
-| `2` | Usage | The command was called wrongly — unknown flag, missing argument, unknown model id. Fix the command, not the machine |
-| `3` | Refused | Nodeau considered the request and declined, and that will not change on its own |
-| `4` | Not ready | The answer is "not yet" — still starting, queued, or a wait that ran out of time |
+| `2` | Usage | The command was called wrongly: an unknown flag, a missing argument, an unknown model id. Fix the command, not the machine |
+| `3` | Refused | Nodeau considered the request and said no, and that answer stays the same until something changes |
+| `4` | Not ready | The answer is "not yet": still starting, queued, or a wait that ran out of time |
 
-The distinction between `3` and `4` is the one that matters: **a script that
-retries on failure should retry on `4` and never on `3`.**
+The difference between `3` and `4` is the one that matters most. **A script
+that retries should retry on `4` and never on `3`.**
 
-`nodeau doctor` uses a narrower contract of its own: `0` everything passed or
-only warnings, `1` something failed, `2` called wrongly.
-
-`nodeau batch wait` uses `0` finished, `1` failed, cancelled or timed out.
+Two commands use a narrower contract of their own. `nodeau doctor` returns `0`
+when everything passed or only warnings came back, `1` when something failed,
+and `2` when it was called wrongly. `nodeau batch wait` returns `0` when the job
+finished and `1` when it failed, was cancelled or the wait timed out.
 
 ### `--json` {#json}
 
-Thirty commands take `--json`. As a rule: **every command that prints a table
-also takes `--json`**, and commands that only perform an action do not.
+**Every command that prints a table also takes `--json`**, and commands that
+only perform an action generally don't.
 
-The JSON is a stable contract — field names in it are part of the CLI's
-interface, and reason codes inside it will not be renamed without a breaking
-change. Use it rather than parsing human output, which is written for people and
-is expected to change.
+The JSON is a contract. Field names are part of the CLI's interface, and reason
+codes inside it keep their names. Use it rather than parsing the human output,
+which is written for people and will keep getting better.
 
 `--json` never implies consent. A command that would change the machine still
-asks, or refuses and tells you to pass `--yes`.
+asks, or tells you to pass `--yes`.
 
 ---
 
@@ -71,48 +70,48 @@ asks, or refuses and tells you to pass `--yes`.
 nodeau install [flags]
 ```
 
-Check the machine, show a plan, and set up what is missing. **Both platforms**,
-with genuinely different bodies — see [Linux](/docs/install-linux/) and
+Check the machine, show a plan, and set up what's missing. **Both**, with a
+different body on each platform: see [Linux](/docs/install-linux/) and
 [macOS](/docs/install-macos/).
 
-On Linux it installs, when absent: the NVIDIA Container Toolkit, K3s, the NVIDIA
-device plugin, the per-device GPU driver, and Nodeau's own control plane. When
-they are already there it **adopts** them, uses them as found, and records that
-it did — which is what makes uninstall safe.
+On Linux it installs, when they're absent, the NVIDIA Container Toolkit, K3s,
+the NVIDIA device plugin, the per-device GPU driver and Nodeau's own control
+plane. When they're already there it **adopts** them, uses them exactly as it
+found them, and writes that down. That record is what makes uninstalling safe.
 
-It will never install, upgrade, replace or remove your NVIDIA driver, and never
-touches Secure Boot, the bootloader, the kernel command line, any partition, or a
-Kubernetes cluster it did not create.
+Your NVIDIA driver, Secure Boot, the bootloader, the kernel command line, your
+partitions and any Kubernetes cluster Nodeau didn't create all stay exactly as
+they are.
 
-Running it again is safe: it re-checks everything, skips what is done, does not
-regenerate your API key, and never re-decides who owns a component.
+Running it again is safe. It re-checks everything, skips what's done, keeps your
+API key, and never re-decides who owns a component.
 
 | Flag | Platform | Default | Meaning |
 |---|---|---|---|
 | `--dry-run` | Both | off | Show the plan, including every command, and stop |
 | `--yes`, `-y` | Both | off | Skip the confirmation |
-| `--state <path>` | Both | `/var/lib/nodeau/install-state.json` | Path to the install ledger |
+| `--state <path>` | Both | `/var/lib/nodeau/install-state.json` on Linux | Path to the install ledger |
 | `--verbose`, `-v` | Linux | off | The full technical plan instead of the plain-language summary |
 | `--server-dry-run` | Linux | off | Send every manifest to the Kubernetes API server for full validation, then discard it |
 | `--print-manifests` | Linux | off | Print every manifest compiled into this binary and exit, changing nothing |
-| `--skip-k3s` | Linux | off | Do not install Kubernetes; you will provide a cluster |
-| `--skip-toolkit` | Linux | off | Do not install the NVIDIA Container Toolkit |
+| `--skip-k3s` | Linux | off | Leave Kubernetes to you; use this when you'll provide a cluster yourself |
+| `--skip-toolkit` | Linux | off | Leave the NVIDIA Container Toolkit to you |
 | `--cache-dir <path>` | Linux | `/var/lib/nodeau/models` | Model cache directory |
-| `--channel <name>` | Linux | `dev` | Release channel to record |
-| `--scheduling-mode <m>` | Linux | balanced | `efficiency`, `balanced`, `performance` or `legacy` |
-| `--scheduling-selection` | Linux | `true` | Let the mode choose placements; `false` records what it would have chosen |
+| `--channel <name>` | Linux | `beta` | Release channel to record for this installation |
+| `--scheduling-mode <m>` | Linux | balanced | `efficiency`, `balanced`, `performance`, or `legacy` for the older tightest-fit scorer |
+| `--scheduling-selection` | Linux | `true` | Let the mode choose placements; `false` records what it would have chosen and changes nothing |
 | `--controller-image <ref>` | Linux | the release's | Override the controller image |
 | `--agent-image <ref>` | Linux | the release's | Override the node agent image |
 | `--batch-runner-image <ref>` | Linux | the release's | Override the batch runner image |
-| `--runtime <path>` | macOS | bundled | A prepared model runtime: a directory or `.tar.gz` |
-| `--skip-path` | macOS | off | Do not offer to add Nodeau to your shell `PATH` |
-| `--skip-binary` | macOS | off | Do not copy the Nodeau binary into Nodeau's own directory |
+| `--runtime <path>` | macOS | bundled | A prepared model runtime: a directory or a `.tar.gz` |
+| `--skip-path` | macOS | off | Leave your shell `PATH` as it is |
+| `--skip-binary` | macOS | off | Keep the Nodeau binary where it is instead of copying it into Nodeau's own directory |
 | `--json` | macOS | off | Machine-readable output |
 
-**Failure states.** A blocking preflight check exits `3` and names the check.
-On Linux a missing or broken NVIDIA driver stops the install rather than being
-fixed. With no terminal attached and no `--yes`, it refuses rather than acting
-unasked.
+**When it stops.** A blocking preflight check exits `3` and names the check. On
+Linux, a missing or broken NVIDIA driver stops the install so you can fix it
+your way first. With no terminal attached and no `--yes`, it asks for `--yes`
+rather than acting unasked.
 
 ### `nodeau join` {#nodeau-join}
 
@@ -120,23 +119,24 @@ unasked.
 nodeau join CODE [flags]
 ```
 
-Join this machine to an existing fleet as a worker. **Linux.** Needs
-`FeatureMultiNode` — **Home Pro** or **Business** on the machine that invited it.
+Add this machine to an existing fleet as a worker. **Linux.**
 
-Get the code from the machine that already runs Nodeau
-([`nodeau fleet invite`](#nodeau-fleet-invite)). This machine needs an NVIDIA GPU
-with a working driver and must be able to reach the other machine on your
-network. If it already runs a cluster of its own, Nodeau stops and says so rather
-than destroying it.
+Get the code from the machine that already runs Nodeau with
+[`nodeau fleet invite`](#nodeau-fleet-invite), which checks your plan's machine
+limit before it creates one. This machine needs an NVIDIA GPU with a working
+driver, and it has to be able to reach the other machine on your network. If it
+already runs a cluster of its own, Nodeau stops and tells you, and your cluster
+stays as it is.
 
 | Flag | Default | Meaning |
 |---|---|---|
 | `--dry-run` | off | Show what would happen and change nothing |
 | `--verbose` | off | Print every command that would run |
-| `--yes`, `-y` | off | Do not ask for confirmation |
+| `--yes`, `-y` | off | Skip the confirmation |
 | `--cache-dir <path>` | `/var/lib/nodeau/models` | Where this machine keeps model files |
 
-A Mac cannot join a fleet. See [adding and operating machines](/docs/fleet/).
+A Mac runs Nodeau standalone, so this one is for Linux machines. See
+[add and run machines](/docs/fleet/).
 
 ### `nodeau doctor` {#nodeau-doctor}
 
@@ -144,25 +144,26 @@ A Mac cannot join a fleet. See [adding and operating machines](/docs/fleet/).
 nodeau doctor [flags]
 ```
 
-Diagnose this installation and explain anything that is wrong. **Both.**
-Every check is **read-only**: doctor never installs, configures, mounts, starts
-or stops anything.
+Diagnose this installation and explain anything that needs attention. **Both.**
+Every check only reads. Doctor never installs, configures, mounts, starts or
+stops anything.
 
-Two halves. The **host** — is this machine capable of running Nodeau. The
-**installation** — is Nodeau itself working: its control plane, the agent on each
-machine, whether every machine's GPU report is fresh enough to schedule against,
-whether the models on disk still verify, and what your services and batch jobs
-are doing.
+It looks at two things. The **host**: can this machine run Nodeau at all? And
+the **installation**: is Nodeau itself working? That covers its control plane,
+the agent on each machine, whether each machine's GPU report is fresh enough to
+schedule against, whether the models on disk still verify, and what your
+services and batch jobs are doing.
 
 | Flag | Default | Meaning |
 |---|---|---|
 | `--json` | off | Every result with its code, explanation and remedy, in a stable shape |
 | `--host-only` | off | Check this machine only, without contacting the cluster |
-| `--node <name>` | all | Report only on one machine, plus installation-wide checks |
+| `--node <name>` | all | Report on one machine, plus the checks that cover the whole installation |
 | `--namespace`, `-n` | `nodeau-dev` | Namespace your workloads are in |
 
-Exit `0` everything passed or only warnings · `1` something failed · `2` called
-wrongly. Codes are listed under [health and diagnostics](/docs/health/#doctor-codes).
+Exit `0` when everything passed or only warnings came back, `1` when something
+failed, `2` when it was called wrongly. Every code is listed under
+[health and alerts](/docs/health/#doctor-codes).
 
 ### `nodeau environment` {#nodeau-environment}
 
@@ -171,8 +172,8 @@ nodeau environment [--json]        # alias: nodeau env
 ```
 
 Print what Nodeau has detected about this machine: operating system, processor,
-memory, GPUs, network, and which disks Nodeau is allowed to write to and which
-belong to another operating system. **Both.** Reads only.
+memory, GPUs, network, and which disks Nodeau may write to and which belong to
+another operating system. **Both.** It only reads.
 
 ### `nodeau version` {#nodeau-version}
 
@@ -189,19 +190,20 @@ version and platform. **Both.**
 nodeau update [flags]
 ```
 
-Compare this machine's Nodeau with the published release channel. **Both.**
-By default it only looks.
+Compare this machine's Nodeau with the published release channel. **Both.** By
+default it only looks.
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--download` | off | Also fetch the new build and check it against the published checksum, refusing to keep anything that does not match |
+| `--download` | off | Also fetch the new build and check it against the published checksum, keeping it only if it matches |
 | `--channel <name>` | this build's | Which channel to check |
 | `--base-url <url>` | `https://get.nodeau.ai` | Where releases are published |
 | `--json` | off | Machine-readable |
 
-Nodeau never updates itself in the background, and a machine that cannot reach
+If a cluster is reachable it also shows what each machine in your fleet is
+running. Nodeau updates only when you ask it to, and a machine that can't reach
 the internet keeps working exactly as it is. See
-[updating and release channels](/docs/updates/).
+[updates and release channels](/docs/updates/).
 
 ### `nodeau uninstall` {#nodeau-uninstall}
 
@@ -209,15 +211,15 @@ the internet keeps working exactly as it is. See
 nodeau uninstall [flags]
 ```
 
-Remove Nodeau's own components, keeping everything Nodeau did not install.
-**Both.** The full plan is printed before anything happens, and each destructive
-option is named for exactly what it destroys. See
+Remove Nodeau's own components and keep everything Nodeau didn't install.
+**Both.** The whole plan is printed before anything happens, and every option
+that deletes something is named for exactly what it deletes. See
 [uninstalling](/docs/uninstall/).
 
 | Flag | Platform | Meaning |
 |---|---|---|
 | `--dry-run` | Both | Print the plan and stop |
-| `--yes`, `-y` | Both | Do not ask for confirmation |
+| `--yes`, `-y` | Both | Skip the confirmation |
 | `--state <path>` | Both | Path to the install ledger |
 | `--namespace`, `-n` | Linux | Namespace Nodeau's workloads live in |
 | `--remove-models` | Linux | Also delete downloaded model weights |
@@ -228,7 +230,7 @@ option is named for exactly what it destroys. See
 | `--models` | macOS | Also delete downloaded model weights |
 | `--keep-path` | macOS | Leave the `PATH` line in your login profile |
 
-There is deliberately no flag that means "remove more" without saying what.
+Each flag says what it removes. There's no vague "remove more" switch.
 
 ---
 
@@ -240,13 +242,14 @@ There is deliberately no flag that means "remove more" without saying what.
 nodeau quickstart [flags]
 ```
 
-Download a model, start it, and print a working `curl` command. **Linux.**
-Everything it does is one of the other commands. See
-[Quickstart](/docs/quickstart/).
+Download a model, start it, and print a `curl` command that works. **Linux.**
+Everything it does is one of the other commands, stitched together. See
+[your first model](/docs/quickstart/). On a Mac, [`nodeau run`](#nodeau-run)
+does the same job.
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--model <id>` | the starter model | Model to install and serve |
+| `--model <id>` | `qwen3.5-4b-q4km` | Model to install and serve |
 | `--name <name>` | `qwen-local` | Name for the workload |
 | `--namespace`, `-n` | `nodeau-dev` | Namespace |
 | `--context-size <n>` | `4096` | Context window |
@@ -254,7 +257,7 @@ Everything it does is one of the other commands. See
 | `--port <n>` | `8080` | Loopback port for the endpoint |
 | `--timeout <d>` | `10m` | How long to wait for it to become Ready |
 | `--consent` | off | Agree to the download without being asked |
-| `--yes`, `-y` | off | Do not ask anything |
+| `--yes`, `-y` | off | Answer every question with yes |
 
 ### `nodeau run` {#nodeau-run}
 
@@ -262,16 +265,17 @@ Everything it does is one of the other commands. See
 nodeau run MODEL|SERVICE [flags]
 ```
 
-Start a model on one of your GPUs and print how to use it. **Both** — this is
-the supported vocabulary on Linux and macOS alike.
+Start a model on one of your GPUs and print how to use it. **Both.** This is the
+everyday command on Linux and macOS alike.
 
-Given a model id it picks a GPU that can hold it, starts it, waits for it to
-load and prints an endpoint. Given something already running it just brings the
-local endpoint back. If the model is not downloaded it tells you the size and the
-licence and asks first.
+Give it a model id and Nodeau picks a GPU that can hold it, starts it, waits for
+it to load and prints an endpoint. Give it something that's already running and
+it just brings the local endpoint back. If the model isn't downloaded yet, it
+tells you the size and the licence and asks first.
 
-The endpoint binds `127.0.0.1` and nothing else. By default it installs a user
-service so it survives closing the terminal; `--foreground` runs it here instead.
+The endpoint binds `127.0.0.1`. By default it installs a user service, so it
+keeps running after you close the terminal. `--foreground` runs it right here
+instead.
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -282,19 +286,19 @@ service so it survives closing the terminal; `--foreground` runs it here instead
 | `--parallel <n>` | `1` | Concurrent sequences |
 | `--batch-tokens <n>` | runtime default (512) | Micro-batch size for embedding and reranking workloads |
 | `--port <n>` | `8080` | Loopback port |
-| `--pull` | off | Download the model if missing, without asking |
+| `--pull` | off | Download the model if it's missing, without asking |
 | `--cache-dir <path>` | `/var/lib/nodeau/models` | Where model files are kept |
 | `--foreground` | off | Run the endpoint in this terminal instead of installing a user service |
 | `--timeout <d>` | `10m` | How long to wait for it to start serving |
-| `--mode <mode>` | fleet setting | `efficiency`, `balanced` or `performance` for this workload |
-| `--gpus <n>` | `1` | How many GPUs in **one machine** to use for this model. Linux/NVIDIA only |
-| `--gpus-auto` | off | Let Nodeau choose how many GPUs to use |
-| `--max-gpus <n>` | — | The most `--gpus-auto` may use |
-| `--topology <mode>` | `auto` | How to spread one model across several GPUs — `auto` or `layer` |
-| `--accept-estimate-risk` | off | Admit a model whose only obstacle is the unmeasured-hardware margin |
+| `--mode <mode>` | the fleet's setting | `efficiency`, `balanced` or `performance`, for this workload |
+| `--gpus <n>` | `1` | How many GPUs in **one machine** to use for this model. For models too big for one card. Linux/NVIDIA |
+| `--gpus-auto` | off | Has no effect yet: the workload uses the number of GPUs `--gpus` asks for |
+| `--max-gpus <n>` | unset | Has no effect yet: it bounds `--gpus-auto` |
+| `--topology <mode>` | `auto` | How one model is spread across several GPUs: `auto` or `layer`. Advanced, and you'll rarely need it |
+| `--accept-estimate-risk` | off | Admit a model whose only obstacle is the margin for hardware nobody has measured |
 | `--spend-safety-reserve` | off | Let this workload use the memory Nodeau keeps back for everything else on the card |
 | `--json` | off | Print the result as JSON |
-| `--yes`, `-y` | off | Do not ask anything |
+| `--yes`, `-y` | off | Answer every question with yes |
 
 ```bash
 nodeau run qwen3.5-4b-q4km                       # a catalog model
@@ -302,15 +306,16 @@ nodeau run qwen-local                            # bring an existing one's endpo
 nodeau run my-model --task embed --port 8081     # an imported model, as an embedder
 ```
 
-**Exit codes.** `0` running, with an endpoint · `2` the model or service name was
-not recognised · `3` refused, and that will not change on its own · `4` still
-starting, and ran out of time to wait.
+**Exit codes.** `0` running, with an endpoint. `2` the model or service name
+wasn't recognised. `3` refused, and the answer stays the same until something
+changes. `4` still starting, and ran out of time to wait.
 
-:::note `--gpus-auto` and `--max-gpus` do not currently change the outcome
-The flags parse and are accepted, and the request they write is not read by the
-Kubernetes execution plane — a workload started with them gets one card, exactly
-as `--gpus 1` would. Use `--gpus N` to ask for several cards explicitly. This is
-a known gap rather than a behaviour to design around.
+:::note Asking for several GPUs
+Use `--gpus N` to give one model N cards in one machine. `--gpus-auto` and
+`--max-gpus` are accepted and currently change nothing, and Nodeau prints a
+notice on stderr when you pass one: a workload started with them gets the number
+of cards `--gpus` asks for, which is one unless you say otherwise. See
+[several GPUs in one machine](/docs/multi-gpu/).
 :::
 
 ### `nodeau ps` {#nodeau-ps}
@@ -319,8 +324,8 @@ a known gap rather than a behaviour to design around.
 nodeau ps [flags]          # alias: nodeau list
 ```
 
-Every workload using a GPU — models you are serving and batch jobs alike — with
-where each one is and what it is doing. **Both.**
+Every workload using a GPU, models you're serving and batch jobs alike, with
+where each one is and what it's doing. **Both.**
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -335,12 +340,12 @@ where each one is and what it is doing. **Both.**
 nodeau status [flags]
 ```
 
-The state of every Nodeau workload and local endpoint. **Both.**
+The state of every Nodeau workload and local endpoint. **Linux.** On a Mac,
+[`nodeau ps`](#nodeau-ps) gives you the same picture.
 
-Nothing here is read from a cache. The workload state comes from the cluster, the
-endpoint state from the service manager, and "answering" from an actual
-connection to the port — so a stale record cannot make this report something that
-is not true.
+Nothing here comes from a cache. Workload state comes from the cluster, endpoint
+state from the service manager, and "answering" from a real connection to the
+port, so a stale record can't make it report something that isn't true.
 
 Flags: `--all-namespaces`/`-A`, `--namespace`/`-n`, `--json`.
 
@@ -355,13 +360,13 @@ and leaves the model loaded on its GPU, so starting again is instant.
 
 | Flag | Meaning |
 |---|---|
-| `--workload` | Stop the model as well, freeing its GPU. Downloaded files are kept |
+| `--workload` | Stop the model as well, freeing its GPU. Downloaded files stay |
 | `--endpoint-only` | Stop only the endpoint, without asking about the model |
-| `--remove` | Also delete the service unit file |
+| `--remove` | Also delete the endpoint's service definition |
 | `--namespace`, `-n` | Namespace |
-| `--yes`, `-y` | Do not ask anything |
+| `--yes`, `-y` | Answer every question with yes |
 
-Your downloaded model files are never touched by any of these.
+Your downloaded model files stay put whichever you choose.
 
 ### `nodeau restart` {#nodeau-restart}
 
@@ -371,10 +376,11 @@ nodeau restart SERVICE [flags]
 
 Restart the model behind a service so it re-reads its configuration. **Linux.**
 
-The model server reads its configuration — including your API key — once, when it
-starts. A regenerated key, or any change to a mounted file, does not take effect
-until the process restarts. Nothing is reconfigured and nothing is deleted except
-the running pod. Expect a short gap while the model reloads into VRAM.
+The model server reads its configuration, including your API key, once, when it
+starts. A regenerated key or a change to a mounted file takes effect when the
+process restarts, and this is how you restart it. Nothing is reconfigured and
+nothing is deleted except the running pod, which Kubernetes recreates straight
+away. Expect a short gap while the model reloads into VRAM.
 
 Flags: `--wait` (default `true`), `--timeout` (default `10m`), `--namespace`/`-n`.
 
@@ -384,12 +390,12 @@ Flags: `--wait` (default `true`), `--timeout` (default `10m`), `--namespace`/`-n
 nodeau logs WORKLOAD [flags]
 ```
 
-Read what a workload is printing, without needing `kubectl`. **Linux.**
+Read what a workload is printing, no `kubectl` needed. **Both.**
 
 ```bash
 nodeau logs qwen-local                     # the model server's own output
 nodeau logs my-batch                       # a batch job's worker
-nodeau logs --system nodeau-controller     # one of Nodeau's own components
+nodeau logs --system nodeau-controller     # one of Nodeau's own components (Linux)
 ```
 
 | Flag | Default | Meaning |
@@ -397,12 +403,12 @@ nodeau logs --system nodeau-controller     # one of Nodeau's own components
 | `--follow`, `-f` | off | Keep printing new output |
 | `--tail <n>` | `200` | How many recent lines (`-1` for all) |
 | `--previous` | off | The previous run of a container that has restarted |
-| `--container`, `-c` | — | Which container, when a workload has more than one |
+| `--container`, `-c` | unset | Which container, when a workload has more than one |
 | `--system` | off | Read one of Nodeau's own components |
 | `--namespace`, `-n` | `nodeau-dev` | Namespace |
 
-Prompts, completions and batch records are never written to a log, so they
-cannot appear here.
+Prompts, completions and batch records are never written to a log, so they'll
+never show up here.
 
 ### `nodeau dashboard` {#nodeau-dashboard}
 
@@ -410,13 +416,13 @@ cannot appear here.
 nodeau dashboard [flags]
 ```
 
-Serve a local dashboard showing hardware, models, running services and plan.
-**Both.** Binds loopback only and requires a token, printed in the URL and
-exchanged for a session cookie the first time you open it.
+Serve a local dashboard showing hardware, models, running services and your
+plan. **Both.** It binds loopback only and asks for a token, which is printed in
+the URL and swapped for a session cookie the first time you open it.
 
-The page is compiled into the binary: nothing to install, nothing to download,
-and it works with no internet connection at all. It is read-only apart from one
-action — it can stop a batch job.
+The page is compiled into the binary, so there's nothing to install or download,
+and it works with no internet connection at all. It's read-only apart from one
+action: it can stop a batch job.
 
 Flags: `--addr` (default `127.0.0.1:7371`, must be loopback), `--cache-dir`.
 
@@ -426,18 +432,18 @@ Flags: `--addr` (default `127.0.0.1:7371`, must be loopback), `--cache-dir`.
 nodeau endpoint serve [flags]
 ```
 
-Run the loopback reverse proxy in the foreground until interrupted. **Both.**
-This is what the generated user service runs; use it directly to see why an
-endpoint will not start.
+Run the loopback reverse proxy in the foreground until you stop it. **Both.** This
+is what the generated user service runs. Run it directly to see exactly why an
+endpoint won't start.
 
 Flags: `--service`, `--namespace`, `--model`, `--port` (default `8080`, `0` lets
-the OS choose), `--upstream` (resolved from the service when omitted).
+the OS choose), `--upstream` (resolved from the service when you leave it out).
 
-:::note Surviving logout on Linux
+:::note Keeping an endpoint up after you log out, on Linux
 The endpoint runs as a systemd **user** service, which stops when your session
-ends. To keep it running across logout and at boot:
-`sudo loginctl enable-linger "$USER"`. Nodeau does not do this for you — it
-changes session semantics for the whole account.
+ends. To keep it running across logout and at boot, enable lingering for your
+account with `sudo loginctl enable-linger "$USER"`. Nodeau leaves that choice to
+you, because it changes session behaviour for the whole account.
 :::
 
 ### `nodeau service` {#nodeau-service}
@@ -448,17 +454,18 @@ nodeau service explain NAME [flags]
 nodeau service apply -f FILE [flags]
 ```
 
-Work with `GPUService` objects directly. **Linux.** This is a development-mode
-CLI: it talks to the Kubernetes API using your kubeconfig, with your permissions.
+Work with `GPUService` objects directly. **Linux.** These talk to the Kubernetes
+API with your kubeconfig and your permissions.
 
 - **`get`** lists services, or shows one. Flags: `--all-namespaces`/`-A`,
   `--namespace`/`-n`, `--json`.
 - **`explain`** shows the reasoning behind Nodeau's decision, including the VRAM
-  arithmetic. Everything printed comes from the object's status, written by the
-  controller when it decided — this command does not re-run the calculation.
-- **`apply`** creates or updates a service from a YAML manifest (`-f -` for
-  stdin). It does **not** admit the workload here; the controller admits it
-  asynchronously and records the decision in status.
+  arithmetic. Everything it prints comes from the object's status, written by the
+  controller at the moment it decided. It reads that record rather than redoing
+  the sums, so there's only ever one answer.
+- **`apply`** creates or updates a service from a YAML manifest (`-f -` reads
+  stdin). The controller admits the workload a moment later and records its
+  decision in status, so follow it with `get` or `explain`.
 
 ### `nodeau placement explain` {#nodeau-placement-explain}
 
@@ -466,7 +473,7 @@ CLI: it talks to the Kubernetes API using your kubeconfig, with your permissions
 nodeau placement explain WORKLOAD [flags]
 ```
 
-Why a workload is where it is, and what the alternatives would have cost.
+Why a workload is where it is, and what each alternative would have cost.
 **Linux.** Flags: `--namespace`/`-n`, `--json`. See
 [placement](/docs/scheduling/#placement).
 
@@ -482,12 +489,13 @@ Why a workload is where it is, and what the alternatives would have cost.
 nodeau model list [flags]          # alias: ls
 ```
 
-Models Nodeau can serve, and what is downloaded. **Both.** Shows the curated
+Models Nodeau can serve, and what's downloaded. **Both.** It shows the curated
 catalog with each model's role, hardware rung, size and status, then your own
-imported models separately — different trust classes, listed separately.
+imported models in a list of their own, because they're a different kind of
+trust.
 
 Flags: `--all` (include deprecated and legacy models), `--cache-dir`,
-`--namespace`/`-n` (only show custom models in one namespace), `--json`.
+`--namespace`/`-n` (show custom models from one namespace), `--json`.
 
 ### `nodeau model info` {#nodeau-model-info}
 
@@ -495,12 +503,12 @@ Flags: `--all` (include deprecated and legacy models), `--cache-dir`,
 nodeau model info MODEL [flags]
 ```
 
-Licence, provenance and **measured** configurations. **Both.**
+Licence, provenance and the configurations that have been **measured**. **Both.**
 
-The measurements are the interesting part, and an empty list is a real answer: it
-means every decision about this model is computed rather than observed. Each row
-states its **scope** — whether the figure counted the whole device or one process
-— because the two are different quantities.
+The measurements are the interesting part, and an empty list is a real answer:
+it means every decision about this model is worked out from its shape rather
+than observed. Each row also says whether its figure counted the whole device or
+one process, because those are different quantities.
 
 Flags: `--cache-dir`, `--namespace`/`-n`, `--json`.
 
@@ -512,13 +520,12 @@ nodeau model install MODEL [flags]
 
 Download a model from its publisher and verify it. **Both.**
 
-Nothing is downloaded until you agree: the size, licence and source are shown
-first. An interrupted download resumes. A file that fails verification is moved
-aside rather than deleted — so the evidence survives — and rather than left in
-place, so the next run cannot mistake it for a good one.
+Nothing downloads until you agree: the size, licence and source come first. An
+interrupted download resumes. A file that fails verification is moved aside, so
+the evidence survives and the next run can't mistake it for a good copy.
 
-Flags: `--consent` (agree without being asked, for scripts), `--verify` (only
-re-verify what is already downloaded; download nothing), `--cache-dir`.
+Flags: `--consent` (agree without being asked, for scripts), `--verify`
+(re-verify what's already downloaded and fetch nothing), `--cache-dir`.
 
 ### `nodeau model verify` {#nodeau-model-verify}
 
@@ -528,11 +535,13 @@ nodeau model verify MODEL [flags]
 
 Read the whole file and recompute its SHA-256. **Both.**
 
-Presence is not integrity. Worth running on a machine that has been power-cycled
-or has had storage trouble: a corrupted model loads, serves fluent-looking
-answers and reports healthy. This checks **this** machine; each node verifies its
-own copy continuously and publishes the result, which `nodeau model status`
-shows.
+Having a file and having the right file are two different things. This is worth
+running on a machine that's been power-cycled or had storage trouble, because a
+corrupted model can load, answer fluently and still look healthy. It checks
+**this** machine. Each machine also verifies its own copy continuously and
+publishes the result, which `nodeau model status` shows.
+
+Flags: `--cache-dir`, `--namespace`/`-n`.
 
 ### `nodeau model status` {#nodeau-model-status}
 
@@ -540,13 +549,13 @@ shows.
 nodeau model status [MODEL] [flags]
 ```
 
-The fleet's view of models: which machine holds which weights, whether the bytes
-on each machine have been checked, which GPUs are big enough, and what is using
+The fleet's view of models: which machine holds which weights, whether each
+machine's bytes have been checked, which GPUs are big enough, and what's using
 them. **Linux.**
 
-The GPU columns answer *is this card big enough*, judged as if the card were free
-of Nodeau workloads. Whether it is free **right now** is shown separately,
-because "too small" and "busy" call for completely different actions.
+The GPU columns answer *is this card big enough*, judged as if the card were
+free of Nodeau workloads. Whether it's free **right now** is a separate column,
+because "too small" and "busy" call for completely different next steps.
 
 Flags: `--context-size` (default `4096`), `--parallel` (default `1`),
 `--namespace`/`-n`, `--cache-dir`, `--json`.
@@ -559,10 +568,10 @@ nodeau model remove MODEL [flags]      # alias: rm
 
 Delete the weights for one model, **on this machine only**. **Both.**
 
-Nodeau checks first that no service references the model, and refuses by name if
-one does. It refuses just as firmly when it cannot reach the cluster to check:
-not knowing whether something is in use is a reason to stop, not a reason to
-proceed. Only the one model's artifact is touched.
+Nodeau first checks that no service references the model, and names the one
+that does if there is one. When it can't reach the cluster to check, it stops
+and says so, because not knowing whether something is in use is a reason to
+wait. Only that one model's file is touched.
 
 Flags: `--yes`, `--namespace`/`-n`, `--cache-dir`.
 
@@ -572,21 +581,21 @@ Flags: `--yes`, `--namespace`/`-n`, `--cache-dir`.
 nodeau model import PATH --alias NAME [flags]
 ```
 
-Bring your own GGUF model into Nodeau. **Linux** (qualified). See
+Bring your own GGUF model into Nodeau. **Linux.** See
 [bring your own model](/docs/byom/).
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--alias <name>` | **required** | The name you will use to run this model |
-| `--namespace`, `-n` | `nodeau-dev` | Namespace to register it in — it must be where its workloads run |
-| `--sha256 <digest>` | — | The digest you expect; a mismatch refuses the import and copies nothing |
-| `--qualify` | off | Run qualification immediately after importing |
-| `--probe <list>` | — | Capabilities to try during qualification, beyond what the file suggests |
+| `--alias <name>` | **required** | The name you'll use to run this model |
+| `--namespace`, `-n` | `nodeau-dev` | Namespace to register it in. It has to be where its workloads run |
+| `--sha256 <digest>` | unset | The digest you expect. A mismatch stops the import before anything is copied |
+| `--qualify` | off | Run qualification straight after importing |
+| `--probe <list>` | unset | Capabilities to try during qualification, beyond what the file suggests |
 | `--no-register` | off | Place and verify the weights on this machine only, without registering a model |
 | `--cache-dir <path>` | `/var/lib/nodeau/models` | Model cache directory |
 | `--json` | off | Machine-readable |
 
-`--alias` and `--no-register` cannot be used together.
+Use `--alias` or `--no-register`, one or the other.
 
 ### `nodeau model qualify` {#nodeau-model-qualify}
 
@@ -594,7 +603,7 @@ Bring your own GGUF model into Nodeau. **Linux** (qualified). See
 nodeau model qualify MODEL [flags]
 ```
 
-Prove on your own hardware what a custom model can actually do. **Linux.**
+Find out, on your own hardware, what a custom model can really do. **Linux.**
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -604,23 +613,23 @@ Prove on your own hardware what a custom model can actually do. **Linux.**
 | `--parallel <n>` | `1` | Concurrent sequences to qualify at |
 | `--gpus <n>` | `1` | Accelerators for this one workload |
 | `--dry-run` | off | Print the plan and stop, without touching a GPU |
-| `--ready-timeout <d>` | `8m` | Bound on how long the runtime may take to start |
-| `--timeout <d>` | `20m` | Bound on the whole run |
-| `--accept-estimate-risk` | off | See [admission](/docs/scheduling/#accepting-the-risk-yourself) |
-| `--spend-safety-reserve` | off | Same |
+| `--ready-timeout <d>` | `8m` | How long the runtime may take to start |
+| `--timeout <d>` | `20m` | How long the whole run may take |
+| `--accept-estimate-risk` | off | See [accepting the risk yourself](/docs/scheduling/#accepting-the-risk-yourself) |
+| `--spend-safety-reserve` | off | The same page explains this one too |
 | `--namespace`, `-n` | `nodeau-dev` | Namespace the qualification workload runs in |
 | `--json` | off | Machine-readable |
 
-Qualification uses **free capacity** and never evicts a healthy workload. If your
-cards are busy, admission refuses and the run reports it rather than waiting
-forever.
+Qualification uses **free capacity** and leaves healthy workloads running. If
+your cards are busy, admission says so and the run reports it straight away.
 
 ---
 
 ## Batch inference
 
-**Linux only.** Needs `FeatureBatchJobs` — **Home Pro** or **Business**. On macOS
-these commands refuse by name. See [batch inference](/docs/batch/).
+**Linux, with Home Pro or Business.** On a Mac these commands explain that batch
+runs on Linux and exit with the refused code `3`. See
+[batch inference](/docs/batch/).
 
 ### `nodeau batch submit` {#nodeau-batch-submit}
 
@@ -637,13 +646,13 @@ Submit a JSONL file of requests.
 | `--namespace`, `-n` | `nodeau-dev` | Namespace to create the job in |
 | `--task <task>` | inferred | `chat` or `embed` |
 | `--workers <n>` | `1` | How many **independent** workers process the records at once, each on its own GPU |
-| `--gpus <n>` | `1` | How many GPUs **one** worker uses — for a model too large for a single card |
+| `--gpus <n>` | `1` | How many GPUs **one** worker uses, for a model too large for a single card |
 | `--context-size <n>` | `4096` | Context window the model server runs with |
 | `--parallel <n>` | `1` | Concurrent sequences the runtime serves |
-| `--max-attempts <n>` | `2` | How many times the whole job may execute. A retry starts from the beginning |
+| `--max-attempts <n>` | `2` | How many times the whole job may run. A retry starts again from the first record |
 
 `--workers` and `--gpus` answer different questions, and mixing them up costs
-throughput rather than raising an error. See
+you throughput without any error to warn you. See
 [workers and GPUs](/docs/batch/#workers-and-gpus).
 
 ### `nodeau batch status` {#nodeau-batch-status}
@@ -652,7 +661,8 @@ throughput rather than raising an error. See
 nodeau batch status NAME [flags]
 ```
 
-One batch job in detail. Flags: `--namespace`/`-n`, `--json`.
+One batch job in detail, including how many workers are running and how many
+are waiting for a card. Flags: `--namespace`/`-n`, `--json`.
 
 ### `nodeau batch list` {#nodeau-batch-list}
 
@@ -669,13 +679,13 @@ nodeau batch wait NAME [flags]
 ```
 
 Block until the job reaches a final state, then exit. The exit code is the
-outcome, so it composes with a shell:
+outcome, so it chains nicely in a shell:
 
 ```bash
 nodeau batch wait my-job && nodeau batch results my-job
 ```
 
-`0` the job finished · `1` it failed, was cancelled, or the wait timed out.
+`0` the job finished. `1` it failed, was cancelled, or the wait timed out.
 Flags: `--timeout` (default `24h`), `--namespace`/`-n`.
 
 ### `nodeau batch results` {#nodeau-batch-results}
@@ -684,9 +694,9 @@ Flags: `--timeout` (default `24h`), `--namespace`/`-n`.
 nodeau batch results NAME [flags]
 ```
 
-Download the results, one JSON object per line. Written to a file by default —
-these are your model's answers, and printing them to a terminal by accident is
-how they end up in scrollback, a screenshot or a pasted issue.
+Download the results, one JSON object per line. They're written to a file by
+default. These are your model's answers, and a file keeps them out of your
+terminal's scrollback, your screenshots and any issue you paste.
 
 Flags: `--output`/`-o` (default `NAME-results.jsonl`), `--stdout`,
 `--namespace`/`-n`.
@@ -697,9 +707,9 @@ Flags: `--output`/`-o` (default `NAME-results.jsonl`), `--stdout`,
 nodeau batch cancel NAME [flags]
 ```
 
-Stop a batch job. Results already produced are kept and remain available.
-Nodeau waits for the model server to actually exit before releasing the GPU, so a
-cancelled job may take a few seconds to finish stopping. Flags:
+Stop a batch job. Results it has already produced are kept and stay available.
+Nodeau waits for the model server to actually exit before it releases the GPU,
+so a cancelled job can take a few seconds to finish stopping. Flags:
 `--namespace`/`-n`.
 
 ---
@@ -712,15 +722,16 @@ cancelled job may take a few seconds to finish stopping. Flags:
 nodeau fleet invite [flags]
 ```
 
-Print a code that adds another machine to your fleet. **Linux.** Needs
-`FeatureMultiNode` — **Home Pro** or **Business**.
+Print a code that adds another machine to your fleet. **Linux.** Your plan's
+machine limit is checked before the code is created: Home is one machine, Home
+Pro up to three, and Business as many as you need.
 
-The code is a credential for as long as it lives: paste it into the other
-machine's terminal, not into a chat log. It expires on its own whether or not
-anyone uses it.
+The code is a credential for as long as it lives, so paste it into the other
+machine's terminal rather than a chat log. It expires on its own whether or not
+anyone uses it, and a machine that has joined never needs it again.
 
 Flags: `--expires-in` (default `15m`), `--address` (the address the new machine
-should reach this one on; defaults to this machine's LAN address).
+should use to reach this one; defaults to this machine's LAN address).
 
 ### `nodeau fleet list` {#nodeau-fleet-list}
 
@@ -736,16 +747,17 @@ Every machine in your fleet and the GPUs in it. **Linux.**
 nodeau fleet remove MACHINE [flags]
 ```
 
-Take a machine out of the fleet — retired, failed or sold. **Linux.**
+Take a machine out of the fleet for good, because it's retired, failed or been
+sold. **Linux.**
 
-Nodeau removes its cluster membership, the storage and identity it generated for
+Nodeau removes its cluster membership, the storage and identity it created for
 it, and the credential that let it reconnect, then frees the plan slot it was
-using. Workloads placed on the machine **block removal**; stop them first, or
-pass `--force` if the machine is already gone.
+using. If workloads are placed on the machine, Nodeau lists them and waits for
+you: stop them first, or pass `--force` if the machine is already gone.
 
-The machine's own installation is not touched. Rejoining afterwards needs a fresh
-invitation, which is the point — a removed machine must not be able to reappear
-on its own.
+The machine's own installation is left as it is. Rejoining afterwards takes a
+fresh invitation, and that's deliberate: a removed machine can't reappear on its
+own.
 
 Flags: `--dry-run`, `--force`, `--yes`, `--json`.
 
@@ -755,18 +767,19 @@ Flags: `--dry-run`, `--force`, `--yes`, `--json`.
 nodeau fleet connect [flags]
 ```
 
-Let Nodeau Cloud show you this fleet from anywhere. **Linux.** Requires an
+Let Nodeau Cloud show you this fleet from anywhere. **Linux.** It needs an
 account ([`nodeau login`](#nodeau-login)).
 
-Your machines reach **out**. Nothing ever connects in: there is no inbound port,
-no callback and no remote shell, and this command opens none. What leaves is what
-a person operating machines needs — which machines exist, what is plugged into
-them, what is running and whether anything is wrong. What you compute never does.
+Your machines reach **out** to Nodeau Cloud, and every connection starts on your
+side. This command opens no inbound port, callback or remote shell. What travels
+is what someone running machines needs to see: which machines exist, what's
+plugged into them, what's running, and whether anything needs attention. What
+you compute stays on your hardware.
 
-Nothing about inference depends on it.
+Inference carries on whether or not the connector is running.
 
-Flags: `--yes`, `--no-linger` (do not offer to keep the connector running when
-you are logged out).
+Flags: `--yes`, `--no-linger` (skip the offer to keep the connector running when
+you're logged out).
 
 ### `nodeau fleet disconnect` {#nodeau-fleet-disconnect}
 
@@ -774,9 +787,9 @@ you are logged out).
 nodeau fleet disconnect
 ```
 
-Stop and remove the fleet connector. **Linux.** Nothing else changes; this
-machine stays linked to your account for entitlements —
-[`nodeau logout`](#nodeau-logout) is what unlinks it.
+Stop and remove the fleet connector. **Linux.** Everything else carries on, and
+this machine stays linked to your account for its plan.
+[`nodeau logout`](#nodeau-logout) is the command that unlinks it.
 
 ### `nodeau fleet status` {#nodeau-fleet-status}
 
@@ -786,6 +799,50 @@ nodeau fleet status [--json]
 
 Whether this fleet is reporting to Nodeau Cloud. **Linux.**
 
+### `nodeau fleet upgrade plan` {#nodeau-fleet-upgrade-plan}
+
+```bash
+nodeau fleet upgrade plan [flags]
+```
+
+See what moving your fleet to a Nodeau release would involve, before any machine
+moves. **Linux.** It reads and changes nothing. `nodeau fleet upgrade` on its own
+prints help for the one subcommand it has.
+
+The target is resolved **once**, to a version, the commit it was built from, and
+the digest of every artifact it names, so the plan describes one specific build.
+For each machine you get where it would go, whether it's ready, already up to
+date, or blocked (with the reason in words and a code), the order the machines
+would go in, and what it would mean for the workloads running there. The
+machine that runs your control plane goes last.
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--to <version>` | the channel's current release | Pin the target to one version the channel serves |
+| `--channel <name>` | this build's | Release channel to plan against |
+| `--machine <name>` | every machine | Plan only this machine. Repeat it for several |
+| `--fleet-group` | off | Plan only the machines your organisation's fleet group names |
+| `--max-report-age <d>` | `10m` | How old a machine's last report may be and still be planned; `0` skips that check |
+| `--json` | off | Print the plan as JSON |
+| `--base-url <url>` | the public release site | Where releases are published |
+
+```bash
+nodeau fleet upgrade plan                          # the channel's current release
+nodeau fleet upgrade plan --to v0.15.0-beta.1      # one exact version
+nodeau fleet upgrade plan --machine desk --json    # one machine, for a script
+```
+
+Exit `0` whenever a plan was worked out, whatever it says about each machine,
+and `1` when one couldn't be, for example with no network to read the release
+from. With `--json`, even a failure comes back as JSON, with an `error` field,
+so a script always has something to parse.
+
+The plan is worked out on the machine you run it on. Organisation-wide settings
+such as a maintenance window are **not** part of it in this release, and the
+human output says so at the bottom. Upgrading
+each machine is still the installer and `nodeau install` on that machine. See
+[planning a fleet upgrade](/docs/upgrades/).
+
 ### `nodeau scheduling mode` {#nodeau-scheduling-mode}
 
 ```bash
@@ -793,8 +850,8 @@ nodeau scheduling mode [efficiency|balanced|performance] [flags]
 ```
 
 Show or set how Nodeau chooses where work runs. **Linux.** With no argument it
-shows. Flags: `--node <name>` (set for one machine instead of the fleet),
-`--json`.
+shows the current mode. Flags: `--node <name>` (set it for one machine instead
+of the whole fleet), `--json`.
 
 ### `nodeau scheduling constraints` {#nodeau-scheduling-constraints}
 
@@ -816,8 +873,9 @@ nodeau scheduling drain   --node MACHINE
 nodeau scheduling undrain --node MACHINE
 ```
 
-Stop placing new work on a machine, without touching what runs there; and put it
-back into service. **Linux.** Undraining does not move anything back.
+Stop placing new work on a machine while everything already there keeps
+running, and later put it back into service. **Linux.** Undraining leaves every
+workload where it is now.
 
 ### `nodeau governance` {#nodeau-governance}
 
@@ -825,8 +883,9 @@ back into service. **Linux.** Undraining does not move anything back.
 nodeau governance [flags]
 ```
 
-Show or set your organisation's limits on this fleet. **Linux** — on a native
-installation it refuses and says so. With no flags it shows the current policy.
+Show or set your organisation's limits on this fleet. **Linux.** On a Mac it
+explains that limits belong to a fleet and exits `3`. With no flags it shows the
+current policy.
 
 | Flag | Meaning |
 |---|---|
@@ -839,8 +898,8 @@ installation it refuses and says so. With no flags it shows the current policy.
 | `--clear` | Remove every governance setting from this fleet |
 | `--json` | Print the policy as JSON |
 
-**Lowering a quota does not stop anything that is already running.** See
-[organisation limits](/docs/governance/).
+**Lowering a quota leaves everything already running exactly as it is.** A quota
+decides what may start. See [limits and policies](/docs/governance/).
 
 ### `nodeau health` {#nodeau-health}
 
@@ -849,16 +908,15 @@ nodeau health [--json]
 nodeau health history [flags]
 ```
 
-How each machine is doing — processor, memory, storage and network — together
-with anything that needs attention. **Linux**; on a native installation both
-refuse by name.
+How each machine is doing (processor, memory, storage and network) and anything
+that needs attention. **Linux.** On a Mac both exit `3` and say why.
 
 `history` prints one machine's recorded telemetry. Flags: `--machine`,
 `--since` (default `1h`), `--resolution`, `--metric` (repeatable), `--device`
 (repeatable), `--max-points`, `--json`.
 
-Storage is how full a filesystem is and nothing more — Nodeau reads no drive
-health data. See [health and diagnostics](/docs/health/).
+Storage is reported as how full a filesystem is. See
+[health and alerts](/docs/health/).
 
 ### `nodeau power` {#nodeau-power}
 
@@ -868,12 +926,12 @@ nodeau power set --device UUID --limit WATTS
 nodeau power set --device UUID --clear
 ```
 
-Show what each GPU is allowed to draw and what it is drawing; and set one card's
+Show what each GPU is allowed to draw and what it's drawing, and set one card's
 software power limit. **Linux.** `set` is local: it applies to a card in the
 machine you run it on and never crosses the network.
 
-It writes no firmware, no VBIOS, no voltage and no clocks. See
-[power limits and budgets](/docs/power/).
+It sets a software power limit and nothing else: no firmware, no VBIOS, no
+voltage, no clocks. See [power limits and budgets](/docs/power/).
 
 ---
 
@@ -885,9 +943,9 @@ It writes no firmware, no VBIOS, no voltage and no clocks. See
 nodeau auth show [--quiet]
 ```
 
-Print the local API key, creating one if this is the first time. **Both.**
+Print the local API key, creating one the first time. **Both.**
 
-Written for substitution, so the bare key is the only thing on stdout and
+It's written for substitution, so the bare key is the only thing on stdout and
 anything explanatory goes to stderr:
 
 ```bash
@@ -902,9 +960,10 @@ export NODEAU_API_KEY="$(nodeau auth show)"
 nodeau auth token SERVICE [flags]
 ```
 
-Print the token to use against **one service's** endpoint. **Linux.** Unlike
-`auth show`, this checks which credential the service actually enforces and
-refuses rather than printing one that would be rejected.
+Print the token to use against **one service's** endpoint. **Linux.** Where
+`auth show` prints your local key, this checks which credential the service
+actually enforces, and tells you when it isn't one Nodeau can print, instead of
+handing you a key that would be rejected.
 
 Flags: `--export` (print a shell export line you can `eval`), `--namespace`/`-n`.
 
@@ -914,10 +973,11 @@ Flags: `--export` (print a shell export line you can `eval`), `--namespace`/`-n`
 nodeau auth rotate [--yes]
 ```
 
-Generate a new local API key, discarding the current one. **Both.** Every saved
+Generate a new local API key and discard the current one. **Both.** Every saved
 `curl` command, script and SDK configuration using the old key stops working
-immediately. The running endpoint does not need restarting: it forwards whatever
-`Authorization` header it receives and never reads the key file itself.
+straight away, which is the point of rotating. The running endpoint keeps going
+without a restart: it forwards whatever `Authorization` header it receives and
+never reads the key file itself.
 
 ### `nodeau auth publish` {#nodeau-auth-publish}
 
@@ -925,9 +985,9 @@ immediately. The running endpoint does not need restarting: it forwards whatever
 nodeau auth publish SERVICE [flags]
 ```
 
-Make the local API key the one a service enforces. **Linux.** This is the fix
-for an endpoint that rejects the key `auth show` prints — which happens when the
-service references a Secret Nodeau did not publish.
+Make the local API key the one a service enforces. **Linux.** This fixes an
+endpoint that rejects the key `auth show` prints, which happens when the service
+references a Secret Nodeau didn't publish.
 
 The model server reads its key file once at startup, so the workload restarts.
 Expect a short gap while the model reloads into VRAM. Flags: `--yes`,
@@ -939,18 +999,18 @@ Expect a short gap while the model reloads into VRAM. Flags: `--yes`,
 nodeau login [flags]
 ```
 
-Link this installation to a Nodeau account. **Both.** Optional — Nodeau runs
+Link this installation to a Nodeau account. **Both.** It's optional: Nodeau runs
 completely without one.
 
-You are never asked to paste a token. Nodeau shows a short code, you approve it
-in a browser you are already signed in to, and this machine receives its own
-credential directly.
+You never paste a token. Nodeau shows a short code, you approve it in a browser
+where you're already signed in, and this machine receives its own credential
+directly.
 
 | Flag | Default | Meaning |
 |---|---|---|
 | `--show` | off | Show this machine's account status and exit |
 | `--name <name>` | this machine's hostname | Name for this installation |
-| `--no-browser` | off | Do not try to open a browser; print the URL and code |
+| `--no-browser` | off | Print the URL and code instead of opening a browser |
 | `--wait <d>` | `10m` | How long to wait for approval |
 | `--api <url>` | `https://api.nodeau.ai` | Nodeau Cloud API base URL |
 | `--json` | off | Machine-readable |
@@ -961,9 +1021,9 @@ credential directly.
 nodeau logout [--json]
 ```
 
-Remove this machine's account link. **Both.** It does not stop anything:
-inference, batch and every local capability keep working, on the free Home plan.
-It is a **local** operation — the installation still exists in your Nodeau
+Remove this machine's account link. **Both.** Everything keeps running:
+inference, batch and every local capability carry on, on the free Home plan.
+It's a **local** operation, so the installation stays listed in your Nodeau
 account until you remove it there.
 
 ### `nodeau plan show` {#nodeau-plan-show}
@@ -983,9 +1043,9 @@ nodeau plan refresh [--json]
 Fetch a current entitlement from Nodeau Cloud. **Both.** Run it after changing
 plan, and to renew before the current one expires.
 
-A failed refresh changes nothing: the entitlement already on the machine keeps
-working until it expires, and an installation with no entitlement at all runs the
-free Home plan with every safety and integrity check intact.
+A failed refresh changes nothing. The entitlement already on the machine keeps
+working until it expires, and an installation with no entitlement at all runs
+the free Home plan with every safety and integrity check in place.
 
 ### `nodeau plan set` {#nodeau-plan-set}
 
@@ -995,7 +1055,7 @@ nodeau plan set --from-file FILE      # or - for stdin
 
 Install a signed entitlement token. **Both.** Most people want `nodeau login`
 instead. The token is read from a file or stdin, never from a command-line
-argument, so it does not reach your shell history or the process list.
+argument, so it stays out of your shell history and the process list.
 
 ### `nodeau plan export` / `import` {#nodeau-plan-export}
 
@@ -1006,10 +1066,10 @@ nodeau plan import FILE [--json]
 
 Carry an entitlement to a machine with no internet. **Both.**
 
-The entitlement names the installation and organisation it was issued for, so a
-file exported from one machine is **not** a licence another machine can use. An
-imported entitlement goes through exactly the same checks a fetched one does and
-is never less verified. Nothing secret is in the file.
+The entitlement names the installation and organisation it was issued for, so
+the file works on the machine it belongs to and nowhere else. An imported
+entitlement goes through exactly the same checks as a fetched one, so it's never
+less verified. There's nothing secret in the file.
 
 ---
 
@@ -1022,21 +1082,21 @@ nodeau support bundle [flags]
 ```
 
 Write a sanitised diagnostic archive to the current directory. **Both.** The
-bundle is written to your disk and sent nowhere; Nodeau has no endpoint to upload
-it to. Flags: `--output`/`-o`, `--namespace`/`-n`.
+bundle stays on your disk until you choose to send it. Flags: `--output`/`-o`,
+`--namespace`/`-n`.
 
-See [support bundles](/docs/support/) for exactly what is included and what is
-excluded.
+See [support bundles](/docs/support/) for exactly what goes in and what stays
+out.
 
 ---
 
-## Not documented here
+## Also in the binary
 
-`nodeau completion` generates a shell completion script and is standard Cobra
+`nodeau completion` generates a shell completion script. It's standard Cobra
 behaviour.
 
-Two commands are **hidden** and are not part of the supported surface:
-`nodeau fleet refresh-connector`, which the installer calls for you, and — on
-macOS only — `nodeau native`, a diagnostic that bypasses the catalog, consent and
-the endpoint. Use the ordinary commands instead; they do the same work on both
-platforms.
+Two commands are **hidden** because they're plumbing rather than part of the
+everyday vocabulary: `nodeau fleet refresh-connector`, which the installer
+calls for you, and, on macOS, `nodeau native`, a low-level diagnostic that skips
+the catalog, consent and the endpoint. The ordinary commands do the same work on
+both platforms, and they're the ones to use.

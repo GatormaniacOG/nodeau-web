@@ -1,20 +1,20 @@
 ---
-title: Accounts, plans and entitlements
-heading: Accounts, plans and entitlements
-nav: Accounts, plans and entitlements
-description: Nodeau without an account, signing in, how a paid plan reaches a machine, offline verification, expiry and grace, air-gapped delivery, and the two kinds of credential.
-lede: Nodeau runs completely without an account. Signing in adds an account association, a registered installation and a signed entitlement — which is how a paid plan reaches a machine.
+title: Accounts, plans and entitlements in Nodeau
+heading: Accounts and plans
+nav: Accounts and plans
+description: Nodeau with and without an account, signing in, how a paid plan reaches a machine, offline verification, expiry and grace, and carrying an entitlement to an offline machine.
+lede: Nodeau works fully without an account. Signing in links a machine to you, and that is how a paid plan reaches it, as a signed entitlement the machine checks for itself.
 ---
 
 ## Nodeau without an account
 
-Local inference, the model catalog, batch's local half, the dashboard, artifact
-verification, admission and safe scheduling all work with **no connection to
-Nodeau Cloud at all**, and none of them will ask for one.
+Local inference, the model catalog, the dashboard, artifact verification,
+admission and safe scheduling all work with **no connection to Nodeau Cloud**,
+and none of them will ever ask for one.
 
-An installation with no entitlement runs the free **Home** plan. Nothing that
-protects you is disabled: admission, artifact verification, authentication and
-every integrity check are identical on every plan.
+An installation with no entitlement runs the free **Home** plan. Everything that
+protects you is the same on every plan: admission, artifact verification,
+authentication and every integrity check.
 
 ## Two different credentials {#two-different-credentials}
 
@@ -26,12 +26,12 @@ different security domains.
 | **What it protects** | Your model endpoint, on this machine | Your Nodeau Cloud account |
 | **Who issues it** | Your own machine, with a CSPRNG | Nodeau Cloud |
 | **Where it lives** | `0600` in your Nodeau config directory | An installation credential, also local |
-| **Does it leave the machine?** | **Never** | The installation credential is issued to this machine and stays here |
+| **Where it goes** | It stays on this machine | Issued to this machine, and it stays here |
 | **Commands** | `nodeau auth show`, `token`, `rotate`, `publish` | `nodeau login`, `logout`, `plan …` |
 | **Needed for inference** | Yes | No |
 
-Signing in to Nodeau Cloud does not change your API key, and rotating your API
-key does not touch your account.
+Signing in to Nodeau Cloud leaves your API key exactly as it was, and rotating
+your API key leaves your account exactly as it was.
 
 ### The local API key
 
@@ -41,11 +41,13 @@ nodeau auth show --quiet    # only the key, nothing on stderr
 nodeau auth rotate          # replace it
 ```
 
-It is generated with a CSPRNG on first use and stored `0600`. It never leaves the
-machine: there is no server to register it with and nothing to log in to.
+It is generated with a CSPRNG on first use, stored `0600`, and stays on the
+machine. It exists so that a process on the machine cannot use your GPU just by
+knowing the port.
 
-`auth show` prints your **local** key, which is not automatically the key any
-particular service enforces — that depends on which Secret the service references.
+`auth show` prints your **local** key. Which key a particular service enforces
+depends on which Secret the service references, so for one service's endpoint ask
+Nodeau directly:
 
 ```bash
 nodeau auth token qwen-local    # the token that service will actually accept
@@ -53,17 +55,17 @@ nodeau auth publish qwen-local  # make your local key the one it enforces
 ```
 
 `auth publish` restarts the workload, because the model server reads its key file
-once at startup. Expect a short gap while the model reloads.
+once, at startup. Expect a short gap while the model reloads.
 
 After `auth rotate`, every saved `curl` command and SDK configuration using the
-old key stops working immediately, and a **running** service keeps enforcing the
-key it started with until it restarts:
+old key needs the new one, and a **running** service keeps enforcing the key it
+started with until it restarts:
 
 ```bash
 nodeau auth publish qwen-local   # or: nodeau restart qwen-local
 ```
 
-The endpoint itself does not need restarting — it forwards whatever
+The local endpoint itself carries on as it is. It forwards whatever
 `Authorization` header it receives and never reads the key file.
 
 ## Signing in
@@ -72,19 +74,20 @@ The endpoint itself does not need restarting — it forwards whatever
 nodeau login
 ```
 
-You are never asked to paste a token. Nodeau shows a short code, you approve it
-in a browser you are already signed in to, and this machine receives its own
-credential directly.
+You never paste a token. Nodeau shows a short code, you approve it in a browser
+you are already signed in to, and this machine receives its own credential
+directly.
 
 | Flag | Meaning |
 |---|---|
 | `--show` | Show this machine's account status and exit |
 | `--name <name>` | Name for this installation (default: this machine's hostname) |
-| `--no-browser` | Print the URL and code instead of opening a browser |
+| `--no-browser` | Print the URL and code rather than opening a browser |
 | `--wait <d>` | How long to wait for approval (default `10m`) |
+| `--api <url>` | The Nodeau Cloud address (default `https://api.nodeau.ai`) |
 | `--json` | Machine-readable |
 
-Signing in gives you:
+Signing in gives this machine three things:
 
 - an **account association**,
 - a **registered installation**,
@@ -94,11 +97,11 @@ Signing in gives you:
 nodeau logout
 ```
 
-Removes the account link. It does not stop anything: inference, batch and every
-local capability keep working, on the free Home plan. It is a **local**
-operation — the installation still exists in your Nodeau account until you remove
-it there, which is deliberate: a machine that has lost its network connection
-must still be able to unlink itself.
+Removes the account link and nothing else: inference, batch and every local
+capability keep working, on the free Home plan. It is a **local** operation, and
+the installation stays listed in your account until you remove it there. That is
+deliberate, because a machine that has lost its network connection still needs a
+way to unlink itself.
 
 ## Plans
 
@@ -107,59 +110,85 @@ nodeau plan show
 nodeau plan show --json
 ```
 
-```text
-Nodeau Home Pro
-  Make all my GPUs work together.
+On a machine with no entitlement it looks like this:
 
-  status        valid
-  refreshed     2026-09-22 03:14 UTC (automatic)
+```text
+Nodeau Home
+  Make my GPU useful.
+
+  status        absent
+  This installation is running the free Nodeau Home plan. Nothing is
+                disabled: admission, artifact verification, authentication and every
+                integrity check are the same as on a paid plan.
+
+Capabilities
+  Everything a single machine needs, and nothing that requires a
+  second one. Admission, artifact verification and authentication
+  are the same here as on any paid plan.
+
+Coming soon
+  · Audit
+  · ModelReplication
+  · PriorityQueues
+  · SSO
+  · ScheduledBatch
+  · TeamRBAC
+  Named and on the roadmap. Not included in any plan yet, and no
+  entitlement grants them until they ship.
 
 Limits
   LIMIT                  ALLOWED
-  MaxNodes               3
-  MaxGPUs                2
-  MaxGPUsPerMachine      2
+  MaxNodes               1
+  MaxGPUs                1
+  MaxGPUsPerMachine      1
   MaxUsers               1
-  MaxConcurrentServices  unlimited
-  MaxBatchJobs           unlimited
+  MaxConcurrentServices  2
+  MaxBatchJobs           0
 ```
 
-| | Home (free) | Home Pro | Business |
+`MaxGPUs` and `MaxGPUsPerMachine` carry the same number. `MaxGPUs` is the older
+name for the per-machine limit, kept so that earlier releases keep reading it
+correctly, and it always means **per machine**, never a fleet total.
+
+| | Home | Home Pro | Business |
 |---|---|---|---|
-| Machines | 1 | 3 | Unlimited |
-| GPUs in any one machine | 1 | 2 | Unlimited |
-| Models serving at once | 2 | Unlimited | Unlimited |
-| Batch jobs | — | Unlimited | Unlimited |
-| Users | 1 | 1 | Unlimited |
-| Several machines | — | Yes | Yes |
-| Several GPUs in one machine | — | Yes | Yes |
-| Batch inference | — | Yes | Yes |
-| Operating a fleet from a browser | — | Yes | Yes |
+| **Machines** | 1 | Up to 3 | Unlimited |
+| **GPUs in any one machine** | 1 | Up to 2 | Unlimited |
+| **Workloads running at once** | 2 | Unlimited | Unlimited |
+| **Price** | Free | $9.99 a month | Priced per organisation |
 
-**Seeing** your machines from a browser is free on every plan; **changing** one
-from there is what a paid plan buys.
+Each GPU runs one workload at a time, so the GPUs you have also set how many
+workloads run at once. On a Linux machine with one GPU, that's one model at a time.
 
-Home Pro is on sale. Business is priced per organisation and the way to it is
-[contact](/contact/?type=business) — there is no self-service checkout, by design.
+**Home Pro and Business add** several machines in one fleet, several GPUs in one
+machine, batch inference, and operating your machines from the browser. Seeing
+your machines from a browser is part of every plan.
 
-### Capabilities Nodeau has named and not built
+Home Pro is on sale from the **Plan** page of your account at
+[app.nodeau.ai](https://app.nodeau.ai/plan). Business is shaped around each
+organisation, so the way in is a conversation:
+[talk to us](/contact/?type=business).
 
-`nodeau plan show` lists these under **Coming soon**: scheduled batch, priority
-queues, model replication across machines, team RBAC, SSO and audit as a plan
-difference. **No plan grants them until they exist** — a signed entitlement is the
-one place the product cannot later disown a claim, so nothing is granted on a
-promise.
+### On the way
+
+`nodeau plan show` also lists capabilities that are planned, under
+**Coming soon**. A plan grants a capability only once it has shipped, because a
+signed entitlement is a promise the product has to keep.
+
+`Audit` appears in that list as a possible plan feature. The audit trail itself
+is already in your account for everyone, separate from any plan: see
+[usage and audit](/docs/usage/).
 
 ## How an entitlement works
 
 An entitlement is a **signed statement of what an installation may do**, verified
-**offline** against keys compiled into the binary. Nothing is asked of Nodeau
-Cloud at verification time, so a network outage cannot change what your hardware
-is allowed to do.
+**offline** against keys compiled into the binary. Nodeau Cloud plays no part at
+verification time, so a network outage leaves what your hardware may do exactly
+as it was.
 
-It carries the features and limits **themselves**, not a plan name — so an
-installation that has not updated cannot have what it is entitled to change
-retroactively when the plan table moves. The plan id rides along for display.
+It carries the features and limits **themselves**, rather than a plan name, so
+what an installation was granted stays exactly what it was granted even as plans
+evolve. The plan id rides along for display.
 
 ### Refreshing
 
@@ -172,30 +201,30 @@ It asks Nodeau Cloud for a freshly signed entitlement, checks the signature, and
 stores it **only if it verifies**.
 
 An installation that has been set up also refreshes on a timer, roughly every six
-hours with jitter.
+hours, with a little jitter.
 
 :::note A missed refresh is never an outage
 Verification is offline, so a failed refresh changes nothing: the entitlement
-already on the machine keeps working until it expires, and an installation with no
-entitlement at all runs the free Home plan with every safety and integrity check
-intact.
+already on the machine keeps working until it expires, and an installation with
+no entitlement at all runs the free Home plan with every safety and integrity
+check intact.
 :::
 
-### Expiry and grace
+### Expiry and grace {#expiry-and-grace}
 
 | State | What it means |
 |---|---|
 | `valid` | Current |
 | `grace` | Past its expiry and inside the grace window. **Everything still works**, and you are told |
-| `expired` | Past the grace window. Paid capabilities stop being granted and the installation falls back to the free Home plan |
-| `invalid` | An entitlement is present and cannot be accepted — wrong signature, wrong installation, wrong organisation |
+| `expired` | Past the grace window. The installation runs the free Home plan until a fresh entitlement arrives |
+| `invalid` | An entitlement is present and cannot be accepted: wrong signature, wrong installation or wrong organisation |
 
-A signed entitlement is current for about a month, with a further couple of weeks
-of grace. Nothing stops working the moment it expires.
+A signed entitlement is current for about a month, followed by a couple of weeks
+of grace, so a machine has plenty of time to refresh.
 
 `nodeau doctor` reports `PLAN_REFRESH_STALLED` when an installation is linked to
-an account and has stopped learning what that account entitles it to — which is
-the condition that precedes a surprise, and the one you want to see early.
+an account and has stopped learning what that account entitles it to. That is
+the early warning worth having, well before any grace period runs out.
 
 ### A machine with no internet
 
@@ -207,112 +236,66 @@ nodeau plan export -o entitlement.txt
 nodeau plan import entitlement.txt
 ```
 
-The file holds exactly the bytes Nodeau Cloud signed. It goes through **exactly
-the same checks** a fetched entitlement does — the signature against keys compiled
-into the binary, the installation and organisation it names against this
-machine's, and an entitlement older than the one already held is refused. **An
-entitlement carried on a stick is never less verified than one fetched.**
+The file holds exactly the bytes Nodeau Cloud signed, and it goes through
+**exactly the same checks** a fetched entitlement does: the signature against keys
+compiled into the binary, the installation and organisation it names against this
+machine's, and a check that it is not older than the one already held. **An
+entitlement carried on a stick is exactly as verified as one fetched.**
 
-The entitlement names the installation and organisation it was issued for, so a
-file exported from one machine is **not a licence another machine can use**. This
-is a way to deliver an entitlement without a network, not a way to copy one.
+An entitlement names the installation and organisation it was issued for, so
+export and import deliver an entitlement to the machine it belongs to. They are a
+way to cross an air gap, and a file exported from one machine is not a licence
+for another.
 
 **Nothing secret is in the file.** An entitlement is a signed public claim about
-what a plan allows — it is not a credential, it cannot be used to sign in, and it
-gives nobody access to an account.
+what a plan allows. It is not a credential, it cannot be used to sign in, and it
+opens no account.
 
-There is also `nodeau plan set --from-file`, for a token issued to you out of
-band. The token is read from a file or stdin, never from a command-line argument,
-so it does not reach your shell history or the process list.
+For a token issued to you directly, `nodeau plan set --from-file <path>` installs
+it. The token is read from a file or from stdin, never from a command-line
+argument, so it stays out of your shell history and the process list.
 
 ### When a plan changes
 
-A change reaches a machine when `nodeau plan refresh` runs — from the timer, or
+A change reaches a machine when `nodeau plan refresh` runs, from the timer or
 because you ran it. Until then the machine keeps the entitlement it has.
 
-**Lowering a plan never stops a running workload.** The new entitlement decides
-what may start.
+**Moving to a smaller plan never stops a running workload.** The new entitlement
+decides what may start from then on.
 
-## What an account adds beyond entitlements
+## Your account on the web
 
-Signing in and [connecting a fleet](/docs/fleet/#seeing-the-fleet-from-a-browser)
-gives you `app.nodeau.ai`: your machines, what is running on them, and — with
-`FeatureRemoteManagement` — the ability to operate them from a browser.
+Sign in at [app.nodeau.ai](https://app.nodeau.ai/) to see:
 
-Three things live there rather than in the CLI.
+- your **installations** and the plan each one runs under,
+- your **fleet**, once you run `nodeau fleet connect`: machines, cards, what is
+  running and whether anything needs attention (see
+  [seeing the fleet from a browser](/docs/fleet/#seeing-the-fleet-from-a-browser)),
+- **usage and audit**: what your hardware did, and who changed what (see
+  [usage and audit](/docs/usage/)),
+- your organisation's **limits and policies** (see
+  [limits and policies](/docs/governance/)),
+- your **plan** and billing.
 
-### What your hardware has been doing
+With Home Pro or Business you can also operate the fleet from there: run and stop
+workloads, set scheduling policy, drain a machine, read bounded logs, and recover
+a stranded workload.
 
-Nodeau can tell you which workloads held which accelerators, for how long, added
-up across the machines you own.
+## Where the line sits
 
-The figure is **accelerator-time taken from the scheduler's own record of what
-was reserved** — not sampled from the cards. There is no GPU-utilisation
-measurement behind it, and none is claimed.
+- **Your machines connect out.** Every connection to Nodeau Cloud starts on your
+  machine, over HTTPS, on its own schedule. There is nothing to open on your
+  router, and Nodeau Cloud has no way in.
+- **Credentials are stored as hashes.** Nodeau Cloud keeps only a SHA-256 of each
+  credential it issues, so the credential itself lives on your machine and
+  nowhere else.
+- **What you compute stays on your hardware.** Prompts, completions, embeddings,
+  images and batch records are handled by your machines and stay there.
 
-If you tell Nodeau what an accelerator-hour is worth to you, it multiplies your
-number by what it measured. **Until you do, it shows nothing at all.**
-
-:::note Absent is not zero
-A cost appears only where somebody entered a rate. A zero would render as "this
-cost you nothing", which is a claim Nodeau is in no position to make; an absence
-renders as nothing, which is the truth. A rate you deliberately set to zero is a
-number you chose, and it survives.
-:::
-
-This is not billing. Nodeau does not meter, invoice or charge anything, does not
-know what power, hardware or a cloud instance costs, and never produces an amount
-due.
-
-### What changed, and who changed it
-
-Your organisation can see what changed and who changed it — **including what was
-refused**, which is the event an investigation usually starts from. Kept for a
-year.
-
-It records the action, the actor and the outcome. It does not record a key, a
-token, a prompt, a reply, or the contents of anything you computed.
-
-:::note An event with no result is not a success
-Events written before the trail recorded outcomes have none, and the console
-shows **"not recorded"** rather than "applied". Rendering a missing outcome as a
-success would invent a fact about every event that predates the field, in the
-direction that hides a refusal.
-:::
-
-It is an append-oriented table with no delete route. That is not the same as a
-tamper-evident or cryptographically immutable log, and Nodeau does not describe
-it as one.
-
-### Which build your fleet should be on
-
-You can record which build your fleet should be on, and see which build it is on.
-**A channel only ever moves forward.**
-
-You can also say when Nodeau may act on your machines on its own, in your own
-time zone.
-
-:::warning Recording a desired build does not upgrade anything
-It is a statement of intent you can read back. Nodeau does not upgrade a fleet
-remotely — the capability is not built — and a maintenance window does not
-schedule work. Updating is [the installer, on each machine](/docs/updates/).
-:::
-
-None of this is qualified on Apple Silicon: a Mac runs standalone and cannot join
-a fleet, usage travels as a fleet report, and audit is a hosted surface.
+More detail, boundary by boundary: [security and privacy](/docs/security/).
 
 ## Removing an installation
 
 From `app.nodeau.ai`, or by running `nodeau logout` on the machine. The two do
-different halves: `logout` removes the local link, the console removes the
-account-side record and frees the slot.
-
-## What Nodeau Cloud cannot do
-
-- It cannot **reproduce a credential it issued**. Only a SHA-256 is stored.
-- It cannot **initiate a connection** to your machine. There is no inbound port,
-  no callback and no remote shell.
-- It cannot **see what you compute**. Prompts, completions, embeddings, images and
-  batch records never leave your hardware.
-
-See [security and privacy](/docs/security/).
+different halves: `logout` removes the local link, and removing it in your
+account frees the slot it was using.

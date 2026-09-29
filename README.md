@@ -5,280 +5,210 @@ Static site for **nodeau.ai**.
 Plain HTML, CSS and JavaScript. **No build step, no dependencies, no
 toolchain.** That is deliberate: a marketing site that cannot be deployed
 without a working toolchain is a site that breaks when the toolchain moves.
+Netlify publishes the repository as it is; the small Python tools below keep
+the committed HTML honest, and none of them run at deploy time.
 
 ## Positioning
 
-The site describes Nodeau as a product. It does not describe it as an
-experiment, and it does not annotate every sentence with how far the testing
-goes — that reads as a changelog, and it talked the product down.
+**Your GPUs. One private AI cloud.** Nodeau turns the GPUs and computers people
+already own into one private AI cloud: run models, add machines, use familiar
+APIs. The product defines the website, and the site never describes a
+capability the current release does not have.
 
-Three tiers, and the boundaries between them are about scale and
-collaboration rather than customer size:
+Three tiers, and the boundaries between them are about scale and collaboration
+rather than customer size:
 
-- **Home** — one person, one machine, one GPU. Free, and genuinely useful:
-  local inference, the model catalogue, the local dashboard, fit checks, the
-  authenticated OpenAI-compatible endpoint.
-- **Home Pro** — the prosumer. Several machines you own, several GPUs in a
-  machine, batch inference, remote management, model replication.
-- **Business** — an organisation. Members, RBAC, SSO, quotas, audit, fleet
-  policy, priority queues, support.
+- **Home**: one machine, one GPU. Free, and a whole product: local inference,
+  the catalog, fit checks, bring-your-own-model on Linux, the OpenAI-compatible
+  endpoint, the local dashboard.
+- **Home Pro**: $9.99 a month. Up to three machines, up to two GPUs in each,
+  batch inference, and running the fleet from a browser.
+- **Business**: tailored per organisation, and the public path is a
+  conversation. There is deliberately no Business price, checkout or
+  "buy" button.
 
-The tier table on `/pricing/` is derived from `internal/entitlement/plans.go`
-in the platform repository, which is the thing that actually decides what an
-installation may do. **If the two disagree, the code wins and the page is
-wrong** — a pricing page that promises what the binary refuses is worse than
-one that promises less.
+The tier details on `/pricing/` come from `internal/entitlement/plans.go` in the
+platform repository, which is what actually decides what an installation may
+do. **If the two disagree, the code wins and the page is wrong.**
 
-### Release states live on the roadmap, and only there
+## Voice
 
-Every capability on `/roadmap/` carries one of five labels:
+The site sounds like a technical founder talking to another developer: warm,
+direct, contractions, the occasional exclamation mark, short sentences mixed
+with longer ones.
 
-| pill | colour | meaning |
-|---|---|---|
-| `Available` | green | in the published build |
-| `Next release` | amber | qualified on real hardware here, in the next published build |
-| `Working on it` | slate | under way now |
-| `Planned` | slate | intended, designed for, not built |
-| `Exploring` | slate | intent, not plan |
+- **No em or en dashes in prose**, on any page. `tools/check-site.py` enforces
+  it. Verbatim product output inside `<pre>`/`<code>` is exempt, because a
+  transcript must say what the binary prints.
+- **No buzzwords** (seamless, leverage, empower, unlock, robust, cutting-edge,
+  next-generation…). Enforced.
+- **No negative product framing on the marketing pages.** Scope is stated as
+  what IS true: "a Mac runs standalone", "each card holds its own share",
+  "running work stays where Nodeau placed it". Enforced for every page outside
+  `/docs`. The docs may use the product's own precise vocabulary (refused,
+  unsupported, reason codes) where exact error semantics need it.
+- **Positive never means deceptive.** The boundaries somebody could build on
+  and get hurt by (no failover, memory counted per card, a Mac standalone,
+  capacity rather than speed from a split) are still stated, positively, and
+  `REQUIRED` in the checker pins the sentences that carry them.
 
-`Next release` is load-bearing. Without it, something that runs on real
-hardware has to be labelled either unbuilt or already downloadable, and both
-are wrong. Do not collapse it, and do not use it for something that has only
-been tested synthetically.
+## Release states live on the roadmap
 
-The marketing pages carry no status pills at all. The roadmap is the ledger,
-it is linked from every page that describes a capability, and
-`tools/check-site.py` asserts its key sentences are still there.
+Every capability on `/roadmap/` carries one of four labels:
 
-### Claims that are deliberately NOT made
+| pill | meaning |
+|---|---|
+| `Available` | in the current release on the public channel |
+| `In progress` | being built or tested now; arrives in a future release |
+| `Planned` | designed for and on the list |
+| `Exploring` | a direction, not yet a plan |
 
-Nodeau's control plane spans more than one machine, and a workload has been
-placed and served on a second machine's GPU. What has never happened is a
-workload *moving* between machines: placement decides where something runs and
-then holds it there, and there is no failover of any kind.
-
-So the site says Nodeau **reasons across**, **decides between** and **holds**.
-It must never say that workloads *run across* mixed GPUs, that Nodeau spreads,
-distributes or balances work, that failover works, or that any fleet scale has
-been tested. `FORBIDDEN` in the checker enforces exactly this.
-
-Two boundaries stay on the sub-pages regardless of tone, because somebody
-could build on them and get hurt: **no automatic failover**, and **Nodeau
-assumes the people with access to a machine are trusted**. `REQUIRED` in the
-checker pins the sentences that carry them on `/roadmap/`, `/faq/` and
-`/about/`. They are deliberately **not** on the homepage.
-
-### The account application
-
-`app.nodeau.ai` is a **separate Netlify site** built from `app/` in this
-repository. The marketing site links to it — header, footer, the account
-section on the homepage — and `netlify.toml` redirects the addresses people
-type by hand (`/login`, `/signin`, `/account`, `/dashboard`, `/activate`,
-`/app/*`) to it. `/app/*` is forced, because the repository root is published
-as-is and `app/` would otherwise be served as raw, unbuilt source.
-
-The install guide moved from `/alpha/` to `/install/`. The old path is a
-permanent redirect and must stay one: it is linked from release notes and
-other people's posts.
-
-The installer at **get.nodeau.ai** is a separate deployment. This site links to
-it and must never duplicate or reimplement it.
+**Released capability defines public claims.** Something built and staged, or
+deployed on the hosted side with no customer-facing surface, is `In progress`
+until a release on the public channel carries it. The marketing pages carry no
+status pills; they link to the roadmap for anything that is not available yet.
 
 ## Structure
 
 ```
-index.html            homepage
-about/   install/   roadmap/   pricing/   faq/   contact/   thanks/
+index.html            the story: what Nodeau is, starting, hardware, tasks, fleet, developers, plans
+product/              everything Nodeau does, section by section
+business/             Nodeau for teams and organisations
+install/              Get Nodeau: Linux and Mac side by side, first request, next steps
+pricing/  roadmap/  faq/  about/  contact/  thanks/
 404.html
+docs/                 GENERATED from docs-src/ (see below)
 assets/nodeau.css     design system
-assets/nodeau.js      nav, copy buttons, reveal, contact deep-link
-netlify.toml          headers, redirects; publish ".", no build command
-app/                  the account application — SEPARATE Netlify site
-robots.txt  sitemap.xml  favicon.svg
-tools/generate-pages.py   one-off generator (see below)
+assets/nodeau.js      nav, copy buttons, reveal, release version, contact deep-link
+assets/docs.js        docs sidebar drawer, search, platform tabs, scrollspy
+assets/og.png         the social preview image
+netlify.toml          headers, redirects, the channel proxy, hidden repo files
+app/                  the account application: a SEPARATE Netlify site
+tools/                checkers and generators (standard library only)
 ```
 
 Pages are directories with an `index.html`, so `/about` works on Netlify and
 under any plain static server without redirect rules.
 
-### /docs is generated; everything else is hand-written
+### One header and one footer
 
-`/docs` is the product documentation: installation on both platforms, the
-complete CLI reference, concepts, models, BYOM, fleets, scheduling, batch, the
-API, governance, health, accounts, upgrades, uninstall, troubleshooting, support
-bundles and security.
-
-It is **generated**, and the output is committed, so Netlify still builds
-nothing:
-
-```
-docs-src/*.md          the content — one file per page, with front matter
-docs-src/nav.json      THE navigation. Sidebar, order, prev/next and sitemap
-docs-src/cli-commands.txt   every public command, generated from the binary
-tools/build-docs.py    docs-src -> docs/*/index.html + docs/search-index.json
-assets/docs.js         sidebar drawer, search, platform tabs, scrollspy
-```
+`tools/sitechrome.py` holds the site header and footer. `tools/build-docs.py`
+renders them into every docs page, and `tools/sync-chrome.py` writes them into
+every hand-written page between `<header class="site-header"` … `</header>` and
+`<footer class="site-footer">` … `</footer>`. Change the navigation in one
+place, then:
 
 ```bash
-python3 tools/build-docs.py           # write docs/
-python3 tools/build-docs.py --check   # fail if docs/ is not current
-python3 tools/stamp-assets.py         # re-stamp asset URLs after changing CSS or JS
-python3 tools/check-cli-coverage.py   # fail if a shipped command is undocumented
-python3 tools/check-site.py           # everything, including the three above
+python3 tools/sync-chrome.py
 ```
 
-### Shared assets are cache-stamped, and it is not optional
+`check-site.py` runs `sync-chrome.py --check`, so a hand-edited shell fails.
 
-Every page links `/assets/nodeau.css`, `nodeau.js` and `docs.js` with
-`?v=<first 8 of the file's sha256>`.
+### /docs is generated; everything else is hand-written
 
-**This is load-bearing.** `netlify.toml` serves HTML as
-`max-age=0, must-revalidate` and `/assets/*` as `max-age=3600`, under filenames
-that never change. When `/docs` first shipped, anyone who had visited in the
-previous hour got the new markup with the **previous stylesheet** — a wall of
-unstyled text, on one browser and not another, purely by which one had the file
-cached. It reads as a browser bug and is not one.
+```
+docs-src/*.md          the content, one file per page, with front matter
+docs-src/nav.json      THE navigation: sidebar, order, prev/next and sitemap
+docs-src/cli-commands.txt   every public command and its flags, from the RELEASED binary
+tools/build-docs.py    docs-src -> docs/*/index.html + docs/search-index.json
+```
 
-After changing any file in `assets/`, run `tools/stamp-assets.py`.
-`tools/check-site.py` asserts it, and `tools/build-docs.py` stamps its own
-output from the same function, so the generated and hand-written pages cannot
-disagree. The version is computed from the bytes — there is no number to
-remember to bump.
+Change the Markdown, run `build-docs.py`, commit both. Never edit
+`docs/**/index.html` by hand: `--check` fails, which is the point.
 
-**Why a generator here and not elsewhere.** The rest of the site is nine pages
-with a hand-copied header, which is the honest cost of having no build step.
-Twenty-three pages sharing one sidebar, one search index and one prev/next chain
-is past where that trade is affordable — and unlike `generate-pages.py`, this one
-is idempotent and `--check` runs in the site check, so the committed HTML cannot
-drift from its source.
+**The CLI reference follows the released binary, not the source tree.**
+`docs-src/cli-commands.txt` is produced by the platform repository's
+`scripts/docs/dump-cli-commands.sh <path-to-released-nodeau>`, run against the
+archive a customer downloads for the current channel release.
+`tools/check-cli-coverage.py` then fails on:
 
-**Editing.** Change the Markdown, run `build-docs.py`, commit both. Never edit
-`docs/**/index.html` by hand: `--check` will fail, which is the point.
+- a shipped command the reference does not document;
+- a `nodeau …` command a docs page names that does not exist;
+- a `--flag` on any docs page that no command accepts;
+- on the hand-written pages, a `nodeau …` invocation that names no command, or a
+  flag that **that specific command** does not accept.
 
-**Adding a page.** Create `docs-src/<slug>.md` with front matter
-(`title`, `heading`, `nav`, `description`, `lede`) and add it to `nav.json`. The
-sidebar, the prev/next links, the search index and the sitemap follow from that
-one entry.
+### Shared assets are cache-stamped
 
-**The CLI reference cannot quietly go stale.** `docs-src/cli-commands.txt` is
-generated from the binary by the platform repository's
-`scripts/docs/dump-cli-commands.sh` — one line per command, then a tab, then
-every flag it accepts. `check-cli-coverage.py` reports three things: a command
-that ships and is not documented, a `nodeau …` command the docs name that is not
-in the tree, and a `--flag` on ANY docs page that no command accepts. All three
-failure modes are verified to fail rather than assumed to.
+Every page links `/assets/*.css|js` with `?v=<first 8 of the file's sha256>`.
+`netlify.toml` serves HTML as `must-revalidate` and assets for an hour under
+names that never change, so an unstamped change would pair new markup with a
+cached old stylesheet. After changing anything in `assets/`:
 
-Regenerate the list whenever the CLI grows a command or a flag; the list is
-produced on Linux, and the five macOS-only flags are declared in the checker with
-the source file that proves each one.
-
-**`get.nodeau.ai/docs/*.md` are pointers into this**, not a second copy. Two
-authoritative sets of install instructions drift, and that pair did — the
-download site said macOS was unsupported for a month after Apple Silicon
-shipped.
-
-### tools/generate-pages.py
-
-A one-off script used to generate the sub-pages with a consistent header and
-footer. **The committed HTML is the source of truth** — the script is kept only
-as a record of how the shared shell was produced. If you edit a page, edit the
-HTML. If you change the header or footer, change it in every page (there are
-nine) or re-run the script and re-apply page bodies.
-
-This is the honest cost of having no build step. It is a small site and the
-trade was made knowingly.
-
-## Content rules
-
-1. **Never publish a command that does not exist.** Every command shown was
-   verified against the shipped CLI before publication. In particular, do not
-   document raw Kubernetes join procedures as a Nodeau workflow — development
-   plumbing is not product UX.
-2. **Label every capability on the roadmap.** Use the five states above. The
-   marketing pages don't label; they link to the page that does.
-3. **No absolute privacy claims.** The endpoint is localhost-only and
-   authenticated, and Nodeau collects nothing — but a third-party app you point
-   at it can do what it likes, and the site says so.
-4. **No production-readiness claims, and no failover claims.** Nodeau does not
-   fail over, and it is not built for mutually hostile users on one box. Say
-   that where it matters (roadmap, FAQ, About) and do not apologise for it
-   everywhere else.
-5. **No invented prices.** Home is free, Home Pro is "coming soon" until
-   checkout exists, Business is "contact us".
-6. **Name the hardware actually tested.** "Run on an RTX 3080 and an RTX 2080"
-   is both stronger and truer than "heterogeneous GPUs supported". Name the
-   cards; do not count the machines. Never imply every NVIDIA card works.
-7. **Say where a number came from.** Nodeau measures where it can and estimates
-   conservatively where it cannot; the site must not claim it never estimates.
-8. **Write like a person.** Short sentences, plain words, contractions where
-   they land naturally. The voice is a knowledgeable colleague telling you how
-   it is, not a spec sheet and not a pitch deck. If a sentence needs two
-   em-dashes and a semicolon, it needs to be two sentences.
+```bash
+python3 tools/stamp-assets.py
+```
 
 ### The version string
 
-`v0.1.0-alpha.5` — the **public** channel version — is written down in exactly
-one place: `RELEASE` in `assets/nodeau.js`. Pages carry an empty
-`<span data-release></span>` that it fills. Do not hard-code the version into a
-page, and do not put a development build number (`0.6.0-…`) on the site at all.
-
-With JavaScript off the span stays empty and surrounding whitespace collapses,
-so every sentence still reads correctly.
+No page carries a version. Every `<span data-release></span>` is filled by
+`assets/nodeau.js` from `/channel/beta.json`, which `netlify.toml` proxies to
+`get.nodeau.ai`, so the site always names the release a visitor would install.
+With JavaScript off, or the channel unreachable, the slots stay empty and
+anything marked `data-release-note` stays hidden, so no sentence carries a
+number nobody checked.
 
 ## Checking the site
 
 ```bash
-python3 tools/check-site.py
+python3 tools/check-site.py      # everything below, in one command
 ```
 
-Standard library only, no dependencies. It verifies structure (one `<title>`,
-canonical, OG tags, no stray `<!doctype>`), that internal links and in-page
-anchors resolve, that every CSS class used in the HTML is defined, that no page
-hard-codes a version string, that the sentences in `REQUIRED` are still present,
-and that a list of retired phrases has not crept back in. Run it before pushing.
+Standard library only. It verifies structure (one `<title>`, canonical, Open
+Graph tags), that internal links and anchors resolve, that every CSS class used
+is defined, the voice rules above, the `REQUIRED` sentences, the retired and
+forbidden phrases, the pricing table's tier logic, the sitemap, and it runs
+`build-docs.py --check`, `check-cli-coverage.py`, `stamp-assets.py --check` and
+`sync-chrome.py --check`.
 
-It skips `app/` entirely — that is the account application, it has its own
-toolchain and its own tests (`cd app && npm run check`), and once anyone has run
-`npm ci` it contains several hundred vendored HTML files.
+### In a real browser
+
+Geometry and script errors only exist in a rendered page, so there is an
+optional browser audit using the Playwright the account app already vendors:
+
+```bash
+python3 tools/serve.py 8123 &
+PLAYWRIGHT_BROWSERS_PATH=~/.local/nodeau-toolchains/playwright \
+  node tools/site-audit.mjs http://127.0.0.1:8123 /tmp/site-audit
+```
+
+It visits every sitemap route plus a 404 probe at 1920, 1440, 1280, 1024, 768
+and 390 pixels, and reports horizontal overflow, elements off screen, console
+and page errors, failed requests, tiny text, squeezed headings, heading-level
+skips, unnamed controls and duplicate ids. It also opens the phone menu and the
+docs menu. Screenshots land in the output directory: look at them, because no
+automated check replaces that.
 
 ## Local preview
 
 ```bash
-python3 -m http.server 8080
+python3 tools/serve.py           # http://127.0.0.1:8080
 ```
 
-Then open `http://localhost:8080`. Clipboard copy buttons need a secure context,
-so on plain `http://` they fall back to selecting the text — that is expected
-locally and works normally on the deployed HTTPS site.
+It serves the site the way Netlify does in the three ways pages depend on: the
+channel proxy (so the version fills in), the 404 page, and the hidden repository
+files. Clipboard copy buttons need a secure context, so on plain `http://` they
+fall back to selecting the text.
 
 ## Netlify
 
 - Build command: *(blank)*
 - Publish directory: `.`
 
-`netlify.toml` sets security headers, cache policy and the redirects listed
-above. There is deliberately no catch-all redirect: one would swallow
-`404.html` and serve the homepage for every typo.
+`netlify.toml` sets security headers, cache policy, the redirects people type by
+hand (`/login`, `/signin`, `/account`, `/dashboard`, `/activate`, `/app/*`,
+`/alpha`, `/download`, `/install.sh`), the `/channel/beta.json` proxy, and 404s
+for repository files that are not pages (`README.md`, `tools/`, `docs-src/`).
+There is deliberately no catch-all redirect: one would swallow `404.html`.
 
 The account application is a **second site from this repository**, with base
-directory `app` and its own `app/netlify.toml`. Nothing about it belongs here.
+directory `app` and its own `app/netlify.toml`, deployed from its own branch.
+Nothing about it belongs here.
 
 ### Forms
 
-`/contact/` uses **Netlify Forms**. The form is plain static HTML, so Netlify
-detects it at deploy time — there is no backend and no function.
-
-- `name="contact"`, `method="POST"`, `data-netlify="true"`
-- hidden `form-name` input matching the form name
-- `netlify-honeypot="bot-field"` with an off-screen `bot-field` input
-- `action="/thanks/"` for the success redirect
-- `/contact/?type=business` preselects the Business option
-
-**Submissions are not emailed anywhere until a notification is configured.**
-That is a one-time setting in the Netlify UI:
-
-> Site configuration → Forms → Form notifications → Add notification →
-> Email notification → **founders@nodeau.ai**
-
-No credentials belong in this repository. There is no Gmail integration, no
-OAuth and no API key.
+`/contact/` uses **Netlify Forms**: plain static HTML, detected at deploy time,
+with a honeypot and `action="/thanks/"`. `/contact/?type=business` preselects
+the Business option. Submissions are emailed once a notification is configured
+in the Netlify UI (Forms → Form notifications → founders@nodeau.ai). No
+credentials belong in this repository.

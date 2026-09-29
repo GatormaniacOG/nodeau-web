@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Embeddings, reranking, tools and vision with Nodeau</title>
+<meta name="description" content="Beyond chat: embeddings and reranking for search and RAG, tool calling, structured output and image input, with the models that do each and a working example.">
+<link rel="canonical" href="https://nodeau.ai/docs/tasks/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/tasks/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Embeddings, reranking, tools and vision with Nodeau">
+<meta property="og:description" content="Beyond chat: embeddings and reranking for search and RAG, tool calling, structured output and image input, with the models that do each and a working example.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
+    </div>
+  </div>
+</header>
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models" open><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" aria-current="page" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau"><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet"><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Planning a fleet upgrade">Planning a fleet upgrade</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Models</p>
+      <h1 class="doc-title">Embeddings, reranking, tools and vision</h1>
+      <p class="lede doc-lede">Chat is where most people start, and it's far from all Nodeau runs. Here's how to get vectors, rank documents, call tools, get JSON back and ask about an image, on your own GPUs.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#which-model-does-what">Which model does what</a></li><li><a href="#starting-a-workload-for-a-task">Starting a workload for a task</a></li><li><a href="#embeddings">Embeddings</a></li><li><a href="#reranking">Reranking</a></li><li><a href="#tool-calling">Tool calling</a></li><li><a href="#structured-output">Structured output</a></li><li><a href="#image-input">Image input</a></li></ul></nav>
+      <p>Everything on this page runs on Linux machines with NVIDIA GPUs, through the same fit check and the same kind of endpoint as chat. A Mac runs standalone and serves chat models, and embeddings, reranking and image input on the Mac are <a href="/roadmap/">in progress</a>.</p>
+<p>The basics of the endpoint, authentication and chat are in <a href="/docs/api/">the OpenAI-compatible API</a>. Set your key first:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-1"><code>export NODEAU_API_KEY=&quot;$(nodeau auth show --quiet)&quot;</code></pre></div>
+<h2 id="which-model-does-what" class="doc-h">Which model does what<a class="doc-anchor" href="#which-model-does-what" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Task</th><th>Curated models</th><th>How you call it</th></tr></thead><tbody><tr><td data-label="Task">Embeddings</td><td data-label="Curated models"><code>qwen3-embedding-0.6b-q8_0</code></td><td data-label="How you call it"><code>/v1/embeddings</code></td></tr><tr><td data-label="Task">Reranking</td><td data-label="Curated models"><code>bge-reranker-v2-m3-q8_0</code></td><td data-label="How you call it"><code>/v1/rerank</code></td></tr><tr><td data-label="Task">Tool calling</td><td data-label="Curated models"><code>qwen3.5-4b-q4km</code>, <code>qwen3.5-9b-q4km</code>, <code>qwen3.8-27b-q4km</code></td><td data-label="How you call it"><code>tools</code> in a chat completion</td></tr><tr><td data-label="Task">Structured output</td><td data-label="Curated models">the three Qwen models above, plus <code>gemma-4-e4b-qat-q4-0</code> and <code>gemma-4-12b-qat-q4-0</code></td><td data-label="How you call it"><code>response_format</code> in a chat completion</td></tr><tr><td data-label="Task">Image input</td><td data-label="Curated models"><code>gemma-4-e4b-qat-q4-0</code> (8 GB), <code>gemma-4-12b-qat-q4-0</code> (12 GB)</td><td data-label="How you call it">image parts in a chat completion</td></tr></tbody></table></div>
+<p><code>nodeau model info &lt;model&gt;</code> lists exactly what a model can do, and the <a href="/docs/models/#the-curated-catalog">model catalog</a> shows which size of card each one is for.</p>
+<h2 id="starting-a-workload-for-a-task" class="doc-h">Starting a workload for a task<a class="doc-anchor" href="#starting-a-workload-for-a-task" aria-label="Link to this section">#</a></h2>
+<p>A workload serves one model for one task, on its own port. An embedding model or a reranker does only one thing, so Nodeau works out the task for you:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-2"><code>nodeau run qwen3-embedding-0.6b-q8_0 --port 8081
+nodeau run bge-reranker-v2-m3-q8_0 --port 8082</code></pre></div>
+<p>For a model that could do more than one task, say which with <code>--task</code>, for example <code>--task embed</code>.</p>
+<p>A GPU belongs to one workload at a time, so each workload you want running side by side gets a card of its own. On a machine with one GPU, free the card first with <code>nodeau stop &lt;name&gt; --workload</code>, then start the next model. With more cards, in one machine or across several machines, each workload takes its own card and its own port, and they all serve at once.</p>
+<h2 id="embeddings" class="doc-h">Embeddings<a class="doc-anchor" href="#embeddings" aria-label="Link to this section">#</a></h2>
+<p>Vectors for search, clustering and retrieval-augmented generation.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-3"><code>nodeau run qwen3-embedding-0.6b-q8_0 --port 8081</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-4"><code>curl http://127.0.0.1:8081/v1/embeddings \
+  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;input&quot;: [&quot;How do I add a machine to my fleet?&quot;,
+                 &quot;Run nodeau fleet invite on the machine you already have.&quot;]}&#x27;</code></pre></div>
+<p>You get the usual OpenAI embeddings response, one vector per input. With the Python SDK:</p>
+<div class="code doc-code"><div class="code-head"><span>Python</span><button class="copy-btn" type="button" data-copy="#tasks-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Python block</span></button></div><pre id="tasks-code-5"><code>import os
+from openai import OpenAI
+
+client = OpenAI(base_url=&quot;http://127.0.0.1:8081/v1&quot;,
+                api_key=os.environ[&quot;NODEAU_API_KEY&quot;])
+
+result = client.embeddings.create(
+    model=&quot;qwen3-embedding-0.6b-q8_0&quot;,
+    input=[&quot;first text&quot;, &quot;second text&quot;],
+)
+vectors = [item.embedding for item in result.data]</code></pre></div>
+<p>Got a whole corpus to embed? <a href="/docs/batch/">Batch inference</a> takes a file of embedding requests and works through it on your GPUs.</p>
+<h2 id="reranking" class="doc-h">Reranking<a class="doc-anchor" href="#reranking" aria-label="Link to this section">#</a></h2>
+<p>Give it a query and a handful of documents, and it scores how well each one answers the query. It's the step that makes retrieval sharp.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-6"><code>nodeau run bge-reranker-v2-m3-q8_0 --port 8082</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-7"><code>curl http://127.0.0.1:8082/v1/rerank \
+  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;query&quot;: &quot;how do I add a machine&quot;,
+       &quot;documents&quot;: [&quot;nodeau fleet invite prints a code for the new machine&quot;,
+                     &quot;GGUF is a model file format&quot;,
+                     &quot;Sourdough needs a long, cold fermentation&quot;]}&#x27;</code></pre></div>
+<p>The reply has a <code>results</code> list, one entry per document, each with the <code>index</code> of the document you sent and a <code>relevance_score</code>. Higher means more relevant, and a score can be negative, so compare them with each other rather than against zero.</p>
+<aside class="callout callout-note"><p class="callout-kind">The reranking request shape</p><p>OpenAI's API has no reranking endpoint, so <code>/v1/rerank</code> follows the Jina and Cohere convention that reranking clients already speak. <code>/v1/reranking</code> works too.</p></aside>
+<p>A common retrieval pattern puts the two together: embed your documents once, find the nearest few for each question, rerank those, and hand the best ones to a chat model as context.</p>
+<h2 id="tool-calling" class="doc-h">Tool calling<a class="doc-anchor" href="#tool-calling" aria-label="Link to this section">#</a></h2>
+<p>Ordinary OpenAI tool calling. You describe your tools, the model may answer with <code>tool_calls</code>, and your code runs the tool and sends the result back in a message with the role <code>tool</code>. Nodeau hands you the call, and running the tool is up to you.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-8"><code>curl http://127.0.0.1:8080/v1/chat/completions \
+  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;What is the weather in Oslo?&quot;}],
+    &quot;max_tokens&quot;: 2048,
+    &quot;tools&quot;: [{
+      &quot;type&quot;: &quot;function&quot;,
+      &quot;function&quot;: {
+        &quot;name&quot;: &quot;get_weather&quot;,
+        &quot;description&quot;: &quot;Current weather for a city&quot;,
+        &quot;parameters&quot;: {
+          &quot;type&quot;: &quot;object&quot;,
+          &quot;properties&quot;: {&quot;city&quot;: {&quot;type&quot;: &quot;string&quot;}},
+          &quot;required&quot;: [&quot;city&quot;]
+        }
+      }
+    }]
+  }&#x27;</code></pre></div>
+<p>The curated models with tool calling are the Qwen3.5 family and the flagship. A model you import claims a capability only once it has <a href="/docs/byom/#qualification">proved it</a>.</p>
+<h2 id="structured-output" class="doc-h">Structured output<a class="doc-anchor" href="#structured-output" aria-label="Link to this section">#</a></h2>
+<p>Ask for JSON that follows your schema:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-9"><code>curl http://127.0.0.1:8080/v1/chat/completions \
+  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Describe a GPU as JSON.&quot;}],
+    &quot;max_tokens&quot;: 2048,
+    &quot;response_format&quot;: {
+      &quot;type&quot;: &quot;json_schema&quot;,
+      &quot;json_schema&quot;: {
+        &quot;name&quot;: &quot;gpu&quot;,
+        &quot;schema&quot;: {
+          &quot;type&quot;: &quot;object&quot;,
+          &quot;properties&quot;: {&quot;name&quot;: {&quot;type&quot;:&quot;string&quot;}, &quot;vram_gb&quot;: {&quot;type&quot;:&quot;integer&quot;}},
+          &quot;required&quot;: [&quot;name&quot;, &quot;vram_gb&quot;]
+        }
+      }
+    }
+  }&#x27;</code></pre></div>
+<p>Give structured output a budget of at least <strong>1024</strong> tokens. A reasoning model thinks first, and the JSON can't start until the thinking is done.</p>
+<aside class="callout callout-warning"><p class="callout-kind">Generation follows the schema; checking the result is yours</p><p>The runtime turns your schema into a grammar and holds the model to it while it generates. It doesn't parse the finished reply and check it against the schema afterwards, so validate on your side whenever correctness matters.</p></aside>
+<h2 id="image-input" class="doc-h">Image input<a class="doc-anchor" href="#image-input" aria-label="Link to this section">#</a></h2>
+<p>Give a model an image and ask about what it sees. The two Gemma 4 models in the catalog read images: <code>gemma-4-e4b-qat-q4-0</code> on the 8 GB rung and <code>gemma-4-12b-qat-q4-0</code> on the 12 GB rung.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#tasks-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="tasks-code-10"><code>nodeau run gemma-4-e4b-qat-q4-0</code></pre></div>
+<p>Images go in the ordinary OpenAI content-parts shape, as a base64 data URL:</p>
+<div class="code doc-code"><div class="code-head"><span>Python</span><button class="copy-btn" type="button" data-copy="#tasks-code-11"><span data-copy-label>Copy</span><span class="visually-hidden"> Python block</span></button></div><pre id="tasks-code-11"><code>import base64, os
+from openai import OpenAI
+
+client = OpenAI(base_url=&quot;http://127.0.0.1:8080/v1&quot;,
+                api_key=os.environ[&quot;NODEAU_API_KEY&quot;])
+
+with open(&quot;photo.png&quot;, &quot;rb&quot;) as f:
+    image = base64.b64encode(f.read()).decode()
+
+reply = client.chat.completions.create(
+    model=&quot;gemma-4-e4b-qat-q4-0&quot;,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: [
+            {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;What is in this picture?&quot;},
+            {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: f&quot;data:image/png;base64,{image}&quot;}},
+        ],
+    }],
+    max_tokens=2048,
+)
+print(reply.choices[0].message.content)</code></pre></div>
+<aside class="callout callout-note"><p class="callout-kind">Images and imported models</p><p>A vision model comes as two files, the weights and a multimodal projector, and <a href="/docs/byom/">bringing your own model</a> imports one file. So image input on an imported model is declined up front with a note saying why, and the curated Gemma 4 models are the way to work with images today.</p></aside>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/models/"><span>Previous</span>The model catalog</a><a class="doc-next" href="/docs/byom/"><span>Next</span>Bring your own model</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
+      </div>
+      <div>
+        <h2 class="footer-title">Product</h2>
+        <ul>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Docs</h2>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Company</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+<script src="/assets/docs.js?v=1501ca71" defer></script>
+</body>
+</html>

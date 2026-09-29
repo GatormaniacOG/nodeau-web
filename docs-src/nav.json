@@ -3,53 +3,56 @@
     "group": "Getting started",
     "pages": [
       {"slug": "overview", "nav": "What is Nodeau?"},
-      {"slug": "requirements", "nav": "Platform support and requirements"},
-      {"slug": "install-linux", "nav": "Install on Linux / NVIDIA"},
-      {"slug": "install-macos", "nav": "Install on macOS"},
-      {"slug": "quickstart", "nav": "Quickstart"},
-      {"slug": "api", "nav": "The API and your first request"}
+      {"slug": "requirements", "nav": "Requirements and platforms"},
+      {"slug": "install-linux", "nav": "Install on Linux"},
+      {"slug": "install-macos", "nav": "Install on a Mac"},
+      {"slug": "quickstart", "nav": "Your first model"}
     ]
   },
   {
-    "group": "Concepts",
+    "group": "Models",
     "pages": [
-      {"slug": "concepts", "nav": "Core concepts"},
-      {"slug": "scheduling", "nav": "Admission, scheduling and placement"}
+      {"slug": "models", "nav": "The model catalog"},
+      {"slug": "tasks", "nav": "Embeddings, reranking, tools and vision"},
+      {"slug": "byom", "nav": "Bring your own model"}
     ]
   },
   {
-    "group": "Everyday use",
+    "group": "Use Nodeau",
+    "pages": [
+      {"slug": "api", "nav": "The OpenAI-compatible API"},
+      {"slug": "batch", "nav": "Batch inference"},
+      {"slug": "multi-gpu", "nav": "Several GPUs in one machine"},
+      {"slug": "scheduling", "nav": "How Nodeau decides"}
+    ]
+  },
+  {
+    "group": "Fleet",
+    "pages": [
+      {"slug": "fleet", "nav": "Add and run machines"},
+      {"slug": "health", "nav": "Health and alerts"},
+      {"slug": "power", "nav": "Power limits and budgets"},
+      {"slug": "upgrades", "nav": "Planning a fleet upgrade"},
+      {"slug": "updates", "nav": "Updates and release channels"}
+    ]
+  },
+  {
+    "group": "Administration",
+    "pages": [
+      {"slug": "accounts", "nav": "Accounts and plans"},
+      {"slug": "governance", "nav": "Limits and policies"},
+      {"slug": "usage", "nav": "Usage and audit"},
+      {"slug": "security", "nav": "Security and privacy"}
+    ]
+  },
+  {
+    "group": "Reference",
     "pages": [
       {"slug": "cli", "nav": "CLI reference"},
-      {"slug": "models", "nav": "Models and the catalog"},
-      {"slug": "byom", "nav": "Bring your own model"},
-      {"slug": "multi-gpu", "nav": "Several GPUs in one machine"},
-      {"slug": "batch", "nav": "Batch inference"}
-    ]
-  },
-  {
-    "group": "Your machines",
-    "pages": [
-      {"slug": "fleet", "nav": "Adding and operating machines"},
-      {"slug": "governance", "nav": "Organisation limits"},
-      {"slug": "health", "nav": "Health and diagnostics"},
-      {"slug": "power", "nav": "Power limits and budgets"}
-    ]
-  },
-  {
-    "group": "Account",
-    "pages": [
-      {"slug": "accounts", "nav": "Accounts, plans and entitlements"}
-    ]
-  },
-  {
-    "group": "Operations",
-    "pages": [
-      {"slug": "updates", "nav": "Updating and release channels"},
-      {"slug": "uninstall", "nav": "Uninstalling"},
+      {"slug": "concepts", "nav": "Glossary"},
       {"slug": "troubleshooting", "nav": "Troubleshooting"},
       {"slug": "support", "nav": "Support bundles"},
-      {"slug": "security", "nav": "Security and privacy"}
+      {"slug": "uninstall", "nav": "Uninstalling"}
     ]
   }
 ]

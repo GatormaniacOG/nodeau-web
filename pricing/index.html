@@ -4,67 +4,61 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nodeau Pricing · Home, Home Pro and Business</title>
-<meta name="description" content="Three plans. Home is free on one machine. Home Pro adds several machines, batch inference and remote management. Business is priced per organisation. Nothing is metered per token.">
+<meta name="description" content="Home is free on one machine. Home Pro is $9.99 a month for up to three machines with batch inference and remote control. Business is tailored to your fleet. Nothing is metered per token.">
 <link rel="canonical" href="https://nodeau.ai/pricing/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/pricing/">
 <meta property="og:site_name" content="Nodeau">
 <meta property="og:title" content="Nodeau Pricing · Home, Home Pro and Business">
-<meta property="og:description" content="Three plans. Home is free on one machine. Home Pro adds several machines, batch inference and remote management. Business is priced per organisation. Nothing is metered per token.">
+<meta property="og:description" content="Free on one machine. $9.99 a month for a home fleet of up to three machines. Business plans built around your organisation's hardware. Nothing metered per token.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/nodeau.css?v=13cbe303">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header" data-header>
   <div class="wrap">
-    <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-      Nodeau
-    </a>
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
     <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <nav class="nav" id="site-nav" data-nav aria-label="Primary">
       <ul>
-        <li><a href="/#home">For home</a></li>
-        <li><a href="/#business">For business</a></li>
-        <li><a href="/install/">Install</a></li>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
         <li><a href="/docs/">Docs</a></li>
         <li><a href="/pricing/" aria-current="page">Pricing</a></li>
         <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
         <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
       </ul>
     </nav>
     <div class="header-actions">
       <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
     </div>
   </div>
 </header>
 
 <main id="main">
 
-  <section class="hero" style="padding-bottom:2rem">
+  <section class="hero page-hero">
     <div class="wrap">
       <p class="eyebrow">Pricing</p>
-      <h1 style="font-size:var(--step-3)">Priced for infrastructure, not for tokens.</h1>
-      <p class="lede" style="margin-top:1.15rem">
-        Your hardware does the work. Nodeau's job is making that hardware usable
-        and manageable, so nothing here is metered per prompt, per token or per
-        request.
-      </p>
-      <p style="color:var(--text-2);margin-top:1rem;max-width:58ch">
-        One machine is Home. A few machines that are all yours is Home Pro.
-        An organisation, where other people need their own access, is
-        Business.
+      <h1>Pay for the fleet, never by the token.</h1>
+      <p class="lede">
+        Your hardware does the work, so nothing here is metered per prompt or
+        per token. Plans follow how many machines you run and how you like to
+        run them.
       </p>
     </div>
   </section>
@@ -72,70 +66,73 @@
   <section class="tight divider">
     <div class="wrap">
       <div class="tiers">
+
         <div class="panel">
-          <h3>Home</h3>
+          <h2 class="tier-name">Home</h2>
           <p class="kicker">Make my GPU useful.</p>
           <div class="price">Free</div>
-          <p class="price-note">No card. No account. Yours to keep.</p>
-          <ul class="checks">
-            <li>One machine, one GPU</li>
-            <li>Local inference on your own hardware</li>
-            <li>Chat, embeddings, reranking, structured output, tool calling and image understanding</li>
-            <li>The curated model catalogue, with the card size each model wants</li>
-            <li>Fit checks before anything starts</li>
-            <li>Efficiency, Balanced and Performance scheduling</li>
-            <li>Power limits and budgets for your cards</li>
-            <li>Local OpenAI-compatible API with its own key</li>
-            <li>The local dashboard</li>
-            <li>CLI, diagnostics and support bundles</li>
-          </ul>
-          <p class="note" style="margin-bottom:1.5rem">
-            Free means free. Everything that keeps you safe is in every plan and
-            stays there. Model verification, authentication and the fit checks
-            come with all three.
-          </p>
-          <a class="btn btn-ghost btn-sm" href="/install/">Install Nodeau</a>
+          <p class="price-note">One machine, one GPU. No card and no account needed.</p>
+          <p class="plan-lede">A great way to turn a desktop or a Mac into your own private AI endpoint.</p>
+          <div class="plan-group">
+            <p class="plan-group-title">Home includes</p>
+            <ul class="checks">
+              <li>Models on your own GPU or Mac</li>
+              <li>The curated catalog, verified downloads and fit checks</li>
+              <li>Chat everywhere, plus embeddings, reranking, structured output, tool calling and vision on Linux</li>
+              <li>Your own GGUF models, imported and qualified on Linux</li>
+              <li>An OpenAI-compatible API with streaming</li>
+              <li>The CLI, the local dashboard and <code>nodeau doctor</code></li>
+              <li>Your machine in your account, visible from any browser</li>
+            </ul>
+          </div>
+          <p style="margin-top:1.5rem"><a class="btn btn-ghost btn-sm" href="/install/">Get Nodeau</a></p>
         </div>
 
         <div class="panel tier-featured">
-          <h3>Home Pro</h3>
+          <h2 class="tier-name">Home Pro</h2>
           <p class="kicker">Make all my GPUs work together.</p>
           <div class="price">$9.99<span class="price-unit"> / month</span></div>
           <p class="price-note">For one person with more than one machine. Cancel any time.</p>
-          <ul class="checks">
-            <li>Everything in Home</li>
-            <li>Up to three GPU machines under one control plane</li>
-            <li>Two GPUs in a machine, working on one model or on two</li>
-            <li>Batch inference on any machine in the fleet, with several workers at once</li>
-            <li>Remote dashboard and management from anywhere</li>
-            <li>Drain a machine for maintenance and pick the work back up</li>
-            <li>Standard support</li>
-          </ul>
-          <p class="note" style="margin-bottom:1.5rem">
-This is the tier for one person with a desktop, a server in the
-            cupboard and a laptop that wants to reach both of them.
-          </p>
-          <a class="btn btn-primary btn-sm" href="https://app.nodeau.ai/plan">Get Home Pro</a>
+          <p class="plan-lede">Your desktop, the server in the cupboard and the laptop that wants to reach both, as one fleet.</p>
+          <div class="plan-group">
+            <p class="plan-group-title">Everything in Home, and</p>
+            <ul class="checks">
+              <li>Up to three machines in one fleet</li>
+              <li>Up to two GPUs in each machine, one model per card or one model across both</li>
+              <li>A model on every GPU in your fleet, all running at once</li>
+              <li>Batch inference, with several workers at once</li>
+              <li>Run your fleet from any browser: start and stop models, drain machines, read logs, recover work</li>
+              <li>Set your fleet's limits from the web</li>
+              <li>Standard support</li>
+            </ul>
+          </div>
+          <p style="margin-top:1.5rem"><a class="btn btn-primary btn-sm" href="https://app.nodeau.ai/plan">Get Home Pro</a></p>
         </div>
 
         <div class="panel">
-          <h3>Business</h3>
-          <p class="kicker">Private AI infrastructure for an organisation.</p>
-          <div class="price">Contact us</div>
-          <p class="price-note">Priced per organisation, not per request.</p>
-          <ul class="checks">
-            <li>Everything in Home Pro</li>
-            <li>Fleets that mix cards and generations, judged on their own merits</li>
-            <li>A control plane that explains every placement it makes</li>
-            <li>Business support, and a direct line to the people building it</li>
-            <li>A say in what organisation-scale operation becomes</li>
-          </ul>
-          <p class="note" style="margin-bottom:1.5rem">
-Design partners shape how organisation-scale operation gets built. We
-            would much rather build it with you than at you.
-          </p>
-          <a class="btn btn-ghost btn-sm" href="/contact/?type=business">Talk to us</a>
+          <h2 class="tier-name">Business</h2>
+          <p class="kicker">Our organisation's private AI fleet.</p>
+          <div class="price">Let's talk</div>
+          <p class="price-note">Tailored to your fleet and priced per organisation.</p>
+          <p class="plan-lede">For teams running models across the workstations and servers they already own.</p>
+          <div class="plan-group">
+            <p class="plan-group-title">Everything in Home Pro, and</p>
+            <ul class="checks">
+              <li>As many machines and GPUs as you run</li>
+              <li>Business support, and a direct line to the people building Nodeau</li>
+              <li>A hand planning your setup, policies and rollout</li>
+              <li>A say in what we build next</li>
+            </ul>
+          </div>
+          <div class="plan-group">
+            <p class="plan-group-title">On the way for Business</p>
+            <ul class="checks checks-future">
+              <li>Members with roles, single sign-on and scoped keys for scripts. <a href="/roadmap/">See the roadmap</a></li>
+            </ul>
+          </div>
+          <p style="margin-top:1.5rem"><a class="btn btn-ghost btn-sm" href="/contact/?type=business">Talk to us</a></p>
         </div>
+
       </div>
     </div>
   </section>
@@ -143,118 +140,124 @@ Design partners shape how organisation-scale operation gets built. We
   <!-- ================================================= comparison ========= -->
   <section class="tight divider">
     <div class="wrap">
-      <h2 style="font-size:var(--step-2)">What's in each plan</h2>
-      <p style="color:var(--text-2);margin-top:0.9rem;max-width:56ch">
-        The paid plans are worth paying for because they do more. The free
-        one is a whole product in its own right.
-      </p>
+      <div class="section-head">
+        <h2>Side by side</h2>
+        <p>The free plan is a whole product on its own. The paid ones add machines and more ways to run them.</p>
+      </div>
 
       <div class="compare-wrap">
         <table class="compare">
-          <caption>Nodeau plans compared. Limits are per installation.</caption>
+          <caption>Nodeau plans compared. Limits apply per installation.</caption>
           <thead>
             <tr>
-              <th scope="col">Capability</th>
+              <th scope="col">What you get</th>
               <th scope="col">Home</th>
               <th scope="col" class="col-featured">Home Pro</th>
               <th scope="col">Business</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="compare-group"><th scope="rowgroup" colspan="4">The basics, in every plan</th></tr>
+            <tr class="compare-group"><th scope="rowgroup" colspan="4">Run models</th></tr>
             <tr>
-              <th scope="row">Local inference on your own GPU</th>
+              <th scope="row">Models on your own GPU or Mac</th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
-              <th scope="row">Local dashboard</th>
+              <th scope="row">Curated catalog, verified downloads, fit checks</th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
-              <th scope="row">Curated model catalogue</th>
+              <th scope="row">Embeddings, reranking, tools, structured output and vision on Linux</th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
-              <th scope="row">Model download, verification and cache</th>
+              <th scope="row">Bring your own GGUF model, on Linux</th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
-              <th scope="row">Fit checks, explained refusals, diagnostics</th>
+              <th scope="row">OpenAI-compatible API, CLI and local dashboard</th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
-              <th scope="row">Embeddings, reranking, structured output, tool calling, vision</th>
+              <th scope="row">Scheduling modes and power limits for NVIDIA GPUs</th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
-              <th scope="row">Efficiency, Balanced and Performance scheduling</th>
-              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Power limits and budgets for your cards</th>
-              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Accept a fit risk yourself, when you want to</th>
+              <th scope="row">Accept a fit risk yourself, per model</th>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
 
-            <tr class="compare-group"><th scope="rowgroup" colspan="4">Scale and automation</th></tr>
+            <tr class="compare-group"><th scope="rowgroup" colspan="4">Scale</th></tr>
             <tr>
-              <th scope="row">GPU machines</th>
+              <th scope="row">Machines</th>
               <td class="c-note">1</td>
               <td class="c-note col-featured">Up to 3</td>
-              <td class="c-note">Unlimited</td>
+              <td class="c-note">As many as you run</td>
             </tr>
             <tr>
               <th scope="row">GPUs in one machine</th>
               <td class="c-note">1</td>
               <td class="c-note col-featured">Up to 2</td>
-              <td class="c-note">Unlimited</td>
+              <td class="c-note">As many as you run</td>
             </tr>
             <tr>
-              <th scope="row">Workloads at once</th>
-              <td class="c-note">2</td>
-              <td class="c-note col-featured">Unlimited</td>
-              <td class="c-note">Unlimited</td>
+              <th scope="row">Models running at once</th>
+              <td class="c-note">One per GPU</td>
+              <td class="c-note col-featured">One per GPU</td>
+              <td class="c-note">One per GPU</td>
             </tr>
             <tr>
               <th scope="row">Batch inference</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Starts with Home Pro</span></td>
+              <td class="c-blank"><span class="visually-hidden">Starts with Home Pro</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+            </tr>
+
+            <tr class="compare-group"><th scope="rowgroup" colspan="4">Your account</th></tr>
+            <tr>
+              <th scope="row">See your machines from any browser</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
               <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
-              <th scope="row">See your machines from anywhere</th>
-              <td class="c-yes"><span aria-hidden="true">&#10003;</span><span class="visually-hidden">Included</span></td>
-              <td class="c-yes col-featured"><span aria-hidden="true">&#10003;</span><span class="visually-hidden">Included</span></td>
-              <td class="c-yes"><span aria-hidden="true">&#10003;</span><span class="visually-hidden">Included</span></td>
+              <th scope="row">Usage in accelerator-hours and a record of changes</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Entitlements for machines with no internet</th>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
             <tr>
               <th scope="row">Remote dashboard and management</th>
-              <td class="c-no"><span aria-hidden="true">—</span><span class="visually-hidden">Starts with Home Pro</span></td>
-              <td class="c-yes col-featured"><span aria-hidden="true">&#10003;</span><span class="visually-hidden">Included</span></td>
-              <td class="c-yes"><span aria-hidden="true">&#10003;</span><span class="visually-hidden">Included</span></td>
+              <td class="c-blank"><span class="visually-hidden">Starts with Home Pro</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
             </tr>
-
+            <tr>
+              <th scope="row">Set your fleet's limits from the web</th>
+              <td class="c-blank"><span class="visually-hidden">Starts with Home Pro</span></td>
+              <td class="c-yes col-featured"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+              <td class="c-yes"><span aria-hidden="true">✓</span><span class="visually-hidden">Included</span></td>
+            </tr>
             <tr>
               <th scope="row">Support</th>
               <td class="c-note">Community</td>
@@ -265,39 +268,37 @@ Design partners shape how organisation-scale operation gets built. We
         </table>
       </div>
 
-      <div class="note" style="margin-top:1.75rem;max-width:66ch">
-        Everything listed here works today. You are only ever charged for
-        what already runs on your hardware, and the
-        <a href="/roadmap/">roadmap</a> is where we keep what is still being
-        built. Business is something we shape with design partners, so talk to
-        us and we will build it around what you actually need. Plans are
-        enforced by a signed entitlement your installation checks locally,
-        which means everything keeps running while your machine is offline.
-      </div>
+      <p class="note" style="margin-top:1.75rem;max-width:66ch">
+        Everything in this table works in the current release. Your plan
+        arrives as a signed entitlement that each machine checks on its own, so
+        your models keep serving when a machine is offline. What we're building
+        next lives on the <a href="/roadmap/">roadmap</a>.
+      </p>
     </div>
   </section>
 
   <section class="tight divider">
     <div class="wrap">
-      <h2 style="font-size:var(--step-2)">Why there is no per-token price</h2>
-      <div class="grid grid-3" style="margin-top:1.75rem">
+      <div class="section-head">
+        <h2>Why there's no per-token price</h2>
+      </div>
+      <div class="grid grid-3">
         <div class="feature">
           <h3>Your GPU does the work</h3>
-          <p>The work happens on hardware you already paid for. Charging per token would be charging you for your own electricity.</p>
+          <p>The compute is hardware you already paid for. We'd rather charge for making it useful than for your own electricity.</p>
         </div>
         <div class="feature">
-          <h3>The value is management</h3>
-          <p>Deciding what fits, keeping it running, and knowing what is where. That scales with machines, not with prompts.</p>
+          <h3>The value is running it</h3>
+          <p>Working out what fits, keeping it running and knowing what's where. That grows with machines, so that's what plans follow.</p>
         </div>
         <div class="feature">
-          <h3>Capacity you can predict</h3>
-          <p>Owned hardware has a fixed ceiling and a fixed cost. That is a different shape from per-request billing, and for some workloads a better one.</p>
+          <h3>Costs you can plan</h3>
+          <p>Owned hardware has a known capacity and a known cost. For steady work that's a comfortable shape to budget around.</p>
         </div>
       </div>
-      <p class="note" style="margin-top:2rem;max-width:60ch">
-        Owned hardware is not automatically cheaper than cloud inference. It
-        depends entirely on utilisation, and the honest answer for a machine
-        that sits idle is usually no.
+      <p class="note" style="margin-top:2rem;max-width:62ch">
+        The economics depend on how busy your machines are. Hardware that runs
+        work most of the day gets the most out of owning it.
       </p>
     </div>
   </section>
@@ -306,11 +307,11 @@ Design partners shape how organisation-scale operation gets built. We
     <div class="wrap">
       <h2 style="font-size:var(--step-2)">Start on the machine you already have.</h2>
       <p class="lede" style="margin:1rem auto 1.75rem;max-width:42ch">
-        Home is free, needs no account, and will tell you straight whether your
-        machine can run it.
+        Home is free, needs no account, and Nodeau tells you straight away what
+        your machine can run.
       </p>
       <div class="btn-row">
-        <a class="btn btn-primary" href="/install/">Install Nodeau</a>
+        <a class="btn btn-primary" href="/install/">Get Nodeau</a>
         <a class="btn btn-ghost" href="/contact/?type=business">Talk about Business</a>
       </div>
     </div>
@@ -321,48 +322,45 @@ Design partners shape how organisation-scale operation gets built. We
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
-        <a class="brand" href="/" style="margin-bottom:0.75rem">
-          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-          Nodeau
-        </a>
-        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
       </div>
       <div>
-        <h4>Product</h4>
+        <h2 class="footer-title">Product</h2>
         <ul>
-          <li><a href="/#home">For home</a></li>
-          <li><a href="/#business">For business</a></li>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
           <li><a href="/pricing/">Pricing</a></li>
           <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
         </ul>
       </div>
       <div>
-        <h4>Start</h4>
+        <h2 class="footer-title">Docs</h2>
         <ul>
-          <li><a href="/install/">Install guide</a></li>
           <li><a href="/docs/">Documentation</a></li>
-          <li><a href="https://app.nodeau.ai/">Sign in</a></li>
-          <li><a href="/docs/requirements/">Requirements</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
           <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
         </ul>
       </div>
       <div>
-        <h4>Company</h4>
+        <h2 class="footer-title">Company</h2>
         <ul>
           <li><a href="/about/">About</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
           <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> · your hardware, your models</span>
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
     </div>
   </div>
 </footer>

@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nodeau for Business · A Private AI Fleet on Your Own GPUs</title>
+<meta name="description" content="Turn the workstations and servers your team already owns into one private AI fleet, with limits, usage in accelerator-hours, a record of every change, and upgrade planning.">
+<link rel="canonical" href="https://nodeau.ai/business/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nodeau.ai/business/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Nodeau for Business · A Private AI Fleet on Your Own GPUs">
+<meta property="og:description" content="One fleet from the GPUs your organisation already owns: guardrails, usage, a record of changes, release channels and upgrade planning. Tailored to each deployment.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/" aria-current="page">Business</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Nodeau for business</p>
+      <h1>A private AI fleet, on the GPUs your team already owns.</h1>
+      <p class="lede">
+        Workstations under desks, a server in the lab, the rack you bought last
+        year. Nodeau turns them into one fleet your team can run models on,
+        with guardrails you set, usage you can see and a record of every change.
+      </p>
+      <div class="btn-row" style="margin-top:2rem">
+        <a class="btn btn-primary" href="/contact/?type=business">Talk to us</a>
+        <a class="btn btn-ghost" href="/pricing/">See the plans</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================ run the fleet ======= -->
+  <section class="tight divider">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Run it</p>
+        <h2>Every machine, every GPU, every model, in one place.</h2>
+        <p>
+          Each machine reports what it really has and checks its own copy of
+          every model by hash. Nodeau places each workload on a GPU that can
+          hold it, and tells you why it chose that one.
+        </p>
+      </div>
+      <div class="tiles">
+        <div class="tile">
+          <h3>One view of the fleet</h3>
+          <p>Machines, cards and workloads in your account at app.nodeau.ai, from any browser.</p>
+        </div>
+        <div class="tile">
+          <h3>Operate it from anywhere</h3>
+          <p>Start and stop models, set scheduling policy, drain a machine, read logs and recover a workload from a machine that's gone.</p>
+        </div>
+        <div class="tile">
+          <h3>Maintenance on your terms</h3>
+          <p>Drain a machine before you work on it. New work goes elsewhere and everything already running keeps serving.</p>
+        </div>
+        <div class="tile">
+          <h3>Health you can act on</h3>
+          <p><code>nodeau health</code> shows processor, memory, storage, network and GPU for every machine, a day of history, and alerts. The readings stay on your hardware.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================== guardrails ======== -->
+  <section class="tight divider">
+    <div class="wrap">
+      <div class="duo">
+        <div>
+          <p class="eyebrow">Guardrails</p>
+          <h2>Decide what your fleet may run.</h2>
+          <p style="margin-top:1rem">
+            Set your organisation's own limits inside what your plan allows. Set
+            them on a machine with <code>nodeau governance</code>, or from your
+            account in a browser.
+          </p>
+          <ul class="checks">
+            <li><strong>Quotas.</strong> How many workloads, GPUs and batch workers may run at once</li>
+            <li><strong>Model policy.</strong> Which models are allowed, by the name they run under</li>
+            <li><strong>GPU pools and fleet groups.</strong> Which cards and which machines a workload may use</li>
+            <li><strong>Clear answers.</strong> Anything a limit holds back says which limit it was, so people know who to ask</li>
+            <li><strong>Calm changes.</strong> Lowering a limit leaves running work alone and shapes what starts next</li>
+          </ul>
+        </div>
+        <div class="code">
+          <div class="code-head"><span>bash</span><button class="copy-btn" data-copy="#b-gov" type="button"><span data-copy-label>Copy</span></button></div>
+<pre id="b-gov"><code>nodeau governance \
+  --max-workloads 6 \
+  --max-gpus 4 \
+  --allow-model qwen3.5-9b-q4km \
+  --allow-model qwen3-embedding-0.6b-q8_0
+
+nodeau governance --json</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ usage and audit ========= -->
+  <section class="tight divider">
+    <div class="wrap">
+      <div class="duo duo-top">
+        <div>
+          <p class="eyebrow">Visibility</p>
+          <h2>Know what your hardware did, and who changed what.</h2>
+        </div>
+        <div>
+          <p>
+            <strong style="color:var(--text)">Usage in accelerator-hours.</strong>
+            Which workloads held which GPUs, and for how long, added up across
+            every machine you own. The figure comes from the scheduler's own
+            record of what was reserved. Enter what an accelerator-hour is worth
+            to you and Nodeau does the multiplication.
+          </p>
+          <p>
+            <strong style="color:var(--text)">A record of changes.</strong>
+            Your organisation can see what changed, who changed it and what
+            happened, including requests that were turned down. It's kept for a
+            year, and it records actions, never prompts or answers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== releases ====== -->
+  <section class="tight divider">
+    <div class="wrap">
+      <div class="duo">
+        <div class="code term" aria-label="An upgrade plan, summarised">
+          <div class="code-head"><span>an upgrade plan, in short</span></div>
+<pre><code>  <span class="hl">target</span>    the release you asked for
+  <span class="hl">commit</span>    and the exact build behind it
+
+     <span class="hl">garage</span>    would move, worker first
+     <span class="hl">lab</span>       already current
+     <span class="hl">studio</span>    would move last: the control plane
+
+  Workloads on each machine, and which
+  would restart along the way.</code></pre>
+        </div>
+        <div>
+          <p class="eyebrow">Releases</p>
+          <h2>Keep the fleet current, calmly.</h2>
+          <ul class="checks">
+            <li><strong>Know what every machine runs.</strong> <code>nodeau update</code> compares each machine with the published release, and a release channel only moves forward</li>
+            <li><strong>Upgrade planning.</strong> See which machines would change, in what order and with which workloads, before anything moves</li>
+            <li><strong>Machine by machine.</strong> Upgrade each machine with the installer, at the pace you choose</li>
+          </ul>
+          <p style="color:var(--text-3);font-size:0.92rem;margin-top:1rem">
+            Maintenance windows and a release channel for the whole fleet, set
+            from your account, and rolling the fleet through an upgrade one
+            machine at a time are <a href="/roadmap/">in progress</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== security ====== -->
+  <section class="tight divider">
+    <div class="wrap">
+      <div class="duo duo-top">
+        <div>
+          <p class="eyebrow">Security</p>
+          <h2>Your data stays on your hardware.</h2>
+          <p style="margin-top:1rem">
+            Prompts, completions, embeddings, images and batch records live on
+            the machines that computed them. A connected fleet reports which
+            machines exist, what's plugged into them and what's running, so you
+            can operate it from a browser.
+          </p>
+        </div>
+        <ul class="checks" style="margin-top:0">
+          <li>Your machines initiate every connection to Nodeau Cloud, keeping the network boundary simple</li>
+          <li>Models keep serving and scheduling keeps working whether or not the cloud is reachable</li>
+          <li>Plans are signed entitlements checked on each machine, and can be carried to a machine with no internet</li>
+          <li>Each machine's agent can write only its own state and reads no credentials</li>
+          <li>Built for machines your team controls, where everyone with access to a machine is trusted</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== business ======== -->
+  <section class="tight divider">
+    <div class="wrap">
+      <div class="duo duo-top">
+        <div>
+          <p class="eyebrow">How Business works</p>
+          <h2>Tailored to your fleet.</h2>
+          <p style="margin-top:1rem">
+            Every organisation's hardware is different, so Business plans are
+            built around yours: how many machines, which cards, how you deploy
+            and what support you need. Tell us about your setup and we'll put
+            the right plan together with you.
+          </p>
+          <div class="btn-row" style="margin-top:1.5rem">
+            <a class="btn btn-primary" href="/contact/?type=business">Talk to us</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 style="font-size:1.05rem;margin-bottom:0.75rem">Business brings</h3>
+          <ul class="checks" style="margin:0">
+            <li>As many machines and GPUs as you run</li>
+            <li>Everything in Home Pro: batch inference, several GPUs per machine and remote operation</li>
+            <li>Business support, and a direct line to the people building Nodeau</li>
+            <li>A hand planning your rollout</li>
+          </ul>
+          <h3 style="font-size:1.05rem;margin:1.5rem 0 0.75rem">On the way for Business</h3>
+          <ul class="checks checks-future" style="margin:0">
+            <li>Several people in one organisation, each with a role</li>
+            <li>Single sign-on with your identity provider</li>
+            <li>Keys for scripts that can only ever do less than their owner</li>
+          </ul>
+          <p style="color:var(--text-3);font-size:0.85rem;margin-top:1rem">
+            The <a href="/roadmap/">roadmap</a> shows where each one stands.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight divider cta">
+    <div class="wrap">
+      <h2 style="font-size:var(--step-2)">Building a private AI fleet?</h2>
+      <p class="lede" style="margin:1rem auto 1.75rem;max-width:46ch">
+        Tell us what you have and what you'd like to run. We'll work with you on
+        the setup, the policies and the rollout.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/contact/?type=business">Talk to us</a>
+        <a class="btn btn-ghost" href="/product/">See everything Nodeau does</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
+      </div>
+      <div>
+        <h2 class="footer-title">Product</h2>
+        <ul>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Docs</h2>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Company</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+</body>
+</html>

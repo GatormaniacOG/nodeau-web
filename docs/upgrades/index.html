@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan a Nodeau fleet upgrade</title>
+<meta name="description" content="See what moving your machines to a Nodeau release would involve before any of them move: which change, which already match, the order, and what it means for your workloads.">
+<link rel="canonical" href="https://nodeau.ai/docs/upgrades/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/upgrades/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Plan a Nodeau fleet upgrade">
+<meta property="og:description" content="See what moving your machines to a Nodeau release would involve before any of them move: which change, which already match, the order, and what it means for your workloads.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
+    </div>
+  </div>
+</header>
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau"><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet" open><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" aria-current="page" data-nav-title="Planning a fleet upgrade">Planning a fleet upgrade</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Fleet</p>
+      <h1 class="doc-title">Planning a fleet upgrade</h1>
+      <p class="lede doc-lede">Before you move a single machine, ask Nodeau what moving the whole fleet would take. You get a plan you can read, check and share, and nothing changes while you read it.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#ask-for-a-plan">Ask for a plan</a></li><li><a href="#reading-a-plan">Reading a plan</a></li><li><a href="#one-release-pinned-down">One release, pinned down</a></li><li><a href="#machine-states">What each machine can say</a></li><li><a href="#the-order-and-the-control-plane">The order, and the control plane</a></li><li><a href="#what-it-means-for-your-workloads">What it means for your workloads</a></li><li><a href="#your-organisations-window-and-channel">Your organisation&#x27;s window and channel</a></li><li><a href="#for-scripts">For scripts</a></li><li><a href="#then-upgrading">Then, upgrading</a></li></ul></nav>
+      <p><code>nodeau fleet upgrade plan</code> reads two things: the release you're aiming for and the machines in your fleet. It tells you which machines would change and from which build to which, which already match, which aren't ready to move and why, the order they'd go in, and what it would mean for the workloads running on each one.</p>
+<p>It's a planning tool. It reads the release's manifest and your machines' reports, and that's all: no build is downloaded, nothing is installed or restarted, and no machine is told to do anything. When you're happy with the plan, you upgrade each machine the usual way: see <a href="/docs/updates/">updates</a>.</p>
+<h2 id="ask-for-a-plan" class="doc-h">Ask for a plan<a class="doc-anchor" href="#ask-for-a-plan" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#upgrades-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="upgrades-code-1"><code>nodeau fleet upgrade plan                          # the channel&#x27;s current release
+nodeau fleet upgrade plan --to v0.15.0-beta.1      # one exact version
+nodeau fleet upgrade plan --machine desk           # just one machine
+nodeau fleet upgrade plan --fleet-group            # the machines your fleet group names
+nodeau fleet upgrade plan --json                   # for a script</code></pre></div>
+<p>Run it on a machine in your fleet (the control-plane machine is the natural place). It needs to reach the release channel to read the release, and the cluster to read your machines. The full flag list is in the <a href="/docs/cli/#nodeau-fleet-upgrade-plan">CLI reference</a>.</p>
+<h2 id="reading-a-plan" class="doc-h">Reading a plan<a class="doc-anchor" href="#reading-a-plan" aria-label="Link to this section">#</a></h2>
+<p>Here's a three-machine fleet on <code>v0.14.0-beta.7</code>, planned against the beta channel:</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="upgrades-code-2"><code>  target    v0.15.0-beta.1
+  channel   beta
+  commit    bde36a001028d9fd961f6788196fd75fdb9a25d8
+
+  1  desk
+       v0.14.0-beta.7 → v0.15.0-beta.1
+       READY
+       would move from v0.14.0-beta.7 to v0.15.0-beta.1.
+       1 workload(s) serving here would stop and start again on this machine — downtime expected; Nodeau does not move them
+
+  2  lab-2
+       v0.14.0-beta.7 → v0.15.0-beta.1
+       READY
+       would move from v0.14.0-beta.7 to v0.15.0-beta.1.
+       nothing is running here
+
+  3  gpu-server
+       v0.14.0-beta.7 → v0.15.0-beta.1
+       READY
+       would move from v0.14.0-beta.7 to v0.15.0-beta.1.
+       1 workload(s) here, none serving; restarting them interrupts nothing
+
+  3 machine(s) would move to v0.15.0-beta.1, one at a time
+  · channel beta resolves to v0.15.0-beta.1 at commit bde36a00
+  · no maintenance window is set, so nothing is held back for one
+  · Nodeau has not checked whether the hosted service accepts this build, so this plan does not judge it
+  · gpu-server runs the control plane and goes LAST: upgrading it interrupts scheduling and the cluster the other machines report through. Nodeau does not claim it stays available.
+  · this plan is computed on this machine and does not include your organisation&#x27;s maintenance window or channel policy
+
+  Nothing has been changed. Nodeau does not upgrade a fleet for you yet; upgrade a machine by running `nodeau install` on it.</code></pre></div>
+<p>Top to bottom, that's the release it resolved, each machine in the order it would go, a one-line summary, and a few notes. The sections below go through each part.</p>
+<p>Two of those notes are worth reading carefully:</p>
+<ul class="doc-list"><li><strong>"no maintenance window is set"</strong> means this plan wasn't given one. A plan worked out on your machine doesn't read your organisation's settings yet, so the line tells you what this plan applied, and says nothing about what your organisation has set. More on that <a href="#your-organisations-window-and-channel">below</a>.</li><li><strong>"Nodeau has not checked whether the hosted service accepts this build"</strong> is about Nodeau Cloud, the service your machines report to when you've connected a fleet. Nodeau updates Nodeau Cloud before the machines that talk to it, so this line is there for your information.</li></ul>
+<h2 id="one-release-pinned-down" class="doc-h">One release, pinned down<a class="doc-anchor" href="#one-release-pinned-down" aria-label="Link to this section">#</a></h2>
+<p>When you ask for a channel, Nodeau resolves it <strong>once</strong>: to a version, the commit that version was built from, and the checksum or digest of every archive, component image and inference runtime the release names. The plan describes that one specific build, however the channel moves afterwards.</p>
+<p>That makes a plan something you can hand to a colleague. Ask twice with nothing changed and you get the same plan, with the same identity. The identity changes when something that matters changes: the target, the machines, or the constraints. A machine simply reporting in again leaves it exactly as it was.</p>
+<h2 id="machine-states" class="doc-h">What each machine can say<a class="doc-anchor" href="#machine-states" aria-label="Link to this section">#</a></h2>
+<p>Every machine gets one badge.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Badge</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Badge"><code>READY</code></td><td data-label="Meaning">It would move to the target, and it's in the numbered order</td></tr><tr><td data-label="Badge"><code>UP TO DATE</code></td><td data-label="Meaning">It already runs the target, so nothing would change</td></tr><tr><td data-label="Badge"><code>BLOCKED</code></td><td data-label="Meaning">It would move, and something needs your attention first</td></tr><tr><td data-label="Badge"><code>UNKNOWN</code></td><td data-label="Meaning">It has never reported which build it runs, so there's nothing to compare yet. It appears in plans once it reports in</td></tr></tbody></table></div>
+<p>A machine that isn't ready says why in a sentence, and carries a code a script can read:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>What the plan says</th><th>Code</th><th>What to do</th></tr></thead><tbody><tr><td data-label="What the plan says">It has never reported which build it runs</td><td data-label="Code"><code>NeverReported</code></td><td data-label="What to do">Give it a moment to report in. <code>nodeau fleet list</code> shows each machine's latest report</td></tr><tr><td data-label="What the plan says">It already runs a newer build than the target</td><td data-label="Code"><code>WouldMoveBackwards</code></td><td data-label="What to do">Plan against that newer release instead. Nodeau only moves machines forward</td></tr><tr><td data-label="What the plan says">The release has no build for this machine's platform</td><td data-label="Code"><code>NoArtifactForPlatform</code></td><td data-label="What to do">Choose a release that publishes one. Waiting won't change this answer</td></tr><tr><td data-label="What the plan says">It's draining for maintenance</td><td data-label="Code"><code>MachineDraining</code></td><td data-label="What to do">Undrain it when you want it included: <code>nodeau scheduling undrain --node &lt;machine&gt;</code></td></tr><tr><td data-label="What the plan says">It reports that it isn't healthy</td><td data-label="Code"><code>MachineUnhealthy</code></td><td data-label="What to do">See what's wrong with <code>nodeau doctor --node &lt;machine&gt;</code>. A healthy machine is one you can check again after its upgrade</td></tr><tr><td data-label="What the plan says">Its last report is too old to act on</td><td data-label="Code"><code>MachineStale</code></td><td data-label="What to do">Check the machine is up and reporting</td></tr><tr><td data-label="What the plan says">It's a Mac</td><td data-label="Code"><code>PlatformCannotJoinFleet</code></td><td data-label="What to do">A Mac runs Nodeau standalone, so you update it on the Mac itself. See <a href="/docs/install-macos/">install on a Mac</a></td></tr></tbody></table></div>
+<p>"Too old" is measured against the freshest report anywhere in the fleet, not against the clock on your wall, so the same inputs always give the same plan. The threshold is ten minutes. Change it with <code>--max-report-age</code>, or set it to <code>0</code> to skip that check.</p>
+<h2 id="the-order-and-the-control-plane" class="doc-h">The order, and the control plane<a class="doc-anchor" href="#the-order-and-the-control-plane" aria-label="Link to this section">#</a></h2>
+<p>Machines that would move are numbered, and they'd go one at a time: the other machines first, in name order, and the machine running your control plane <strong>last</strong>. The plan tells you why it goes last: while it upgrades, scheduling pauses and the other machines lose the cluster they report through. Plan for that window. The control plane isn't described as staying available while it restarts, because it doesn't.</p>
+<h2 id="what-it-means-for-your-workloads" class="doc-h">What it means for your workloads<a class="doc-anchor" href="#what-it-means-for-your-workloads" aria-label="Link to this section">#</a></h2>
+<p>For each machine, the plan names what's running there and whether any of it is serving:</p>
+<ul class="doc-list"><li><strong>"nothing is running here"</strong>: upgrading it touches no workload.</li><li><strong>"none serving"</strong>: the workloads there would restart and nobody is waiting on them right now.</li><li><strong>"serving here would stop and start again on this machine"</strong>: expect a gap in service while that machine upgrades. Each workload restarts on its own machine, exactly where it was.</li></ul>
+<p>If a workload matters, plan the gap the way you'd plan any maintenance: pick a quiet moment, and let the people who use it know.</p>
+<h2 id="your-organisations-window-and-channel" class="doc-h">Your organisation's window and channel<a class="doc-anchor" href="#your-organisations-window-and-channel" aria-label="Link to this section">#</a></h2>
+<p>Setting a maintenance window and a release channel for your whole fleet, from your account, is <a href="/roadmap/">in progress</a>. When it arrives, plans will take both into account.</p>
+<p>A plan you run with <code>nodeau fleet upgrade plan</code> is worked out on the machine you run it on, from what that machine can see, and <strong>organisation-wide settings aren't part of it in this release</strong>. The human output says so on its last note line, so nobody reads the plan as having applied them.</p>
+<p>If you're scripting against <code>--json</code>, treat every plan as computed without any organisation-wide window or channel setting.</p>
+<h2 id="for-scripts" class="doc-h">For scripts<a class="doc-anchor" href="#for-scripts" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#upgrades-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="upgrades-code-3"><code>nodeau fleet upgrade plan --json</code></pre></div>
+<p>A few fields do most of the work:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Field</th><th>What it holds</th></tr></thead><tbody><tr><td data-label="Field"><code>hash</code></td><td data-label="What it holds">The plan's identity. The same inputs give the same hash</td></tr><tr><td data-label="Field"><code>target</code></td><td data-label="What it holds">The resolved release: its version, channel and commit, and the archives, images and runtime it names</td></tr><tr><td data-label="Field"><code>machines[]</code></td><td data-label="What it holds">One entry per machine, with <code>state</code>, <code>from</code>, <code>to</code>, <code>order</code>, <code>reason</code>, <code>explanation</code> and <code>impact</code></td></tr><tr><td data-label="Field"><code>machines[].impact</code></td><td data-label="What it holds"><code>workloads</code>, <code>serving</code>, <code>downtime</code> and a one-line <code>summary</code></td></tr><tr><td data-label="Field"><code>notes</code></td><td data-label="What it holds">The same notes the human output prints</td></tr><tr><td data-label="Field"><code>error</code></td><td data-label="What it holds">Present only when no plan could be worked out, for example with no network to reach the release</td></tr></tbody></table></div>
+<p><code>state</code> is <code>ready</code>, <code>up-to-date</code>, <code>blocked</code> or <code>unknown</code> for the plans this command produces. A sensible script treats anything other than <code>ready</code> and <code>up-to-date</code> as "a person should look at this".</p>
+<p>The command exits <code>0</code> whenever it worked out a plan, whatever the plan says, and <code>1</code> when it couldn't. With <code>--json</code>, a failure still arrives as JSON with an <code>error</code> field, so your parser always has something to read.</p>
+<h2 id="then-upgrading" class="doc-h">Then, upgrading<a class="doc-anchor" href="#then-upgrading" aria-label="Link to this section">#</a></h2>
+<p>The plan tells you what would happen. Upgrading a machine is still the installer followed by <code>nodeau install</code>, run on that machine, one machine at a time with the control-plane machine last:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#upgrades-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="upgrades-code-4"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau install
+nodeau doctor</code></pre></div>
+<p>The full routine, including what an upgrade keeps, is on <a href="/docs/updates/">updates and release channels</a>.</p>
+<p>Moving a whole fleet one machine at a time from one place is in progress, and you can follow it on the <a href="/roadmap/">roadmap</a>.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/power/"><span>Previous</span>Power limits and budgets</a><a class="doc-next" href="/docs/updates/"><span>Next</span>Updates and release channels</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
+      </div>
+      <div>
+        <h2 class="footer-title">Product</h2>
+        <ul>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Docs</h2>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Company</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+<script src="/assets/docs.js?v=1501ca71" defer></script>
+</body>
+</html>
