@@ -3,599 +3,227 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nodeau Roadmap · What Ships, What's Next, What's Planned</title>
-<meta name="description" content="Everything Nodeau does, labelled: what is in the published build today, what is in progress, what is planned, and what is still intent.">
+<title>Nodeau Roadmap · Available, In Progress, Planned, Exploring</title>
+<meta name="description" content="Everything Nodeau does today and everything we're working on, each with a label: Available, In progress, Planned or Exploring.">
 <link rel="canonical" href="https://nodeau.ai/roadmap/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nodeau.ai/roadmap/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="Nodeau Roadmap · What Ships, What's Next, What's Planned">
-<meta property="og:description" content="Everything Nodeau does, labelled: what is in the published build today, what is in progress, what is planned, and what is still intent.">
+<meta property="og:title" content="Nodeau Roadmap · Available, In Progress, Planned, Exploring">
+<meta property="og:description" content="What you get by installing Nodeau today, what we're building now, what's planned, and the directions we're exploring. No dates, just honest labels.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/nodeau.css?v=13cbe303">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header" data-header>
   <div class="wrap">
-    <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-      Nodeau
-    </a>
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
     <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <nav class="nav" id="site-nav" data-nav aria-label="Primary">
       <ul>
-        <li><a href="/#home">For home</a></li>
-        <li><a href="/#business">For business</a></li>
-        <li><a href="/install/">Install</a></li>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
         <li><a href="/docs/">Docs</a></li>
         <li><a href="/pricing/">Pricing</a></li>
         <li><a href="/roadmap/" aria-current="page">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
         <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
       </ul>
     </nav>
     <div class="header-actions">
       <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
     </div>
   </div>
 </header>
 
 <main id="main">
 
-  <section class="hero" style="padding-bottom:2rem">
+  <section class="hero page-hero">
     <div class="wrap">
       <p class="eyebrow">Roadmap</p>
-      <h1 style="font-size:var(--step-3)">What ships, what's next, and what's planned.</h1>
-      <p class="lede" style="margin-top:1.15rem">
-        Every capability here carries a label, and the labels mean something
-        specific. It should always be obvious which things you get by installing
-        Nodeau and which things we are still writing.
+      <h1>What's here, what's next, and what we're exploring.</h1>
+      <p class="lede">
+        Every capability on this page carries one of four labels, so it's always
+        clear what you get by installing Nodeau today and what we're still
+        building.
       </p>
 
-      <div class="key" style="margin-top:2.5rem;max-width:52rem">
+      <div class="key key-4" style="margin-top:2.25rem;max-width:60rem">
         <div class="key-item">
           <span class="pill pill-available">Available</span>
-          <p>In the published build. Install it and you have it.</p>
+          <p>In the current release. Install Nodeau and it's yours.</p>
         </div>
         <div class="key-item">
           <span class="pill pill-next">In progress</span>
-          <p>Under way now. It may exist in part, and it is not in the published build.</p>
+          <p>Being built or tested right now. It arrives in a future release.</p>
         </div>
         <div class="key-item">
           <span class="pill pill-planned">Planned</span>
-          <p>Intended and designed for, but not built. No code you can run.</p>
+          <p>Designed for and on the list. The building starts later.</p>
         </div>
         <div class="key-item">
           <span class="pill pill-exploring">Exploring</span>
-          <p>A direction we think is right and haven't committed to. Intent, not plan.</p>
+          <p>A direction we believe in and are still thinking through.</p>
         </div>
       </div>
 
-      <p style="color:var(--text-3);font-size:0.88rem;margin-top:2rem;max-width:56ch">
-        There are no dates on this page. Nodeau is a small effort and a date
-        would be a guess presented as a commitment.
+      <p style="color:var(--text-3);font-size:0.9rem;margin-top:1.75rem;max-width:58ch">
+        You won't find dates here. We'd rather ship a capability than guess at a calendar.
       </p>
+      <nav class="jump" aria-label="Sections">
+        <a href="#available">Available</a>
+        <a href="#in-progress">In progress</a>
+        <a href="#planned">Planned</a>
+        <a href="#exploring">Exploring</a>
+      </nav>
     </div>
   </section>
 
   <section class="tight divider">
     <div class="wrap">
 
-      <div class="stage">
+      <!-- ================================================== available ====== -->
+      <div class="stage" id="available">
         <div class="stage-head">
-          <h2>Available, in the published build</h2>
-          <span class="pill pill-available">Available</span>
-          <p>Everything here is in the published build<span data-release-note hidden> (<span data-release></span>)</span>, on a Linux machine with an NVIDIA GPU or on an Apple Silicon Mac. This is what you get by following the <a href="/install/">install guide</a>.</p>
+          <h2>Available</h2>
         </div>
-        <div class="rows">
-        <div class="row">
-          <h3>Self-hosted installer</h3>
-          <span class="pill pill-available">Available</span>
-          <p>One public command. Verifies the release artifact before installing anything.</p>
+        <p class="stage-lede">All of this is in the current release<span data-release-note hidden> (<span data-release></span>)</span>, on a Linux machine with an NVIDIA GPU or an Apple Silicon Mac. It's what you get by following the <a href="/install/">install guide</a>.</p>
+
+        <div class="rows-group">
+          <h3>Getting started</h3>
+          <div class="rows-2">
+            <div class="row"><h4>One-command installer</h4><span class="pill pill-available">Available</span><p>Downloads Nodeau, checks its checksum and puts it in a folder you own.</p></div>
+            <div class="row"><h4>Setup that shows its plan</h4><span class="pill pill-available">Available</span><p><code>nodeau install</code> checks the machine, prints every privileged command, and adopts the pieces that are already there.</p></div>
+            <div class="row"><h4>nodeau doctor</h4><span class="pill pill-available">Available</span><p>A read-only check of the machine and the installation, with a remedy for every finding.</p></div>
+            <div class="row"><h4>nodeau quickstart</h4><span class="pill pill-available">Available</span><p>A verified model, a fit check, a running workload and a local endpoint in one command.</p></div>
+            <div class="row"><h4>Upgrading in place</h4><span class="pill pill-available">Available</span><p>Run the installer again. <code>nodeau update</code> tells you when something newer is out, and can download and verify it for you.</p></div>
+            <div class="row"><h4>Clean uninstall</h4><span class="pill pill-available">Available</span><p>Prints its plan first, and keeps your driver, your models and everything Nodeau found already installed.</p></div>
+            <div class="row"><h4>Apple Silicon Macs</h4><span class="pill pill-available">Available</span><p>Chat models on the Mac's own GPU through Metal, with no password needed to install. A Mac runs standalone.</p></div>
+          </div>
         </div>
-        <div class="row">
-          <h3>nodeau install</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Checks the machine, shows a plan and every privileged command, then sets up the local infrastructure, adopting what is already there
-          rather than replacing it.</p>
+
+        <div class="rows-group">
+          <h3>Models and tasks</h3>
+          <div class="rows-2">
+            <div class="row"><h4>A catalog with a hardware ladder</h4><span class="pill pill-available">Available</span><p>Eight curated models, from 8&nbsp;GB cards up to 24&nbsp;GB or two cards in one machine. Each one says which card size it's for.</p></div>
+            <div class="row"><h4>Verified downloads</h4><span class="pill pill-available">Available</span><p>Pinned to an exact file from the publisher and checked against a known SHA-256 before anything runs it.</p></div>
+            <div class="row"><h4>Fit checks before anything starts</h4><span class="pill pill-available">Available</span><p>A measurement where Nodeau has one, a careful estimate otherwise, and the decision says which.</p></div>
+            <div class="row"><h4>Accepting a fit risk yourself</h4><span class="pill pill-available">Available</span><p><code>--accept-estimate-risk</code>, for when the only thing in the way is Nodeau's extra margin on unmeasured hardware.</p></div>
+            <div class="row"><h4>OpenAI-compatible API</h4><span class="pill pill-available">Available</span><p>Chat and completions with streaming, on <code>127.0.0.1</code> with a key made on your machine.</p></div>
+            <div class="row"><h4>Embeddings and reranking</h4><span class="pill pill-available">Available</span><p>Vectors for search and RAG, and a rerank route in the Jina and Cohere shape. On Linux with NVIDIA.</p></div>
+            <div class="row"><h4>Structured output and tool calling</h4><span class="pill pill-available">Available</span><p>JSON that follows your schema, and tool calls with arguments your code can parse. On Linux with NVIDIA.</p></div>
+            <div class="row"><h4>Vision</h4><span class="pill pill-available">Available</span><p>Send an image with your prompt and ask about it. On Linux with NVIDIA.</p></div>
+            <div class="row"><h4>Bring your own model</h4><span class="pill pill-available">Available</span><p>Import a GGUF file, and qualification proves on a real card what it can do. Your weights stay on your machines. On Linux with NVIDIA.</p></div>
+            <div class="row"><h4>Batch inference</h4><span class="pill pill-available">Available</span><p>A file of chat or embedding requests, results matched to every input, and several workers at once, each on its own card. Home Pro and Business, on Linux.</p></div>
+          </div>
         </div>
-        <div class="row">
-          <h3>nodeau doctor</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Read-only diagnosis of the host, GPU, driver, container stack and storage.</p>
+
+        <div class="rows-group">
+          <h3>Hardware and scheduling</h3>
+          <div class="rows-2">
+            <div class="row"><h4>Every GPU scheduled on its own</h4><span class="pill pill-available">Available</span><p>Each card in a machine is its own resource and runs one workload at a time. Home Pro puts up to two cards in a machine to work.</p></div>
+            <div class="row"><h4>One model across several GPUs</h4><span class="pill pill-available">Available</span><p>For a model too big for any one card, Nodeau splits it across cards in the same Linux machine, and each card holds its own share. It adds capacity rather than speed: on our test pair, a model that fit on one card ran about 21% slower split across two.</p></div>
+            <div class="row"><h4>Scheduling you can steer</h4><span class="pill pill-available">Available</span><p>Efficiency, Balanced or Performance, for the whole fleet or one machine. Balanced is the default.</p></div>
+            <div class="row"><h4>Placement you can read</h4><span class="pill pill-available">Available</span><p><code>nodeau placement explain</code> shows why a workload is where it is, and what the alternatives would have cost.</p></div>
+            <div class="row"><h4>Power limits and budgets</h4><span class="pill pill-available">Available</span><p>Cap what a card may draw, inside the card's own range, and set a power budget placement has to respect.</p></div>
+            <div class="row"><h4>Workloads that stay put</h4><span class="pill pill-available">Available</span><p>A running workload stays exactly where Nodeau placed it, even when another card scores better. If its machine stops reporting, the work is held in place until the machine is back.</p></div>
+          </div>
         </div>
-        <div class="row">
-          <h3>nodeau quickstart</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Model consent, download, verification, admission, deployment and a local endpoint in one command.</p>
+
+        <div class="rows-group">
+          <h3>Fleet</h3>
+          <div class="rows-2">
+            <div class="row"><h4>Two commands to add a machine</h4><span class="pill pill-available">Available</span><p><code>nodeau fleet invite</code> on the machine you have, <code>nodeau join</code> on the new one. Home Pro runs up to three machines.</p></div>
+            <div class="row"><h4>Your fleet in a browser</h4><span class="pill pill-available">Available</span><p>Every machine, card and workload at app.nodeau.ai, on every plan. Your machines connect out to it.</p></div>
+            <div class="row"><h4>Remote operation</h4><span class="pill pill-available">Available</span><p>Start and stop models, set scheduling, drain machines, read logs and recover a workload from a machine that's gone. Home Pro and Business.</p></div>
+            <div class="row"><h4>Machine health and alerts</h4><span class="pill pill-available">Available</span><p>Processor, memory, storage, network and GPU for every machine, a day of history, and alerts when something needs you. The readings stay on your hardware.</p></div>
+            <div class="row"><h4>Drain for maintenance</h4><span class="pill pill-available">Available</span><p>New work goes elsewhere and everything already running keeps serving until you're done.</p></div>
+            <div class="row"><h4>Each machine checks its own models</h4><span class="pill pill-available">Available</span><p>Every machine hashes its own copy of a model before it's offered work that needs it.</p></div>
+          </div>
         </div>
-        <div class="row">
-          <h3>Remote fleet console</h3>
-          <span class="pill pill-available">Available</span>
-          <p>See the machines you own from any browser, with their GPUs, what is
-          running and why, and their health. Home Pro adds operating them: run and stop a model, set scheduling policy, drain a machine for maintenance, read bounded logs, and recover a workload stranded on a machine that has gone. Your machines call out, and nothing ever calls in.</p>
+
+        <div class="rows-group">
+          <h3>Organisation</h3>
+          <div class="rows-2">
+            <div class="row"><h4>Your own limits</h4><span class="pill pill-available">Available</span><p>Quotas on workloads, GPUs and batch workers, plus which models, cards and machines a fleet may use. Lowering a limit leaves running work alone.</p></div>
+            <div class="row"><h4>Usage in accelerator-hours</h4><span class="pill pill-available">Available</span><p>From the scheduler's own record of what was reserved, with an hourly rate of your own if you'd like a cost figure.</p></div>
+            <div class="row"><h4>A record of changes</h4><span class="pill pill-available">Available</span><p>Who changed what, including requests that were turned down, kept for a year.</p></div>
+            <div class="row"><h4>Know what every machine runs</h4><span class="pill pill-available">Available</span><p><code>nodeau update</code> compares every machine with the published release. A release channel only moves forward.</p></div>
+            <div class="row"><h4>Entitlements that travel offline</h4><span class="pill pill-available">Available</span><p>Carry a signed entitlement to a machine with no internet. It's checked exactly like one fetched over the network.</p></div>
+            <div class="row"><h4>Home Pro, on sale</h4><span class="pill pill-available">Available</span><p>$9.99 a month, with checkout and self-service plan changes in your account.</p></div>
+          </div>
         </div>
-        <div class="row">
-          <h3>VRAM-aware admission</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Decides whether a workload fits before scheduling it, and explains the arithmetic either way.</p>
-        </div>
-        <div class="row">
-          <h3>Reservation accounting</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Tracks what Nodeau has already committed on a GPU, so a second workload is judged against reality.</p>
-        </div>
-        <div class="row">
-          <h3>GPU hardware observation</h3>
-          <span class="pill pill-available">Available</span>
-          <p>A node agent reports the GPU's real addressable memory and current usage.</p>
-        </div>
-        <div class="row">
-          <h3>Several GPUs inside one machine</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Per-card observation, per-card reservations, and placement within a machine as well as between machines. Nodeau names the physical card, Kubernetes allocates that card, and the telemetry shows which one ran the work. Included in Home Pro, up to two cards in any one machine.</p>
-        </div>
-        <div class="row">
-          <h3>One model across several GPUs</h3>
-          <span class="pill pill-available">Available</span>
-          <p>When a model is too large for any single card, Nodeau can split one
-          workload across several GPUs in the same Linux machine. It picks the exact cards and reserves them as one unit, all of them or
-          none, then checks that <em>each</em> card can hold its own share, because
-          GPU memory is not pooled. Qualified on one heterogeneous pair, an
-          RTX&nbsp;3080 and an RTX&nbsp;5060&nbsp;Ti, serving a model whose
-          weights fit on neither card alone. This buys capacity, not speed: on
-          that pair a model that did fit on one card ran about 21% slower split
-          across two than on the faster card by itself. Linux and NVIDIA only, since a Mac uses its one integrated GPU. Included in Home Pro, up to two
-          cards in any one machine.</p>
-          <p style="color:var(--text-3);font-size:0.85rem;margin-top:0.5rem">
-            <code>nodeau run &lt;model&gt; --gpus 2</code>
-          </p>
-        </div>
-        <div class="row">
-          <h3>Independent batch workers across several GPUs</h3>
-          <span class="pill pill-available">Available</span>
-          <p>A batch job can run several workers at once, each a complete model
-          instance on a card of its own, taking records from the same input.
-          They share nothing but the input and the result file: a worker claims
-          the next unprocessed record when it is free, so a faster card
-          naturally does more and nobody waits on a fixed share. This is the <em>opposite</em> trade from splitting one model across cards.
-          Splitting buys capacity for a model that fits nowhere else, and
-          independent workers buy throughput for work that was already
-          independent.</p>
-          <p>A worker count is a request rather than a guarantee. Each worker
-          reserves a card of its own, so asking for more workers than there are
-          free cards runs the ones that fit and leaves the rest waiting. The job still
-          completes, because the workers that did start take the records the others
-          would have. <code>nodeau batch status</code> reports how
-          many are running and how many are waiting.</p>
-          <p>Qualified on the same heterogeneous pair as everything else here,
-          an RTX&nbsp;3080 and an RTX&nbsp;5060&nbsp;Ti, with both cards
-          observed running a model server at the same time. On a twenty-four-record job two workers finished in 47 seconds against 61
-          for one. That is a floor rather than a rate, because a short job is
-          dominated by loading the model and both workers pay it. Linux and
-          NVIDIA only. A job still does not span machines, and its workers are
-          not restarted or moved if a card is lost.</p>
-          <p style="color:var(--text-3);font-size:0.85rem;margin-top:0.5rem">
-            <code>nodeau batch submit records.jsonl --model &lt;model&gt; --workers 2 --gpus 1</code>
-          </p>
-        </div>
-        <div class="row">
-          <h3>Model profiles that carry their source</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Where a configuration has been measured on real hardware, Nodeau uses the measurement. Where it hasn't, it derives a conservative estimate from the model's own architecture, adds a further margin, and labels the decision as estimated. An estimate is never shown as a measurement.</p>
-        </div>
-        <div class="row">
-          <h3>Model artifact verification</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Downloaded from the publisher, checked against a known SHA-256, quarantined on mismatch.</p>
-        </div>
-        <div class="row">
-          <h3>Local OpenAI-compatible API</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Bound to 127.0.0.1 with a locally generated key. Streaming supported.</p>
-        </div>
-        <div class="row">
-          <h3>Support bundles</h3>
-          <span class="pill pill-available">Available</span>
-          <p>One redacted archive for diagnosis. Nothing is uploaded.</p>
-        </div>
-        <div class="row">
-          <h3>Install ownership ledger</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Records what Nodeau installed as distinct from what it found, and prints an uninstall plan before making any change. It does not remove things that were on the machine before it.</p>
-        </div>
-        <div class="row">
-          <h3>Reproducible release artifacts</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Pinned versions and checksums, verified end to end before publication.</p>
-        </div>
-        <div class="row">
-          <h3>Nodeau account and sign-in</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Sign in at <a href="https://app.nodeau.ai/">app.nodeau.ai</a> to see your organisation, the installations linked to it and the plan in force.</p>
-        </div>
-        <div class="row">
-          <h3>Batch inference</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Submit a file of requests, get results correlated exactly to your inputs. Jobs queue for a whole GPU, survive a control-plane restart, and release the card once the process is genuinely gone. Part of Home Pro and Business. See <a href="/pricing/">pricing</a>.</p>
-        </div>
-        <div class="row">
-          <h3>Local dashboard</h3>
-          <span class="pill pill-available">Available</span>
-          <p>A read-only view of models, workloads, GPU state and decisions, served by Nodeau itself on your own machine. Authenticated, bound to the loopback interface, and holding no cluster credentials in the browser.</p>
-        </div>
-        <div class="row">
-          <h3>Curated model catalogue</h3>
-          <span class="pill pill-available">Available</span>
-          <p>A small, opinionated set chosen to span the card sizes people actually
-          own, from 8&nbsp;GB to 24&nbsp;GB and multi-GPU, each pinned to an exact
-          published file from its original publisher, and each carrying the size of card it is for. Every measurement records what it measured, so a figure taken one way can never be silently compared against one taken another.</p>
-        </div>
-        <div class="row">
-          <h3>The everyday commands</h3>
-          <span class="pill pill-available">Available</span>
-          <p><code>run</code>, <code>ps</code>, <code>logs</code>, <code>stop</code>: start a model, see what's running, read its output, free the GPU. Every command speaks <code>--json</code>, exit codes distinguish a refusal from a fault, and every refusal carries a reason code and a remedy.</p>
-        </div>
-        <div class="row">
-          <h3>Installation diagnosis</h3>
-          <span class="pill pill-available">Available</span>
-          <p><code>nodeau doctor</code> now checks Nodeau's own control plane and endpoints, as well as the host and the GPU, including whether the local endpoint
-          really reaches the model rather than merely holding a port open.</p>
-        </div>
-        <div class="row">
-          <h3>Linking a machine to your account</h3>
-          <span class="pill pill-available">Available</span>
-          <p><code>nodeau login</code> approves an installation from your browser and stores a signed entitlement locally. It is checked offline, so a machine with no internet keeps exactly the plan it was granted.</p>
-        </div>
-        <div class="row">
-          <h3>More than chat</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Embeddings, reranking, structured output, tool calling and image understanding all run from the same catalogue and the same engine as chat. Measured on Linux with NVIDIA.</p>
-        </div>
-        <div class="row">
-          <h3>Scheduling you can steer</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Efficiency, Balanced and Performance, set for a whole fleet or one machine. Balanced is the default and picks the candidate that gives up least of either speed or energy.</p>
-        </div>
-        <div class="row">
-          <h3>Power limits and budgets</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Cap what a card is allowed to draw, and set a budget a workload has to fit inside. Nodeau reads the range from the card itself and stays within it.</p>
-        </div>
-        <div class="row">
-          <h3>A hardware ladder in the catalogue</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Every curated model says which size of card it is for, from 8&nbsp;GB up to 24&nbsp;GB and multi-GPU. The label is guidance and the arithmetic still decides, so a model can fit a smaller card than its label suggests.</p>
-        </div>
-        <div class="row">
-          <h3>Accepting a fit risk yourself</h3>
-          <span class="pill pill-available">Available</span>
-          <p>When the only thing between you and running a model is the margin Nodeau adds for hardware nobody has measured, you can accept that risk with <code>--accept-estimate-risk</code>. Nodeau still charges the full figure against anything else that wants the card.</p>
-        </div>
-        <div class="row">
-          <h3>Home Pro, purchasable</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Home Pro is on sale at $9.99 a month. Checkout, invoices and self-service plan changes all work, and your installation carries a signed entitlement it checks locally.</p>
-        </div>
-        <div class="row">
-          <h3>One command to add a machine</h3>
-          <span class="pill pill-available">Available</span>
-          <p><code>nodeau fleet invite</code> on the machine you have, <code>nodeau join</code> on the new one. A second machine joined an existing fleet this way on real hardware, and the control plane set up its cache and reporting without help.</p>
-        </div>
-        <div class="row">
-          <h3>Fleet inventory and health</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Every machine, every card and every workload in one place, with the health of each. Your machines report to Nodeau Cloud and nothing ever connects back into your network.</p>
-        </div>
-        <div class="row">
-          <h3>Maintenance and drain workflows</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Drain a machine when you want to work on it. New work stops arriving, anything already running carries on serving, and the machine comes back when you undrain it.</p>
-        </div>
-        <div class="row">
-          <h3>Performance-aware placement</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Choose Efficiency, Balanced or Performance and Nodeau picks the machine and the card to match, from what your hardware has actually shown it can do. It will tell you why it chose what it chose.</p>
-        </div>
-        <div class="row">
-          <h3>macOS support</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Apple Silicon runs models on the integrated GPU through Metal. A Mac runs standalone, which suits a laptop, and the fit checks understand that memory is shared with everything else on the machine.</p>
-        </div>
-        <div class="row">
-          <h3>Upgrading in place</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Running the installer again moves a machine to a newer release without reinstalling from scratch, and puts back a component an older release left out.</p>
-        </div>
-        <div class="row">
-          <h3>Bring your own model</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Give Nodeau a GGUF file of your own. It reads the file's header to work out what the model needs, hashes the bytes so the file is its own identity, and then measures and probes it on a real card before saying what it can do. Importing is not qualifying: a model stays usable for exactly the capabilities it proved. GGUF only, one file per model, and the weights stay on your own machines. Linux with NVIDIA.</p>
-          <p><code>nodeau model import ./my-model.gguf --alias my-model</code></p>
-        </div>
-        <div class="row">
-          <h3>Machine health and alerts</h3>
-          <span class="pill pill-available">Available</span>
-          <p>See how each machine is doing, with processor, memory, storage and network alongside the GPU readings. Nodeau keeps a day of it and tells you when something needs attention, in <code>nodeau health</code> and the local dashboard. Every reading is taken by the machine it describes and stays on your hardware. Nothing is sent to you by email or webhook. Storage is reported as how full it is, not as drive health. Linux.</p>
-        </div>
-        <div class="row">
-          <h3>Your own limits on what a fleet runs</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Your organisation can set its own limits on what its fleet may run, inside what your plan already allows: how many workloads at once, how many graphics cards, how many batch workers, which models, which cards and which machines. Set them with <code>nodeau governance</code> on a machine, or from your account on the web with Home Pro or Business. A workload refused by a limit is told it was a limit. Lowering a limit never stops anything that is already running. Linux fleets.</p>
-        </div>
-        <div class="row">
-          <h3>Usage, in accelerator-hours</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Which workloads held which accelerators, and for how long, added up across the machines you own. The figure comes from the scheduler's own record of what was reserved, not from sampling the cards. If you tell Nodeau what an accelerator-hour is worth to you, it multiplies. Until you do, it shows no cost at all. It is not a bill.</p>
-        </div>
-        <div class="row">
-          <h3>A record of what changed</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Your organisation can see what changed and who changed it, including what was refused, kept for a year. It records who, what and when, and never a key, a prompt or a reply.</p>
-        </div>
-        <div class="row">
-          <h3>Release channels you choose</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Tell Nodeau which build your fleet should be on, and see which build it is on. A channel only ever moves forward. Nodeau installs nothing for you: you upgrade a machine by running the installer on it.</p>
-        </div>
-        <div class="row">
-          <h3>Maintenance windows</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Say when Nodeau may act on your machines on its own, in your own time zone. Work you ask for is never held back by a window, and nothing running is touched when one opens or closes. It is not a scheduler for your work.</p>
-        </div>
-        <div class="row">
-          <h3>Entitlements without a network</h3>
-          <span class="pill pill-available">Available</span>
-          <p>A machine that cannot reach the internet can be given its entitlement by hand. It goes through the same checks as one fetched over the network, so an entitlement carried on a stick is never less verified.</p>
-        </div>
+
+        <div class="rows-group">
+          <h3>Upgrades</h3>
+          <div class="rows-2">
+            <div class="row"><h4>Upgrade planning</h4><span class="pill pill-available">Available</span><p><code>nodeau fleet upgrade plan</code> pins a release to an exact build and shows what moving each machine would involve, in order and with the work on it, before anything changes.</p></div>
+          </div>
         </div>
       </div>
 
-      <div class="stage">
-        <div class="stage-head">
-          <h2>Several machines, working as one</h2>
-          <span class="pill pill-available">Available</span>
-          <p>All of this is in the build you just downloaded, and it has run on two physical machines with different NVIDIA cards, through reboots and a power cut. Adding a machine is now two commands, one on the machine you have and one on the machine you are adding.</p>
-        </div>
-        <div class="rows">
-        <div class="row">
-          <h3>Several GPU machines, one control plane</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Each machine publishes its own hardware state and is reasoned about separately. Two physical machines have run as one cluster, each with its own GPU, its own cache and its own credentials.</p>
-        </div>
-        <div class="row">
-          <h3>Per-machine hardware observation</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Addressable memory, current usage and attached-display state, reported by each machine about itself. On the two-machine cluster every value differed between them, as it should.</p>
-        </div>
-        <div class="row">
-          <h3>Per-machine model verification</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Each machine computes a SHA-256 over its own copy of the model and publishes the digest. A machine whose copy is missing, unverified or wrong is not a placement candidate at all. This found genuine silent corruption on a second machine that had been serving answers and reporting healthy.</p>
-        </div>
-        <div class="row">
-          <h3>Explainable placement across candidates</h3>
-          <span class="pill pill-available">Available</span>
-          <p>The fit calculation runs once per candidate machine, and every candidate keeps a reason, including the ones that lost. There is deliberately no second, looser rule for choosing a machine.</p>
-        </div>
-        <div class="row">
-          <h3>Heterogeneous GPU reasoning</h3>
-          <span class="pill pill-available">Available</span>
-          <p>An RTX 3080 and an RTX 2080 in the same cluster, each scored on what it can actually give the workload rather than treated as one interchangeable “GPU”. A model that fits the first and not the second is admitted on one and refused on the other, by arithmetic.</p>
-        </div>
-        <div class="row">
-          <h3>Exclusive GPU reservations</h3>
-          <span class="pill pill-available">Available</span>
-          <p>A card committed to one workload is not offered to another, across services and batch jobs alike. A job that finds every GPU busy waits in a queue and starts by itself when one frees.</p>
-        </div>
-        <div class="row">
-          <h3>Placement stickiness, and holding rather than moving</h3>
-          <span class="pill pill-available">Available</span>
-          <p>A healthy workload stays where it is even when another machine scores
-          better, observed doing exactly that with the other machine genuinely winning on score. And when a machine stops reporting, anything already running on it is <em>held</em> rather than re-placed. Moving it would be a decision Nodeau cannot currently justify, so it doesn't make one.</p>
-        </div>
-        <div class="row">
-          <h3>Node-scoped isolation</h3>
-          <span class="pill pill-available">Available</span>
-          <p>Each machine's agent can write only its own state, and can read no credentials at all. Verified in both directions on two machines.</p>
-        </div>
-        </div>
-
-        <div class="note" style="margin-top:1.5rem;max-width:66ch">
-          <strong style="color:var(--text)">One thing to be plain about.</strong>
-          Nodeau decides where a workload runs and then leaves it there. It does
-          not move a running workload between machines, and there is no automatic failover, which is work <a href="#fleet">further
-          down this page</a>. If a machine stops, assume what it was running stops with it.
-        </div>
-      </div>
-
-      <div class="stage">
+      <!-- ================================================= in progress ===== -->
+      <div class="stage" id="in-progress">
         <div class="stage-head">
           <h2>In progress</h2>
-          <span class="pill pill-next">In progress</span>
-          <p>Under way now: widening the hardware Nodeau has met, and the organisation side of the account. What is new in this section is not in the published build yet.</p>
         </div>
-        <div class="rows">
-                        <div class="row">
-          <h3>Broader hardware validation</h3>
-          <span class="pill pill-next">In progress</span>
-          <p>Nodeau has run on three Linux machines with four different NVIDIA cards, and on an Apple Silicon Mac. That is a handful of data points rather than a compatibility list, and widening it is the current gate. If you have a card we haven't met, we would like to hear from you.</p>
-        </div>
-        <div class="row">
-          <h3>More measured GPUs</h3>
-          <span class="pill pill-next">In progress</span>
-          <p>Additional cards measured rather than estimated. Nodeau runs on an unmeasured card by estimating conservatively and saying so, but a measurement is the better answer and belongs in the catalogue.</p>
-        </div>
-        <div class="row">
-          <h3>More model profiles</h3>
-          <span class="pill pill-next">In progress</span>
-          <p>More models and quantisations, with measured memory and throughput on cards people actually own.</p>
-        </div>
-        <div class="row">
-          <h3>Installer edge cases</h3>
-          <span class="pill pill-next">In progress</span>
-          <p>More failure modes handled cleanly, better recovery, clearer diagnostics.</p>
-        </div>
-        <div class="row">
-          <h3>More Linux and macOS coverage</h3>
-          <span class="pill pill-next">In progress</span>
-          <p>Beyond the single measured Ubuntu 24.04 baseline.</p>
-        </div>
-        <div class="row">
-          <h3>Several people in one organisation</h3>
-          <span class="pill pill-next">In progress</span>
-          <p>Members, each with a role that says what they may do, groups from your identity provider, and credentials for scripts that can only ever do less than the account they belong to. Business. Not in the published build.</p>
-        </div>
-        <div class="row">
-          <h3>Single sign-on</h3>
-          <span class="pill pill-next">In progress</span>
-          <p>Your organisation's identity provider, for signing in to your account. Business. Not in the published build.</p>
-        </div>
-        <div class="row">
-          <h3>Windows via WSL</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>The GPU path through WSL is genuinely different and is currently refused rather than half-supported. Native Windows is not planned.</p>
-        </div>
-        <div class="row">
-          <h3>Home experience</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Easier model browsing, simpler configuration, and more in the dashboard than it shows today.</p>
-        </div>
+        <p class="stage-lede">Being built or tested now. Each of these arrives in a future release.</p>
+        <div class="rows-2">
+          <div class="row"><h3>Fleet upgrades from one place</h3><span class="pill pill-next">In progress</span><p>Pick a release, approve the plan you saw, and let Nodeau move the fleet one machine at a time, checking each one before the next.</p></div>
+          <div class="row"><h3>Maintenance windows and release channels</h3><span class="pill pill-next">In progress</span><p>Set when Nodeau may act on its own, in your own time zone, and which build your fleet should be on, right from your account. Upgrade plans will follow both.</p></div>
+          <div class="row"><h3>More on the Mac</h3><span class="pill pill-next">In progress</span><p>Embeddings, reranking, vision and several models at once on Apple Silicon.</p></div>
+          <div class="row"><h3>Several people in one organisation</h3><span class="pill pill-next">In progress</span><p>Members with roles, groups from your identity provider, and keys for scripts that can only ever do less than their owner. For Business.</p></div>
+          <div class="row"><h3>Single sign-on</h3><span class="pill pill-next">In progress</span><p>Sign in through your organisation's identity provider. For Business.</p></div>
+          <div class="row"><h3>Automatic recovery</h3><span class="pill pill-next">In progress</span><p>You can recover a workload from a machine that's gone from the console today. Having Nodeau bring it back up on another machine by itself, safely, is being built and tested.</p></div>
+          <div class="row"><h3>More hardware, measured</h3><span class="pill pill-next">In progress</span><p>More cards measured rather than estimated, more model profiles, and more Linux and macOS versions. Tell us about your hardware!</p></div>
         </div>
       </div>
 
-      <div class="stage">
+      <!-- ===================================================== planned ===== -->
+      <div class="stage" id="planned">
         <div class="stage-head">
-          <h2>Planned, moving work and weights around the fleet</h2>
-          <span class="pill pill-planned">Planned</span>
-          <p>Nodeau schedules every qualified card in a machine independently. What is still ahead is getting weights to the machine that will need them, and running work when nobody is watching.</p>
+          <h2>Planned</h2>
         </div>
-        <div class="rows">
-        <div class="row">
-          <h3>Model replication across machines</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Each machine already verifies its own copy of a model. Getting a copy there on purpose, rather than downloading it per machine, is the missing half.</p>
-        </div>
-        <div class="row">
-          <h3>Scheduled and recurring batch</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Batch jobs that run overnight, or on a schedule, without you being there to submit them.</p>
-        </div>
+        <p class="stage-lede">Designed for and on the list.</p>
+        <div class="rows-2">
+          <div class="row"><h3>Model replication across machines</h3><span class="pill pill-planned">Planned</span><p>Getting a model's weights to the machine that will need them, on purpose.</p></div>
+          <div class="row"><h3>Scheduled and recurring batch</h3><span class="pill pill-planned">Planned</span><p>Batch jobs that run overnight or on a schedule you set.</p></div>
+          <div class="row"><h3>Alerts that reach you</h3><span class="pill pill-planned">Planned</span><p>Alerts delivered by email or webhook, as well as on the machine.</p></div>
+          <div class="row"><h3>Machine history in your account</h3><span class="pill pill-planned">Planned</span><p>A machine's recent readings, visible from your account on the web.</p></div>
+          <div class="row"><h3>Model locality in placement</h3><span class="pill pill-planned">Planned</span><p>Preferring a machine that already holds a model, so a cold start skips the download.</p></div>
+          <div class="row"><h3>Fleet capacity planning</h3><span class="pill pill-planned">Planned</span><p>Answering "what could this fleet hold?" as well as "where does this workload go?".</p></div>
+          <div class="row"><h3>Priority for waiting work</h3><span class="pill pill-planned">Planned</span><p>Letting an organisation say which queued work matters most.</p></div>
+          <div class="row"><h3>Windows through WSL</h3><span class="pill pill-planned">Planned</span><p>Running Nodeau on Windows machines with an NVIDIA GPU through WSL.</p></div>
         </div>
       </div>
 
-      <div class="stage">
-        <div class="stage-head">
-          <h2>Planned, smarter placement</h2>
-          <span class="pill pill-planned">Planned</span>
-          <p>Placement decides on <em>fit</em> today: can this machine safely hold this workload, and which safe machine leaves the least waste. These would make it decide on more than fit. None of them is built.</p>
-        </div>
-        <div class="rows">
-        <div class="row">
-          <h3>Model locality as a preference</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Nodeau already knows and verifies which machines hold a good copy of a model, and refuses to place a workload on one that doesn't. <em>Preferring</em> a machine that already holds it, so a cold start doesn't pay for a download, is a scoring change that hasn't been made.</p>
-        </div>
-                <div class="row">
-          <h3>Multi-machine capacity planning</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Answering “what could this cluster hold?” rather than only “where does this one workload go?”.</p>
-        </div>
-        <div class="row">
-          <h3>Priority queues</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Batch jobs queue oldest-first today. Letting an organisation say which work matters more is a Business capability and is not built.</p>
-        </div>
-        </div>
-      </div>
-
-      <div class="stage" id="fleet">
-        <div class="stage-head">
-          <h2>Planned, fleet operations</h2>
-          <span class="pill pill-planned">Planned</span>
-          <p>The operational layer for a fleet. Seeing it, draining it, limiting it and recording what changed are available above. None of what follows is built.</p>
-        </div>
-        <div class="rows">
-                <div class="row">
-          <h3>Model inventory and rollout</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Which models are where, and moving between versions deliberately.</p>
-        </div>
-        <div class="row">
-          <h3>Upgrading a fleet from one place</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Nodeau already knows which build a fleet should be on. Installing it on every machine for you is not built.</p>
-        </div>
-        <div class="row">
-          <h3>Alerts that reach you</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Alerts are shown on the machine and in its dashboard today. Sending them to email, a webhook or a pager is not built.</p>
-        </div>
-        <div class="row">
-          <h3>Machine history in your account</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>A machine keeps a day of its own readings. Seeing that history from your account on the web is not built.</p>
-        </div>
-        <div class="row">
-          <h3>Health-aware rescheduling and failover</h3>
-          <span class="pill pill-planned">Planned</span>
-          <p>Recovering a workload elsewhere when a machine fails. <strong>Nodeau does not do this.</strong> Placement deliberately keeps a healthy workload where it is, and holds rather than moves one it can't currently vouch for. Noticing that a machine has died, and safely acting on it, is a separate capability that has not been built or tested.</p>
-        </div>
-                </div>
-      </div>
-
-      <div class="stage">
+      <!-- =================================================== exploring ===== -->
+      <div class="stage" id="exploring">
         <div class="stage-head">
           <h2>Exploring</h2>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>Directions we think are right but haven't committed to. Treat these as intent, not plan.</p>
         </div>
-        <div class="rows">
-        <div class="row">
-          <h3>Cloud overflow</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>Owned hardware first, cloud when policy or capacity requires it. Hybrid scheduling across both.</p>
-        </div>
-        <div class="row">
-          <h3>AMD GPU support</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>A different runtime and memory story, not a configuration flag.</p>
-        </div>
-                <div class="row">
-          <h3>Broader runtimes</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>vLLM and others alongside llama.cpp.</p>
-        </div>
-        <div class="row">
-          <h3>Automatic quantisation</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>Fitting a model to a card rather than refusing it.</p>
-        </div>
-        <div class="row">
-          <h3>Scale to zero</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>Release the GPU when idle, reload on demand.</p>
-        </div>
-        <div class="row">
-          <h3>Git-to-deploy</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>A repository as the unit of deployment.</p>
-        </div>
-        <div class="row">
-          <h3>Air-gapped installs and private registries</h3>
-          <span class="pill pill-exploring">Exploring</span>
-          <p>For organisations that cannot pull from the public internet. An entitlement can already travel without a network; the software itself still comes from public registries.</p>
-        </div>
+        <p class="stage-lede">Directions we believe in and are still thinking through.</p>
+        <div class="rows-2">
+          <div class="row"><h3>Cloud capacity when your fleet is busy</h3><span class="pill pill-exploring">Exploring</span><p>Your own hardware first, with cloud capacity when your policy allows and your machines are full.</p></div>
+          <div class="row"><h3>AMD GPUs</h3><span class="pill pill-exploring">Exploring</span><p>A different runtime and memory model, which deserves its own careful work.</p></div>
+          <div class="row"><h3>More runtimes</h3><span class="pill pill-exploring">Exploring</span><p>vLLM and others alongside llama.cpp.</p></div>
+          <div class="row"><h3>Automatic quantisation</h3><span class="pill pill-exploring">Exploring</span><p>Fitting a model to your card by picking a smaller quantisation for you.</p></div>
+          <div class="row"><h3>Scale to zero</h3><span class="pill pill-exploring">Exploring</span><p>Freeing a GPU while a model is idle and loading it again on the next request.</p></div>
+          <div class="row"><h3>Git-to-deploy</h3><span class="pill pill-exploring">Exploring</span><p>A repository as the unit of deployment.</p></div>
+          <div class="row"><h3>Air-gapped installs</h3><span class="pill pill-exploring">Exploring</span><p>Installing from your own mirrors and registries. Entitlements already travel offline.</p></div>
         </div>
       </div>
 
@@ -604,13 +232,14 @@
 
   <section class="tight divider cta">
     <div class="wrap">
-      <h2 style="font-size:var(--step-2)">Want to influence the order?</h2>
+      <h2 style="font-size:var(--step-2)">Want a say in the order?</h2>
       <p class="lede" style="margin:1rem auto 1.75rem;max-width:46ch">
-        Design partners with real GPU hardware shape what gets built next.
+        Design partners with real GPU hardware help decide what we build next.
+        We'd love to hear what you'd like to run.
       </p>
       <div class="btn-row">
-        <a class="btn btn-primary" href="/contact/?type=business">Become a design partner</a>
-        <a class="btn btn-ghost" href="/install/">Install Nodeau</a>
+        <a class="btn btn-primary" href="/contact/?type=partner">Become a design partner</a>
+        <a class="btn btn-ghost" href="/install/">Get Nodeau</a>
       </div>
     </div>
   </section>
@@ -620,48 +249,45 @@
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
-        <a class="brand" href="/" style="margin-bottom:0.75rem">
-          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-          Nodeau
-        </a>
-        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
       </div>
       <div>
-        <h4>Product</h4>
+        <h2 class="footer-title">Product</h2>
         <ul>
-          <li><a href="/#home">For home</a></li>
-          <li><a href="/#business">For business</a></li>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
           <li><a href="/pricing/">Pricing</a></li>
           <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
         </ul>
       </div>
       <div>
-        <h4>Start</h4>
+        <h2 class="footer-title">Docs</h2>
         <ul>
-          <li><a href="/install/">Install guide</a></li>
           <li><a href="/docs/">Documentation</a></li>
-          <li><a href="https://app.nodeau.ai/">Sign in</a></li>
-          <li><a href="/docs/requirements/">Requirements</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
           <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
         </ul>
       </div>
       <div>
-        <h4>Company</h4>
+        <h2 class="footer-title">Company</h2>
         <ul>
           <li><a href="/about/">About</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
           <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> · your hardware, your models</span>
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
     </div>
   </div>
 </footer>
