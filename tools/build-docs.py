@@ -8,11 +8,9 @@ WHY A GENERATOR ON A SITE WITH NO BUILD STEP
 --------------------------------------------
 The site is deployed as plain files and must stay that way: netlify.toml has no
 build command, and a marketing site that cannot be deployed without a toolchain
-is one that breaks when the toolchain moves. So this is the same trade
-tools/generate-pages.py already made — the OUTPUT is committed and is what
-Netlify serves. The difference is that this generator is idempotent and
-`--check` runs in the site check, so the committed HTML cannot drift from the
-Markdown the way a one-off generator's output can.
+is one that breaks when the toolchain moves. So the OUTPUT is committed and is
+what Netlify serves. The generator is idempotent and `--check` runs in the site
+check, so the committed HTML cannot drift from the Markdown.
 
 The documentation is 20-odd pages of prose that shares one header, one footer,
 one sidebar and one search index. Hand-maintaining that is how a sidebar comes
@@ -32,6 +30,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import assetstamp  # noqa: E402
+import sitechrome  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "docs-src"
@@ -117,10 +116,10 @@ CALLOUT_KINDS = {
     "note": "Note",
     "important": "Important",
     "warning": "Warning",
-    "danger": "Destructive",
+    "danger": "Deletes data",
     "security": "Security",
-    "linux": "Linux / NVIDIA only",
-    "macos": "macOS / Apple Silicon only",
+    "linux": "On Linux with NVIDIA",
+    "macos": "On a Mac",
     "homepro": "Home Pro",
     "business": "Business",
 }
@@ -398,108 +397,11 @@ Doc.html = lambda self: "\n".join(self.out)  # type: ignore[assignment]
 # The page shell
 # ---------------------------------------------------------------------------
 #
-# ONE HEADER AND ONE FOOTER, HERE. The rest of the site keeps nine hand-typed
-# copies (README: "the honest cost of having no build step"). The docs are
-# twenty-odd pages, which is past the point where that trade is affordable, so
-# the shell is written once and `--check` keeps the committed output equal to
-# it.
+# ONE HEADER AND ONE FOOTER, SHARED WITH EVERY OTHER PAGE. They live in
+# tools/sitechrome.py, which tools/sync-chrome.py also writes into the
+# hand-written pages, so the docs and the rest of the site cannot drift apart.
 
-BRAND = (
-    '<svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">\n'
-    '        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>\n'
-    '        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>\n'
-    "      </svg>"
-)
-
-NAV_ITEMS = [
-    ("/#home", "For home"),
-    ("/#business", "For business"),
-    ("/install/", "Install"),
-    ("/docs/", "Docs"),
-    ("/pricing/", "Pricing"),
-    ("/roadmap/", "Roadmap"),
-]
-
-
-def site_header() -> str:
-    items = []
-    for href, label in NAV_ITEMS:
-        cur = ' aria-current="page"' if href == "/docs/" else ""
-        items.append(f'        <li><a href="{href}"{cur}>{label}</a></li>')
-    nav = "\n".join(items)
-    return f'''
-<header class="site-header" data-header>
-  <div class="wrap">
-    <a class="brand" href="/">
-      {BRAND}
-      Nodeau
-    </a>
-    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
-      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
-      <ul>
-{nav}
-        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
-      </ul>
-    </nav>
-    <div class="header-actions">
-      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
-    </div>
-  </div>
-</header>
-'''
-
-
-SITE_FOOTER = '''
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <a class="brand" href="/" style="margin-bottom:0.75rem">
-          ''' + BRAND + '''
-          Nodeau
-        </a>
-        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
-      </div>
-      <div>
-        <h4>Product</h4>
-        <ul>
-          <li><a href="/#home">For home</a></li>
-          <li><a href="/#business">For business</a></li>
-          <li><a href="/pricing/">Pricing</a></li>
-          <li><a href="/roadmap/">Roadmap</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Docs</h4>
-        <ul>
-          <li><a href="/docs/">Documentation</a></li>
-          <li><a href="/docs/install-linux/">Linux install</a></li>
-          <li><a href="/docs/install-macos/">macOS install</a></li>
-          <li><a href="/docs/cli/">CLI reference</a></li>
-          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Company</h4>
-        <ul>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/faq/">FAQ</a></li>
-          <li><a href="/contact/">Contact</a></li>
-          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>&#169; <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
-    </div>
-  </div>
-</footer>
-
+SITE_TAIL = '''
 <div class="toast" data-toast role="status" aria-live="polite"></div>
 <script src="/assets/nodeau.js" defer></script>
 <script src="/assets/docs.js" defer></script>
@@ -582,13 +484,18 @@ def page_html(doc: Doc, nav: list[dict], prev_next: tuple[dict | None, dict | No
 <meta property="og:site_name" content="Nodeau">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc, quote=True)}">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/nodeau.css">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
-{site_header()}
+{sitechrome.header(route)}
 <div class="doc-shell">
   <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -615,14 +522,15 @@ def page_html(doc: Doc, nav: list[dict], prev_next: tuple[dict | None, dict | No
       {on_this_page(doc)}
       {doc.html()}
       {pager_html}
-      <p class="doc-foot">Documentation for the current published build,
-      <span data-release>the beta channel</span>. Something here wrong or missing?
-      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
       never seen is the most useful thing we get.</p>
     </article>
   </main>
 </div>
-{SITE_FOOTER}'''
+{sitechrome.footer()}
+{SITE_TAIL}'''
 
 
 # ---------------------------------------------------------------------------

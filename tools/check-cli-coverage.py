@@ -141,6 +141,47 @@ def resolve(invocation: str, shipped: set[str]) -> tuple[str, str]:
     return (current if current != "nodeau" else ""), ""
 
 
+def per_command_flags() -> dict[str, set[str]]:
+    """Each shipped command and the flags THAT command accepts."""
+    out: dict[str, set[str]] = {}
+    for line in LIST.read_text().splitlines():
+        line = line.rstrip()
+        if not line or line.startswith("#"):
+            continue
+        cmd, _, rest = line.partition("\t")
+        out[cmd.strip()] = set(rest.split())
+    return out
+
+
+def marketing_invocations() -> list[tuple[str, int, str]]:
+    """Every `nodeau …` line shown in code on a hand-written page.
+
+    THE MARKETING PAGES ARE WHERE A VISITOR COPIES FROM FIRST, and until
+    2026-09-29 nothing checked them: the docs were resolved against the real
+    command tree and the homepage was trusted. Lines continued with a trailing
+    backslash are joined, so a flag on the second line is checked against the
+    command on the first.
+    """
+    import html as htmllib
+    found = []
+    skip = {".git", "app", "node_modules", "dist", "docs"}
+    for page in sorted(ROOT.rglob("*.html")):
+        if skip & set(page.relative_to(ROOT).parts):
+            continue
+        src = page.read_text()
+        for m in re.finditer(r"<(pre|code)\b[^>]*>(.*?)</\1>", src, re.S):
+            text = htmllib.unescape(re.sub(r"<[^>]+>", "", m.group(2)))
+            text = re.sub(r"\\\n\s*", " ", text)
+            for line in text.splitlines():
+                line = line.split("#", 1)[0].strip()
+                for piece in re.split(r"&&|\|\||;|\|", line):
+                    piece = piece.strip()
+                    if piece.startswith("nodeau "):
+                        lineno = src[:m.start()].count("\n") + 1
+                        found.append((str(page.relative_to(ROOT)), lineno, piece))
+    return found
+
+
 def main() -> int:
     if not LIST.exists():
         print(f"{LIST} is missing — regenerate it with dump-cli-commands.sh")
@@ -174,8 +215,25 @@ def main() -> int:
                 continue
             bad_flags.append(f"{md.name}:{text[:m.start()].count(chr(10)) + 1}  {m.group(1)}")
 
+    # The marketing pages: the command must exist AND every flag on it must be
+    # one THAT command accepts — stricter than the docs rule above, because a
+    # page with a handful of commands can afford to be exact.
+    flags_of = per_command_flags()
+    bad_marketing = []
+    for page, lineno, invocation in marketing_invocations():
+        cmd, bad = resolve(invocation, shipped)
+        if bad or not cmd:
+            bad_marketing.append(f"{page}:{lineno}  {invocation!r} names no shipped command")
+            continue
+        own = flags_of.get(cmd, set()) | set(DARWIN_ONLY_FLAGS)
+        for flag in re.findall(r"(?<![\w-])(--[a-z0-9-]+)", invocation):
+            if flag not in own:
+                bad_marketing.append(f"{page}:{lineno}  {cmd} does not accept {flag}")
+
     for cmd in missing:
         print(f"MISSING   {cmd!r} ships and docs-src/cli.md does not document it")
+    for b in bad_marketing:
+        print(f"PAGE      {b}")
     for cmd in invented:
         print(f"INVENTED  {cmd!r} is documented and is not in the command tree")
     for f in sorted(set(bad_flags)):
@@ -185,9 +243,10 @@ def main() -> int:
     print(
         f"\n{total} public commands · {total - len(missing)} documented · "
         f"{len(missing)} missing · {len(invented)} invented · "
-        f"{len(real_flags)} real flags · {len(set(bad_flags))} invented"
+        f"{len(real_flags)} real flags · {len(set(bad_flags))} invented · "
+        f"{len(marketing_invocations())} commands on hand-written pages, {len(bad_marketing)} wrong"
     )
-    return 1 if (missing or invented or bad_flags) else 0
+    return 1 if (missing or invented or bad_flags or bad_marketing) else 0
 
 
 if __name__ == "__main__":

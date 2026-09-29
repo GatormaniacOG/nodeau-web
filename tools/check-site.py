@@ -104,6 +104,16 @@ RETIRED = [
     (r"Working on it|pill-inalpha|Manual setup",
      "retired label: the roadmap's states are Available, In progress, Planned and Exploring"),
 
+    # Retired by the 2026-09-29 refresh. Each was true once and went stale.
+    (r"single command that adds (a|one) machine is (what we are|being)",
+     "stale: `nodeau fleet invite` and `nodeau join` add a machine in two commands"),
+    (r"not in the catalogue is <strong>Exploring|not in the catalog is Exploring",
+     "stale: bring-your-own-model shipped; a GGUF of your own imports and qualifies"),
+    (r"RTX 3080 and an RTX 2080 in the same cluster",
+     "stale: that pair's second machine is retired; describe the fleet as it is"),
+    (r"href=\"/#(home|business)\"",
+     "retired anchors: the homepage sections moved to /product/ and /business/"),
+
     (r"[Nn]odeau works with one GPU per machine",
      "stale since Phase 9: every qualified card in a machine is scheduled independently"),
     (r"one GPU per machine, however many machines",
@@ -259,22 +269,26 @@ REQUIRED = [
     # with every other page still reading correctly — so the four level names
     # and the rows that carry the exclusions are asserted rather than trusted.
     #
-    # "Batch inference" is required on the install page because it is the one
-    # §7.1 parity item with no darwin implementation. A matrix that stopped
-    # listing it would not become wrong sentence by sentence; it would become
-    # wrong by omission, which is the failure this whole file exists to catch.
-    ("install/index.html", "Recommended",
+    # MOVED 2026-09-29 from /install/ to /docs/requirements/. The install page
+    # became a positive two-platform "Get Nodeau" page, and the matrix is
+    # reference material: it now lives where precise technical vocabulary
+    # belongs, and these assertions followed it rather than being dropped.
+    ("docs/requirements/index.html", "Recommended",
      "the support matrix must keep the level that means 'what we run and measure'"),
-    ("install/index.html", "Qualified",
+    ("docs/requirements/index.html", "Qualified",
      "the support matrix must keep the level Apple Silicon sits at"),
-    ("install/index.html", "Experimental",
+    ("docs/requirements/index.html", "Experimental",
      "the four levels are the exit criterion; a level with nothing in it is still a level"),
-    ("install/index.html", "Unsupported",
+    ("docs/requirements/index.html", "Unsupported",
      "the support matrix must keep the level that means Nodeau refuses rather than half-works"),
-    ("install/index.html", "Batch inference",
+    ("docs/requirements/index.html", "Batch inference",
      "the matrix must keep the row naming the one capability a Mac does not have"),
-    ("install/index.html", "runs standalone",
+    ("docs/requirements/index.html", "runs standalone",
      "the matrix must keep the row saying a Mac does not join a fleet"),
+    ("docs/requirements/index.html", "One model across several GPUs",
+     "the support matrix must keep the row that distinguishes Linux/NVIDIA from Apple on this"),
+    ("install/index.html", "Runs standalone",
+     "the install page must say, where a Mac owner starts, that a Mac runs on its own"),
 
     # PHASE 11's CLAIM AND ITS CAVEAT ARE ONE UNIT.
     #
@@ -283,21 +297,37 @@ REQUIRED = [
     # It is not one: on the qualifying pair a model that fitted on one card ran
     # ~21% SLOWER split across two. So the capacity claim and the speed
     # disclaimer are asserted together — losing the second while keeping the
-    # first is the overclaim-by-omission this file exists to catch, and it is
-    # the likeliest edit somebody makes while tightening copy.
+    # first is the overclaim-by-omission this file exists to catch.
+    #
+    # REWORDED 2026-09-29, when the owner asked for no negative product framing:
+    # "not speed" became "adds capacity rather than speed" and "memory is not
+    # pooled" became "each card holds its own share". Same two facts, stated as
+    # what IS true, and still asserted.
     ("roadmap/index.html", "One model across several GPUs",
      "the roadmap must keep the Phase 11 capability row"),
-    ("roadmap/index.html", "not speed",
+    ("roadmap/index.html", "adds capacity rather than speed",
      "the multi-GPU row must keep saying it buys capacity rather than speed"),
-    ("roadmap/index.html", "memory is not pooled",
-     "the multi-GPU row must keep saying GPU memory is not pooled"),
-    ("install/index.html", "One model across several GPUs",
-     "the support matrix must keep the row that distinguishes Linux/NVIDIA from Apple on this"),
+    ("roadmap/index.html", "each card holds its own share",
+     "the multi-GPU row must keep saying each card holds its own share (memory is not pooled)"),
 
-    ("roadmap/index.html", "Nodeau does not do this",
-     "the roadmap must say plainly that failover does not exist"),
-    ("roadmap/index.html", "no automatic failover",
-     "the roadmap must state the limit next to the multi-machine capabilities"),
+    # NO FAILOVER, STATED AS WHAT IS TRUE. The old sentences ("Nodeau does not do
+    # this", "does not fail over on its own") were the positive-framing refresh's
+    # hardest case, because somebody could build on the opposite assumption and
+    # get hurt. They were replaced, not removed: each page now says that running
+    # work stays where it was placed and that a machine's work stops with it,
+    # the way it would on any single computer. Automatic recovery is visible
+    # as In progress, so its absence from Available is a labelled fact.
+    ("roadmap/index.html", "stays exactly where Nodeau placed it",
+     "the roadmap must keep the rule that a running workload is never moved"),
+    ("roadmap/index.html", "Automatic recovery",
+     "the roadmap must keep automatic recovery visible, labelled with its real state"),
+    ("faq/index.html", "the way they would on any single computer",
+     "the FAQ must answer the offline-machine question honestly (no failover)"),
+    ("about/index.html", "the way it would on any single computer",
+     "About must keep the promise that a machine's work stops with it (no failover)"),
+    ("about/index.html", "everyone with access to a machine is trusted",
+     "About must keep the trust model: Nodeau is not built to isolate mutually hostile users"),
+
     ("roadmap/index.html", "Available",
      "the roadmap must keep the state that means 'in the published build'"),
     ("roadmap/index.html", "In progress",
@@ -306,24 +336,63 @@ REQUIRED = [
      "the roadmap must keep the state that means 'designed for, not built'"),
     ("roadmap/index.html", "Exploring",
      "the roadmap must keep the state that means 'intent, not plan'"),
-    # 17B IS NOT IN THE PUBLISHED BUILD, and the rows that describe it say so in
-    # words rather than leaving it to the colour of a pill.
-    ("roadmap/index.html", "Not in the published build",
-     "the organisation rows must say they are not in the build (CLAUDE.md §2.3, 17B)"),
-
-    # The marketing pages describe the product; the FAQ and the About page are
-    # where somebody goes to find the edges. Both must keep the one boundary a
-    # reader could otherwise build on and get hurt by.
-    ("faq/index.html", "does not fail over on its own",
-     "the FAQ must answer the failover question honestly"),
-    ("about/index.html", "does not fail over on its own",
-     "About must keep the sentence that says what Nodeau will not pretend"),
+    # 17B IS NOT IN THE PUBLISHED BUILD. Its rows sit under In progress, and the
+    # key says in words what that label means, so the colour of a pill is never
+    # the only carrier of "you cannot install this today".
+    ("roadmap/index.html", "It arrives in a future release",
+     "the In progress label must say in words that it is not in the current release"),
 
     # Three tiers, since 2026-08-12. A pricing page that quietly loses the
     # middle one takes Home Pro's whole audience with it.
     ("pricing/index.html", "Home Pro",
      "pricing must show all three tiers"),
 ]
+
+# ---------------------------------------------------------------------------
+# VOICE — added 2026-09-29, when the owner asked for a site that sounds like a
+# person and describes what Nodeau DOES rather than what it does not.
+# ---------------------------------------------------------------------------
+#
+# Two guards, and they are deliberately different in scope.
+#
+# NO EM DASHES anywhere a visitor reads prose: every page, marketing and docs.
+# Verbatim product output inside <pre> or <code> is exempt, because a terminal
+# transcript must say what the binary prints, and editing it would be a lie
+# about the product rather than a style fix.
+#
+# NO NEGATIVE PRODUCT FRAMING on the marketing pages. /docs is exempt on
+# purpose: technical documentation has to describe errors, refusals and scope
+# precisely ("refused", "unsupported" are the product's own words there). The
+# marketing pages state scope positively instead ("a Mac runs standalone",
+# "each card holds its own share"), and the REQUIRED list above is what keeps
+# that positive wording from quietly dropping a boundary.
+#
+# A phrase a marketing page genuinely needs goes in NEGATIVE_ALLOWED with the
+# page and the reason. Nothing is in it today.
+MARKETING_ROUTES = {
+    "/", "/product/", "/business/", "/install/", "/pricing/", "/roadmap/",
+    "/faq/", "/about/", "/contact/", "/thanks/",
+}
+NEGATIVE_FRAMING = re.compile(
+    r"\b(does not|doesn't|do not|don't|cannot|can't|isn't supported|not supported|"
+    r"not available|unavailable|not yet|limited to|only supports|we haven't|"
+    r"unsupported|missing)\b",
+    re.IGNORECASE,
+)
+NEGATIVE_ALLOWED: dict[tuple[str, str], str] = {}
+BUZZWORDS = re.compile(
+    r"\b(seamless(ly)?|leverag(e|es|ing)|empower(s|ing)?|unlock(s|ing)?|robust|"
+    r"cutting[- ]edge|next[- ]generation|whether you're|rapidly evolving|"
+    r"revolutioni[sz]e)\b",
+    re.IGNORECASE,
+)
+DASHES = re.compile("[\u2014\u2013]")
+
+
+def prose_of(html: str) -> str:
+    """The page's own words minus verbatim code, for the voice checks."""
+    t = re.sub(r"<(pre|code)\b.*?</\1>", " ", html, flags=re.S | re.I)
+    return content_of(t)
 
 
 def text_of(html: str) -> str:
@@ -682,6 +751,21 @@ def main() -> int:
                         f"(…{plain[max(0, m.start() - 60):m.end() + 60]}…)"
                     )
 
+        # ------------------------------------------------------------ voice
+        prose = prose_of(src)
+        for m in DASHES.finditer(prose):
+            errors.append(f"{name}: dash in prose (…{prose[max(0, m.start() - 50):m.end() + 50]}…) "
+                          "— rewrite the sentence; em and en dashes read as generated copy")
+        for m in BUZZWORDS.finditer(prose):
+            errors.append(f"{name}: buzzword {m.group(0)!r} — say what the thing does instead")
+        if route in MARKETING_ROUTES:
+            for m in NEGATIVE_FRAMING.finditer(prose):
+                if (route, m.group(0).lower()) in NEGATIVE_ALLOWED:
+                    continue
+                errors.append(
+                    f"{name}: negative framing {m.group(0)!r} "
+                    f"(…{prose[max(0, m.start() - 60):m.end() + 60]}…) — state the scope positively")
+
         # Every page must be able to render its version from the single source.
         if "data-release" not in src and f.name not in {"404.html"}:
             warnings.append(f"{name}: no [data-release] slot; footer version will be missing")
@@ -754,12 +838,15 @@ def main() -> int:
         # previous stylesheet — a wall of unstyled text, on one browser and not
         # another, purely by which one had the file cached.
         ("stamp-assets.py", "a page references an asset version that is not current"),
+        # ONE HEADER AND ONE FOOTER. tools/sitechrome.py is the only copy; a page
+        # whose shell was edited by hand fails here rather than drifting.
+        ("sync-chrome.py", "a page's header or footer differs from tools/sitechrome.py"),
     ):
         path = ROOT / "tools" / script
         if not path.exists():
             continue
         args = [sys.executable, str(path)] + (
-            ["--check"] if script in ("build-docs.py", "stamp-assets.py") else []
+            ["--check"] if script in ("build-docs.py", "stamp-assets.py", "sync-chrome.py") else []
         )
         proc = subprocess.run(args, capture_output=True, text=True)
         if proc.returncode != 0:
