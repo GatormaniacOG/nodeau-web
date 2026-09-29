@@ -3,53 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Nodeau API and your first request</title>
-<meta name="description" content="The OpenAI-compatible local endpoint — base URL, authentication, chat, streaming, embeddings, reranking, tool calling, structured output, images, and the errors you will meet.">
+<title>The Nodeau OpenAI-compatible API</title>
+<meta name="description" content="The local endpoint: base URL, authentication, chat completions, streaming, Python with the OpenAI SDK, which routes an endpoint answers, and the errors you might meet.">
 <link rel="canonical" href="https://nodeau.ai/docs/api/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://nodeau.ai/docs/api/">
 <meta property="og:site_name" content="Nodeau">
-<meta property="og:title" content="The Nodeau API and your first request">
-<meta property="og:description" content="The OpenAI-compatible local endpoint — base URL, authentication, chat, streaming, embeddings, reranking, tool calling, structured output, images, and the errors you will meet.">
+<meta property="og:title" content="The Nodeau OpenAI-compatible API">
+<meta property="og:description" content="The local endpoint: base URL, authentication, chat completions, streaming, Python with the OpenAI SDK, which routes an endpoint answers, and the errors you might meet.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/nodeau.css?v=13cbe303">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
-
 <header class="site-header" data-header>
   <div class="wrap">
-    <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-      Nodeau
-    </a>
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
     <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <nav class="nav" id="site-nav" data-nav aria-label="Primary">
       <ul>
-        <li><a href="/#home">For home</a></li>
-        <li><a href="/#business">For business</a></li>
-        <li><a href="/install/">Install</a></li>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
         <li><a href="/docs/" aria-current="page">Docs</a></li>
         <li><a href="/pricing/">Pricing</a></li>
         <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
         <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
       </ul>
     </nav>
     <div class="header-actions">
       <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
     </div>
   </div>
 </header>
-
 <div class="doc-shell">
   <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -64,28 +61,29 @@
     </div>
     <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
     <div data-doc-tree>
-      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started" open><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" aria-current="page" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau" open><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/api/" aria-current="page" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet"><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Planning a fleet upgrade">Planning a fleet upgrade</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
     </div>
   </aside>
 
   <main id="main" class="doc-main">
     <article class="doc-body">
-      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Getting started</p>
-      <h1 class="doc-title">The API and your first request</h1>
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Use Nodeau</p>
+      <h1 class="doc-title">The OpenAI-compatible API</h1>
       <p class="lede doc-lede">Nodeau gives you an OpenAI-compatible HTTP endpoint on 127.0.0.1. Any client that can talk to OpenAI can talk to it, with a base URL and a key.</p>
-      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#the-endpoint">The endpoint</a></li><li><a href="#authentication">Authentication</a></li><li><a href="#chat-completions">Chat completions</a></li><li><a href="#streaming">Streaming</a></li><li><a href="#python-with-the-openai-sdk">Python, with the OpenAI SDK</a></li><li><a href="#which-routes-an-endpoint-answers">Which routes an endpoint answers</a></li><li><a href="#embeddings">Embeddings</a></li><li><a href="#reranking">Reranking</a></li><li><a href="#tool-calling">Tool calling</a></li><li><a href="#structured-output">Structured output</a></li><li><a href="#image-input">Image input</a></li><li><a href="#what-is-not-here">What is not here</a></li><li><a href="#errors">Errors</a></li><li><a href="#changing-the-port">Changing the port</a></li><li><a href="#reaching-it-from-another-machine">Reaching it from another machine</a></li></ul></nav>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#the-endpoint">The endpoint</a></li><li><a href="#authentication">Authentication</a></li><li><a href="#chat-completions">Chat completions</a></li><li><a href="#streaming">Streaming</a></li><li><a href="#python-with-the-openai-sdk">Python, with the OpenAI SDK</a></li><li><a href="#which-routes-an-endpoint-answers">Which routes an endpoint answers</a></li><li><a href="#batches-of-requests">Batches of requests</a></li><li><a href="#errors">Errors</a></li><li><a href="#changing-the-port">Changing the port</a></li><li><a href="#reaching-it-from-another-machine">Reaching it from another machine</a></li></ul></nav>
       <h2 id="the-endpoint" class="doc-h">The endpoint<a class="doc-anchor" href="#the-endpoint" aria-label="Link to this section">#</a></h2>
 <div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="api-code-1"><code>http://127.0.0.1:8080/v1</code></pre></div>
-<p>The port is whatever <code>nodeau run</code> or <code>nodeau quickstart</code> used — <code>8080</code> unless you chose otherwise or that port was busy. <code>nodeau ps</code> and <code>nodeau status</code> print the real one.</p>
-<p>It binds <code>127.0.0.1</code> and nothing else. Not <code>0.0.0.0</code>, not a LAN address, and the bind address is <strong>not a setting</strong>. Installing Nodeau must never put an inference endpoint, or a GPU, on somebody's home network by accident.</p>
+<p>The port is whichever one <code>nodeau run</code> or <code>nodeau quickstart</code> used: <code>8080</code> unless you chose another. <code>nodeau ps</code> and <code>nodeau status</code> always print the real one.</p>
+<p>It binds <code>127.0.0.1</code> and nothing else, and the bind address isn't a setting. Installing Nodeau never puts an inference endpoint, or a GPU, on your network by accident. It works the same way on Linux and on a Mac.</p>
+<p>This page covers the endpoint and chat. For vectors, ranking, tool calls, JSON output and images, see <a href="/docs/tasks/">embeddings, reranking, tools and vision</a>.</p>
 <h2 id="authentication" class="doc-h">Authentication<a class="doc-anchor" href="#authentication" aria-label="Link to this section">#</a></h2>
-<p>Every request needs a bearer token. The endpoint forwards the <code>Authorization</code> header to the model server, which is what enforces it — so that any process on the machine cannot use your GPU just by knowing the port.</p>
+<p>Every request carries a bearer token in the <code>Authorization</code> header, so another process on the machine can't use your GPU just by knowing the port.</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-2"><code>export NODEAU_API_KEY=&quot;$(nodeau auth show --quiet)&quot;</code></pre></div>
-<p><code>nodeau auth show</code> prints your <strong>local</strong> key, creating one on first use. It is generated with a CSPRNG, stored <code>0600</code> in your Nodeau config directory, and never leaves the machine.</p>
-<p>That is not automatically the key a particular service enforces — a service can reference a credential Nodeau did not publish. To get the token that will actually be accepted:</p>
+<p><code>nodeau auth show</code> prints your <strong>local</strong> key, creating one the first time. It's generated from a cryptographic random source, stored with mode <code>0600</code> in your Nodeau config directory, and stays on the machine.</p>
+<p>A service can be set up to enforce a different credential, for example one created by hand. To print the token a particular service will actually accept:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-3"><code>export NODEAU_API_KEY=&quot;$(nodeau auth token qwen-local)&quot;</code></pre></div>
-<p>That one checks which credential the service enforces, and refuses rather than printing one that would be rejected. See <a href="/docs/accounts/#two-different-credentials">the two kinds of credential</a>.</p>
-<aside class="callout callout-important"><p class="callout-kind">A browser is not an API client</p><p>Opening <code>http://127.0.0.1:8080/v1</code> in a browser is not the same as making an authenticated API call. A browser cannot attach your key, so the server correctly refuses — and "Invalid API Key" in a browser tab almost never means your key is wrong.</p></aside>
+<p>That one checks which credential the service enforces, and tells you plainly if your local key isn't it. See <a href="/docs/accounts/#two-different-credentials">the two kinds of credential</a>.</p>
+<aside class="callout callout-important"><p class="callout-kind">A browser isn&#x27;t an API client</p><p>Opening <code>http://127.0.0.1:8080/v1</code> in a browser isn't the same as an authenticated API call. A browser can't attach your key, so the server answers "Invalid API Key". Seen in a browser tab, that almost never means your key is wrong.</p></aside>
 <h2 id="chat-completions" class="doc-h">Chat completions<a class="doc-anchor" href="#chat-completions" aria-label="Link to this section">#</a></h2>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-4"><code>curl http://127.0.0.1:8080/v1/chat/completions \
   -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
@@ -98,174 +96,111 @@
         &quot;max_tokens&quot;: 2048
       }&#x27;</code></pre></div>
 <h3 id="the-model-field" class="doc-h">The <code>model</code> field<a class="doc-anchor" href="#the-model-field" aria-label="Link to this section">#</a></h3>
-<p>One Nodeau endpoint serves exactly one model, so <code>model</code> is optional. If you do send it, it is <strong>checked</strong>: a request naming a different model is refused with <code>404 invalid_request_error / model_not_found</code> rather than answered by the model that happens to be there.</p>
-<div class="code doc-code"><div class="code-head"><span>JSON</span><button class="copy-btn" type="button" data-copy="#api-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> JSON block</span></button></div><pre id="api-code-5"><code>{&quot;error&quot;:{&quot;message&quot;:&quot;This Nodeau endpoint serves \&quot;qwen3.5-4b-q4km\&quot;, not \&quot;gpt-4\&quot;. One endpoint serves exactly one model, so the request was refused rather than answered by a different one.&quot;,&quot;type&quot;:&quot;invalid_request_error&quot;,&quot;param&quot;:&quot;model&quot;,&quot;code&quot;:&quot;model_not_found&quot;}}</code></pre></div>
-<p>Run a second model to get a second endpoint on a second port.</p>
+<p>One Nodeau endpoint serves exactly one model, so <code>model</code> is optional. When you do send it, Nodeau checks it. A request naming a different model gets a clear <code>404</code> in OpenAI's own error shape, so your client's error handling makes sense of it, and you're never quietly answered by the wrong model:</p>
+<div class="code doc-code"><div class="code-head"><span>JSON</span><button class="copy-btn" type="button" data-copy="#api-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> JSON block</span></button></div><pre id="api-code-5"><code>{&quot;error&quot;:{&quot;message&quot;:&quot;This Nodeau endpoint serves \&quot;qwen3.5-4b-q4km\&quot;, not \&quot;qwen3.5-9b-q4km\&quot;. One endpoint serves exactly one model, so the request was refused rather than answered by a different one. Set model to \&quot;qwen3.5-4b-q4km\&quot;, or run \&quot;qwen3.5-9b-q4km\&quot; and use its own endpoint.&quot;,&quot;type&quot;:&quot;invalid_request_error&quot;,&quot;param&quot;:&quot;model&quot;,&quot;code&quot;:&quot;model_not_found&quot;}}</code></pre></div>
+<p>To use a second model, run it. It gets its own endpoint on its own port.</p>
 <h3 id="token-budgets" class="doc-h">Token budgets<a class="doc-anchor" href="#token-budgets" aria-label="Link to this section">#</a></h3>
-<p><code>max_tokens</code> is the number of tokens the model may <strong>generate</strong>. On a reasoning model the internal monologue is drawn from that same budget <em>before</em> any answer exists, so asking for a short answer by asking for few tokens is exactly backwards: a short answer from a reasoning model needs a large budget, because the answer is what is left.</p>
-<ul class="doc-list"><li>Nodeau's own default, when Nodeau is the one choosing, is <strong>2048</strong>.</li><li>Below <strong>512</strong> it will tell you the budget is too small to be an answer.</li><li>Structured output has its own floor of <strong>1024</strong>, because the constrained part cannot begin until the thinking is done.</li></ul>
-<p>Nodeau never rewrites a budget you set. A client that asked for 160 asked for 160, and silently raising it would make the <code>usage</code> block a lie.</p>
+<p><code>max_tokens</code> is how many tokens the model may <strong>generate</strong>. A reasoning model thinks first, and that thinking comes out of the same budget before any answer exists. So asking for a short answer by asking for few tokens works backwards: a short answer from a reasoning model needs a generous budget, because the answer is whatever's left.</p>
+<ul class="doc-list"><li>When Nodeau chooses the budget itself, it uses <strong>2048</strong>.</li><li>Below <strong>512</strong>, Nodeau tells you the budget is too small to leave room for an answer.</li><li>Structured output has its own floor of <strong>1024</strong>, because the constrained part can't start until the thinking is done.</li></ul>
+<p>Nodeau sends the budget you set exactly as you set it, so the <code>usage</code> block in every reply stays true.</p>
 <h2 id="streaming" class="doc-h">Streaming<a class="doc-anchor" href="#streaming" aria-label="Link to this section">#</a></h2>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-6"><code>curl -N http://127.0.0.1:8080/v1/chat/completions \
   -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
   -H &quot;Content-Type: application/json&quot; \
   -d &#x27;{&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Count to five.&quot;}],
        &quot;max_tokens&quot;:2048,&quot;stream&quot;:true}&#x27;</code></pre></div>
-<p>Server-sent events, in the ordinary OpenAI shape, flushed as they arrive.</p>
+<p>Server-sent events in the usual OpenAI shape, flushed as they arrive.</p>
 <h2 id="python-with-the-openai-sdk" class="doc-h">Python, with the OpenAI SDK<a class="doc-anchor" href="#python-with-the-openai-sdk" aria-label="Link to this section">#</a></h2>
-<div class="code doc-code"><div class="code-head"><span>Python</span><button class="copy-btn" type="button" data-copy="#api-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Python block</span></button></div><pre id="api-code-7"><code>from openai import OpenAI
+<div class="code doc-code"><div class="code-head"><span>Python</span><button class="copy-btn" type="button" data-copy="#api-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Python block</span></button></div><pre id="api-code-7"><code>import os
+from openai import OpenAI
 
 client = OpenAI(
     base_url=&quot;http://127.0.0.1:8080/v1&quot;,
-    api_key=&quot;&lt;paste the output of: nodeau auth show --quiet&gt;&quot;,
+    api_key=os.environ[&quot;NODEAU_API_KEY&quot;],
 )
 
 reply = client.chat.completions.create(
-    model=&quot;qwen3.5-4b-q4km&quot;,          # must match what this endpoint serves
+    model=&quot;qwen3.5-4b-q4km&quot;,          # the model this endpoint serves
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is a GGUF file?&quot;}],
     max_tokens=2048,
 )
 print(reply.choices[0].message.content)</code></pre></div>
-<p>Any OpenAI-compatible client works the same way: point <code>base_url</code> at <code>http://127.0.0.1:8080/v1</code> and give it the key.</p>
+<p>Streaming works the same way:</p>
+<div class="code doc-code"><div class="code-head"><span>Python</span><button class="copy-btn" type="button" data-copy="#api-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Python block</span></button></div><pre id="api-code-8"><code>stream = client.chat.completions.create(
+    model=&quot;qwen3.5-4b-q4km&quot;,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Count to five.&quot;}],
+    max_tokens=2048,
+    stream=True,
+)
+for chunk in stream:
+    print(chunk.choices[0].delta.content or &quot;&quot;, end=&quot;&quot;, flush=True)</code></pre></div>
+<p>Any OpenAI-compatible client works like this: point its base URL at <code>http://127.0.0.1:8080/v1</code> and give it the key. Set <code>NODEAU_API_KEY</code> first, as in <a href="#authentication">authentication</a>.</p>
 <h2 id="which-routes-an-endpoint-answers" class="doc-h">Which routes an endpoint answers<a class="doc-anchor" href="#which-routes-an-endpoint-answers" aria-label="Link to this section">#</a></h2>
-<p>A workload is started for a <strong>task</strong>, and it answers that task's routes and refuses the others. This is not a security boundary — it is there because the model server underneath does <em>not</em> refuse: an embedding model asked for a chat completion returns <code>HTTP 200</code> and fluent-looking nonsense.</p>
+<p>A workload is started for a <strong>task</strong>, and it answers that task's routes:</p>
 <div class="table-wrap"><table class="doc-table"><thead><tr><th>Task</th><th>Routes</th></tr></thead><tbody><tr><td data-label="Task"><code>chat</code></td><td data-label="Routes"><code>/v1/chat/completions</code> · <code>/v1/completions</code> · <code>/v1/models</code></td></tr><tr><td data-label="Task"><code>embed</code></td><td data-label="Routes"><code>/v1/embeddings</code> · <code>/v1/models</code></td></tr><tr><td data-label="Task"><code>rerank</code></td><td data-label="Routes"><code>/v1/rerank</code> · <code>/v1/reranking</code> · <code>/v1/models</code></td></tr></tbody></table></div>
-<p>A request to another task's route gets <code>404</code> with <code>invalid_request_error / model_not_found</code>, and a message saying what this endpoint does answer. A route Nodeau does not know about is forwarded unchanged.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-8"><code>nodeau run &lt;embedding-model&gt; --task embed --port 8081</code></pre></div>
-<h2 id="embeddings" class="doc-h">Embeddings<a class="doc-anchor" href="#embeddings" aria-label="Link to this section">#</a></h2>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-9"><code>curl http://127.0.0.1:8081/v1/embeddings \
-  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{&quot;input&quot;: [&quot;a sentence to embed&quot;, &quot;and another&quot;]}&#x27;</code></pre></div>
-<p>The curated catalog has a dedicated embedding model on the 8 GB rung.</p>
-<h2 id="reranking" class="doc-h">Reranking<a class="doc-anchor" href="#reranking" aria-label="Link to this section">#</a></h2>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-10"><code>curl http://127.0.0.1:8082/v1/rerank \
-  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{&quot;query&quot;: &quot;how do I add a machine&quot;,
-       &quot;documents&quot;: [&quot;nodeau fleet invite prints a code&quot;,
-                     &quot;GGUF is a model file format&quot;]}&#x27;</code></pre></div>
-<aside class="callout callout-note"><p class="callout-kind">Reranking is not an OpenAI API</p><p>There is no OpenAI reranking endpoint. <code>/v1/rerank</code> follows the Jina/Cohere convention, which is what reranking clients expect. <code>/v1/reranking</code> is accepted as well.</p></aside>
-<h2 id="tool-calling" class="doc-h">Tool calling<a class="doc-anchor" href="#tool-calling" aria-label="Link to this section">#</a></h2>
-<p>Ordinary OpenAI tool calling: you pass <code>tools</code>, the model may answer with <code>tool_calls</code>, and <strong>you</strong> execute the tool and send the result back. Nodeau does not execute anything.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-11"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-11"><code>curl http://127.0.0.1:8080/v1/chat/completions \
-  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{
-    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;What is the weather in Oslo?&quot;}],
-    &quot;max_tokens&quot;: 2048,
-    &quot;tools&quot;: [{
-      &quot;type&quot;: &quot;function&quot;,
-      &quot;function&quot;: {
-        &quot;name&quot;: &quot;get_weather&quot;,
-        &quot;description&quot;: &quot;Current weather for a city&quot;,
-        &quot;parameters&quot;: {
-          &quot;type&quot;: &quot;object&quot;,
-          &quot;properties&quot;: {&quot;city&quot;: {&quot;type&quot;: &quot;string&quot;}},
-          &quot;required&quot;: [&quot;city&quot;]
-        }
-      }
-    }]
-  }&#x27;</code></pre></div>
-<p>Not every model can do this. A curated model's capabilities are listed by <code>nodeau model info &lt;model&gt;</code>; an imported model claims a capability only after it has <a href="/docs/byom/#qualification">proved it</a>.</p>
-<h2 id="structured-output" class="doc-h">Structured output<a class="doc-anchor" href="#structured-output" aria-label="Link to this section">#</a></h2>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-12"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-12"><code>curl http://127.0.0.1:8080/v1/chat/completions \
-  -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{
-    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Describe a GPU as JSON.&quot;}],
-    &quot;max_tokens&quot;: 2048,
-    &quot;response_format&quot;: {
-      &quot;type&quot;: &quot;json_schema&quot;,
-      &quot;json_schema&quot;: {
-        &quot;name&quot;: &quot;gpu&quot;,
-        &quot;schema&quot;: {
-          &quot;type&quot;: &quot;object&quot;,
-          &quot;properties&quot;: {&quot;name&quot;: {&quot;type&quot;:&quot;string&quot;}, &quot;vram_gb&quot;: {&quot;type&quot;:&quot;integer&quot;}},
-          &quot;required&quot;: [&quot;name&quot;, &quot;vram_gb&quot;]
-        }
-      }
-    }
-  }&#x27;</code></pre></div>
-<aside class="callout callout-warning"><p class="callout-kind">This constrains sampling; it does not validate the reply</p><p>The runtime turns the schema into a grammar and restricts what the model is allowed to emit. It does <strong>not</strong> parse the finished reply and check it against the schema afterwards. Validate on your side if correctness matters to you.</p></aside>
-<h2 id="image-input" class="doc-h">Image input<a class="doc-anchor" href="#image-input" aria-label="Link to this section">#</a></h2>
-<p>Multimodal models take an image in the ordinary OpenAI content-parts shape:</p>
-<div class="code doc-code"><div class="code-head"><span>JSON</span><button class="copy-btn" type="button" data-copy="#api-code-13"><span data-copy-label>Copy</span><span class="visually-hidden"> JSON block</span></button></div><pre id="api-code-13"><code>{
-  &quot;messages&quot;: [{
-    &quot;role&quot;: &quot;user&quot;,
-    &quot;content&quot;: [
-      {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;What is in this picture?&quot;},
-      {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;data:image/png;base64,iVBORw0KG...&quot;}}
-    ]
-  }],
-  &quot;max_tokens&quot;: 2048
-}</code></pre></div>
-<p>The curated catalog has multimodal models on the 8 GB and 12 GB rungs.</p>
-<aside class="callout callout-note"><p class="callout-kind">An imported model cannot do images yet</p><p>A vision model is two files — the weights and a multimodal projector — and Nodeau imports one. Image input on an imported model is refused up front, with a notice saying whose limit that is, rather than started and broken later. See <a href="/docs/byom/#what-import-cannot-do">bring your own model</a>.</p></aside>
-<h2 id="what-is-not-here" class="doc-h">What is not here<a class="doc-anchor" href="#what-is-not-here" aria-label="Link to this section">#</a></h2>
-<p>There is no supported speech, transcription, audio, text-to-speech or image-generation capability, and no <code>/v1/batches</code>. Nodeau's own <a href="/docs/batch/">batch inference</a> is a different thing with its own CLI and is not OpenAI Batch API compatible.</p>
+<p>That keeps every reply the kind you asked for. The model server underneath would answer an embedding model's chat request with <code>HTTP 200</code> and fluent-looking nonsense, so Nodeau answers a request for another task's route with a <code>404</code> (<code>invalid_request_error</code>, code <code>model_not_found</code>) and a message listing the routes this endpoint does serve. A route Nodeau doesn't recognise is passed through unchanged.</p>
+<p>To start a workload for a particular task:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-9"><code>nodeau run qwen3-embedding-0.6b-q8_0 --task embed --port 8081</code></pre></div>
+<h2 id="batches-of-requests" class="doc-h">Batches of requests<a class="doc-anchor" href="#batches-of-requests" aria-label="Link to this section">#</a></h2>
+<p>For a whole file of requests, Nodeau's <a href="/docs/batch/">batch inference</a> runs them on your GPUs and hands back one result per record. It has its own command and JSONL format, rather than the OpenAI Batch API.</p>
 <h2 id="errors" class="doc-h">Errors<a class="doc-anchor" href="#errors" aria-label="Link to this section">#</a></h2>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Status</th><th>Shape</th><th>Usually means</th></tr></thead><tbody><tr><td data-label="Status"><code>401</code></td><td data-label="Shape">The runtime's own error</td><td data-label="Usually means">The key is wrong, or you opened the URL in a browser. See <a href="/docs/troubleshooting/#the-api-rejects-my-key">troubleshooting</a></td></tr><tr><td data-label="Status"><code>404</code> <code>model_not_found</code>, <code>param: model</code></td><td data-label="Shape">Nodeau</td><td data-label="Usually means">The request named a different model than this endpoint serves</td></tr><tr><td data-label="Status"><code>404</code> <code>model_not_found</code>, <code>param: path</code></td><td data-label="Shape">Nodeau</td><td data-label="Usually means">This endpoint's task does not answer that route</td></tr><tr><td data-label="Status"><code>413</code></td><td data-label="Shape">Nodeau</td><td data-label="Usually means">The upload is larger than the endpoint accepts</td></tr><tr><td data-label="Status"><code>502</code></td><td data-label="Shape">Nodeau</td><td data-label="Usually means">The endpoint is up and the model behind it is not. <code>nodeau status</code>, then <code>nodeau doctor</code></td></tr></tbody></table></div>
-<p>An empty <code>content</code> with <code>&quot;finish_reason&quot;: &quot;length&quot;</code> is not an error — it is the token budget running out before an answer existed. Raise <code>max_tokens</code>.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Status</th><th>From</th><th>Usually means</th></tr></thead><tbody><tr><td data-label="Status"><code>401</code></td><td data-label="From">The model server</td><td data-label="Usually means">The key doesn't match, or the URL was opened in a browser. See <a href="/docs/troubleshooting/#the-api-rejects-my-key">troubleshooting</a></td></tr><tr><td data-label="Status"><code>404</code> <code>model_not_found</code>, <code>param: model</code></td><td data-label="From">Nodeau</td><td data-label="Usually means">The request named a different model than this endpoint serves</td></tr><tr><td data-label="Status"><code>404</code> <code>model_not_found</code>, <code>param: path</code></td><td data-label="From">Nodeau</td><td data-label="Usually means">This endpoint's task uses different routes</td></tr><tr><td data-label="Status"><code>502</code></td><td data-label="From">Nodeau</td><td data-label="Usually means">The endpoint is up and the model behind it isn't answering yet. Try <code>nodeau status</code>, then <code>nodeau doctor</code></td></tr></tbody></table></div>
+<p>An empty <code>content</code> with <code>&quot;finish_reason&quot;: &quot;length&quot;</code> means the token budget ran out before an answer existed. Raise <code>max_tokens</code>.</p>
 <h2 id="changing-the-port" class="doc-h">Changing the port<a class="doc-anchor" href="#changing-the-port" aria-label="Link to this section">#</a></h2>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-14"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-14"><code>nodeau run qwen-local --port 8123</code></pre></div>
-<aside class="callout callout-note"><p class="callout-kind">`--port` is part of what the workload *is*</p><p>It sets the loopback port <strong>and</strong> the in-cluster service port, and the service port is part of the workload's identity. Re-running <code>run</code> on a different port therefore restarts the model. Expect a short gap while the weights reload.</p></aside>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-10"><code>nodeau run qwen-local --port 8123</code></pre></div>
+<aside class="callout callout-note"><p class="callout-kind">`--port` is part of what the workload *is*</p><p>It sets the loopback port <strong>and</strong> the in-cluster service port, and the service port is part of the workload's identity. So running <code>run</code> again on a different port restarts the model. Expect a short gap while the weights reload.</p></aside>
 <h2 id="reaching-it-from-another-machine" class="doc-h">Reaching it from another machine<a class="doc-anchor" href="#reaching-it-from-another-machine" aria-label="Link to this section">#</a></h2>
-<p>Nodeau does not do this for you, and will not put a GPU on your network by accident. If you want a model reachable from elsewhere on a network you control, that is your own reverse proxy in front of the loopback endpoint, with your own TLS and your own authentication — and the <a href="/docs/security/">security page</a> is worth reading first.</p>
-      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/quickstart/"><span>Previous</span>Quickstart</a><a class="doc-next" href="/docs/concepts/"><span>Next</span>Core concepts</a></nav>
-      <p class="doc-foot">Documentation for the current published build,
-      <span data-release>the beta channel</span>. Something here wrong or missing?
-      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+<p>The endpoint lives on <code>127.0.0.1</code> by design, so a GPU never ends up on your network by accident. When you want a model reachable from elsewhere on a network you control, put your own reverse proxy in front of the loopback endpoint, with your own TLS and your own authentication. <a href="/docs/security/">Security and privacy</a> is worth a read first.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/byom/"><span>Previous</span>Bring your own model</a><a class="doc-next" href="/docs/batch/"><span>Next</span>Batch inference</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
       never seen is the most useful thing we get.</p>
     </article>
   </main>
 </div>
-
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
-        <a class="brand" href="/" style="margin-bottom:0.75rem">
-          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-          Nodeau
-        </a>
-        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
       </div>
       <div>
-        <h4>Product</h4>
+        <h2 class="footer-title">Product</h2>
         <ul>
-          <li><a href="/#home">For home</a></li>
-          <li><a href="/#business">For business</a></li>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
           <li><a href="/pricing/">Pricing</a></li>
           <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
         </ul>
       </div>
       <div>
-        <h4>Docs</h4>
+        <h2 class="footer-title">Docs</h2>
         <ul>
           <li><a href="/docs/">Documentation</a></li>
-          <li><a href="/docs/install-linux/">Linux install</a></li>
-          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
           <li><a href="/docs/cli/">CLI reference</a></li>
           <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
         </ul>
       </div>
       <div>
-        <h4>Company</h4>
+        <h2 class="footer-title">Company</h2>
         <ul>
           <li><a href="/about/">About</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
           <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>&#169; <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
     </div>
   </div>
 </footer>

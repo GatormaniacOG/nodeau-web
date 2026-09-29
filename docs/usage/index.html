@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage and audit in your Nodeau account</title>
+<meta name="description" content="See how long each workload held its accelerators, attach your own rate if you like, and read who changed what across your organisation, including what was refused.">
+<link rel="canonical" href="https://nodeau.ai/docs/usage/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/usage/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Usage and audit in your Nodeau account">
+<meta property="og:description" content="See how long each workload held its accelerators, attach your own rate if you like, and read who changed what across your organisation, including what was refused.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
+    </div>
+  </div>
+</header>
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau"><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet"><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Planning a fleet upgrade">Planning a fleet upgrade</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration" open><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" aria-current="page" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Administration</p>
+      <h1 class="doc-title">Usage and audit</h1>
+      <p class="lede doc-lede">Your account keeps two records for you. One says what your hardware has been doing, in accelerator-hours. The other says who changed what, and how it turned out.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#usage-what-your-hardware-did-for-you">Usage: what your hardware did for you</a></li><li><a href="#audit-who-changed-what">Audit: who changed what</a></li><li><a href="#who-can-see-them">Who can see them</a></li><li><a href="#related">Related</a></li></ul></nav>
+      <p>Both live on the <strong>Usage</strong> page of your account at <a href="https://app.nodeau.ai/" rel="noopener">app.nodeau.ai</a>. There is nothing extra to install: usage arrives with a connected fleet, and the audit trail is written by Nodeau Cloud as changes happen.</p>
+<aside class="callout callout-linux"><p class="callout-kind">Usage comes from connected fleets</p><p>Usage travels in a fleet's report, so it describes Linux machines in a fleet. A Mac runs Nodeau standalone, so its work stays on the Mac and is not part of a fleet report.</p></aside>
+<h2 id="usage-what-your-hardware-did-for-you" class="doc-h">Usage: what your hardware did for you<a class="doc-anchor" href="#usage-what-your-hardware-did-for-you" aria-label="Link to this section">#</a></h2>
+<h3 id="turning-it-on" class="doc-h">Turning it on<a class="doc-anchor" href="#turning-it-on" aria-label="Link to this section">#</a></h3>
+<p>If your machines already appear at app.nodeau.ai, you have it. Otherwise, on the machine that runs your fleet's control plane:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#usage-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="usage-code-1"><code>nodeau login           # link this installation to your account, once
+nodeau fleet connect   # start the fleet report</code></pre></div>
+<p>See <a href="/docs/fleet/#seeing-the-fleet-from-a-browser">seeing the fleet from a browser</a> for what the report carries.</p>
+<h3 id="what-the-number-is" class="doc-h">What the number is<a class="doc-anchor" href="#what-the-number-is" aria-label="Link to this section">#</a></h3>
+<p><strong>Accelerator-time.</strong> For each workload, how many accelerators it held and for how long, added up across the machines you own, for the window you pick on the page. A workload that held two cards for an hour counts as two accelerator-hours.</p>
+<p>Each line names the workload, what kind it was (a service or a batch job), the machine it ran on, the model, and its accelerator-hours.</p>
+<h3 id="where-it-comes-from" class="doc-h">Where it comes from<a class="doc-anchor" href="#where-it-comes-from" aria-label="Link to this section">#</a></h3>
+<p>The figure is taken from <strong>the scheduler's own record of what it reserved</strong>. It counts the time a workload held a card, whether that card was busy or quiet at the time. That makes it a steady answer to "who had which card, and for how long", and it is a different measurement from how hard a card was working. Nodeau keeps card utilisation out of this figure entirely.</p>
+<h3 id="your-own-rate" class="doc-h">Your own rate<a class="doc-anchor" href="#your-own-rate" aria-label="Link to this section">#</a></h3>
+<p>If you tell Nodeau what an accelerator-hour is worth to you, in your own currency, the page multiplies your hours by it. The rate is yours: it can stand for electricity, for what the hardware cost you, or for an internal chargeback figure. Nodeau applies your number and leaves the judgement to you.</p>
+<p>Until you set a rate, the page shows the hours and <strong>no cost at all</strong>.</p>
+<aside class="callout callout-note"><p class="callout-kind">Absent and zero are different answers</p><p>With no rate set, the page shows no cost, and says that nobody has entered a rate yet. A rate you deliberately set to <strong>zero</strong> is a number you chose, so the page keeps it and shows a cost of zero. And when a rate is set and nothing ran in the window, the page says that too. Three situations, three different sentences.</p></aside>
+<h3 id="a-record-never-a-bill" class="doc-h">A record, never a bill<a class="doc-anchor" href="#a-record-never-a-bill" aria-label="Link to this section">#</a></h3>
+<p>Usage is a record of what your hardware did for you. What you pay for Nodeau is your plan, and usage never turns into a charge, an invoice or an amount due.</p>
+<h2 id="audit-who-changed-what" class="doc-h">Audit: who changed what<a class="doc-anchor" href="#audit-who-changed-what" aria-label="Link to this section">#</a></h2>
+<p>The <strong>What changed</strong> section on the same page lists every change made to your organisation through Nodeau Cloud: what it was, who made it, when, what it was about, and how it turned out.</p>
+<p>It includes <strong>what was refused</strong>. A refusal is usually the event an investigation starts from, so the list can show refusals on their own with one switch.</p>
+<p>Events are kept for <strong>a year</strong>, and the page says so beside the list, so you can tell "this is everything that happened" from "this is everything that is kept".</p>
+<h3 id="what-an-event-holds" class="doc-h">What an event holds<a class="doc-anchor" href="#what-an-event-holds" aria-label="Link to this section">#</a></h3>
+<p>The action, the actor, the target, the time and the outcome. That is the whole event: an audit record never holds a key, a token, a prompt, a reply, or the contents of anything you computed.</p>
+<aside class="callout callout-note"><p class="callout-kind">&quot;Not recorded&quot; is an honest answer</p><p>Events written before Nodeau began recording outcomes show <strong>not recorded</strong> in the result column. Showing them as applied would invent a fact about every one of them, and in the direction that hides a refusal.</p></aside>
+<h3 id="how-it-is-kept" class="doc-h">How it is kept<a class="doc-anchor" href="#how-it-is-kept" aria-label="Link to this section">#</a></h3>
+<p>The trail is an append-oriented record in Nodeau Cloud: events are added and read back, and there is no route for editing or deleting one. It is a working history for you and your team, which is a different thing from a tamper-evident or cryptographically sealed log, and Nodeau describes it only as the first.</p>
+<h2 id="who-can-see-them" class="doc-h">Who can see them<a class="doc-anchor" href="#who-can-see-them" aria-label="Link to this section">#</a></h2>
+<p>Reading usage and the audit trail is part of every plan. They are about your own organisation, and nothing about reading them is held back by a plan.</p>
+<h2 id="related" class="doc-h">Related<a class="doc-anchor" href="#related" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li><a href="/docs/accounts/">Accounts and plans</a>: signing in, and how a plan reaches a machine</li><li><a href="/docs/governance/">Limits and policies</a>: your organisation's own limits on the fleet</li><li><a href="/docs/updates/">Updates and release channels</a>: updating machines, release channels, and what a maintenance window will mean</li></ul>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/governance/"><span>Previous</span>Limits and policies</a><a class="doc-next" href="/docs/security/"><span>Next</span>Security and privacy</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
+      </div>
+      <div>
+        <h2 class="footer-title">Product</h2>
+        <ul>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Docs</h2>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Company</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+<script src="/assets/docs.js?v=1501ca71" defer></script>
+</body>
+</html>

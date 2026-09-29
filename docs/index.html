@@ -4,52 +4,49 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nodeau documentation</title>
-<meta name="description" content="Nodeau turns a GPU you already own into a private, OpenAI-compatible AI endpoint. Installation, the CLI, models, fleets, batch inference and troubleshooting.">
+<meta name="description" content="Nodeau turns the GPUs you already own into a private AI cloud. Install it, run a model, add machines, and call it from any OpenAI-compatible client.">
 <link rel="canonical" href="https://nodeau.ai/docs/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://nodeau.ai/docs/">
 <meta property="og:site_name" content="Nodeau">
 <meta property="og:title" content="Nodeau documentation">
-<meta property="og:description" content="Nodeau turns a GPU you already own into a private, OpenAI-compatible AI endpoint. Installation, the CLI, models, fleets, batch inference and troubleshooting.">
+<meta property="og:description" content="Nodeau turns the GPUs you already own into a private AI cloud. Install it, run a model, add machines, and call it from any OpenAI-compatible client.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/nodeau.css?v=13cbe303">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
-
 <header class="site-header" data-header>
   <div class="wrap">
-    <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-      Nodeau
-    </a>
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
     <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <nav class="nav" id="site-nav" data-nav aria-label="Primary">
       <ul>
-        <li><a href="/#home">For home</a></li>
-        <li><a href="/#business">For business</a></li>
-        <li><a href="/install/">Install</a></li>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
         <li><a href="/docs/" aria-current="page">Docs</a></li>
         <li><a href="/pricing/">Pricing</a></li>
         <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
         <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
       </ul>
     </nav>
     <div class="header-actions">
       <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
     </div>
   </div>
 </header>
-
 <div class="doc-shell">
   <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -64,7 +61,7 @@
     </div>
     <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
     <div data-doc-tree>
-      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started" open><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" aria-current="page" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations"><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started" open><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" aria-current="page" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau"><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet"><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Planning a fleet upgrade">Planning a fleet upgrade</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
     </div>
   </aside>
 
@@ -72,96 +69,99 @@
     <article class="doc-body">
       <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Getting started</p>
       <h1 class="doc-title">What is Nodeau?</h1>
-      <p class="lede doc-lede">Nodeau turns GPUs you already own into a private AI service. Two commands get you a running model and an OpenAI-compatible endpoint on your own hardware.</p>
-      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#the-shape-of-it">The shape of it</a></li><li><a href="#what-makes-it-more-than-a-wrapper">What makes it more than a wrapper</a></li><li><a href="#what-is-in-these-docs">What is in these docs</a></li><li><a href="#where-nodeau-runs">Where Nodeau runs</a></li><li><a href="#what-nodeau-does-not-do">What Nodeau does not do</a></li><li><a href="#accounts-are-optional">Accounts are optional</a></li></ul></nav>
-      <p>Nodeau is software you install on your own computer. It finds your graphics cards, works out what they can hold, downloads and verifies model weights, starts a model server, and gives you a local endpoint that any OpenAI-compatible client can call.</p>
-<p>Nothing you compute leaves the machine. The model runs on your card, the request goes to <code>127.0.0.1</code>, and the answer comes back without crossing your network.</p>
+      <p class="lede doc-lede">Nodeau turns the GPUs you already own into one private AI cloud. A couple of commands get you a model running on your own hardware, behind an OpenAI-compatible endpoint.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#the-shape-of-it">The shape of it</a></li><li><a href="#it-checks-the-fit-before-it-starts-anything">It checks the fit before it starts anything</a></li><li><a href="#one-machine-or-a-fleet">One machine, or a fleet</a></li><li><a href="#where-nodeau-runs">Where Nodeau runs</a></li><li><a href="#how-nodeau-keeps-things-predictable">How Nodeau keeps things predictable</a></li><li><a href="#accounts-are-optional">Accounts are optional</a></li><li><a href="#whats-in-these-docs">What&#x27;s in these docs</a></li></ul></nav>
+      <p>Nodeau is software you install on your own computer. It finds your graphics cards, works out what each one can hold, downloads and verifies model weights, starts a model server, and hands you a local endpoint that any OpenAI-compatible client can call.</p>
+<p>Your prompts and answers stay on your hardware. The model runs on your card, the request goes to <code>127.0.0.1</code>, and the reply comes straight back.</p>
 <h2 id="the-shape-of-it" class="doc-h">The shape of it<a class="doc-anchor" href="#the-shape-of-it" aria-label="Link to this section">#</a></h2>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#overview-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="overview-code-1"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash   # get the CLI
 nodeau install                                       # set the machine up
-nodeau quickstart                                    # download a model, serve it</code></pre></div>
-<p>Then:</p>
+nodeau quickstart                                    # download a model and serve it</code></pre></div>
+<p>On a Mac the last step is <code>nodeau run &lt;model&gt;</code>. See <a href="/docs/install-macos/">Install on a Mac</a> for that path.</p>
+<p>Then send it a request:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#overview-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="overview-code-2"><code>curl http://127.0.0.1:8080/v1/chat/completions \
   -H &quot;Authorization: Bearer $(nodeau auth show --quiet)&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Say hello.&quot;}]}&#x27;</code></pre></div>
-<h2 id="what-makes-it-more-than-a-wrapper" class="doc-h">What makes it more than a wrapper<a class="doc-anchor" href="#what-makes-it-more-than-a-wrapper" aria-label="Link to this section">#</a></h2>
-<p>Nodeau predicts how much GPU memory a workload will need <strong>before</strong> starting it, and refuses the ones that will not fit — with the arithmetic, and with something to do about it.</p>
-<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="overview-code-3"><code>Refused   GPU_TOO_SMALL
-  needs   11,240 MiB   weights 8,590 + KV cache 2,048 + runtime overhead 602
-  free     9,365 MiB   15,827 addressable − 5,950 in use − 512 reserve
-
-  Try a smaller context: --context-size 2048 brings it to 9,192 MiB</code></pre></div>
-<p>That refusal is the product working. The alternative — starting it anyway and letting the kernel kill it — is a crash loop with no explanation, and it is what Nodeau exists to avoid.</p>
-<p>Every decision is recorded and can be replayed:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#overview-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="overview-code-4"><code>nodeau service explain qwen-local     # the VRAM arithmetic behind the decision
-nodeau placement explain qwen-local   # why this machine and this card won</code></pre></div>
-<h2 id="what-is-in-these-docs" class="doc-h">What is in these docs<a class="doc-anchor" href="#what-is-in-these-docs" aria-label="Link to this section">#</a></h2>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>If you want to</th><th>Start at</th></tr></thead><tbody><tr><td data-label="If you want to">Check your hardware is suitable</td><td data-label="Start at"><a href="/docs/requirements/">Platform support and requirements</a></td></tr><tr><td data-label="If you want to">Set up a Linux machine with an NVIDIA GPU</td><td data-label="Start at"><a href="/docs/install-linux/">Install on Linux</a></td></tr><tr><td data-label="If you want to">Set up an Apple Silicon Mac</td><td data-label="Start at"><a href="/docs/install-macos/">Install on macOS</a></td></tr><tr><td data-label="If you want to">Get a model running in about ten minutes</td><td data-label="Start at"><a href="/docs/quickstart/">Quickstart</a></td></tr><tr><td data-label="If you want to">Call the model from code</td><td data-label="Start at"><a href="/docs/api/">The API and your first request</a></td></tr><tr><td data-label="If you want to">Learn the vocabulary</td><td data-label="Start at"><a href="/docs/concepts/">Core concepts</a></td></tr><tr><td data-label="If you want to">Look up a command</td><td data-label="Start at"><a href="/docs/cli/">CLI reference</a></td></tr><tr><td data-label="If you want to">Run a model file of your own</td><td data-label="Start at"><a href="/docs/byom/">Bring your own model</a></td></tr><tr><td data-label="If you want to">Add a second machine</td><td data-label="Start at"><a href="/docs/fleet/">Adding and operating machines</a></td></tr><tr><td data-label="If you want to">Understand a refusal</td><td data-label="Start at"><a href="/docs/scheduling/">Admission, scheduling and placement</a></td></tr><tr><td data-label="If you want to">Fix something</td><td data-label="Start at"><a href="/docs/troubleshooting/">Troubleshooting</a></td></tr></tbody></table></div>
+  -d &#x27;{&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Say hello.&quot;}],&quot;max_tokens&quot;:2048}&#x27;</code></pre></div>
+<p>That's it. Your model is live, on your machine.</p>
+<h2 id="it-checks-the-fit-before-it-starts-anything" class="doc-h">It checks the fit before it starts anything<a class="doc-anchor" href="#it-checks-the-fit-before-it-starts-anything" aria-label="Link to this section">#</a></h2>
+<p>Every model needs GPU memory for its weights, for its context and for the runtime around it. Nodeau works that out <strong>before</strong> it starts the model, and compares it with what your card can really give: the memory the card can address, minus what your desktop and other programs already use, minus a safety reserve.</p>
+<p>You can ask it for any model, on every machine you have:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#overview-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="overview-code-3"><code>nodeau model status qwen3.5-4b-q4km</code></pre></div>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="overview-code-4"><code>Will it fit? (judged as if the card were free of Nodeau workloads)
+  NODE       GPU                         VERDICT          NEEDS      AVAILABLE   HEADROOM
+  nodeau-c   NVIDIA GeForce RTX 3080     yes (estimated)  4,406 MiB  9,365 MiB   4,959 MiB
+  nodeforge  NVIDIA GeForce RTX 5060 Ti  yes              3,512 MiB  15,315 MiB  11,803 MiB</code></pre></div>
+<p>When a model fits, you're told how much room is left. When it doesn't, Nodeau says so before anything loads, shows the arithmetic, and suggests what would change the answer, such as a shorter context or a smaller model. A clear answer with the numbers beats a crash a minute into loading.</p>
+<p>Notice the word <em>estimated</em> on the first row. Where Nodeau has measured a configuration on hardware like yours, it uses the measurement. Where it hasn't, it works out a careful figure from the model's own shape, adds a margin, and tells you so. See <a href="/docs/scheduling/#estimated-and-measured">measured and estimated</a>.</p>
+<p>Every decision is recorded, so you can always ask why:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#overview-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="overview-code-5"><code>nodeau service explain qwen-local     # the memory arithmetic behind the decision
+nodeau placement explain qwen-local   # why this machine and this card</code></pre></div>
+<h2 id="one-machine-or-a-fleet" class="doc-h">One machine, or a fleet<a class="doc-anchor" href="#one-machine-or-a-fleet" aria-label="Link to this section">#</a></h2>
+<p>Start with one machine. When you're ready for more, adding another is two commands: <code>nodeau fleet invite</code> on the machine you have, and <code>nodeau join</code> on the new one. From then on Nodeau chooses where each workload runs from what every machine reports about itself.</p>
+<p>With more than one machine you can:</p>
+<ul class="doc-list"><li>see every machine, card and workload in one place, in a terminal or from your account on the web (<a href="/docs/fleet/">add and run machines</a>)</li><li>keep an eye on how each machine is doing, with alerts when something needs attention (<a href="/docs/health/">health and alerts</a>)</li><li>set your organisation's own limits on what the fleet may run (<a href="/docs/governance/">limits and policies</a>)</li><li>see what your hardware has been doing, in accelerator-hours, and who changed what (<a href="/docs/usage/">usage and audit</a>)</li><li>preview what moving your machines to a new release would involve, before a single machine changes, with <code>nodeau fleet upgrade plan</code> (<a href="/docs/upgrades/">planning a fleet upgrade</a>)</li></ul>
 <h2 id="where-nodeau-runs" class="doc-h">Where Nodeau runs<a class="doc-anchor" href="#where-nodeau-runs" aria-label="Link to this section">#</a></h2>
-<p>Two platforms, and they are genuinely different underneath.</p>
-<ul class="doc-list"><li><strong>Linux with an NVIDIA GPU.</strong> Nodeau runs workloads through Kubernetes and CUDA. This is the full product: several machines, several cards in one machine, batch inference.</li><li><strong>Apple Silicon.</strong> Nodeau runs models natively through Metal, with no Kubernetes, no containers and no password. A Mac runs standalone: it does not join a fleet, and batch inference is Linux-only.</li></ul>
-<p>The catalog, admission, the planner, entitlements and the CLI are the same on both. See <a href="/docs/requirements/">platform support</a> for the full matrix.</p>
-<h2 id="what-nodeau-does-not-do" class="doc-h">What Nodeau does not do<a class="doc-anchor" href="#what-nodeau-does-not-do" aria-label="Link to this section">#</a></h2>
-<p>Documented as first-class information, because finding out later is worse.</p>
-<ul class="doc-list"><li>It does not <strong>move a running workload</strong>. Placement decides once and then holds. There is no failover, no migration and no automatic rescheduling — if a machine goes away, the workload on it stops, and Nodeau tells you.</li><li>It does not <strong>pool GPU memory</strong>. Two 8 GB cards are not a 16 GB card. One model can be split across several cards in one machine, which buys capacity and costs speed.</li><li>It does not <strong>share a card between workloads</strong>. A GPU is held by one workload at a time. No time-slicing, no MIG, no preemption.</li><li>It does not <strong>manage your NVIDIA driver</strong>, your bootloader, Secure Boot or your partitions.</li><li>It does not <strong>send your prompts anywhere</strong>. See <a href="/docs/security/">security and privacy</a> for what does and does not cross each boundary.</li></ul>
+<ul class="doc-list"><li><strong>Linux with NVIDIA GPUs.</strong> Nodeau sets up and looks after a small Kubernetes cluster for you, and runs each model on your cards through CUDA. This is the whole product: several machines, several cards in each, batch inference, your own models, and every task from chat to image input.</li><li><strong>Apple Silicon Macs.</strong> Nodeau runs chat models natively on the Mac's GPU through Metal, with no containers and no password. A Mac runs standalone, which makes it a lovely private endpoint on a laptop.</li></ul>
+<p>The catalog, the fit checks, entitlements and the CLI are the same on both. The full matrix is in <a href="/docs/requirements/">requirements and platforms</a>.</p>
+<h2 id="how-nodeau-keeps-things-predictable" class="doc-h">How Nodeau keeps things predictable<a class="doc-anchor" href="#how-nodeau-keeps-things-predictable" aria-label="Link to this section">#</a></h2>
+<p>A few design choices are worth knowing before you build on Nodeau. Each one is there so the machine does what you expect.</p>
+<ul class="doc-list"><li><strong>Running work stays where Nodeau put it.</strong> A healthy workload is never restarted to chase a better score. If a machine goes offline, what it was running stops with it, and Nodeau keeps the service itself, so there is nothing to recreate.</li><li><strong>Memory is counted card by card.</strong> When one model is split across several GPUs in one machine, each card holds its own share, and the smaller card fills first. Splitting adds capacity for a model too big for one card. For more throughput, run separate copies. See <a href="/docs/multi-gpu/">several GPUs in one machine</a>.</li><li><strong>A GPU belongs to one workload at a time.</strong> Nothing else competes for its memory, so a model that fits keeps fitting.</li><li><strong>Your driver, boot setup and disks stay yours.</strong> Nodeau checks the NVIDIA driver and leaves it, Secure Boot, the bootloader and your partitions exactly as they are.</li><li><strong>Your prompts stay on your hardware.</strong> Requests go to <code>127.0.0.1</code> and to the model on your card. If you connect a fleet to your account, what travels is the state of your machines, and what you compute stays home. See <a href="/docs/security/">security and privacy</a>.</li></ul>
 <h2 id="accounts-are-optional" class="doc-h">Accounts are optional<a class="doc-anchor" href="#accounts-are-optional" aria-label="Link to this section">#</a></h2>
-<p>Nodeau runs completely without an account. Local inference, the model catalog, the dashboard, artifact verification and admission all work with no connection to Nodeau Cloud, and none of them will ask for one.</p>
-<p>Signing in adds an account association, a registered installation and a signed entitlement — which is how a paid plan reaches the machine. See <a href="/docs/accounts/">accounts, plans and entitlements</a>.</p>
-      <nav class="doc-pager" aria-label="Pagination"><a class="doc-next" href="/docs/requirements/"><span>Next</span>Platform support and requirements</a></nav>
-      <p class="doc-foot">Documentation for the current published build,
-      <span data-release>the beta channel</span>. Something here wrong or missing?
-      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+<p>Nodeau runs completely without an account. Local inference, the model catalog, the dashboard, artifact verification and the fit checks all work with no connection to Nodeau Cloud.</p>
+<p>Signing in registers the installation and gives it a signed entitlement, which is how a paid plan reaches a machine, and it lets you see your machines from a browser. See <a href="/docs/accounts/">accounts and plans</a>.</p>
+<h2 id="whats-in-these-docs" class="doc-h">What's in these docs<a class="doc-anchor" href="#whats-in-these-docs" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>If you want to</th><th>Start at</th></tr></thead><tbody><tr><td data-label="If you want to">Check your hardware</td><td data-label="Start at"><a href="/docs/requirements/">Requirements and platforms</a></td></tr><tr><td data-label="If you want to">Set up a Linux machine with an NVIDIA GPU</td><td data-label="Start at"><a href="/docs/install-linux/">Install on Linux</a></td></tr><tr><td data-label="If you want to">Set up an Apple Silicon Mac</td><td data-label="Start at"><a href="/docs/install-macos/">Install on a Mac</a></td></tr><tr><td data-label="If you want to">Get a model running</td><td data-label="Start at"><a href="/docs/quickstart/">Your first model</a></td></tr><tr><td data-label="If you want to">Call it from code</td><td data-label="Start at"><a href="/docs/api/">The OpenAI-compatible API</a></td></tr><tr><td data-label="If you want to">Use embeddings, reranking, tools or images</td><td data-label="Start at"><a href="/docs/tasks/">Embeddings, reranking, tools and vision</a></td></tr><tr><td data-label="If you want to">Choose a model</td><td data-label="Start at"><a href="/docs/models/">The model catalog</a></td></tr><tr><td data-label="If you want to">Run a GGUF file of your own</td><td data-label="Start at"><a href="/docs/byom/">Bring your own model</a></td></tr><tr><td data-label="If you want to">Work through a file of requests</td><td data-label="Start at"><a href="/docs/batch/">Batch inference</a></td></tr><tr><td data-label="If you want to">Add a second machine</td><td data-label="Start at"><a href="/docs/fleet/">Add and run machines</a></td></tr><tr><td data-label="If you want to">Understand a decision</td><td data-label="Start at"><a href="/docs/scheduling/">How Nodeau decides</a></td></tr><tr><td data-label="If you want to">Plan an upgrade across machines</td><td data-label="Start at"><a href="/docs/upgrades/">Planning a fleet upgrade</a></td></tr><tr><td data-label="If you want to">Look up a command</td><td data-label="Start at"><a href="/docs/cli/">CLI reference</a></td></tr><tr><td data-label="If you want to">Fix something</td><td data-label="Start at"><a href="/docs/troubleshooting/">Troubleshooting</a></td></tr></tbody></table></div>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-next" href="/docs/requirements/"><span>Next</span>Requirements and platforms</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
       never seen is the most useful thing we get.</p>
     </article>
   </main>
 </div>
-
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
-        <a class="brand" href="/" style="margin-bottom:0.75rem">
-          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-          Nodeau
-        </a>
-        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
       </div>
       <div>
-        <h4>Product</h4>
+        <h2 class="footer-title">Product</h2>
         <ul>
-          <li><a href="/#home">For home</a></li>
-          <li><a href="/#business">For business</a></li>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
           <li><a href="/pricing/">Pricing</a></li>
           <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
         </ul>
       </div>
       <div>
-        <h4>Docs</h4>
+        <h2 class="footer-title">Docs</h2>
         <ul>
           <li><a href="/docs/">Documentation</a></li>
-          <li><a href="/docs/install-linux/">Linux install</a></li>
-          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
           <li><a href="/docs/cli/">CLI reference</a></li>
           <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
         </ul>
       </div>
       <div>
-        <h4>Company</h4>
+        <h2 class="footer-title">Company</h2>
         <ul>
           <li><a href="/about/">About</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
           <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>&#169; <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
     </div>
   </div>
 </footer>

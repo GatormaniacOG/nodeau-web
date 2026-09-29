@@ -4,52 +4,49 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Troubleshooting Nodeau</title>
-<meta name="description" content="Symptom-based fixes for installation, NVIDIA, macOS, models, the API, fleets and batch — each with how to confirm it and what not to do.">
+<meta name="description" content="Fixes organised by what you are seeing: installation, NVIDIA, macOS, models, the API, fleets, upgrade plans and batch, each with how to confirm it.">
 <link rel="canonical" href="https://nodeau.ai/docs/troubleshooting/">
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://nodeau.ai/docs/troubleshooting/">
 <meta property="og:site_name" content="Nodeau">
 <meta property="og:title" content="Troubleshooting Nodeau">
-<meta property="og:description" content="Symptom-based fixes for installation, NVIDIA, macOS, models, the API, fleets and batch — each with how to confirm it and what not to do.">
+<meta property="og:description" content="Fixes organised by what you are seeing: installation, NVIDIA, macOS, models, the API, fleets, upgrade plans and batch, each with how to confirm it.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/nodeau.css?v=13cbe303">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
-
 <header class="site-header" data-header>
   <div class="wrap">
-    <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-      Nodeau
-    </a>
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
     <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <nav class="nav" id="site-nav" data-nav aria-label="Primary">
       <ul>
-        <li><a href="/#home">For home</a></li>
-        <li><a href="/#business">For business</a></li>
-        <li><a href="/install/">Install</a></li>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
         <li><a href="/docs/" aria-current="page">Docs</a></li>
         <li><a href="/pricing/">Pricing</a></li>
         <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
         <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
       </ul>
     </nav>
     <div class="header-actions">
       <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/install/">Install Nodeau</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
     </div>
   </div>
 </header>
-
 <div class="doc-shell">
   <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -64,298 +61,295 @@
     </div>
     <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
     <div data-doc-tree>
-      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Platform support and requirements">Platform support and requirements</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux / NVIDIA">Install on Linux / NVIDIA</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on macOS">Install on macOS</a></li><li><a href="/docs/quickstart/" data-nav-title="Quickstart">Quickstart</a></li><li><a href="/docs/api/" data-nav-title="The API and your first request">The API and your first request</a></li></ul></details><details class="doc-group" id="nav-concepts"><summary class="doc-group-name">Concepts</summary><ul class="doc-links"><li><a href="/docs/concepts/" data-nav-title="Core concepts">Core concepts</a></li><li><a href="/docs/scheduling/" data-nav-title="Admission, scheduling and placement">Admission, scheduling and placement</a></li></ul></details><details class="doc-group" id="nav-everyday-use"><summary class="doc-group-name">Everyday use</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/models/" data-nav-title="Models and the catalog">Models and the catalog</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li></ul></details><details class="doc-group" id="nav-your-machines"><summary class="doc-group-name">Your machines</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Adding and operating machines">Adding and operating machines</a></li><li><a href="/docs/governance/" data-nav-title="Organisation limits">Organisation limits</a></li><li><a href="/docs/health/" data-nav-title="Health and diagnostics">Health and diagnostics</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li></ul></details><details class="doc-group" id="nav-account"><summary class="doc-group-name">Account</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts, plans and entitlements">Accounts, plans and entitlements</a></li></ul></details><details class="doc-group" id="nav-operations" open><summary class="doc-group-name">Operations</summary><ul class="doc-links"><li><a href="/docs/updates/" data-nav-title="Updating and release channels">Updating and release channels</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li><li><a href="/docs/troubleshooting/" aria-current="page" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details></nav>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau"><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet"><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Planning a fleet upgrade">Planning a fleet upgrade</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference" open><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" aria-current="page" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
     </div>
   </aside>
 
   <main id="main" class="doc-main">
     <article class="doc-body">
-      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Operations</p>
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Reference</p>
       <h1 class="doc-title">Troubleshooting</h1>
-      <p class="lede doc-lede">Organised by what you are seeing. Start with <code>nodeau doctor</code> — it is read-only, and it usually names the problem directly.</p>
-      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#installation">Installation</a></li><li><a href="#nvidia-and-the-gpu">NVIDIA and the GPU</a></li><li><a href="#macos">macOS</a></li><li><a href="#models">Models</a></li><li><a href="#the-api">The API</a></li><li><a href="#fleets">Fleets</a></li><li><a href="#batch">Batch</a></li><li><a href="#still-stuck">Still stuck</a></li></ul></nav>
+      <p class="lede doc-lede">Organised by what you are seeing, with the fix first. Start with <code>nodeau doctor</code>, which is read-only and usually names the problem for you.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#installation">Installation</a></li><li><a href="#nvidia-and-the-gpu">NVIDIA and the GPU</a></li><li><a href="#macos">macOS</a></li><li><a href="#models">Models</a></li><li><a href="#the-api">The API</a></li><li><a href="#fleets">Fleets</a></li><li><a href="#upgrade-plans">Upgrade plans</a></li><li><a href="#batch">Batch</a></li><li><a href="#still-stuck">Still stuck</a></li></ul></nav>
       <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-1"><code>nodeau doctor
 nodeau doctor --json     # the same, with codes, for a script</code></pre></div>
-<p>Every doctor code is listed under <a href="/docs/health/#doctor-codes">health and diagnostics</a>, and every refusal code under <a href="/docs/scheduling/#reason-codes">admission</a>.</p>
+<p>Every doctor code is listed under <a href="/docs/health/#doctor-codes">health and alerts</a>, and every refusal code under <a href="/docs/scheduling/#reason-codes">how Nodeau decides</a>.</p>
 <hr class="doc-rule">
 <h2 id="installation" class="doc-h">Installation<a class="doc-anchor" href="#installation" aria-label="Link to this section">#</a></h2>
 <h3 id="nodeau-command-not-found" class="doc-h"><code>nodeau: command not found</code><a class="doc-anchor" href="#nodeau-command-not-found" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> <code>~/.local/bin</code> is not on your <code>PATH</code>. The bootstrap installs there deliberately, because it is a directory you own and needs no privilege.</p>
-<p><strong>Confirm.</strong></p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-2"><code>ls -l ~/.local/bin/nodeau</code></pre></div>
-<p><strong>Resolve.</strong> On Linux:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-3"><code>export PATH=&quot;$HOME/.local/bin:$PATH&quot;
+<p><strong>Fix.</strong> Put <code>~/.local/bin</code> on your <code>PATH</code>. On Linux:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-2"><code>export PATH=&quot;$HOME/.local/bin:$PATH&quot;
 echo &#x27;export PATH=&quot;$HOME/.local/bin:$PATH&quot;&#x27; &gt;&gt; ~/.bashrc</code></pre></div>
-<p>On macOS it is <strong><code>~/.zprofile</code></strong>, not <code>~/.zshrc</code>. Terminal.app runs login shells, so a line in <code>.zshrc</code> works by hand and fails in a script, an <code>ssh</code> command or a LaunchAgent.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-4"><code>echo &#x27;export PATH=&quot;$HOME/.local/bin:$PATH&quot;&#x27; &gt;&gt; ~/.zprofile</code></pre></div>
-<p>It takes effect in a <strong>new</strong> terminal window. <code>nodeau doctor</code> reports this as <code>NOT_ON_PATH</code>.</p>
-<h3 id="the-installer-says-the-checksum-does-not-match" class="doc-h">The installer says the checksum does not match<a class="doc-anchor" href="#the-installer-says-the-checksum-does-not-match" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> Usually an interrupted or truncated download.</p>
-<p><strong>Resolve.</strong> Run it again. It refused to install, which is correct.</p>
-<p><strong>What not to do.</strong> Do not work around it, and do not install an archive that failed verification. If it repeats, report it — <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>.</p>
+<p>On a Mac the line belongs in <strong><code>~/.zprofile</code></strong>, because Terminal.app starts login shells, and a line in <code>.zshrc</code> works by hand and then goes missing in a script, an <code>ssh</code> command or a LaunchAgent:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-3"><code>echo &#x27;export PATH=&quot;$HOME/.local/bin:$PATH&quot;&#x27; &gt;&gt; ~/.zprofile</code></pre></div>
+<p>Open a <strong>new</strong> terminal window and it is there.</p>
+<p><strong>Why.</strong> The bootstrap installs into <code>~/.local/bin</code> on purpose: it is a directory you own and needs no privilege. <code>ls -l ~/.local/bin/nodeau</code> confirms the binary is there, and <code>nodeau doctor</code> reports this case as <code>NOT_ON_PATH</code>.</p>
+<h3 id="the-installer-reports-a-checksum-mismatch" class="doc-h">The installer reports a checksum mismatch<a class="doc-anchor" href="#the-installer-reports-a-checksum-mismatch" aria-label="Link to this section">#</a></h3>
+<p><strong>Fix.</strong> Run it again. A mismatch is almost always an interrupted or truncated download, and the installer refused to install it, which is exactly right.</p>
+<p>If it happens twice, tell us at <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>, and keep to the verified path: an archive that failed its checksum is never worth installing by hand.</p>
 <h3 id="the-install-stopped-partway-through" class="doc-h">The install stopped partway through<a class="doc-anchor" href="#the-install-stopped-partway-through" aria-label="Link to this section">#</a></h3>
-<p><strong>Resolve.</strong> Run <code>nodeau install</code> again. It re-checks everything, skips what is done, and never re-decides who owns a component. The ownership ledger records what happened, so a resumed install does not lose track of what it installed versus what it adopted.</p>
-<h3 id="installsh-refuses-to-run" class="doc-h"><code>install.sh</code> refuses to run<a class="doc-anchor" href="#installsh-refuses-to-run" aria-label="Link to this section">#</a></h3>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Message names</th><th>Why</th></tr></thead><tbody><tr><td data-label="Message names">Running as root</td><td data-label="Why">The bootstrap installs into a directory you own and calls no <code>sudo</code>. Run it as yourself</td></tr><tr><td data-label="Message names">Windows Subsystem for Linux</td><td data-label="Why">The GPU path through WSL is genuinely different and untested. Native Linux is supported</td></tr><tr><td data-label="Message names">An Intel Mac</td><td data-label="Why">Metal execution needs an M-series chip</td></tr><tr><td data-label="Message names">Neither <code>sha256sum</code> nor <code>shasum</code></td><td data-label="Why">Nodeau will not install a binary it cannot verify</td></tr></tbody></table></div>
-<p>Each refusal is specific rather than a generic "unsupported platform", because they send you to very different places. Nothing is changed on your system in any of these cases.</p>
+<p><strong>Fix.</strong> Run <code>nodeau install</code> again. It re-checks everything, skips what is done, and never re-decides who owns a component. The ownership ledger keeps track of what it installed and what it adopted, so a resumed install picks up cleanly.</p>
+<h3 id="installsh-stops-with-a-message" class="doc-h"><code>install.sh</code> stops with a message<a class="doc-anchor" href="#installsh-stops-with-a-message" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>The message names</th><th>What to do</th></tr></thead><tbody><tr><td data-label="The message names">Running as root</td><td data-label="What to do">Run it as yourself. It installs into a directory you own and calls no <code>sudo</code></td></tr><tr><td data-label="The message names">Windows Subsystem for Linux</td><td data-label="What to do">Install on a native Linux machine or an Apple Silicon Mac. The GPU path through WSL is different, and it is on the <a href="/roadmap/">roadmap</a></td></tr><tr><td data-label="The message names">An Intel Mac</td><td data-label="What to do">Use an Apple Silicon (M-series) Mac, which runs models on its GPU through Metal</td></tr><tr><td data-label="The message names">Neither <code>sha256sum</code> nor <code>shasum</code></td><td data-label="What to do">Install one of them, so the download can be verified</td></tr></tbody></table></div>
+<p>Each message is specific because each one sends you somewhere different. Nothing on your system has changed in any of these cases.</p>
 <h3 id="nodeau-install-warns-about-my-distribution" class="doc-h"><code>nodeau install</code> warns about my distribution<a class="doc-anchor" href="#nodeau-install-warns-about-my-distribution" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> Nodeau is developed and measured on Ubuntu 24.04 LTS, and the pinned package versions are chosen for it. Another distribution is a <strong>warning, not a refusal</strong> — Nodeau tells you and continues.</p>
-<p><strong>What to expect.</strong> The pinned NVIDIA Container Toolkit package may not exist for your distribution. <code>--skip-toolkit</code> and <code>--skip-k3s</code> let you provide those yourself.</p>
-<h3 id="not-enough-disk-or-an-unsupported-filesystem" class="doc-h">Not enough disk, or an unsupported filesystem<a class="doc-anchor" href="#not-enough-disk-or-an-unsupported-filesystem" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> Nodeau refuses to put state on NTFS or a filesystem it cannot identify, and treats any NTFS partition — and every sibling partition on its disk — as protected.</p>
-<p><strong>Confirm.</strong></p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-5"><code>nodeau environment        # the disk classification, read-only
-df -h /var/lib</code></pre></div>
-<p><strong>Resolve.</strong> Point the cache at a native filesystem with <code>nodeau install --cache-dir &lt;path&gt;</code>.</p>
+<p><strong>What to expect.</strong> Nodeau is developed and measured on Ubuntu 24.04 LTS, and its pinned package versions are chosen for it. On another distribution it tells you and carries on.</p>
+<p><strong>If a package is missing.</strong> The pinned NVIDIA Container Toolkit may not exist for your distribution. <code>--skip-toolkit</code> and <code>--skip-k3s</code> let you provide those pieces yourself.</p>
+<h3 id="disk-space-or-a-filesystem-nodeau-keeps-clear-of" class="doc-h">Disk space, or a filesystem Nodeau keeps clear of<a class="doc-anchor" href="#disk-space-or-a-filesystem-nodeau-keeps-clear-of" aria-label="Link to this section">#</a></h3>
+<p><strong>Fix.</strong> Point the model cache at a native Linux filesystem with room to spare:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-4"><code>nodeau install --cache-dir &lt;path&gt;</code></pre></div>
+<p><strong>Why.</strong> Nodeau keeps its state on native filesystems and treats any NTFS partition, and every other partition on the same disk, as protected. On a dual-boot machine that is what keeps Nodeau clear of the other operating system. <code>nodeau environment</code> shows how each disk was classified, and <code>df -h /var/lib</code> shows the room left.</p>
 <h3 id="there-is-already-a-kubernetes-cluster-here" class="doc-h">There is already a Kubernetes cluster here<a class="doc-anchor" href="#there-is-already-a-kubernetes-cluster-here" aria-label="Link to this section">#</a></h3>
-<p>Nodeau <strong>adopts</strong> it: it uses it as found, writes that down, will not install K3s alongside it, will not reconfigure it, and will never delete it. That record is what makes uninstall safe.</p>
-<p>If you would rather Nodeau did not touch Kubernetes at all, <code>nodeau install --skip-k3s</code>.</p>
+<p><strong>Nothing to fix.</strong> Nodeau <strong>adopts</strong> it: it uses the cluster as it found it, writes that down, and leaves it installed, configured and owned exactly as before. That record is what makes uninstalling safe.</p>
+<p>If you would rather Nodeau left Kubernetes to you entirely, use <code>nodeau install --skip-k3s</code>.</p>
 <hr class="doc-rule">
 <h2 id="nvidia-and-the-gpu" class="doc-h">NVIDIA and the GPU<a class="doc-anchor" href="#nvidia-and-the-gpu" aria-label="Link to this section">#</a></h2>
 <h3 id="nvidia-smi-does-not-work" class="doc-h"><code>nvidia-smi</code> does not work<a class="doc-anchor" href="#nvidia-smi-does-not-work" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> The driver is not installed or not loaded. This is outside Nodeau: it will never install, upgrade, replace or remove your driver, because that decision affects whether your machine boots to a desktop.</p>
-<p><strong>Resolve.</strong> Install your distribution's NVIDIA driver, reboot if it asks, and confirm <code>nvidia-smi</code> prints a table before running <code>nodeau install</code>.</p>
-<p>On a machine with Secure Boot enabled, use your distribution's <strong>pre-signed</strong> modules rather than DKMS — a DKMS build needs somebody at the physical keyboard to enrol a key at boot, on a machine whose only display may be driven by the card that is about to stop working.</p>
+<p><strong>Fix.</strong> Install your distribution's NVIDIA driver, reboot if it asks, and check that <code>nvidia-smi</code> prints a table of GPUs. Then run <code>nodeau install</code>.</p>
+<p>With Secure Boot on, use your distribution's <strong>pre-signed</strong> kernel modules. A DKMS build needs somebody at the physical keyboard to enrol a key at boot, on a machine whose display may be driven by the very card that is about to need it.</p>
+<p><strong>Why it is your step.</strong> The driver decides whether your machine boots to a desktop, so Nodeau leaves it to you and checks it rather than changing it.</p>
 <h3 id="nvidia-smi-works-but-nodeau-says-the-gpu-is-unavailable" class="doc-h"><code>nvidia-smi</code> works but Nodeau says the GPU is unavailable<a class="doc-anchor" href="#nvidia-smi-works-but-nodeau-says-the-gpu-is-unavailable" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> The driver is fine and the container path is not.</p>
-<p><strong>Confirm.</strong></p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-6"><code>nodeau doctor</code></pre></div>
-<p><strong>Resolve.</strong> If doctor reports the NVIDIA Container Toolkit missing, <code>nodeau install</code> installs it. If the toolkit is present but no CDI specification exists in <code>/etc/cdi</code> or <code>/var/run/cdi</code>, a container cannot claim the GPU; <code>nodeau install</code> generates one. The equivalent by hand is:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-7"><code>sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml</code></pre></div>
+<p><strong>Fix.</strong> Run <code>nodeau doctor</code>. If it reports the NVIDIA Container Toolkit missing, <code>nodeau install</code> installs it. If the toolkit is present and no CDI specification exists in <code>/etc/cdi</code> or <code>/var/run/cdi</code>, <code>nodeau install</code> generates one. By hand, the equivalent is:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-5"><code>sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml</code></pre></div>
+<p><strong>Why.</strong> The driver is fine and the container path is the missing link.</p>
 <h3 id="device-allocators-overlap" class="doc-h"><code>DEVICE_ALLOCATORS_OVERLAP</code><a class="doc-anchor" href="#device-allocators-overlap" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> The machine is serving GPU work through <strong>both</strong> the count-based device plugin and per-device claims. Two independent allocators over the same cards can both hand out the same card.</p>
-<p><strong>Resolve.</strong> This one is a genuine fault. Run <code>nodeau install</code> on that machine, which reconciles it, then <code>nodeau doctor</code> to confirm.</p>
+<p><strong>Fix.</strong> Run <code>nodeau install</code> on that machine, which reconciles it, then <code>nodeau doctor</code> to confirm.</p>
+<p><strong>Why it matters.</strong> The machine is serving GPU work through <strong>both</strong> the count-based device plugin and per-device claims, and two allocators over the same cards can hand out the same card twice. This one deserves prompt attention.</p>
 <h3 id="devices-not-independent" class="doc-h"><code>DEVICES_NOT_INDEPENDENT</code><a class="doc-anchor" href="#devices-not-independent" aria-label="Link to this section">#</a></h3>
-<p><strong>Not a fault.</strong> It is the state every machine is in until it opts in to per-device scheduling. It means the machine has more than one GPU and allocates them by count rather than by name.</p>
+<p><strong>Nothing to fix.</strong> It is the normal state of a machine with more than one GPU until it opts in to scheduling each card by name. Until then it allocates its cards by count.</p>
 <h3 id="device-driver-missing" class="doc-h"><code>DEVICE_DRIVER_MISSING</code><a class="doc-anchor" href="#device-driver-missing" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> A machine is switched to per-device scheduling and nothing is offering its GPUs.</p>
-<p><strong>Resolve.</strong> <code>nodeau install</code> on that machine installs the per-device driver. This is also the repair for an installation made by a release older than the one that began installing it.</p>
+<p><strong>Fix.</strong> <code>nodeau install</code> on that machine installs the per-device driver. It is also the repair for an installation made by an older release, before the driver was part of every install.</p>
+<p><strong>Why.</strong> The machine is set to schedule each card by name, and nothing is offering its GPUs yet.</p>
 <h3 id="a-card-disappeared-or-moved-between-machines" class="doc-h">A card disappeared, or moved between machines<a class="doc-anchor" href="#a-card-disappeared-or-moved-between-machines" aria-label="Link to this section">#</a></h3>
-<p><strong>What Nodeau does.</strong> It believes the <strong>newest</strong> report of a card. The machine that lost it stops offering it. A workload whose placement names a card its machine no longer reports is <strong>withdrawn</strong>, and its service is kept so it can start again when a placement is possible.</p>
-<p><strong>What Nodeau does not do.</strong> It does not move the workload to another machine. There is no failover.</p>
-<p><strong>Confirm.</strong></p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-8"><code>nodeau fleet list
+<p><strong>What happens.</strong> Nodeau believes the <strong>newest</strong> report of a card, and the machine that lost it stops offering it. A workload whose placement names a card its machine no longer reports is <strong>withdrawn</strong>, and its service is kept, so it starts again when a placement is possible.</p>
+<p><strong>Check it.</strong></p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-6"><code>nodeau fleet list
 nodeau service explain &lt;name&gt;</code></pre></div>
 <h3 id="the-hardware-changed-after-install" class="doc-h">The hardware changed after install<a class="doc-anchor" href="#the-hardware-changed-after-install" aria-label="Link to this section">#</a></h3>
-<p><strong>Resolve.</strong> Re-run <code>nodeau install</code>, then <code>nodeau doctor</code>. A stale hardware report shows as <code>HARDWARE_REPORT_STALE</code> and admission fails closed for that machine until it is fresh — which is the safe direction.</p>
+<p><strong>Fix.</strong> Re-run <code>nodeau install</code>, then <code>nodeau doctor</code>. Until the machine's report is fresh you will see <code>HARDWARE_REPORT_STALE</code>, and admission waits for a fresh report on that machine before placing anything there.</p>
 <hr class="doc-rule">
 <h2 id="macos" class="doc-h">macOS<a class="doc-anchor" href="#macos" aria-label="Link to this section">#</a></h2>
 <h3 id="on-a-mac-nodeau-prints-nothing-and-exits-137" class="doc-h"><code>nodeau</code> prints nothing and exits 137<a class="doc-anchor" href="#on-a-mac-nodeau-prints-nothing-and-exits-137" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> You downloaded the archive <strong>in a browser</strong>. macOS tags anything a browser saves as quarantined, and because Nodeau is not signed with an Apple Developer ID, Gatekeeper refuses to run it. From a terminal there is no dialog and no error message — the process is killed with signal 9, so you get an empty line and exit code 137.</p>
-<p><strong>Resolve.</strong> Clear the flag on <strong>everything you extracted</strong>, not just the <code>nodeau</code> binary. The archive also contains the model runtime, and those files are quarantined too — clearing only the one file moves the same failure to the moment you first serve a model.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-9"><code>xattr -dr com.apple.quarantine /path/to/extracted/folder</code></pre></div>
-<p><code>-d</code> deletes the attribute and <code>-r</code> applies it through the folder.</p>
-<p><strong>What not to do.</strong> Do not clear only the binary.</p>
-<p><strong>Better.</strong> The documented install does not have this problem: <code>curl</code> does not set the quarantine flag.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-10"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash</code></pre></div>
+<p><strong>Fix.</strong> Clear the quarantine flag on <strong>everything you extracted</strong>, not only the <code>nodeau</code> binary:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-7"><code>xattr -dr com.apple.quarantine /path/to/extracted/folder</code></pre></div>
+<p><code>-d</code> deletes the attribute and <code>-r</code> applies it through the folder. The archive also holds the model runtime, and clearing only the binary just moves the same stop to the first time you serve a model.</p>
+<p><strong>Easier still.</strong> Install with the documented command, because <code>curl</code> never sets the quarantine flag:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-8"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash</code></pre></div>
+<p><strong>Why.</strong> An archive downloaded <strong>in a browser</strong> is tagged as quarantined, and Gatekeeper stops a binary that is not signed with an Apple Developer ID. From a terminal there is no dialog: the process simply ends with signal 9, which shows up as an empty line and exit code 137.</p>
 <h3 id="a-model-that-worked-yesterday-is-refused-today" class="doc-h">A model that worked yesterday is refused today<a class="doc-anchor" href="#a-model-that-worked-yesterday-is-refused-today" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> Apple Silicon uses <strong>unified memory</strong>: the system, your applications and the GPU share one pool. Whether a model fits depends on what else is running, and it changes between one attempt and the next.</p>
-<p><strong>This is Nodeau reading the machine correctly.</strong> A refusal is the product working — the alternative is an out-of-memory kill on a machine whose display is driven by the same GPU.</p>
-<p><strong>Resolve.</strong> Close something, or run a smaller model or a smaller context. If you want to accept the risk for one workload, <code>nodeau run --accept-estimate-risk</code> or <code>--spend-safety-reserve</code>, both explicit and both recorded.</p>
+<p><strong>Fix.</strong> Close something memory-hungry, or choose a smaller model or a smaller context. To take the risk for one workload yourself, <code>nodeau run --accept-estimate-risk</code> or <code>--spend-safety-reserve</code> do it explicitly, and both are recorded.</p>
+<p><strong>Why.</strong> Apple Silicon uses <strong>unified memory</strong>: the system, your applications and the GPU share one pool, so what fits depends on what else is running at that moment. The refusal is Nodeau reading the machine correctly and keeping it clear of an out-of-memory kill. See <a href="/docs/install-macos/#unified-memory">unified memory</a>.</p>
 <h3 id="runtime-missing-runtime-corrupt-runtime-unverified-runtime-unmanaged" class="doc-h"><code>RUNTIME_MISSING</code>, <code>RUNTIME_CORRUPT</code>, <code>RUNTIME_UNVERIFIED</code>, <code>RUNTIME_UNMANAGED</code><a class="doc-anchor" href="#runtime-missing-runtime-corrupt-runtime-unverified-runtime-unmanaged" aria-label="Link to this section">#</a></h3>
-<p>Four separate codes because they need different answers.</p>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Means</th><th>Resolve</th></tr></thead><tbody><tr><td data-label="Code"><code>RUNTIME_MISSING</code></td><td data-label="Means">No model runtime is installed, so nothing can be executed</td><td data-label="Resolve"><code>nodeau install</code> — the macOS archive bundles one</td></tr><tr><td data-label="Code"><code>RUNTIME_CORRUPT</code></td><td data-label="Means">The installed runtime's bytes no longer match the digests recorded when it was installed</td><td data-label="Resolve"><code>nodeau install</code> reinstalls it. Installing is verify-then-promote, so a failed install leaves the previous runtime serving</td></tr><tr><td data-label="Code"><code>RUNTIME_UNVERIFIED</code></td><td data-label="Means">Installed, and its integrity <strong>was not checked on this run</strong>. Deliberately not a pass — "was not checked" and "is intact" are different claims</td><td data-label="Resolve">Run <code>nodeau doctor</code> again</td></tr><tr><td data-label="Code"><code>RUNTIME_UNMANAGED</code></td><td data-label="Means">A runtime Nodeau did not install, so it has no version, no backend and no digests</td><td data-label="Resolve">Fine for development. <code>nodeau install --runtime &lt;path&gt;</code> installs a managed one</td></tr></tbody></table></div>
-<h3 id="my-mac-will-not-join-the-fleet" class="doc-h">My Mac will not join the fleet<a class="doc-anchor" href="#my-mac-will-not-join-the-fleet" aria-label="Link to this section">#</a></h3>
-<p>It cannot, by design. A Mac is a <strong>native execution plane</strong>, not a Kubernetes node. It runs standalone, and Nodeau will not register it as something nothing can be scheduled onto. See <a href="/docs/install-macos/#what-a-mac-can-and-cannot-do">what a Mac can and cannot do</a>.</p>
-<h3 id="nodeau-batch-health-or-governance-refuses-on-my-mac" class="doc-h"><code>nodeau batch</code>, <code>health</code> or <code>governance</code> refuses on my Mac<a class="doc-anchor" href="#nodeau-batch-health-or-governance-refuses-on-my-mac" aria-label="Link to this section">#</a></h3>
-<p>Expected. Those are fleet capabilities that read the cluster datastore, and they refuse by name rather than failing obscurely. Batch inference is <strong>absent</strong> on darwin rather than untested.</p>
-<h3 id="an-untested-macos-version" class="doc-h">An untested macOS version<a class="doc-anchor" href="#an-untested-macos-version" aria-label="Link to this section">#</a></h3>
-<p>Nodeau checks no macOS version number anywhere, and the installer does not branch on one. Untested is not unsupported — the choice is left to you, and a report from a machine we have never seen is the most useful thing we get.</p>
+<p>Four codes, because each needs a different answer.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Means</th><th>Fix</th></tr></thead><tbody><tr><td data-label="Code"><code>RUNTIME_MISSING</code></td><td data-label="Means">No model runtime is installed yet</td><td data-label="Fix"><code>nodeau install</code>: the macOS archive bundles one</td></tr><tr><td data-label="Code"><code>RUNTIME_CORRUPT</code></td><td data-label="Means">The runtime's bytes no longer match the digests recorded at install</td><td data-label="Fix"><code>nodeau install</code> reinstalls it. It verifies before it switches over, so the previous runtime keeps serving if anything goes wrong</td></tr><tr><td data-label="Code"><code>RUNTIME_UNVERIFIED</code></td><td data-label="Means">Installed, and its integrity was <strong>not checked on this run</strong></td><td data-label="Fix">Run <code>nodeau doctor</code> again. "Not checked" and "intact" are different answers, so this is deliberately not a pass</td></tr><tr><td data-label="Code"><code>RUNTIME_UNMANAGED</code></td><td data-label="Means">A runtime Nodeau did not install, so it carries no version, backend or digests</td><td data-label="Fix">Fine for development. <code>nodeau install --runtime &lt;path&gt;</code> installs a managed one</td></tr></tbody></table></div>
+<h3 id="using-a-mac-alongside-a-fleet" class="doc-h">Using a Mac alongside a fleet<a class="doc-anchor" href="#using-a-mac-alongside-a-fleet" aria-label="Link to this section">#</a></h3>
+<p>A Mac runs Nodeau <strong>standalone</strong>, as its own private endpoint on the Mac, and that is where it shines. Your Linux machines with NVIDIA GPUs form the fleet. The two run happily side by side, each with its own endpoint and its own <code>nodeau</code> commands. See <a href="/docs/install-macos/">install on a Mac</a>.</p>
+<h3 id="nodeau-batch-health-or-governance-on-a-mac" class="doc-h"><code>nodeau batch</code>, <code>health</code> or <code>governance</code> on a Mac<a class="doc-anchor" href="#nodeau-batch-health-or-governance-on-a-mac" aria-label="Link to this section">#</a></h3>
+<p>These are fleet commands, so on a Mac each one explains that and exits. Batch jobs, machine health and organisation policies all run on the Linux machines in a fleet.</p>
+<h3 id="a-macos-version-we-have-not-tried" class="doc-h">A macOS version we have not tried<a class="doc-anchor" href="#a-macos-version-we-have-not-tried" aria-label="Link to this section">#</a></h3>
+<p>Nodeau checks no macOS version number, and the installer leaves the choice to you. Go ahead, and if something looks off, a report from a machine we have never seen is the most useful thing we get.</p>
 <hr class="doc-rule">
 <h2 id="models" class="doc-h">Models<a class="doc-anchor" href="#models" aria-label="Link to this section">#</a></h2>
-<h3 id="nodeau-refuses-to-run-my-model" class="doc-h">Nodeau refuses to run my model<a class="doc-anchor" href="#nodeau-refuses-to-run-my-model" aria-label="Link to this section">#</a></h3>
-<p><strong>That is the product working.</strong> Nodeau predicts peak VRAM before scheduling and refuses what will not fit rather than letting it crash-loop.</p>
-<p><strong>Confirm.</strong></p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-11"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-11"><code>nodeau service explain &lt;name&gt;</code></pre></div>
-<p>That prints the whole calculation: what the card can address, what else is using it, the safety reserve, and what the model needs — plus a typed code and remedies.</p>
-<p><strong>Resolve</strong>, depending on the code:</p>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Try</th></tr></thead><tbody><tr><td data-label="Code"><code>GPU_TOO_SMALL</code></td><td data-label="Try">A smaller context (<code>--context-size 2048</code>), a smaller model, or free the card</td></tr><tr><td data-label="Code"><code>GPU_ALREADY_ALLOCATED</code></td><td data-label="Try"><code>nodeau ps</code> to see what holds it, then wait or stop it</td></tr><tr><td data-label="Code"><code>GPU_UNAVAILABLE</code></td><td data-label="Try"><code>nodeau doctor</code> — no healthy GPU was reported at all</td></tr><tr><td data-label="Code"><code>HARDWARE_STALE</code></td><td data-label="Try">Check the machine is reporting: <code>nodeau fleet list</code></td></tr><tr><td data-label="Code"><code>MACHINE_DRAINING</code></td><td data-label="Try"><code>nodeau scheduling undrain --node &lt;machine&gt;</code></td></tr><tr><td data-label="Code"><code>ACCELERATOR_SET_UNSUPPORTED</code></td><td data-label="Try">The <strong>shape</strong> of the request cannot be run. Not a memory problem — ask for a different set of cards</td></tr></tbody></table></div>
-<p><strong>What not to do.</strong> There is no <code>--force</code>, and admission cannot be bypassed. If the only obstacle is the unmeasured-hardware margin, <code>--accept-estimate-risk</code> removes <strong>that margin only</strong>, and says so.</p>
+<h3 id="nodeau-refused-to-start-my-model" class="doc-h">Nodeau refused to start my model<a class="doc-anchor" href="#nodeau-refused-to-start-my-model" aria-label="Link to this section">#</a></h3>
+<p><strong>Fix.</strong> Ask for the reasoning, then change the one thing it names:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-9"><code>nodeau service explain &lt;name&gt;</code></pre></div>
+<p>It prints the whole calculation: what the card can address, what else is using it, the safety reserve and what the model needs, plus a typed code and remedies.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Try</th></tr></thead><tbody><tr><td data-label="Code"><code>GPU_TOO_SMALL</code></td><td data-label="Try">A smaller context (<code>--context-size 2048</code>), a smaller model, or free the card</td></tr><tr><td data-label="Code"><code>GPU_ALREADY_ALLOCATED</code></td><td data-label="Try"><code>nodeau ps</code> to see what holds it, then wait or stop it</td></tr><tr><td data-label="Code"><code>GPU_UNAVAILABLE</code></td><td data-label="Try"><code>nodeau doctor</code>: no healthy GPU was reported</td></tr><tr><td data-label="Code"><code>HARDWARE_STALE</code></td><td data-label="Try">Check the machine is reporting with <code>nodeau fleet list</code></td></tr><tr><td data-label="Code"><code>MACHINE_DRAINING</code></td><td data-label="Try"><code>nodeau scheduling undrain --node &lt;machine&gt;</code></td></tr><tr><td data-label="Code"><code>ACCELERATOR_SET_UNSUPPORTED</code></td><td data-label="Try">The <strong>shape</strong> of the request is the problem rather than memory: ask for a different set of cards</td></tr></tbody></table></div>
+<p><strong>Good to know.</strong> A refusal is the product doing its job: the alternative is a model that loads, runs out of memory and crashes. Admission has no bypass. When the only thing in the way is the extra margin for hardware nobody has measured, <code>--accept-estimate-risk</code> removes <strong>that margin alone</strong>, and says so.</p>
 <h3 id="it-says-there-is-no-validated-profile-for-my-gpu" class="doc-h">It says there is no validated profile for my GPU<a class="doc-anchor" href="#it-says-there-is-no-validated-profile-for-my-gpu" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> Nodeau has no measurement for this model, this configuration and hardware like yours, so it computes a figure and adds a further margin — and labels the decision <strong>estimated</strong>.</p>
-<p>That is a limitation, not a failure. Nodeau will not invent numbers for hardware nobody has measured, because a guess that is too low is an out-of-memory kill.</p>
-<p><strong>Resolve.</strong> <code>--accept-estimate-risk</code> if you want to take that risk yourself, or a smaller configuration.</p>
+<p><strong>Fix.</strong> Either take the risk yourself with <code>--accept-estimate-risk</code>, or choose a smaller configuration.</p>
+<p><strong>Why.</strong> Nodeau has no measurement for this model and configuration on hardware like yours, so it computes a figure from the model's own shape, adds a further margin, and labels the decision <strong>estimated</strong>. A guess that came out too low would be an out-of-memory kill, so the estimate leans cautious.</p>
 <h3 id="model-unverified-or-model-verification-pending" class="doc-h"><code>MODEL_UNVERIFIED</code> or <code>MODEL_VERIFICATION_PENDING</code><a class="doc-anchor" href="#model-unverified-or-model-verification-pending" aria-label="Link to this section">#</a></h3>
-<p><code>MODEL_VERIFICATION_PENDING</code> clears by itself — a hash is in progress.</p>
-<p><code>MODEL_UNVERIFIED</code> means the file is present, the right size, and its digest has not been established. Only a verified copy can be placed against.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-12"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-12"><code>nodeau model verify &lt;model&gt;
+<p><code>MODEL_VERIFICATION_PENDING</code> clears by itself while a hash finishes.</p>
+<p><code>MODEL_UNVERIFIED</code> means the file is present and the right size, and its digest has not been established yet. Only a verified copy can be placed against:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-10"><code>nodeau model verify &lt;model&gt;
 nodeau model status</code></pre></div>
 <h3 id="model-artifact-invalid-or-model-corrupt" class="doc-h"><code>MODEL_ARTIFACT_INVALID</code> or <code>MODEL_CORRUPT</code><a class="doc-anchor" href="#model-artifact-invalid-or-model-corrupt" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> The file on disk is not what was pinned. Presence is not integrity — a corrupted model loads, serves fluent-looking answers and reports healthy, which is why only a computed SHA-256 counts.</p>
-<p><strong>Resolve.</strong></p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-13"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-13"><code>nodeau model remove &lt;model&gt;
+<p><strong>Fix.</strong> Remove this machine's copy and fetch it again:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-11"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-11"><code>nodeau model remove &lt;model&gt;
 nodeau model install &lt;model&gt;</code></pre></div>
-<p>A file that failed verification during download was <strong>moved aside</strong> rather than deleted, so the evidence survives.</p>
-<p><strong>Worth knowing.</strong> If this keeps happening on one machine, suspect its storage or memory rather than the download. Comparing a buffered read with a direct read of the same file is how this class of fault is localised.</p>
+<p><strong>Why.</strong> The file on disk is not what was pinned. A corrupted model can load, serve fluent-looking answers and report healthy, which is why only a computed SHA-256 counts. A file that failed verification during download was <strong>moved aside</strong> rather than deleted, so the evidence is still there.</p>
+<p><strong>Worth knowing.</strong> If this keeps happening on one machine, suspect its storage or memory rather than the download: comparing a buffered read with a direct read of the same file is how this kind of fault is pinned down.</p>
 <h3 id="two-model-install-runs-for-the-same-model" class="doc-h">Two <code>model install</code> runs for the same model<a class="doc-anchor" href="#two-model-install-runs-for-the-same-model" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> Both resolve the same partial file and write to it, and the download is corrupted.</p>
-<p><strong>It fails safe</strong>: the digest catches it and the bytes are quarantined. The loser reports a missing temporary file rather than "another install is already running", which is confusing but harmless.</p>
-<p><strong>Resolve.</strong> Run it once and wait. A slow install and an impatient retry is an ordinary thing to do, and this is a known rough edge.</p>
+<p><strong>Fix.</strong> Run one install and let it finish.</p>
+<p><strong>Why.</strong> Two runs write to the same partial file and the result fails its checksum. It fails safe, because the digest catches it and the bytes are quarantined. The second run reports a missing temporary file rather than "another install is already running", which reads oddly and is harmless.</p>
 <h3 id="i-imported-different-bytes-under-the-same-alias" class="doc-h">I imported different bytes under the same alias<a class="doc-anchor" href="#i-imported-different-bytes-under-the-same-alias" aria-label="Link to this section">#</a></h3>
-<p>Nodeau created a <strong>new artifact and said so</strong>. It never silently repoints the old one. The previous qualification evidence no longer applies and is not carried across, because it was evidence about different bytes.</p>
-<p>Run <code>nodeau model qualify &lt;alias&gt;</code> again.</p>
+<p>Nodeau created a <strong>new artifact and said so</strong>; the alias now points at the new bytes, and the old artifact is untouched. Qualification evidence belongs to the bytes it was gathered on, so run it again for the new ones:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-12"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-12"><code>nodeau model qualify &lt;alias&gt;</code></pre></div>
 <h3 id="chat-passed-and-tool-calling-failed" class="doc-h">Chat passed and tool calling failed<a class="doc-anchor" href="#chat-passed-and-tool-calling-failed" aria-label="Link to this section">#</a></h3>
-<p>That is <code>Partial</code>, and it is a <strong>first-class outcome</strong>. The model stays usable for exactly what it proved. Nodeau will not claim a capability an imported model has not demonstrated. See <a href="/docs/byom/#outcomes">qualification outcomes</a>.</p>
+<p>That is <code>Partial</code>, and it is a first-class outcome: the model stays usable for exactly what it proved. See <a href="/docs/byom/#qualification">qualification outcomes</a>.</p>
 <h3 id="an-imported-model-is-unsupported" class="doc-h">An imported model is <code>Unsupported</code><a class="doc-anchor" href="#an-imported-model-is-unsupported" aria-label="Link to this section">#</a></h3>
-<p><strong>Your file is fine.</strong> It is a valid GGUF for an architecture this build's runtime does not implement. A later Nodeau with a newer runtime may well run it.</p>
+<p><strong>Your file is fine.</strong> It is a valid GGUF for an architecture this build's runtime does not implement, and a later Nodeau with a newer runtime may well run it.</p>
 <h3 id="nodeau-cannot-work-out-my-imported-models-memory-requirement" class="doc-h">Nodeau cannot work out my imported model's memory requirement<a class="doc-anchor" href="#nodeau-cannot-work-out-my-imported-models-memory-requirement" aria-label="Link to this section">#</a></h3>
-<p>The file declares no shape Nodeau can size. The artifact is imported and intact, and <strong>admission will refuse to schedule it rather than invent a figure</strong> — because a guess that is too low is an out-of-memory kill.</p>
+<p>The file declares no shape Nodeau can size. The artifact is imported and intact, and admission holds off scheduling it rather than inventing a figure, because a guess that is too low is an out-of-memory kill.</p>
 <hr class="doc-rule">
 <h2 id="the-api" class="doc-h">The API<a class="doc-anchor" href="#the-api" aria-label="Link to this section">#</a></h2>
 <h3 id="the-api-rejects-my-key" class="doc-h">The API rejects my key<a class="doc-anchor" href="#the-api-rejects-my-key" aria-label="Link to this section">#</a></h3>
-<p>Two causes, and the first is much more common.</p>
-<p><strong>You opened the endpoint in a browser.</strong> <code>http://127.0.0.1:8080/v1</code> is an API, not a web page. A browser cannot attach your key, so the server correctly refuses. Use <code>curl</code>, or point an OpenAI-compatible client at <code>http://127.0.0.1:8080/v1</code> with your key.</p>
-<p><strong>Your key changed while the model was running.</strong> The model server reads the key once, when it starts.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-14"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-14"><code>nodeau auth token qwen-local     # the token this service will actually accept
+<p>Two causes, and the first is far more common.</p>
+<p><strong>You opened the endpoint in a browser.</strong> <code>http://127.0.0.1:8080/v1</code> is an API rather than a web page, and a browser has no way to attach your key, so the server correctly refuses. Use <code>curl</code>, or point an OpenAI-compatible client at <code>http://127.0.0.1:8080/v1</code> with your key.</p>
+<p><strong>Your key changed while the model was running.</strong> The model server reads the key once, when it starts:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-13"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-13"><code>nodeau auth token qwen-local     # the token this service will actually accept
 nodeau auth publish qwen-local   # make your local key the one it enforces (restarts it)
-nodeau restart qwen-local        # or just restart it</code></pre></div>
-<p><code>nodeau auth show</code> prints your <strong>local</strong> key, which is not automatically the key a given service enforces. <code>nodeau auth token</code> checks, and refuses rather than printing one that would be rejected.</p>
+nodeau restart qwen-local        # or simply restart it</code></pre></div>
+<p><code>nodeau auth show</code> prints your <strong>local</strong> key, which is not automatically the key a given service enforces. <code>nodeau auth token</code> checks, and refuses rather than printing a key that would be rejected.</p>
 <h3 id="404-model-not-found-param-model" class="doc-h"><code>404 model_not_found</code>, <code>param: model</code><a class="doc-anchor" href="#404-model-not-found-param-model" aria-label="Link to this section">#</a></h3>
-<p>The request named a different model than this endpoint serves. One Nodeau endpoint serves exactly one model, so the request was refused rather than answered by a different one.</p>
-<p>Set <code>model</code> to what this endpoint serves, omit it, or run the other model to get its own endpoint on its own port.</p>
+<p><strong>Fix.</strong> Set <code>model</code> to what this endpoint serves, leave it out, or run the other model to get its own endpoint on its own port.</p>
+<p><strong>Why.</strong> One Nodeau endpoint serves exactly one model, so a request naming a different model is refused rather than answered by the wrong one.</p>
 <h3 id="404-model-not-found-param-path" class="doc-h"><code>404 model_not_found</code>, <code>param: path</code><a class="doc-anchor" href="#404-model-not-found-param-path" aria-label="Link to this section">#</a></h3>
-<p>This endpoint's <strong>task</strong> does not answer that route. An embedding workload does not answer <code>/v1/chat/completions</code>.</p>
-<p>The model server underneath would have replied with fluent-looking nonsense rather than an error, so Nodeau refused it instead.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-15"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-15"><code>nodeau run &lt;model&gt; --task chat --port 8083</code></pre></div>
+<p><strong>Fix.</strong> Send the request to an endpoint whose task answers that route, or run one:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-14"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-14"><code>nodeau run &lt;model&gt; --task chat --port 8083</code></pre></div>
+<p><strong>Why.</strong> An endpoint answers the routes of its own task: an embedding workload answers <code>/v1/embeddings</code>, and turns <code>/v1/chat/completions</code> away. The model server underneath would have replied with fluent-looking nonsense, so Nodeau refuses the request instead. See <a href="/docs/tasks/">embeddings, reranking, tools and vision</a>.</p>
 <h3 id="the-reply-is-empty-with-finish-reason-length" class="doc-h">The reply is empty, with <code>&quot;finish_reason&quot;: &quot;length&quot;</code><a class="doc-anchor" href="#the-reply-is-empty-with-finish-reason-length" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> The model ran out of tokens while thinking. Several curated models reason before they answer, and both come out of the same budget — so asking for a short answer by asking for few tokens is exactly backwards.</p>
-<p><strong>Resolve.</strong> Raise <code>max_tokens</code>. Nodeau's own default when Nodeau chooses is 2048; below 512 it will tell you the budget is too small to be an answer.</p>
-<p><strong>Why Nodeau does not just fix it.</strong> A client that asked for 160 asked for 160, and silently raising it would make the <code>usage</code> block a lie. Nodeau names an inadequate budget and runs it anyway.</p>
-<p>To see only the reply:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-16"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-16"><code>... | python3 -c &#x27;import json,sys; print(json.load(sys.stdin)[&quot;choices&quot;][0][&quot;message&quot;][&quot;content&quot;])&#x27;</code></pre></div>
+<p><strong>Fix.</strong> Raise <code>max_tokens</code>. When Nodeau chooses a budget itself it uses 2048, and below 512 it tells you the budget is too small to be an answer.</p>
+<p><strong>Why.</strong> The model ran out of tokens while thinking. Several curated models reason before they answer, and both come out of the same budget, so asking for a short answer by asking for few tokens works backwards.</p>
+<p><strong>Why Nodeau leaves your budget alone.</strong> A client that asked for 160 tokens asked for 160, and quietly raising it would make the <code>usage</code> block untrue. Nodeau names a small budget and runs it anyway.</p>
+<p>To print only the reply:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-15"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-15"><code>... | python3 -c &#x27;import json,sys; print(json.load(sys.stdin)[&quot;choices&quot;][0][&quot;message&quot;][&quot;content&quot;])&#x27;</code></pre></div>
 <h3 id="port-8080-is-already-in-use" class="doc-h">Port 8080 is already in use<a class="doc-anchor" href="#port-8080-is-already-in-use" aria-label="Link to this section">#</a></h3>
-<p><strong>What happens.</strong> Nodeau checks the port <strong>before</strong> installing anything and refuses with the port named, rather than letting the failure arrive later from the service manager.</p>
+<p><strong>Fix.</strong> Choose another port:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-16"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-16"><code>nodeau run qwen-local --port 8123</code></pre></div>
+<p>Nodeau checks the port <strong>before</strong> starting anything and names the port it found taken, with a command to see what holds it:</p>
 <div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="troubleshooting-code-17"><code>127.0.0.1:8080 is already in use by something on this machine.
 Choose another port with --port, or find the holder with:
   ss -tlnp &#x27;sport = :8080&#x27;</code></pre></div>
-<p><strong>Resolve.</strong></p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-18"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-18"><code>nodeau run qwen-local --port 8123</code></pre></div>
 <aside class="callout callout-note"><p class="callout-kind">Changing the port restarts the workload</p><p><code>--port</code> sets the loopback port <strong>and</strong> the in-cluster service port, and the service port is part of the workload's identity. Expect a short gap while the weights reload.</p></aside>
-<h3 id="the-endpoint-disappeared-after-i-logged-out" class="doc-h">The endpoint disappeared after I logged out<a class="doc-anchor" href="#the-endpoint-disappeared-after-i-logged-out" aria-label="Link to this section">#</a></h3>
-<p><strong>Expected.</strong> The endpoint runs as a <strong>user</strong> service, which stops when your session ends. Log back in and <code>nodeau run &lt;name&gt;</code>.</p>
-<p>To keep it running across logout and at boot, on Linux:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-19"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-19"><code>sudo loginctl enable-linger &quot;$USER&quot;</code></pre></div>
-<p>Nodeau does not do this for you: it changes session semantics for the whole account and usually needs privilege.</p>
+<h3 id="the-endpoint-stopped-after-i-logged-out" class="doc-h">The endpoint stopped after I logged out<a class="doc-anchor" href="#the-endpoint-stopped-after-i-logged-out" aria-label="Link to this section">#</a></h3>
+<p><strong>Fix.</strong> Log back in and run <code>nodeau run &lt;name&gt;</code>. To keep the endpoint running across logout and at boot on Linux:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-18"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-18"><code>sudo loginctl enable-linger &quot;$USER&quot;</code></pre></div>
+<p><strong>Why.</strong> The endpoint runs as a <strong>user</strong> service, which stops when your session ends. Lingering changes session behaviour for your whole account and usually needs privilege, so Nodeau leaves that decision to you.</p>
 <h3 id="endpoint-upstream-lost" class="doc-h"><code>ENDPOINT_UPSTREAM_LOST</code><a class="doc-anchor" href="#endpoint-upstream-lost" aria-label="Link to this section">#</a></h3>
-<p>The endpoint answers and cannot reach the model behind it.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-20"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-20"><code>nodeau status        # is the workload serving?
+<p>The endpoint answers and cannot reach the model behind it. Check that the workload is serving:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-19"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-19"><code>nodeau status
 nodeau ps
 nodeau logs &lt;name&gt;</code></pre></div>
-<h3 id="endpoint-orphaned-endpoint-unrecorded-endpoint-binary-replaced" class="doc-h"><code>ENDPOINT_ORPHANED</code> / <code>ENDPOINT_UNRECORDED</code> / <code>ENDPOINT_BINARY_REPLACED</code><a class="doc-anchor" href="#endpoint-orphaned-endpoint-unrecorded-endpoint-binary-replaced" aria-label="Link to this section">#</a></h3>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Means</th><th>Resolve</th></tr></thead><tbody><tr><td data-label="Code"><code>ENDPOINT_ORPHANED</code></td><td data-label="Means">Endpoint units exist for workloads that do not</td><td data-label="Resolve">The doctor line names the remedy; it waits holding no port</td></tr><tr><td data-label="Code"><code>ENDPOINT_UNRECORDED</code></td><td data-label="Means">An endpoint is running and Nodeau has no record of it, so <code>nodeau status</code> does not list it</td><td data-label="Resolve">Re-run <code>nodeau run &lt;name&gt;</code>, which adopts a running unit's port</td></tr><tr><td data-label="Code"><code>ENDPOINT_BINARY_REPLACED</code></td><td data-label="Means">It is running a program that has since been replaced on disk</td><td data-label="Resolve">Restart it. A replaced file is not a replaced process</td></tr></tbody></table></div>
-<h3 id="checking-the-endpoint-is-not-exposed-to-my-network" class="doc-h">Checking the endpoint is not exposed to my network<a class="doc-anchor" href="#checking-the-endpoint-is-not-exposed-to-my-network" aria-label="Link to this section">#</a></h3>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-21"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-21"><code>ss -tlnp | grep nodeau</code></pre></div>
-<p>The address must be <code>127.0.0.1:&lt;port&gt;</code>. If you ever see <code>0.0.0.0</code>, that is worth reporting immediately. <code>nodeau doctor</code> reports <code>NETWORK_EXPOSURE</code> if anything on the machine makes a model reachable from off it.</p>
+<h3 id="endpoint-orphaned-endpoint-unrecorded-endpoint-binary-replaced" class="doc-h"><code>ENDPOINT_ORPHANED</code>, <code>ENDPOINT_UNRECORDED</code>, <code>ENDPOINT_BINARY_REPLACED</code><a class="doc-anchor" href="#endpoint-orphaned-endpoint-unrecorded-endpoint-binary-replaced" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Means</th><th>Fix</th></tr></thead><tbody><tr><td data-label="Code"><code>ENDPOINT_ORPHANED</code></td><td data-label="Means">Endpoint units exist for workloads that are gone</td><td data-label="Fix">Follow the remedy on the doctor line. Meanwhile the unit waits without holding a port</td></tr><tr><td data-label="Code"><code>ENDPOINT_UNRECORDED</code></td><td data-label="Means">An endpoint is running that Nodeau has no record of, so <code>nodeau status</code> leaves it out</td><td data-label="Fix">Run <code>nodeau run &lt;name&gt;</code> again, which adopts the running unit and its port</td></tr><tr><td data-label="Code"><code>ENDPOINT_BINARY_REPLACED</code></td><td data-label="Means">It is running a program that has since been replaced on disk</td><td data-label="Fix">Restart it with <code>nodeau run &lt;name&gt;</code>. A replaced file leaves a running process on the old copy</td></tr></tbody></table></div>
+<h3 id="checking-the-endpoint-stays-on-this-machine" class="doc-h">Checking the endpoint stays on this machine<a class="doc-anchor" href="#checking-the-endpoint-stays-on-this-machine" aria-label="Link to this section">#</a></h3>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-20"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-20"><code>ss -tlnp | grep nodeau</code></pre></div>
+<p>The address must be <code>127.0.0.1:&lt;port&gt;</code>. If you ever see <code>0.0.0.0</code>, please report it straight away. <code>nodeau doctor</code> reports <code>NETWORK_EXPOSURE</code> when anything on the machine makes a model reachable from off it.</p>
 <hr class="doc-rule">
 <h2 id="fleets" class="doc-h">Fleets<a class="doc-anchor" href="#fleets" aria-label="Link to this section">#</a></h2>
-<h3 id="nodeau-fleet-invite-refuses" class="doc-h"><code>nodeau fleet invite</code> refuses<a class="doc-anchor" href="#nodeau-fleet-invite-refuses" aria-label="Link to this section">#</a></h3>
-<p><strong>Why.</strong> Your plan's machine limit is reached. It refuses <strong>before minting anything</strong>: <em>"this installation cannot add another machine … Nothing has been created, and every machine you already have keeps working."</em></p>
-<p><strong>Resolve.</strong> Remove a machine you no longer use (<code>nodeau fleet remove &lt;machine&gt;</code>), or change plan and <code>nodeau plan refresh</code>.</p>
-<h3 id="nodeau-join-refuses" class="doc-h"><code>nodeau join</code> refuses<a class="doc-anchor" href="#nodeau-join-refuses" aria-label="Link to this section">#</a></h3>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Message</th><th>Why</th><th>Resolve</th></tr></thead><tbody><tr><td data-label="Message">The invitation expired</td><td data-label="Why">Invitations last 15 minutes by design</td><td data-label="Resolve">Mint a new one</td></tr><tr><td data-label="Message">The code is damaged</td><td data-label="Why">It is one token; a line break in the middle breaks it</td><td data-label="Resolve">Copy it again in one piece</td></tr><tr><td data-label="Message">Not a Nodeau enrollment code</td><td data-label="Why">Refused by shape</td><td data-label="Resolve">Check what you pasted</td></tr><tr><td data-label="Message">The code is version <em>N</em> and this Nodeau reads up to <em>M</em></td><td data-label="Why">The machines are on different releases</td><td data-label="Resolve">Update the joining machine</td></tr><tr><td data-label="Message">The invitation names no address, or carries no credential</td><td data-label="Why">It cannot work</td><td data-label="Resolve">Mint a new one</td></tr><tr><td data-label="Message">This machine already runs a cluster</td><td data-label="Why">Nodeau will not destroy it</td><td data-label="Resolve">Remove it yourself, or use that cluster</td></tr><tr><td data-label="Message">A required program is missing</td><td data-label="Why">Refused up front rather than at step four</td><td data-label="Resolve">Install what it names</td></tr></tbody></table></div>
+<h3 id="nodeau-fleet-invite-says-the-machine-limit-is-reached" class="doc-h"><code>nodeau fleet invite</code> says the machine limit is reached<a class="doc-anchor" href="#nodeau-fleet-invite-says-the-machine-limit-is-reached" aria-label="Link to this section">#</a></h3>
+<p><strong>Fix.</strong> Remove a machine you no longer use, or move to a larger plan and refresh:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-21"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-21"><code>nodeau fleet remove &lt;machine&gt;
+nodeau plan refresh</code></pre></div>
+<p><strong>Good to know.</strong> It checks <strong>before creating anything</strong>, so nothing was made and every machine you have keeps working.</p>
+<h3 id="nodeau-join-stops-with-a-message" class="doc-h"><code>nodeau join</code> stops with a message<a class="doc-anchor" href="#nodeau-join-stops-with-a-message" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Message</th><th>Fix</th></tr></thead><tbody><tr><td data-label="Message">The invitation expired</td><td data-label="Fix">Invitations last 15 minutes by design. Run <code>nodeau fleet invite</code> again</td></tr><tr><td data-label="Message">The code is damaged</td><td data-label="Fix">It is one token, and a line break in the middle breaks it. Copy it again in one piece</td></tr><tr><td data-label="Message">Not a Nodeau enrollment code</td><td data-label="Fix">Paste the code <code>nodeau fleet invite</code> printed</td></tr><tr><td data-label="Message">The code is version <em>N</em> and this Nodeau reads up to <em>M</em></td><td data-label="Fix">Update the joining machine first</td></tr><tr><td data-label="Message">The invitation names no address, or carries no credential</td><td data-label="Fix">Mint a new invitation</td></tr><tr><td data-label="Message">This machine already runs a cluster</td><td data-label="Fix">Use that cluster as it is, or remove it yourself first. Nodeau leaves it alone</td></tr><tr><td data-label="Message">A required program is missing</td><td data-label="Fix">Install what the message names</td></tr></tbody></table></div>
 <h3 id="a-machine-is-offline" class="doc-h">A machine is offline<a class="doc-anchor" href="#a-machine-is-offline" aria-label="Link to this section">#</a></h3>
-<p>Work already on it keeps running until the machine goes; nothing new is placed there. <strong>Nodeau does not move it.</strong></p>
-<p>When the machine comes back it reconnects on its own — <strong>no new invitation is needed</strong>. Reconnection is authenticated by the machine's own stored credential.</p>
+<p><strong>What happens.</strong> Nothing new is placed there. When the machine comes back it reconnects on its own with the credential it already holds, so no new invitation is needed.</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-22"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-22"><code>nodeau fleet list
 nodeau doctor --node &lt;machine&gt;</code></pre></div>
-<h3 id="nodeau-fleet-remove-refuses" class="doc-h"><code>nodeau fleet remove</code> refuses<a class="doc-anchor" href="#nodeau-fleet-remove-refuses" aria-label="Link to this section">#</a></h3>
-<p>Workloads placed on the machine block removal, because a workload on a machine you are about to delete is work somebody expects to still be running.</p>
+<p>A workload on a machine that goes offline stops with it, and Nodeau keeps its service so it can start again when a placement is possible. See <a href="/docs/fleet/">how work stays put</a>.</p>
+<h3 id="nodeau-fleet-remove-asks-me-to-stop-workloads-first" class="doc-h"><code>nodeau fleet remove</code> asks me to stop workloads first<a class="doc-anchor" href="#nodeau-fleet-remove-asks-me-to-stop-workloads-first" aria-label="Link to this section">#</a></h3>
+<p>Workloads placed on the machine hold up removal, because a workload on a machine you are about to delete is work somebody expects to be running.</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-23"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-23"><code>nodeau ps -A                       # what is on it
 nodeau stop &lt;name&gt; --workload      # stop each one
 nodeau fleet remove &lt;machine&gt;</code></pre></div>
-<p>Or <code>--force</code>, if the machine is already gone and they can never come back.</p>
+<p>If the machine is already gone and those workloads can never come back, <code>--force</code> removes it anyway.</p>
 <h3 id="a-model-is-missing-on-one-machine" class="doc-h">A model is missing on one machine<a class="doc-anchor" href="#a-model-is-missing-on-one-machine" aria-label="Link to this section">#</a></h3>
-<p>Nodeau does not replicate weights between machines. Download it there:</p>
+<p>Each machine keeps its own model cache. Fetch the model there:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-24"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-24"><code>nodeau model install &lt;model&gt;       # on that machine
 nodeau model status                # which machine holds what, verified or not</code></pre></div>
 <h3 id="the-machines-are-on-different-versions" class="doc-h">The machines are on different versions<a class="doc-anchor" href="#the-machines-are-on-different-versions" aria-label="Link to this section">#</a></h3>
-<p>Nodeau's own components deliberately sit on different versions when one of them did not change. What is worth acting on is <strong>machines disagreeing with each other</strong>, which means an update reached some of them and not the rest.</p>
+<p>Nodeau's own components deliberately sit on different versions when one of them did not change. What is worth acting on is <strong>machines disagreeing with each other</strong>, which means an update reached some of them and not the rest:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-25"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-25"><code>nodeau update</code></pre></div>
+<h3 id="a-machine-is-missing-from-the-console" class="doc-h">A machine is missing from the console<a class="doc-anchor" href="#a-machine-is-missing-from-the-console" aria-label="Link to this section">#</a></h3>
+<p><strong>Check the fleet first</strong>, on the machine that runs the control plane:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-26"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-26"><code>nodeau fleet list       # is the machine in the fleet, and reporting?
+nodeau fleet status     # is the fleet reporting to Nodeau Cloud?</code></pre></div>
+<ul class="doc-list"><li>If <code>fleet list</code> does not show it, the machine has not joined, or it is offline. See <a href="/docs/fleet/">add and run machines</a>.</li><li>If <code>fleet status</code> says <strong>not connected</strong>, run <code>nodeau login</code> and then <code>nodeau fleet connect</code>. The fleet reports as a whole from the control-plane machine, so a worker needs no connector of its own.</li><li>If it says connected and the console still looks old, check that the connector is running with <code>systemctl --user status nodeau-fleet</code>, then run <code>nodeau doctor</code> for the codes below.</li></ul>
 <h3 id="fleet-not-reporting-fleet-report-stale-fleet-protocol-mismatch" class="doc-h"><code>FLEET_NOT_REPORTING</code>, <code>FLEET_REPORT_STALE</code>, <code>FLEET_PROTOCOL_MISMATCH</code><a class="doc-anchor" href="#fleet-not-reporting-fleet-report-stale-fleet-protocol-mismatch" aria-label="Link to this section">#</a></h3>
-<p>All are warnings at worst — a Nodeau Cloud outage costs you nothing, and inference does not depend on it.</p>
-<p><code>FLEET_PROTOCOL_MISMATCH</code> is the one that needs action: this build and Nodeau Cloud cannot exchange fleet state, and <strong>an update fixes it while a network never will</strong>.</p>
+<p>Warnings at most: inference carries on without Nodeau Cloud.</p>
+<p><code>FLEET_PROTOCOL_MISMATCH</code> is the one that needs a step from you: this build and Nodeau Cloud cannot exchange fleet state, and <strong>updating Nodeau fixes it</strong>.</p>
+<hr class="doc-rule">
+<h2 id="upgrade-plans" class="doc-h">Upgrade plans<a class="doc-anchor" href="#upgrade-plans" aria-label="Link to this section">#</a></h2>
+<h3 id="the-plan-holds-a-machine-back" class="doc-h">The plan holds a machine back<a class="doc-anchor" href="#the-plan-holds-a-machine-back" aria-label="Link to this section">#</a></h3>
+<p><code>nodeau fleet upgrade plan</code> explains each machine it holds back, in words, with a code a script can read. Read the reason, then:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>What it means</th><th>What to do</th></tr></thead><tbody><tr><td data-label="Code"><code>NeverReported</code></td><td data-label="What it means">The machine has never reported which build it runs</td><td data-label="What to do">Check it is online in <code>nodeau fleet list</code>, and give it a moment to report</td></tr><tr><td data-label="Code"><code>MachineStale</code></td><td data-label="What it means">Its last report is older than the planner will act on</td><td data-label="What to do">Bring it back online, or plan with a wider <code>--max-report-age</code></td></tr><tr><td data-label="Code"><code>MachineDraining</code></td><td data-label="What it means">It is draining for maintenance</td><td data-label="What to do">Undrain it when you want it upgraded</td></tr><tr><td data-label="Code"><code>MachineUnhealthy</code></td><td data-label="What it means">It reports it is unhealthy</td><td data-label="What to do">Run <code>nodeau doctor --node &lt;machine&gt;</code> and fix what it names</td></tr><tr><td data-label="Code"><code>WouldMoveBackwards</code></td><td data-label="What it means">It already runs a newer build than the target</td><td data-label="What to do">Choose a newer target, or leave it where it is</td></tr><tr><td data-label="Code"><code>NoArtifactForPlatform</code></td><td data-label="What it means">The target publishes no build for that machine's platform</td><td data-label="What to do">Choose a release that publishes one</td></tr><tr><td data-label="Code"><code>PlatformCannotJoinFleet</code></td><td data-label="What it means">It is a Mac, which runs standalone</td><td data-label="What to do">Update it on the Mac itself</td></tr></tbody></table></div>
+<p>See <a href="/docs/upgrades/">planning a fleet upgrade</a> for the whole plan.</p>
+<h3 id="the-plan-says-no-maintenance-window-is-set" class="doc-h">The plan says no maintenance window is set<a class="doc-anchor" href="#the-plan-says-no-maintenance-window-is-set" aria-label="Link to this section">#</a></h3>
+<p>Read that line as <strong>"not known on this machine"</strong>. In this release the planner works from what the machine you run it on knows, and organisation-wide settings such as a maintenance window are not part of that. The plan's last line says so.</p>
+<h3 id="is-my-work-waiting-for-a-maintenance-window" class="doc-h">Is my work waiting for a maintenance window?<a class="doc-anchor" href="#is-my-work-waiting-for-a-maintenance-window" aria-label="Link to this section">#</a></h3>
+<p>No. Work you ask for runs straight away, inside or outside a window: running a model, submitting a batch job, a placement you requested. A maintenance window only governs what Nodeau would do <strong>on its own</strong> that could interrupt work, such as recovering a workload automatically. See <a href="/docs/updates/">updates and release channels</a>.</p>
 <hr class="doc-rule">
 <h2 id="batch" class="doc-h">Batch<a class="doc-anchor" href="#batch" aria-label="Link to this section">#</a></h2>
 <h3 id="it-refuses-my-file-before-uploading" class="doc-h">It refuses my file before uploading<a class="doc-anchor" href="#it-refuses-my-file-before-uploading" aria-label="Link to this section">#</a></h3>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Message</th><th>Why</th></tr></thead><tbody><tr><td data-label="Message">"looks like a JSON array"</td><td data-label="Why">Nodeau reads <strong>JSONL</strong>: one JSON object per line, no brackets, no commas between them</td></tr><tr><td data-label="Message">"line <em>N</em> is not valid JSON"</td><td data-label="Why">Exactly that</td></tr><tr><td data-label="Message">"no record … has a <code>custom_id</code>"</td><td data-label="Why">Every record needs one — it is how each result is matched back to its request</td></tr><tr><td data-label="Message">"has no records in it"</td><td data-label="Why">The file is empty</td></tr></tbody></table></div>
-<p>It also <strong>notes</strong> records with a small completion budget without refusing them. That is advice: the budget in your record is your decision.</p>
-<h3 id="the-job-sits-without-starting" class="doc-h">The job sits without starting<a class="doc-anchor" href="#the-job-sits-without-starting" aria-label="Link to this section">#</a></h3>
-<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Means</th></tr></thead><tbody><tr><td data-label="Code"><code>QUEUED</code></td><td data-label="Means">Correct, and waiting for a card to free. <strong>Not a failure</strong> — it starts by itself</td></tr><tr><td data-label="Code"><code>BATCH_QUOTA_EXHAUSTED</code></td><td data-label="Means">Your organisation's batch allowance is spent. Ask a colleague, not a plan</td></tr><tr><td data-label="Code"><code>FEATURE_NOT_ENTITLED</code></td><td data-label="Means">Batch needs Home Pro or Business</td></tr></tbody></table></div>
-<p>A batch job takes a whole GPU, exactly as a service does. Nothing is preempted to make room.</p>
-<h3 id="workers-are-waiting" class="doc-h">Workers are waiting<a class="doc-anchor" href="#workers-are-waiting" aria-label="Link to this section">#</a></h3>
-<p>A worker count is a <strong>request</strong>. Workers that cannot get a card wait, and the job still completes with the workers it got.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Message</th><th>Fix</th></tr></thead><tbody><tr><td data-label="Message">"looks like a JSON array"</td><td data-label="Fix">Nodeau reads <strong>JSONL</strong>: one JSON object per line, with no brackets and no commas between them</td></tr><tr><td data-label="Message">"line <em>N</em> is not valid JSON"</td><td data-label="Fix">Fix that line</td></tr><tr><td data-label="Message">"no record … has a <code>custom_id</code>"</td><td data-label="Fix">Give every record a <code>custom_id</code>, which is how each result is matched back to its request</td></tr><tr><td data-label="Message">"has no records in it"</td><td data-label="Fix">The file is empty</td></tr></tbody></table></div>
+<p>It also <strong>notes</strong> records with a small completion budget and submits them anyway, because the budget in your record is your decision.</p>
+<h3 id="the-job-is-waiting-to-start" class="doc-h">The job is waiting to start<a class="doc-anchor" href="#the-job-is-waiting-to-start" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Means</th></tr></thead><tbody><tr><td data-label="Code"><code>QUEUED</code></td><td data-label="Means">Waiting for a card to free up. It starts by itself</td></tr><tr><td data-label="Code"><code>BATCH_QUOTA_EXHAUSTED</code></td><td data-label="Means">Your organisation's batch allowance is spent. A colleague can raise it</td></tr><tr><td data-label="Code"><code>FEATURE_NOT_ENTITLED</code></td><td data-label="Means">Batch comes with Home Pro and Business</td></tr></tbody></table></div>
+<p>A batch job takes a whole GPU, exactly as a service does, and waits its turn for one.</p>
+<h3 id="some-workers-are-waiting" class="doc-h">Some workers are waiting<a class="doc-anchor" href="#some-workers-are-waiting" aria-label="Link to this section">#</a></h3>
+<p>A worker count is a <strong>request</strong>. Workers that cannot get a card wait, and the job still completes with the workers it has.</p>
 <h3 id="batch-worker-unavailable" class="doc-h"><code>BATCH_WORKER_UNAVAILABLE</code><a class="doc-anchor" href="#batch-worker-unavailable" aria-label="Link to this section">#</a></h3>
-<p>The worker was placed and its container never started, so nothing ran and there is nothing to read.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-26"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-26"><code>nodeau logs &lt;job&gt;
+<p>The worker was placed and its container never started, so nothing ran:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-27"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-27"><code>nodeau logs &lt;job&gt;
 nodeau doctor</code></pre></div>
-<p>A worker that cannot start does <strong>not</strong> hold its GPU indefinitely: Nodeau suspends, waits until nothing holds the device, and only then goes terminal.</p>
+<p>A worker that cannot start lets go of its GPU: Nodeau suspends it, waits until nothing holds the device, and only then records its final state.</p>
 <h3 id="the-job-failed-after-running" class="doc-h">The job failed after running<a class="doc-anchor" href="#the-job-failed-after-running" aria-label="Link to this section">#</a></h3>
-<p><code>BATCH_FAILED</code> — an attempt failed for an infrastructure reason and no attempts remain. <code>--max-attempts</code> is attempts at the <strong>whole job</strong>, and a retry starts from the beginning: this version does not resume a partial batch.</p>
+<p><code>BATCH_FAILED</code> means an attempt failed for an infrastructure reason and no attempts remain. <code>--max-attempts</code> counts attempts at the <strong>whole job</strong>, and each retry starts from the beginning.</p>
 <h3 id="i-cancelled-it-and-the-gpu-is-still-held" class="doc-h">I cancelled it and the GPU is still held<a class="doc-anchor" href="#i-cancelled-it-and-the-gpu-is-still-held" aria-label="Link to this section">#</a></h3>
 <p>Nodeau waits for the model server to actually exit before releasing the card, so a cancelled job takes a few seconds to finish stopping. Results already produced are kept.</p>
-<h3 id="the-results-are-missing-a-record" class="doc-h">The results are missing a record<a class="doc-anchor" href="#the-results-are-missing-a-record" aria-label="Link to this section">#</a></h3>
-<p>Every record you submitted has exactly one line in the results, in the order you sent them. A result whose <code>custom_id</code> cannot be resolved is reported <strong>by line number</strong> and says so, rather than being dropped or attributed to the wrong request.</p>
-<h3 id="a-control-plane-restart-killed-an-in-flight-attempt" class="doc-h">A control plane restart killed an in-flight attempt<a class="doc-anchor" href="#a-control-plane-restart-killed-an-in-flight-attempt" aria-label="Link to this section">#</a></h3>
-<p>The batch content endpoint lives inside the controller, and the runner retries the transport for two minutes. A control plane down for longer than that fails the attempt. No inference traffic crosses that boundary, but a batch worker depends on control-plane availability in a way a serving model does not.</p>
+<h3 id="the-results-seem-to-be-missing-a-record" class="doc-h">The results seem to be missing a record<a class="doc-anchor" href="#the-results-seem-to-be-missing-a-record" aria-label="Link to this section">#</a></h3>
+<p>Every record you submitted has exactly one line in the results, in the order you sent them. A result whose <code>custom_id</code> cannot be resolved is reported <strong>by line number</strong> and says so, so it is never dropped or credited to the wrong request.</p>
+<h3 id="a-control-plane-restart-ended-an-attempt" class="doc-h">A control-plane restart ended an attempt<a class="doc-anchor" href="#a-control-plane-restart-ended-an-attempt" aria-label="Link to this section">#</a></h3>
+<p>A batch worker fetches its records from the control plane, and it retries for two minutes if the control plane is away. A control plane down for longer than that fails the attempt, and a remaining attempt starts the job again. Serving models are unaffected: their traffic never passes through the control plane.</p>
 <hr class="doc-rule">
 <h2 id="still-stuck" class="doc-h">Still stuck<a class="doc-anchor" href="#still-stuck" aria-label="Link to this section">#</a></h2>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-27"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-27"><code>nodeau doctor --json &gt; doctor.json
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#troubleshooting-code-28"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="troubleshooting-code-28"><code>nodeau doctor --json &gt; doctor.json
 nodeau support bundle</code></pre></div>
-<p>Then <a href="/contact/?type=install">contact us</a> or email <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>. The bundle contains no keys, no credentials, no prompts and no model output, and it is a plain <code>.tar.gz</code> — see <a href="/docs/support/">support bundles</a>.</p>
-      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/uninstall/"><span>Previous</span>Uninstalling</a><a class="doc-next" href="/docs/support/"><span>Next</span>Support bundles</a></nav>
-      <p class="doc-foot">Documentation for the current published build,
-      <span data-release>the beta channel</span>. Something here wrong or missing?
-      <a href="/contact/?type=install">Tell us</a> &#8212; a report from a machine we have
+<p>Then <a href="/contact/?type=install">contact us</a> or email <a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a>. The bundle contains no keys, no credentials, no prompts and no model output, and it is a plain <code>.tar.gz</code> you can open first; see <a href="/docs/support/">support bundles</a>.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/concepts/"><span>Previous</span>Glossary</a><a class="doc-next" href="/docs/support/"><span>Next</span>Support bundles</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
       never seen is the most useful thing we get.</p>
     </article>
   </main>
 </div>
-
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
-        <a class="brand" href="/" style="margin-bottom:0.75rem">
-          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/>
-        <rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/>
-      </svg>
-          Nodeau
-        </a>
-        <p style="max-width:34ch">You own the GPUs. Nodeau makes them usable AI infrastructure.</p>
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
       </div>
       <div>
-        <h4>Product</h4>
+        <h2 class="footer-title">Product</h2>
         <ul>
-          <li><a href="/#home">For home</a></li>
-          <li><a href="/#business">For business</a></li>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
           <li><a href="/pricing/">Pricing</a></li>
           <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
         </ul>
       </div>
       <div>
-        <h4>Docs</h4>
+        <h2 class="footer-title">Docs</h2>
         <ul>
           <li><a href="/docs/">Documentation</a></li>
-          <li><a href="/docs/install-linux/">Linux install</a></li>
-          <li><a href="/docs/install-macos/">macOS install</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
           <li><a href="/docs/cli/">CLI reference</a></li>
           <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
         </ul>
       </div>
       <div>
-        <h4>Company</h4>
+        <h2 class="footer-title">Company</h2>
         <ul>
           <li><a href="/about/">About</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
           <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>&#169; <span data-year>2026</span> Nodeau</span>
-      <span>Self-hosted <span data-release></span> &#183; your hardware, your models</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
     </div>
   </div>
 </footer>
