@@ -139,6 +139,7 @@ report is fresh enough to schedule against.
 |---|---|
 | **The machine goes offline** | It shows as not reporting, and nothing new is placed there |
 | **It comes back after a reboot** | It reconnects on its own with the credential it already holds. No new invitation is needed |
+| **The control-plane machine is away for a while** | The other machines keep running and keep serving. Their Nodeau agents stay up, keep observing, and report again shortly after the control plane is back |
 | **A GPU moves between machines** | Nodeau believes the **newest** report of a card, and the machine that lost it stops offering it. A workload whose placement names a card its machine no longer reports is withdrawn, and its service is kept so it can start again |
 | **Machines run different versions** | Expected within one machine's components. What is worth acting on is machines disagreeing with each other, and `nodeau update` shows the fleet |
 
@@ -264,10 +265,10 @@ them from there comes with Home Pro and Business:
 - read bounded logs,
 - recover a workload stranded on a machine that has gone.
 
-Two things stay on the machine itself: power limits, which you set with
-`nodeau power set` on the machine that holds the card, and upgrades, which run on
-each machine with the installer. Preview an upgrade first with
-`nodeau fleet upgrade plan`; see [planning a fleet upgrade](/docs/upgrades/).
+Power limits stay on the machine itself: you set them with `nodeau power set` on
+the machine that holds the card. Upgrades can be approved from the browser too,
+under Fleet, then Upgrade, or with `nodeau fleet upgrade apply`; see
+[upgrading a fleet](/docs/upgrades/).
 
 :::note A stop from the browser is a standing order for one copy
 Stopping a workload from the browser records what you want, and it is re-applied
@@ -287,7 +288,7 @@ They do different things, and mixing them up is easy to put right.
 
 ## Updating the machines in a fleet
 
-Update one machine at a time, workers first and the control-plane machine last,
-after previewing the move with `nodeau fleet upgrade plan`. The whole routine is
-in [updates and release channels](/docs/updates/), and the planner is described in
-[planning a fleet upgrade](/docs/upgrades/).
+`nodeau fleet upgrade apply` updates the whole fleet from one place, one machine
+at a time, workers first and the control-plane machine last, after you've seen the
+plan. [Upgrading a fleet](/docs/upgrades/) walks through it, and
+[updates and release channels](/docs/updates/) covers updating a single machine.

@@ -112,7 +112,7 @@ nodeau quickstart</code></pre></div><p style="margin-top:0.75rem">On an Apple Si
       </details>
       <details class="qa">
         <summary>Can I use my Mac?</summary>
-        <div class="answer"><p>Yes! On an Apple Silicon Mac, Nodeau runs chat models natively on the Mac's GPU through Metal. Installing needs no password and no drivers. A Mac runs standalone, as your own private AI endpoint.</p><p>Because a Mac shares one pool of memory between everything, whether a model fits depends on what else you have open. Nodeau checks each time and shows you the numbers. Fleets, batch jobs, your own imported models and tasks beyond chat run on Linux machines with NVIDIA GPUs, and more of that is coming to the Mac on the <a href="/roadmap/">roadmap</a>.</p></div>
+        <div class="answer"><p>Yes! On an Apple Silicon Mac, Nodeau runs chat, embedding, reranking and vision models natively on the Mac's GPU through Metal, and several can serve at once, each on its own port. Installing needs no password and no drivers. A Mac runs standalone, as your own private AI endpoint.</p><p>Because a Mac shares one pool of memory between everything, whether a model fits depends on what else you have open. Nodeau checks each time and shows you the numbers. Fleets, batch jobs, structured output, tool calling and your own imported models run on Linux machines with NVIDIA GPUs.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau install my NVIDIA driver?</summary>
@@ -204,7 +204,7 @@ nodeau quickstart</code></pre></div><p style="margin-top:0.75rem">On an Apple Si
       </details>
       <details class="qa">
         <summary>How do upgrades work across a fleet?</summary>
-        <div class="answer"><p>Start with <code>nodeau fleet upgrade plan</code>. It shows which machines would change, which are already current, the order they'd go in, and which workloads would restart, before anything moves. Then upgrade each machine with the installer. Rolling the whole fleet through a plan from one place is <a href="/roadmap/">in progress</a>.</p></div>
+        <div class="answer"><p>Start with <code>nodeau fleet upgrade plan</code>. It shows which machines would change, which are already current, the order they'd go in, and which workloads would restart, before anything moves. Happy with it? <code>nodeau fleet upgrade apply</code> rolls that exact plan out one machine at a time, workers first and the control-plane machine last, checking each machine before the next. If a step needs attention, the rollout holds there until you resume or cancel it. Fleet upgrades come with Home Pro and Business.</p></div>
       </details>
     </div>
 

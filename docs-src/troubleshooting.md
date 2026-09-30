@@ -600,21 +600,45 @@ code a script can read. Read the reason, then:
 | `WouldMoveBackwards` | It already runs a newer build than the target | Choose a newer target, or leave it where it is |
 | `NoArtifactForPlatform` | The target publishes no build for that machine's platform | Choose a release that publishes one |
 | `PlatformCannotJoinFleet` | It is a Mac, which runs standalone | Update it on the Mac itself |
+| `MaintenanceWindowShut` | It's `WAITING`: your maintenance window is shut right now | Nothing. It moves when the window opens, and the plan says when that is. `apply --override-window` lets it go now, recorded as your decision |
+| `ChannelNotPermitted` | Your channel policy doesn't follow the target's channel | Plan against a release from the channel your fleet follows |
+| `PolicyUnknown` | The plan couldn't see your organisation's window or channel policy | See below |
+| `ServerFloorTooHigh` | Nodeau Cloud can't yet accept the connector this release ships | Wait for Nodeau Cloud to be updated. It always moves before the machines that talk to it |
 
-See [planning a fleet upgrade](/docs/upgrades/) for the whole plan.
+See [upgrading a fleet](/docs/upgrades/) for the whole plan.
 
-### The plan says no maintenance window is set
+### The plan says the policy is UNKNOWN
 
-Read that line as **"not known on this machine"**. In this release the planner
-works from what the machine you run it on knows, and organisation-wide settings
-such as a maintenance window are not part of that. The plan's last line says so.
+The fleet connector isn't connected, or hasn't heard from Nodeau Cloud in the
+last 15 minutes, so the plan can't know your organisation's maintenance window or
+channel policy. It treats them as unknown rather than absent and holds every
+machine that would move (`PolicyUnknown`). Check the connector with
+`nodeau fleet status`, start it with `nodeau fleet connect` if it's stopped, and
+plan again once it has synced.
+
+### `apply` says the plan changed
+
+Nodeau Cloud works out its own plan and authorises only the one you saw. If
+anything moved in between (a machine reported in, the channel moved, a policy
+changed), it says what and nothing is authorised. Run `nodeau fleet upgrade plan`
+again, read it, and apply once more.
+
+### A rollout is holding
+
+A machine's step failed, or the machine declined to start it. A worker has already
+gone back to exactly the versions it was running before. `nodeau fleet upgrade
+status` shows which machine and why. Fix what it names, then
+`nodeau fleet upgrade resume` to try that machine again (every check runs again
+first), or `nodeau fleet upgrade cancel` to end the rollout there. If the
+control-plane machine's step failed, the rollout also says where the previous
+version was kept and how to restore it.
 
 ### Is my work waiting for a maintenance window?
 
 No. Work you ask for runs straight away, inside or outside a window: running a
 model, submitting a batch job, a placement you requested. A maintenance window
 only governs what Nodeau would do **on its own** that could interrupt work, such as
-recovering a workload automatically. See
+moving a machine through an approved rollout. See
 [updates and release channels](/docs/updates/).
 
 ---

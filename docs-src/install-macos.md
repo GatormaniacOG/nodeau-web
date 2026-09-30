@@ -14,18 +14,21 @@ is [here](/docs/install-linux/).
 
 ## What a Mac does {#what-a-mac-can-and-cannot-do}
 
-A Mac makes a lovely private AI endpoint. Nodeau serves chat models on the
-Mac's own GPU, and the whole install needs no password. Nodeau on Apple Silicon
-is **qualified**, and this is its scope:
+A Mac makes a lovely private AI endpoint. Nodeau serves chat, embedding,
+reranking and vision models on the Mac's own GPU, several at once, and the whole
+install needs no password. Nodeau on Apple Silicon is **qualified**, and this is
+its scope:
 
 | | On a Mac |
 |---|---|
-| A chat model on the GPU, behind a local OpenAI-compatible endpoint | Yes, through Metal |
+| Chat, with streaming, on the GPU behind a local OpenAI-compatible endpoint | Yes, through Metal |
+| Embeddings, reranking and image input (vision) | Yes, through Metal |
+| Several models serving at once, each on its own port | Yes, as unified memory allows |
 | The curated catalog, downloads and SHA-256 verification | Yes |
 | The fit check before anything starts | Yes, against unified memory |
 | `run`, `ps`, `stop`, `logs`, `doctor` and `uninstall` | Yes |
 | Fleets, batch inference and bringing your own model | On your Linux machines with NVIDIA GPUs. A Mac runs standalone |
-| Embeddings, reranking, structured output, tool calling and image input | On your Linux machines today, with embeddings, reranking and image input for the Mac [in progress](/roadmap/) |
+| Structured output and tool calling | On your Linux machines with NVIDIA GPUs |
 | Several GPUs, scheduling modes, power limits, health, limits and policies | Part of a Linux fleet. A Mac has one integrated GPU |
 
 ## Requirements
@@ -170,6 +173,27 @@ it keeps serving after you close the terminal.
 `nodeau quickstart` creates a Kubernetes workload, which is the Linux flow. On a
 Mac, `nodeau run <model>` does the same job through the native plane.
 :::
+
+## Several models at once {#several-models}
+
+Each `nodeau run` starts its own endpoint, so give each model a port of its own:
+
+```bash
+nodeau run qwen3.5-4b-q4km                          # chat on 8080
+nodeau run qwen3-embedding-0.6b-q8_0 --port 8081    # embeddings
+nodeau run bge-reranker-v2-m3-q8_0 --port 8082      # reranking
+nodeau ps
+```
+
+Every endpoint answers as its own model, and stopping one leaves the others
+serving. Before `nodeau run` gives you an address, it checks that the model
+answering there is the one it started: if another program already holds the port
+you asked for, it tells you what holds it and prints no address, so you never
+get a working-looking endpoint for the wrong model.
+
+Vision models, such as `gemma-4-e4b-qat-q4-0`, bring a second file with them (the image
+projector). Nodeau downloads and verifies both, and the request shape is the one
+in [image input](/docs/tasks/#image-input).
 
 ## Unified memory {#unified-memory}
 

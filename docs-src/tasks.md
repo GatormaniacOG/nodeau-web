@@ -7,9 +7,9 @@ lede: Chat is where most people start, and it's far from all Nodeau runs. Here's
 ---
 
 Everything on this page runs on Linux machines with NVIDIA GPUs, through the
-same fit check and the same kind of endpoint as chat. A Mac runs standalone and
-serves chat models, and embeddings, reranking and image input on the Mac are
-[in progress](/roadmap/).
+same fit check and the same kind of endpoint as chat. Embeddings, reranking and
+image input run on a Mac too, standalone and through Metal, with the same
+requests; structured output and tool calling run on your Linux machines.
 
 The basics of the endpoint, authentication and chat are in
 [the OpenAI-compatible API](/docs/api/). Set your key first:

@@ -111,7 +111,7 @@
             <div class="row"><h4>nodeau quickstart</h4><span class="pill pill-available">Available</span><p>A verified model, a fit check, a running workload and a local endpoint in one command.</p></div>
             <div class="row"><h4>Upgrading in place</h4><span class="pill pill-available">Available</span><p>Run the installer again. <code>nodeau update</code> tells you when something newer is out, and can download and verify it for you.</p></div>
             <div class="row"><h4>Clean uninstall</h4><span class="pill pill-available">Available</span><p>Prints its plan first, and keeps your driver, your models and everything Nodeau found already installed.</p></div>
-            <div class="row"><h4>Apple Silicon Macs</h4><span class="pill pill-available">Available</span><p>Chat models on the Mac's own GPU through Metal, with no password needed to install. A Mac runs standalone.</p></div>
+            <div class="row"><h4>Apple Silicon Macs</h4><span class="pill pill-available">Available</span><p>Chat, embeddings, reranking and vision on the Mac's own GPU through Metal, with several models serving at once, each on its own port. No password needed to install. A Mac runs standalone.</p></div>
           </div>
         </div>
 
@@ -123,9 +123,9 @@
             <div class="row"><h4>Fit checks before anything starts</h4><span class="pill pill-available">Available</span><p>A measurement where Nodeau has one, a careful estimate otherwise, and the decision says which.</p></div>
             <div class="row"><h4>Accepting a fit risk yourself</h4><span class="pill pill-available">Available</span><p><code>--accept-estimate-risk</code>, for when the only thing in the way is Nodeau's extra margin on unmeasured hardware.</p></div>
             <div class="row"><h4>OpenAI-compatible API</h4><span class="pill pill-available">Available</span><p>Chat and completions with streaming, on <code>127.0.0.1</code> with a key made on your machine.</p></div>
-            <div class="row"><h4>Embeddings and reranking</h4><span class="pill pill-available">Available</span><p>Vectors for search and RAG, and a rerank route in the Jina and Cohere shape. On Linux with NVIDIA.</p></div>
+            <div class="row"><h4>Embeddings and reranking</h4><span class="pill pill-available">Available</span><p>Vectors for search and RAG, and a rerank route in the Jina and Cohere shape. On Linux with NVIDIA and on a Mac.</p></div>
             <div class="row"><h4>Structured output and tool calling</h4><span class="pill pill-available">Available</span><p>JSON that follows your schema, and tool calls with arguments your code can parse. On Linux with NVIDIA.</p></div>
-            <div class="row"><h4>Vision</h4><span class="pill pill-available">Available</span><p>Send an image with your prompt and ask about it. On Linux with NVIDIA.</p></div>
+            <div class="row"><h4>Vision</h4><span class="pill pill-available">Available</span><p>Drop in an image and ask a model what it sees. On Linux with NVIDIA and on a Mac.</p></div>
             <div class="row"><h4>Bring your own model</h4><span class="pill pill-available">Available</span><p>Import a GGUF file, and qualification proves on a real card what it can do. Your weights stay on your machines. On Linux with NVIDIA.</p></div>
             <div class="row"><h4>Batch inference</h4><span class="pill pill-available">Available</span><p>A file of chat or embedding requests, results matched to every input, and several workers at once, each on its own card. Home Pro and Business, on Linux.</p></div>
           </div>
@@ -171,6 +171,7 @@
           <h3>Upgrades</h3>
           <div class="rows-2">
             <div class="row"><h4>Upgrade planning</h4><span class="pill pill-available">Available</span><p><code>nodeau fleet upgrade plan</code> pins a release to an exact build and shows what moving each machine would involve, in order and with the work on it, before anything changes.</p></div>
+            <div class="row"><h4>Fleet upgrades from one place</h4><span class="pill pill-available">Available</span><p>Approve the plan you saw with <code>nodeau fleet upgrade apply</code>, or from Fleet, then Upgrade, in your account. Nodeau moves your machines one at a time, workers first and the control-plane machine last, and checks each one on what it reports before the next begins. If a step fails, that machine goes back to exactly what it ran and the rollout holds there so you can take a look. Home Pro and Business.</p></div>
           </div>
         </div>
       </div>
@@ -182,9 +183,7 @@
         </div>
         <p class="stage-lede">Being built or tested now. Each of these arrives in a future release.</p>
         <div class="rows-2">
-          <div class="row"><h3>Fleet upgrades from one place</h3><span class="pill pill-next">In progress</span><p>Pick a release, approve the plan you saw, and let Nodeau move the fleet one machine at a time, checking each one before the next.</p></div>
-          <div class="row"><h3>Maintenance windows and release channels</h3><span class="pill pill-next">In progress</span><p>Set when Nodeau may act on its own, in your own time zone, and which build your fleet should be on, right from your account. Upgrade plans will follow both.</p></div>
-          <div class="row"><h3>More on the Mac</h3><span class="pill pill-next">In progress</span><p>Embeddings, reranking, vision and several models at once on Apple Silicon.</p></div>
+          <div class="row"><h3>Maintenance windows and release channels</h3><span class="pill pill-next">In progress</span><p>A place in your account to set when Nodeau may act on its own, in your own time zone, and which release channel your fleet follows. Upgrade plans and rollouts already follow both.</p></div>
           <div class="row"><h3>Several people in one organisation</h3><span class="pill pill-next">In progress</span><p>Members with roles, groups from your identity provider, and keys for scripts that can only ever do less than their owner. For Business.</p></div>
           <div class="row"><h3>Single sign-on</h3><span class="pill pill-next">In progress</span><p>Sign in through your organisation's identity provider. For Business.</p></div>
           <div class="row"><h3>Automatic recovery</h3><span class="pill pill-next">In progress</span><p>You can recover a workload from a machine that's gone from the console today. Having Nodeau bring it back up on another machine by itself, safely, is being built and tested.</p></div>

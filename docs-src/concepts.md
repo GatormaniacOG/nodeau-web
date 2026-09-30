@@ -217,16 +217,20 @@ from and the digest of every artifact it names. See
 
 An **upgrade plan** is what `nodeau fleet upgrade plan` gives you: one resolved
 release, and for each machine what would change, in what order, and what it
-would mean for the workloads running there. It changes nothing. See
-[planning a fleet upgrade](/docs/upgrades/).
+would mean for the workloads running there. It changes nothing.
+
+A **rollout** is what `nodeau fleet upgrade apply` starts once you approve a
+plan: Nodeau moves your machines one at a time, workers first and the
+control-plane machine last, and checks each one on what it reports before the
+next. See [upgrading a fleet](/docs/upgrades/).
 
 ## Maintenance window
 
 A **maintenance window** is when your organisation lets Nodeau act on your
-machines on its own, in your own time zone. Work you ask for always starts
-straight away, and nothing running is touched when a window opens or closes.
-Setting one from your account is [in progress](/roadmap/); see
-[updates and release channels](/docs/updates/) for what it will mean.
+machines on its own, in your own time zone. An approved rollout starts a machine
+only inside it. Work you ask for always starts straight away, and nothing
+running is touched when a window opens or closes. Setting one from your account
+is [in progress](/roadmap/); see [updates and release channels](/docs/updates/).
 
 ## Control plane
 
