@@ -230,6 +230,9 @@ print(reply.choices[0].message.content)</code></pre>
         <div class="tile"><h3><code>nodeau stop qwen-local</code></h3><p>Stop the endpoint. Add <code>--workload</code> to free the GPU too. Your downloads stay.</p></div>
         <div class="tile"><h3><code>nodeau doctor</code></h3><p>A read-only health check of the machine and the installation.</p></div>
         <div class="tile"><h3><code>nodeau dashboard</code></h3><p>Your models, services and GPU in a browser, served by your own machine.</p></div>
+        <div class="tile"><h3><code>nodeau auth show</code></h3><p>The key your apps use for the local API. <a href="/docs/api/">Using the API</a>.</p></div>
+        <div class="tile"><h3><code>nodeau model import &lt;file&gt;</code></h3><p>Bring a GGUF of your own. Nodeau tests what it can really do on your card. On Linux. <a href="/docs/byom/">Bring your own model</a>.</p></div>
+        <div class="tile"><h3><code>nodeau fleet upgrade plan</code></h3><p>Preview a new release across your machines, then <code>apply</code> rolls it out one at a time. <a href="/docs/upgrades/">Upgrading a fleet</a>.</p></div>
       </div>
       <p class="note" style="margin-top:1.5rem;max-width:66ch">
         Every command that prints a table also takes <code>--json</code>, and
