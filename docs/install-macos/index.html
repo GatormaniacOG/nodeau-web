@@ -122,7 +122,7 @@ Local API
   Only this computer can reach it. It is not on your network.</code></pre></div>
 <p>Below that it prints a <code>curl</code> command you can paste as it is. From here, call it exactly as you would on Linux: see <a href="/docs/api/">the OpenAI-compatible API</a>.</p>
 <p>The endpoint runs as a <strong>launchd user agent</strong> in <code>~/Library/LaunchAgents</code>, so it keeps serving after you close the terminal.</p>
-<aside class="callout callout-note"><p class="callout-kind">On a Mac, `nodeau run` is your quickstart</p><p><code>nodeau quickstart</code> creates a Kubernetes workload, which is the Linux flow. On a Mac, <code>nodeau run &lt;model&gt;</code> does the same job through the native plane.</p></aside>
+<aside class="callout callout-note"><p class="callout-kind">On a Mac, <code>nodeau run</code> is your quickstart</p><p><code>nodeau quickstart</code> creates a Kubernetes workload, which is the Linux flow. On a Mac, <code>nodeau run &lt;model&gt;</code> does the same job through the native plane.</p></aside>
 <h2 id="several-models" class="doc-h">Several models at once<a class="doc-anchor" href="#several-models" aria-label="Link to this section">#</a></h2>
 <p>Each <code>nodeau run</code> starts its own endpoint, so give each model a port of its own:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#install-macos-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="install-macos-code-7"><code>nodeau run qwen3.5-4b-q4km                          # chat on 8080

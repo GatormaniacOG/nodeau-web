@@ -699,6 +699,19 @@ def main() -> int:
             if required not in p.metas:
                 errors.append(f"{name}: missing {required}")
 
+        # ------------------------------------------------ unrendered markdown
+        # A span the docs renderer failed to close reaches the reader as literal
+        # asterisks, and nothing else here reads RENDERED text: /docs/byom/
+        # carried two for a whole release, found 2026-09-30 by looking at a
+        # screenshot rather than by any check.
+        if name.startswith("docs/"):
+            prose = re.sub(r"<pre\b.*?</pre>|<code\b.*?</code>|<script\b.*?</script>", "", src, flags=re.S)
+            prose = re.sub(r"<[^>]+>", " ", prose)
+            for mark, what in (("**", "bold"), ("*", "emphasis"), ("`", "code")):
+                if mark in prose:
+                    errors.append(f"{name}: literal {mark} in rendered text (a Markdown {what} span did not render)")
+                    break
+
         check_unbuilt_is_never_included(name, src, errors)
         check_tier_consistency(name, src, errors)
 
