@@ -1352,6 +1352,26 @@ button:not([class]):disabled {
   margin-top: var(--space-3);
   flex-wrap: wrap;
 }
+/* Phase 19: where a workload's Playground opens. */
+.playground-entry {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.playground-entry p {
+  margin: 0 0 var(--space-2);
+}
+.playground-entry .command-line {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+.playground-entry .command-line code {
+  overflow-wrap: anywhere;
+}
 /* NOT italic. This is the scheduler's full explanation — two or three lines
    naming machines and memory figures — and italic at that length is measurably
    slower to read and renders poorly for dyslexic readers. Emphasis is the job
