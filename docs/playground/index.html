@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Nodeau Playground</title>
+<meta name="description" content="Talk to the models running on your machine from your browser: streamed chat, images, embeddings, reranking and side by side comparison, with the machine, GPU and speed beside every answer.">
+<link rel="canonical" href="https://nodeau.ai/docs/playground/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/playground/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="The Nodeau Playground">
+<meta property="og:description" content="Talk to the models running on your machine from your browser: streamed chat, images, embeddings, reranking and side by side comparison, with the machine, GPU and speed beside every answer.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=6029a5ee">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
+    </div>
+  </div>
+</header>
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau" open><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/playground/" aria-current="page" data-nav-title="The Playground">The Playground</a></li><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet"><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Upgrading a fleet">Upgrading a fleet</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Use Nodeau</p>
+      <h1 class="doc-title">The Playground</h1>
+      <p class="lede doc-lede">Start a model, open the Playground, and use it. Everything happens on your own machine, and every answer shows which machine and GPU produced it and how fast.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#open-it">Open it</a></li><li><a href="#chat">Chat</a></li><li><a href="#images">Images</a></li><li><a href="#embeddings">Embeddings</a></li><li><a href="#reranking">Reranking</a></li><li><a href="#where-the-answer-came-from">Where the answer came from</a></li><li><a href="#inspect-and-copy">Inspect and copy</a></li><li><a href="#compare">Compare</a></li><li><a href="#your-prompts-stay-on-your-machine">Your prompts stay on your machine</a></li><li><a href="#from-your-account">From your account</a></li><li><a href="#if-something-goes-wrong">If something goes wrong</a></li></ul></nav>
+      <h2 id="open-it" class="doc-h">Open it<a class="doc-anchor" href="#open-it" aria-label="Link to this section">#</a></h2>
+<p>On the machine where you run <code>nodeau</code>, which is the control-plane machine of a fleet, or your Mac:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#playground-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="playground-code-1"><code>nodeau playground                 # every model running here
+nodeau playground qwen-local      # with that model already chosen</code></pre></div>
+<p>It prints an address with a one-time sign-in token. Open it in your browser on the same machine. The Playground is served by the same local server as <code>nodeau dashboard</code>, on loopback only, so if the dashboard is already running, <code>nodeau playground</code> prints the Playground's address on it and you're done. Press Ctrl+C to stop it.</p>
+<p>The list on the left shows the models that are <strong>running</strong> here, never the whole catalog, because a model has to be running to answer. Each one says what it does (chat, images, embeddings or reranking), which machine it's on and which GPU it holds. A model that can't take a request right now is listed with the reason and what to do about it.</p>
+<p>Nothing running yet? Start something first:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#playground-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="playground-code-2"><code>nodeau run qwen3.5-4b-q4km
+nodeau playground</code></pre></div>
+<h2 id="chat" class="doc-h">Chat<a class="doc-anchor" href="#chat" aria-label="Link to this section">#</a></h2>
+<p>Type a message and press <strong>Send</strong>, or Ctrl+Enter (Cmd+Enter on a Mac). The answer streams in as the model writes it, and Markdown and code are rendered for reading, with a copy button on every code block. <strong>Stop</strong> ends the answer there and frees the model straight away. <strong>Retry</strong> asks the last question again and replaces the answer it gave. A reasoning model's thinking is kept apart from its answer, folded away until you open it.</p>
+<p><strong>Settings</strong> holds only what a request can change: temperature, max tokens, top-p, a seed, and whether to stream. Leave a field empty for the runtime's own default. Context size and parallel requests belong to the running model and are set when it starts, so they aren't offered here.</p>
+<p>If you set <strong>Max tokens</strong> and a reasoning model spends them all on thinking, the Playground tells you, so you can give it more room.</p>
+<h2 id="images" class="doc-h">Images<a class="doc-anchor" href="#images" aria-label="Link to this section">#</a></h2>
+<p>With a model that reads images, such as <code>gemma-4-e4b-qat-q4-0</code>, the chat has a place to add an image: choose a PNG, JPEG or WebP up to 10 MB, or drop one on it. A WebP is redrawn as a PNG on the page, because that's what the model's runtime reads. The image goes from your browser to Nodeau on your machine and to the model, and is held only for that request. Models that don't read images don't offer it.</p>
+<h2 id="embeddings" class="doc-h">Embeddings<a class="doc-anchor" href="#embeddings" aria-label="Link to this section">#</a></h2>
+<p>Add one or more texts and press <strong>Create embeddings</strong>. For each text you see how many dimensions the vector has, its first few values and its length. <strong>Copy the full JSON</strong> copies every value exactly as the model returned it, ready to paste into your own code.</p>
+<h2 id="reranking" class="doc-h">Reranking<a class="doc-anchor" href="#reranking" aria-label="Link to this section">#</a></h2>
+<p>Write a query, add the passages you want ranked, and press <strong>Rank passages</strong>. They come back in the order of the model's own scores, highest first, with each score shown beside its passage.</p>
+<p>Batch jobs run from the command line; see <a href="/docs/batch/">batch inference</a>.</p>
+<h2 id="where-the-answer-came-from" class="doc-h">Where the answer came from<a class="doc-anchor" href="#where-the-answer-came-from" aria-label="Link to this section">#</a></h2>
+<p>Beside every model the Playground shows where it runs: the machine, the GPU, and on Linux the memory Nodeau predicted for it when it admitted it. <strong>Why this GPU?</strong> shows the placement Nodeau recorded: the machine and card it chose, the rule that decided, the scheduling mode, and the speed it predicted.</p>
+<p>Under every answer, each figure says who measured it:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Figure</th><th>Measured by</th></tr></thead><tbody><tr><td data-label="Figure">Time to first token, total time</td><td data-label="Measured by">the Playground page, in your browser</td></tr><tr><td data-label="Figure">Prompt processing time, tokens generated, tokens per second, runtime build</td><td data-label="Measured by">the model's runtime, which reports them with the answer</td></tr><tr><td data-label="Figure">Predicted peak memory</td><td data-label="Measured by">Nodeau's admission check, when the model was placed</td></tr></tbody></table></div>
+<p>A figure nobody reported is shown as missing, never as zero.</p>
+<h2 id="inspect-and-copy" class="doc-h">Inspect and copy<a class="doc-anchor" href="#inspect-and-copy" aria-label="Link to this section">#</a></h2>
+<p><strong>Inspect the request and the response</strong> shows the exact request the page sent and the response it got back, the model's own endpoint and the HTTP status. A streamed answer is shown assembled into one response.</p>
+<p><strong>Copy this call as code</strong> gives you the same request as cURL or Python, aimed at the model's own endpoint, ready to run on this machine. On Linux it fills the key the endpoint checks with:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#playground-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="playground-code-3"><code>export NODEAU_API_KEY=&quot;$(nodeau auth token qwen-local)&quot;</code></pre></div>
+<p>On a Mac the endpoint answers only programs on the Mac itself and checks no key, so the snippet has none. Python uses the official OpenAI client for chat and embeddings; reranking uses a plain HTTP request.</p>
+<h2 id="compare" class="doc-h">Compare<a class="doc-anchor" href="#compare" aria-label="Link to this section">#</a></h2>
+<p><strong>Compare</strong> sends one request to two or more running models at once and shows the answers side by side, each with its own machine, GPU and figures. Choose models that do the same kind of work: chat models together, or embedding models together. An image is offered only when every chosen model reads images. Each column has its own <strong>Stop</strong>, and stopping one leaves the others to finish. The Playground shows what each model did and leaves the judging to you.</p>
+<p>A <strong>preset</strong> saves the chosen models, the system prompt and the settings in this browser, so a comparison you run often is one click away. A preset never keeps a prompt or an answer.</p>
+<h2 id="your-prompts-stay-on-your-machine" class="doc-h">Your prompts stay on your machine<a class="doc-anchor" href="#your-prompts-stay-on-your-machine" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li>The page is served by Nodeau on your machine, and your browser only ever talks to it. The page's content security policy holds it there.</li><li>Nodeau sends each request to the chosen model's own endpoint on the same machine, and before it does, it checks that the endpoint really is that model's.</li><li>Nodeau attaches your API key itself. Your browser never holds it, and it never appears in a copied snippet.</li><li>No conversation is kept: closing the tab ends it.</li><li>Nodeau Cloud never sees a prompt, an answer or an image.</li></ul>
+<h2 id="from-your-account" class="doc-h">From your account<a class="doc-anchor" href="#from-your-account" aria-label="Link to this section">#</a></h2>
+<p>In your account at app.nodeau.ai, a running model on a connected fleet has <strong>Open in Playground</strong>, which tells you the command to run and on which machine. The Playground itself always runs on that machine, so your prompts stay there.</p>
+<h2 id="if-something-goes-wrong" class="doc-h">If something goes wrong<a class="doc-anchor" href="#if-something-goes-wrong" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>What you see</th><th>What to do</th></tr></thead><tbody><tr><td data-label="What you see">A model isn't in the list</td><td data-label="What to do">It isn't running on this installation. Check with <code>nodeau ps</code>, and start it with <code>nodeau run</code></td></tr><tr><td data-label="What you see">"has no local endpoint on this machine"</td><td data-label="What to do">The model runs in your fleet but has no endpoint here. <code>nodeau run &lt;name&gt;</code> gives it one</td></tr><tr><td data-label="What you see">"checks an API key Nodeau did not issue"</td><td data-label="What to do">The model checks a key Nodeau did not publish. See which with <code>nodeau auth token &lt;name&gt;</code></td></tr><tr><td data-label="What you see">"answers with the identity …, so nothing was sent"</td><td data-label="What to do">Something else is answering on that model's port. <code>nodeau status</code> shows each endpoint</td></tr><tr><td data-label="What you see">The address doesn't open</td><td data-label="What to do">Use the address <code>nodeau playground</code> printed, on the same machine, and keep it running</td></tr><tr><td data-label="What you see">Port already in use</td><td data-label="What to do">Another program has the port. Choose another with <code>--addr 127.0.0.1:7381</code></td></tr></tbody></table></div>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/byom/"><span>Previous</span>Bring your own model</a><a class="doc-next" href="/docs/api/"><span>Next</span>The OpenAI-compatible API</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
+      </div>
+      <div>
+        <h2 class="footer-title">Product</h2>
+        <ul>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Docs</h2>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Company</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+<script src="/assets/docs.js?v=1501ca71" defer></script>
+</body>
+</html>

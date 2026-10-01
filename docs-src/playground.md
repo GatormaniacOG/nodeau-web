@@ -2,7 +2,7 @@
 title: The Nodeau Playground
 heading: The Playground
 nav: The Playground
-description: Talk to the models running on your own machine from your browser: streamed chat, questions about an image, embeddings, reranking and side by side comparison, with the machine, the GPU and the speed beside every answer.
+description: Talk to the models running on your machine from your browser: streamed chat, images, embeddings, reranking and side by side comparison, with the machine, GPU and speed beside every answer.
 lede: Start a model, open the Playground, and use it. Everything happens on your own machine, and every answer shows which machine and GPU produced it and how fast.
 ---
 
