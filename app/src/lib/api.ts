@@ -454,6 +454,63 @@ export interface AuditPage {
   retentionDays: number;
 }
 
+/** When Nodeau may act on a fleet's machines on its own — the maintenance
+ *  window a rollout waits for. Mirrors `cloudapi.FleetMaintenanceWindow`.
+ *
+ *  `configured` false means NO window is set — a fact, and a different one from
+ *  "outside it". `openNow` and `nextOpensAt` are the SERVER's arithmetic (the
+ *  same function the machines decide with); the console never works out a
+ *  time-zone boundary of its own. */
+export interface FleetMaintenanceWindow {
+  installationId: string;
+  /** Minutes from midnight in `timezone`, 0..1439. */
+  startMinute: number;
+  /** 1..1440. */
+  durationMinutes: number;
+  /** An IANA zone name — the customer's own. */
+  timezone: string;
+  /** Days the window OPENS on, 0 = Sunday. Empty means every day. */
+  daysOfWeek: number[];
+  configured: boolean;
+  openNow?: boolean;
+  nextOpensAt?: string;
+  setByEmail?: string;
+  updatedAt?: string;
+  mayManage: boolean;
+}
+
+export interface SetFleetMaintenanceWindowRequest {
+  clear?: boolean;
+  startMinute?: number;
+  durationMinutes?: number;
+  timezone?: string;
+  daysOfWeek?: number[];
+}
+
+/** Which Nodeau release a fleet follows. Mirrors `cloudapi.FleetChannelPolicy`.
+ *
+ *  `channel` reads the default ("beta") when nobody has chosen; `configured`
+ *  says whether somebody did. `availableChannels` are the channels Nodeau
+ *  publishes — offered, never typed. A channel only ever moves forward. */
+export interface FleetChannelPolicy {
+  installationId: string;
+  channel: string;
+  pinnedVersion?: string;
+  floorVersion?: string;
+  configured: boolean;
+  availableChannels: string[];
+  runningVersion?: string;
+  upToDate?: boolean;
+  setByEmail?: string;
+  updatedAt?: string;
+  mayManage: boolean;
+}
+
+export interface SetFleetChannelPolicyRequest {
+  channel: string;
+  pinnedVersion?: string;
+}
+
 export interface FleetGovernance {
   installationId: string;
   desired: GovernanceSettings;
@@ -1211,6 +1268,40 @@ export const api = {
       'PUT',
       `/v1/organizations/${encodeURIComponent(orgId)}/fleet/governance`,
       { governance },
+    ),
+
+  // -- a fleet's maintenance window and release channel — post-18 -----------
+
+  fleetMaintenanceWindow: (orgId: string, signal?: AbortSignal) =>
+    request<FleetMaintenanceWindow>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/maintenance`,
+      undefined,
+      signal,
+    ),
+
+  /** A full replacement, or `{ clear: true }`. The response omits who set it;
+   *  read the window again for that. */
+  setFleetMaintenanceWindow: (orgId: string, window: SetFleetMaintenanceWindowRequest) =>
+    request<FleetMaintenanceWindow>(
+      'PUT',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/maintenance`,
+      window,
+    ),
+
+  fleetChannelPolicy: (orgId: string, signal?: AbortSignal) =>
+    request<FleetChannelPolicy>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/channel`,
+      undefined,
+      signal,
+    ),
+
+  setFleetChannelPolicy: (orgId: string, policy: SetFleetChannelPolicyRequest) =>
+    request<FleetChannelPolicy>(
+      'PUT',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/channel`,
+      policy,
     ),
 
   // -- fleet rollouts — Phase 18B --------------------------------------------
