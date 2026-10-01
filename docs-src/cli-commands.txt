@@ -6,7 +6,7 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts. This copy is
-# v0.15.0-beta.7, the build the beta channel serves.
+# v0.15.0-beta.8, the build the beta channel serves.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
@@ -87,7 +87,7 @@ nodeau service explain	--help --namespace
 nodeau service get	--all-namespaces --help --json --namespace
 nodeau service	--help
 nodeau status	--all-namespaces --help --json --namespace
-nodeau stop	--endpoint-only --help --namespace --remove --workload --yes
+nodeau stop	--endpoint-only --help --local --namespace --remove --workload --yes
 nodeau support bundle	--help --namespace --output
 nodeau support	--help
 nodeau uninstall	--dry-run --help --namespace --purge --remove-batch-data --remove-managed-k3s --remove-models --remove-toolkit --state --yes
