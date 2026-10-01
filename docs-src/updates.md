@@ -159,10 +159,18 @@ its own. When Nodeau Cloud holds one for your fleet:
 A channel policy says which release channel your fleet follows, and a plan
 refuses a release from any other.
 
-Plans and rollouts already use both, and every plan says whether it could see
-them (see [maintenance windows and channel policy](/docs/upgrades/#window-and-channel)).
-Setting a window or a channel policy from your account is
-[in progress](/roadmap/).
+You set both in your account at [app.nodeau.ai](https://app.nodeau.ai/), under
+**Fleet, then Upgrade**:
+
+- **Maintenance window**: the days, the time it opens, how long it stays open
+  and your time zone. The page shows whether it's open now, or when it next
+  opens. Removing it means Nodeau has no window to wait for.
+- **Release channel**: your fleet follows the channel Nodeau publishes, or stays
+  on the release it runs now until you change it.
+
+Everyone in your organisation can see both. Changing them takes permission to
+operate the fleet. Plans and rollouts use both, and every plan says whether it
+could see them (see [maintenance windows and channel policy](/docs/upgrades/#window-and-channel)).
 
 ## Staying on a build
 
