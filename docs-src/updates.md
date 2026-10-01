@@ -94,20 +94,15 @@ which is why doctor checks for it.
 
 ## Updating several machines
 
-Start by looking at what the move would involve, without changing anything:
+The easiest way is a rollout. `nodeau fleet upgrade apply` moves the whole fleet
+one machine at a time, workers first and the control-plane machine last, and
+checks each machine before the next. It needs Home Pro or Business and the fleet
+connected to your account. See [upgrading a fleet](/docs/upgrades/).
+
+To update by hand instead, work on the **machine that runs your control plane**:
 
 ```bash
-nodeau fleet upgrade plan
-```
-
-It resolves the release once, says which machines would change and which already
-match, explains any machine it would hold back and why, puts the machines in
-order, and says what each move would cost the workloads on it. See
-[planning a fleet upgrade](/docs/upgrades/).
-
-Then update from the **machine that runs your control plane**:
-
-```bash
+nodeau fleet upgrade plan                            # see what would change first
 curl -fsSL https://get.nodeau.ai/install.sh | bash
 nodeau install
 nodeau update                                        # do the machines now agree?
@@ -151,23 +146,23 @@ are the signal worth acting on.
 
 ### Maintenance windows and a release for the whole fleet
 
-Setting a maintenance window, and the release your whole fleet should be on,
-from your account is [in progress](/roadmap/). Here's what a window will mean
-when it lands, so you can plan around it:
+A maintenance window marks the hours when Nodeau may act on your machines on
+its own. When Nodeau Cloud holds one for your fleet:
 
-- A window marks the hours when Nodeau may do things **on its own** that could
-  interrupt work, such as recovering a workload automatically.
-- Work you ask for runs straight away, inside or outside a window: running a
-  model, submitting a batch job, a placement you requested.
-- Nothing already running is touched when a window opens or closes.
-- A window is a boundary for Nodeau's own actions rather than a job scheduler.
+- an approved rollout starts a machine only inside it, and a plan shows that
+  machine as `WAITING` with the time the window next opens;
+- work you ask for runs straight away, inside or outside a window: running a
+  model, submitting a batch job, a placement you requested;
+- nothing already running is touched when a window opens or closes;
+- a window is a boundary for Nodeau's own actions rather than a job scheduler.
 
-:::important The upgrade planner works from what this machine knows
-`nodeau fleet upgrade plan` is worked out on the machine you run it on, from what
-that machine knows. Organisation-wide settings such as a maintenance window are
-not part of the plan in this release, and the plan's human output ends with a
-line saying so. If you script against `--json`, keep that in mind.
-:::
+A channel policy says which release channel your fleet follows, and a plan
+refuses a release from any other.
+
+Plans and rollouts already use both, and every plan says whether it could see
+them (see [maintenance windows and channel policy](/docs/upgrades/#window-and-channel)).
+Setting a window or a channel policy from your account is
+[in progress](/roadmap/).
 
 ## Staying on a build
 

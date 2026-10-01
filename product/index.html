@@ -181,10 +181,10 @@ curl http://127.0.0.1:8081/v1/embeddings \
         </div>
         <div>
           <p>
-            Chat runs everywhere Nodeau runs, including a Mac running
-            standalone. Embeddings, reranking, structured output, tool calling
-            and vision run on Linux machines with NVIDIA GPUs. More of this is
-            coming to the Mac, and the <a href="/roadmap/">roadmap</a> tracks it.
+            Chat, embeddings, reranking and vision run everywhere Nodeau runs,
+            including a Mac running standalone, where several models can serve
+            at once, each on its own port. Structured output and tool calling
+            run on Linux machines with NVIDIA GPUs.
           </p>
           <p style="margin-top:1rem"><a class="link-arrow" href="/docs/tasks/">Examples for every task</a></p>
         </div>
@@ -352,6 +352,7 @@ nodeau power set --device &lt;gpu-uuid&gt; --limit 180</code></pre>
           <ul class="checks">
             <li><code>nodeau health</code> shows processor, memory, storage, network and GPU for every machine, keeps a day of history, and raises alerts when something needs you</li>
             <li>Drain a machine for maintenance. New work goes elsewhere and what's running keeps serving</li>
+            <li>If the control-plane machine is away for a while, the other machines keep serving and report back shortly after it returns</li>
             <li><code>nodeau fleet connect</code> puts your fleet in your account at app.nodeau.ai, so you can see it from any browser</li>
             <li>With Home Pro or Business, run it from there too: start and stop models, set scheduling, drain machines, read logs and recover a workload from a machine that's gone</li>
           </ul>
@@ -408,28 +409,40 @@ nodeau health</code></pre>
       <div class="duo">
         <div>
           <p class="eyebrow">Upgrades</p>
-          <h2>See what an upgrade involves before you start.</h2>
+          <h2>Update the fleet from one place.</h2>
           <p style="margin-top:1rem">
-            <code>nodeau fleet upgrade plan</code> pins a release down to an exact
-            build, then walks your fleet. For each machine it tells you whether
-            it would change, whether it's already current, or what needs your
-            attention first. It lists the order, with the control plane last, and
-            which workloads would restart along the way.
+            Ready to update? Start with a plan. <code>nodeau fleet upgrade plan</code>
+            pins a release down to an exact build, then walks your fleet: which
+            machines would change, which are already current, and what needs
+            your attention first, in the order they'd go and with the work on
+            each one named.
           </p>
           <p>
-            Ask twice with nothing changed and you get the same plan. When you're
-            happy with it, you upgrade each machine with the installer.
+            Happy with it? <code>nodeau fleet upgrade apply</code> asks you to
+            confirm, then Nodeau moves your machines one at a time, workers
+            first and the control-plane machine last. Each machine checks the
+            release against its published checksums, updates Nodeau's own
+            software, and counts as done only once it reports the new build.
+            Then the next one starts.
+          </p>
+          <p>
+            If something needs attention, the rollout holds right there so you
+            can take a look. A worker whose step fails goes back to exactly what
+            it was running, and <code>nodeau fleet upgrade status</code> shows
+            where every machine is. Scheduling pauses while the control-plane
+            machine takes its turn, so pick a quiet moment for that one.
           </p>
           <p style="color:var(--text-3);font-size:0.92rem">
-            Moving the whole fleet through a plan, one machine at a time, from one
-            place, is <a href="/roadmap/">in progress</a>.
+            Fleet upgrades come with Home Pro and Business, from the command
+            line or from Fleet, then Upgrade, in your account.
           </p>
-          <p style="margin-top:1.25rem"><a class="link-arrow" href="/docs/upgrades/">Planning a fleet upgrade</a></p>
+          <p style="margin-top:1.25rem"><a class="link-arrow" href="/docs/upgrades/">Upgrading a fleet</a></p>
         </div>
         <div class="code">
           <div class="code-head"><span>bash</span><button class="copy-btn" data-copy="#p-plan" type="button"><span data-copy-label>Copy</span></button></div>
 <pre id="p-plan"><code>nodeau fleet upgrade plan
-nodeau fleet upgrade plan --to &lt;version&gt; --json</code></pre>
+nodeau fleet upgrade apply
+nodeau fleet upgrade status</code></pre>
         </div>
       </div>
     </div>

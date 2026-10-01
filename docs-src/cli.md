@@ -94,6 +94,7 @@ API key, and never re-decides who owns a component.
 | `--verbose`, `-v` | Linux | off | The full technical plan instead of the plain-language summary |
 | `--server-dry-run` | Linux | off | Send every manifest to the Kubernetes API server for full validation, then discard it |
 | `--print-manifests` | Linux | off | Print every manifest compiled into this binary and exit, changing nothing |
+| `--lifecycle-prepare` | Linux | off | Used by `nodeau fleet upgrade`: apply only what a rollout needs before its first machine (this release's resources, and its DaemonSets set to update one machine at a time) and restart nothing |
 | `--skip-k3s` | Linux | off | Leave Kubernetes to you; use this when you'll provide a cluster yourself |
 | `--skip-toolkit` | Linux | off | Leave the NVIDIA Container Toolkit to you |
 | `--cache-dir <path>` | Linux | `/var/lib/nodeau/models` | Model cache directory |
@@ -807,14 +808,14 @@ nodeau fleet upgrade plan [flags]
 
 See what moving your fleet to a Nodeau release would involve, before any machine
 moves. **Linux.** It reads and changes nothing. `nodeau fleet upgrade` on its own
-prints help for the one subcommand it has.
+prints help for all five subcommands.
 
 The target is resolved **once**, to a version, the commit it was built from, and
 the digest of every artifact it names, so the plan describes one specific build.
-For each machine you get where it would go, whether it's ready, already up to
-date, or blocked (with the reason in words and a code), the order the machines
-would go in, and what it would mean for the workloads running there. The
-machine that runs your control plane goes last.
+For each machine you get where it would go, whether it's ready, waiting for your
+maintenance window, already up to date, or blocked (with the reason in words and
+a code), the order the machines would go in, and what it would mean for the
+workloads running there. The machine that runs your control plane goes last.
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -828,8 +829,8 @@ machine that runs your control plane goes last.
 
 ```bash
 nodeau fleet upgrade plan                          # the channel's current release
-nodeau fleet upgrade plan --to v0.15.0-beta.1      # one exact version
-nodeau fleet upgrade plan --machine desk --json    # one machine, for a script
+nodeau fleet upgrade plan --to v0.15.0-beta.7      # one exact version
+nodeau fleet upgrade plan --machine garage --json  # one machine, for a script
 ```
 
 Exit `0` whenever a plan was worked out, whatever it says about each machine,
@@ -837,11 +838,69 @@ and `1` when one couldn't be, for example with no network to read the release
 from. With `--json`, even a failure comes back as JSON, with an `error` field,
 so a script always has something to parse.
 
-The plan is worked out on the machine you run it on. Organisation-wide settings
-such as a maintenance window are **not** part of it in this release, and the
-human output says so at the bottom. Upgrading
-each machine is still the installer and `nodeau install` on that machine. See
-[planning a fleet upgrade](/docs/upgrades/).
+The plan uses the maintenance window and channel policy Nodeau Cloud holds for
+your fleet, and its notes say whether it could see them: a policy it couldn't see
+is reported as unknown and holds every machine that would move. In `--json`,
+each machine's `key` is its node UID (it was the name before v0.15.0-beta.7) and
+`name` is its name. See [upgrading a fleet](/docs/upgrades/).
+
+### `nodeau fleet upgrade apply` {#nodeau-fleet-upgrade-apply}
+
+```bash
+nodeau fleet upgrade apply [flags]
+```
+
+Show the plan, ask, then ask Nodeau Cloud to authorise that exact plan.
+**Linux**, with Home Pro or Business and the fleet connected to your account.
+Nodeau Cloud works out its own plan and refuses if the two differ, so what you
+approve is what you saw. Your machines then upgrade one at a time, workers first
+and the control plane last, each checked on what it reports running before the
+next. Workloads on a machine being upgraded stop and start again on that machine.
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--yes` | off | Authorise without asking. The plan is still printed |
+| `--override-window` | off | Let machines upgrade outside your organisation's maintenance window, recorded as your decision |
+| `--to <version>` | the channel's current release | Pin the target to one version the channel serves |
+| `--channel <name>` | this build's | Release channel to plan against |
+| `--machine <name>` | every machine | Plan only this machine. Repeat it for several |
+| `--fleet-group` | off | Plan only the machines your organisation's fleet group names |
+| `--max-report-age <d>` | `10m` | How old a machine's last report may be and still be planned; `0` skips that check |
+| `--base-url <url>` | the public release site | Where releases are published |
+
+One rollout runs at a time: cancel an unfinished one before approving another.
+
+### `nodeau fleet upgrade status` {#nodeau-fleet-upgrade-status}
+
+```bash
+nodeau fleet upgrade status [--json]
+```
+
+The rollout Nodeau Cloud has authorised for this fleet, as it last told this
+installation, beside this installation's own record of the step it ran.
+**Linux.** What was asked for and what a machine reports are shown separately: a
+step is complete only when its machine reports running the target.
+
+### `nodeau fleet upgrade cancel` {#nodeau-fleet-upgrade-cancel}
+
+```bash
+nodeau fleet upgrade cancel [rollout-id]
+```
+
+Stop a rollout before its next machine. **Linux.** Before any machine has
+started, the rollout ends at once. A machine already upgrading finishes or fails
+first, and no machine starts after it. With no id, it acts on the fleet's
+current rollout.
+
+### `nodeau fleet upgrade resume` {#nodeau-fleet-upgrade-resume}
+
+```bash
+nodeau fleet upgrade resume [rollout-id]
+```
+
+Retry the machine a held rollout stopped on. **Linux.** The machine is tried
+again as a new attempt of the same step, and every check it has to pass first is
+run again. With no id, it acts on the fleet's current rollout.
 
 ### `nodeau scheduling mode` {#nodeau-scheduling-mode}
 

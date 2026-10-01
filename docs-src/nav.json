@@ -32,7 +32,7 @@
       {"slug": "fleet", "nav": "Add and run machines"},
       {"slug": "health", "nav": "Health and alerts"},
       {"slug": "power", "nav": "Power limits and budgets"},
-      {"slug": "upgrades", "nav": "Planning a fleet upgrade"},
+      {"slug": "upgrades", "nav": "Upgrading a fleet"},
       {"slug": "updates", "nav": "Updates and release channels"}
     ]
   },

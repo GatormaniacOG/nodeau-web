@@ -183,12 +183,11 @@ nodeau governance --json</code></pre>
           <ul class="checks">
             <li><strong>Know what every machine runs.</strong> <code>nodeau update</code> compares each machine with the published release, and a release channel only moves forward</li>
             <li><strong>Upgrade planning.</strong> See which machines would change, in what order and with which workloads, before anything moves</li>
-            <li><strong>Machine by machine.</strong> Upgrade each machine with the installer, at the pace you choose</li>
+            <li><strong>One rollout, one machine at a time.</strong> Approve the plan you saw and Nodeau moves the fleet, workers first and the control-plane machine last, checking each machine before the next. If a step needs attention, the rollout holds there so you can take a look</li>
           </ul>
           <p style="color:var(--text-3);font-size:0.92rem;margin-top:1rem">
-            Maintenance windows and a release channel for the whole fleet, set
-            from your account, and rolling the fleet through an upgrade one
-            machine at a time are <a href="/roadmap/">in progress</a>.
+            Setting maintenance windows and a release channel for the whole
+            fleet from your account is <a href="/roadmap/">in progress</a>.
           </p>
         </div>
       </div>

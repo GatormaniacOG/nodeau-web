@@ -91,9 +91,9 @@ With more than one machine you can:
   ([limits and policies](/docs/governance/))
 - see what your hardware has been doing, in accelerator-hours, and who changed
   what ([usage and audit](/docs/usage/))
-- preview what moving your machines to a new release would involve, before a
-  single machine changes, with `nodeau fleet upgrade plan`
-  ([planning a fleet upgrade](/docs/upgrades/))
+- update the whole fleet from one place: preview the rollout with
+  `nodeau fleet upgrade plan`, then approve it with `nodeau fleet upgrade apply`
+  ([upgrading a fleet](/docs/upgrades/))
 
 ## Where Nodeau runs
 
@@ -101,9 +101,10 @@ With more than one machine you can:
   cluster for you, and runs each model on your cards through CUDA. This is the
   whole product: several machines, several cards in each, batch inference, your
   own models, and every task from chat to image input.
-- **Apple Silicon Macs.** Nodeau runs chat models natively on the Mac's GPU
-  through Metal, with no containers and no password. A Mac runs standalone,
-  which makes it a lovely private endpoint on a laptop.
+- **Apple Silicon Macs.** Nodeau runs chat, embedding, reranking and vision
+  models natively on the Mac's GPU through Metal, several at once, with no
+  containers and no password. A Mac runs standalone, which makes it a lovely
+  private endpoint on a laptop.
 
 The catalog, the fit checks, entitlements and the CLI are the same on both. The
 full matrix is in [requirements and platforms](/docs/requirements/).
@@ -156,6 +157,6 @@ browser. See [accounts and plans](/docs/accounts/).
 | Work through a file of requests | [Batch inference](/docs/batch/) |
 | Add a second machine | [Add and run machines](/docs/fleet/) |
 | Understand a decision | [How Nodeau decides](/docs/scheduling/) |
-| Plan an upgrade across machines | [Planning a fleet upgrade](/docs/upgrades/) |
+| Upgrade the whole fleet | [Upgrading a fleet](/docs/upgrades/) |
 | Look up a command | [CLI reference](/docs/cli/) |
 | Fix something | [Troubleshooting](/docs/troubleshooting/) |
