@@ -105,36 +105,28 @@ match, explains any machine it would hold back and why, puts the machines in
 order, and says what each move would cost the workloads on it. See
 [planning a fleet upgrade](/docs/upgrades/).
 
-Then update **one machine at a time**, checking each before you move on. Take the
-worker machines first and the **control-plane machine last**: while the control
-plane updates, scheduling and the reports your other machines send through it
-pause until it is back.
-
-For each machine, first on the machine that runs the control plane:
-
-```bash
-nodeau scheduling drain --node <machine>    # no new work lands there meanwhile
-```
-
-Then on the machine you are updating:
+Then update from the **machine that runs your control plane**:
 
 ```bash
 curl -fsSL https://get.nodeau.ai/install.sh | bash
 nodeau install
+nodeau update                                        # do the machines now agree?
 ```
 
-And back on the control-plane machine:
+`nodeau install` there updates the command line, the controller and the Nodeau
+agent on **every** machine in the fleet. The other machines' Nodeau runs as pods
+that the control plane manages, and Kubernetes replaces them one machine at a
+time, so there's nothing to run on the other machines themselves.
 
-```bash
-nodeau doctor --node <machine>              # is it healthy and reporting?
-nodeau scheduling undrain --node <machine>
-nodeau update                               # do the machines now agree?
-```
+:::important Run `nodeau install` on the control-plane machine only
+On a machine that joined a fleet, `nodeau install` doesn't recognise the fleet it
+belongs to, and its plan offers to set Kubernetes up from scratch. Its Nodeau
+already comes from the control plane, so skip it there.
+:::
 
-Draining keeps new work away while you are busy with a machine, and leaves what
-is already running exactly as it is. Plan for the workloads on a machine you
-update to stop and start again on that same machine: the upgrade plan lists them
-for exactly this reason, so you can choose a quiet moment.
+Plan for the workloads on the control-plane machine to stop and start again on
+that same machine while it updates, and for scheduling to pause until it's back:
+the upgrade plan lists what's running there so you can choose a quiet moment.
 
 ## Release channels
 

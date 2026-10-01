@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+<link rel="stylesheet" href="/assets/nodeau.css?v=6029a5ee">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -83,7 +83,7 @@
 <p>A service can be set up to enforce a different credential, for example one created by hand. To print the token a particular service will actually accept:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-3"><code>export NODEAU_API_KEY=&quot;$(nodeau auth token qwen-local)&quot;</code></pre></div>
 <p>That one checks which credential the service enforces, and tells you plainly if your local key isn't it. See <a href="/docs/accounts/#two-different-credentials">the two kinds of credential</a>.</p>
-<aside class="callout callout-important"><p class="callout-kind">A browser isn&#x27;t an API client</p><p>Opening <code>http://127.0.0.1:8080/v1</code> in a browser isn't the same as an authenticated API call. A browser can't attach your key, so the server answers "Invalid API Key". Seen in a browser tab, that almost never means your key is wrong.</p></aside>
+<aside class="callout callout-important"><p class="callout-kind">A browser isn't an API client</p><p>Opening <code>http://127.0.0.1:8080/v1</code> in a browser isn't the same as an authenticated API call. A browser can't attach your key, so the server answers "Invalid API Key". Seen in a browser tab, that almost never means your key is wrong.</p></aside>
 <h2 id="chat-completions" class="doc-h">Chat completions<a class="doc-anchor" href="#chat-completions" aria-label="Link to this section">#</a></h2>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-4"><code>curl http://127.0.0.1:8080/v1/chat/completions \
   -H &quot;Authorization: Bearer $NODEAU_API_KEY&quot; \
@@ -148,7 +148,7 @@ for chunk in stream:
 <p>An empty <code>content</code> with <code>&quot;finish_reason&quot;: &quot;length&quot;</code> means the token budget ran out before an answer existed. Raise <code>max_tokens</code>.</p>
 <h2 id="changing-the-port" class="doc-h">Changing the port<a class="doc-anchor" href="#changing-the-port" aria-label="Link to this section">#</a></h2>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#api-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="api-code-10"><code>nodeau run qwen-local --port 8123</code></pre></div>
-<aside class="callout callout-note"><p class="callout-kind">`--port` is part of what the workload *is*</p><p>It sets the loopback port <strong>and</strong> the in-cluster service port, and the service port is part of the workload's identity. So running <code>run</code> again on a different port restarts the model. Expect a short gap while the weights reload.</p></aside>
+<aside class="callout callout-note"><p class="callout-kind"><code>--port</code> is part of what the workload <em>is</em></p><p>It sets the loopback port <strong>and</strong> the in-cluster service port, and the service port is part of the workload's identity. So running <code>run</code> again on a different port restarts the model. Expect a short gap while the weights reload.</p></aside>
 <h2 id="reaching-it-from-another-machine" class="doc-h">Reaching it from another machine<a class="doc-anchor" href="#reaching-it-from-another-machine" aria-label="Link to this section">#</a></h2>
 <p>The endpoint lives on <code>127.0.0.1</code> by design, so a GPU never ends up on your network by accident. When you want a model reachable from elsewhere on a network you control, put your own reverse proxy in front of the loopback endpoint, with your own TLS and your own authentication. <a href="/docs/security/">Security and privacy</a> is worth a read first.</p>
       <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/byom/"><span>Previous</span>Bring your own model</a><a class="doc-next" href="/docs/batch/"><span>Next</span>Batch inference</a></nav>

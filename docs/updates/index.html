@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+<link rel="stylesheet" href="/assets/nodeau.css?v=6029a5ee">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -99,20 +99,16 @@ nodeau install</code></pre></div>
 <p>Start by looking at what the move would involve, without changing anything:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-5"><code>nodeau fleet upgrade plan</code></pre></div>
 <p>It resolves the release once, says which machines would change and which already match, explains any machine it would hold back and why, puts the machines in order, and says what each move would cost the workloads on it. See <a href="/docs/upgrades/">planning a fleet upgrade</a>.</p>
-<p>Then update <strong>one machine at a time</strong>, checking each before you move on. Take the worker machines first and the <strong>control-plane machine last</strong>: while the control plane updates, scheduling and the reports your other machines send through it pause until it is back.</p>
-<p>For each machine, first on the machine that runs the control plane:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-6"><code>nodeau scheduling drain --node &lt;machine&gt;    # no new work lands there meanwhile</code></pre></div>
-<p>Then on the machine you are updating:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-7"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
-nodeau install</code></pre></div>
-<p>And back on the control-plane machine:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-8"><code>nodeau doctor --node &lt;machine&gt;              # is it healthy and reporting?
-nodeau scheduling undrain --node &lt;machine&gt;
-nodeau update                               # do the machines now agree?</code></pre></div>
-<p>Draining keeps new work away while you are busy with a machine, and leaves what is already running exactly as it is. Plan for the workloads on a machine you update to stop and start again on that same machine: the upgrade plan lists them for exactly this reason, so you can choose a quiet moment.</p>
+<p>Then update from the <strong>machine that runs your control plane</strong>:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-6"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-6"><code>curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau install
+nodeau update                                        # do the machines now agree?</code></pre></div>
+<p><code>nodeau install</code> there updates the command line, the controller and the Nodeau agent on <strong>every</strong> machine in the fleet. The other machines' Nodeau runs as pods that the control plane manages, and Kubernetes replaces them one machine at a time, so there's nothing to run on the other machines themselves.</p>
+<aside class="callout callout-important"><p class="callout-kind">Run <code>nodeau install</code> on the control-plane machine only</p><p>On a machine that joined a fleet, <code>nodeau install</code> doesn't recognise the fleet it belongs to, and its plan offers to set Kubernetes up from scratch. Its Nodeau already comes from the control plane, so skip it there.</p></aside>
+<p>Plan for the workloads on the control-plane machine to stop and start again on that same machine while it updates, and for scheduling to pause until it's back: the upgrade plan lists what's running there so you can choose a quiet moment.</p>
 <h2 id="release-channels" class="doc-h">Release channels<a class="doc-anchor" href="#release-channels" aria-label="Link to this section">#</a></h2>
 <p>A channel is a named pointer to a version. <code>beta</code> is what <code>https://get.nodeau.ai/install.sh</code> resolves by default.</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-9"><code>NODEAU_CHANNEL=beta bash install-nodeau.sh              # choose a channel
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-7"><code>NODEAU_CHANNEL=beta bash install-nodeau.sh              # choose a channel
 NODEAU_VERSION=v0.X.Y-beta.N bash install-nodeau.sh     # pin an exact version</code></pre></div>
 <p><strong>A channel only ever moves forward.</strong> A version that was published and then withdrawn is never advertised again, so the channel always points at a build that went through the whole release process.</p>
 <h3 id="seeing-which-build-each-installation-runs" class="doc-h">Seeing which build each installation runs<a class="doc-anchor" href="#seeing-which-build-each-installation-runs" aria-label="Link to this section">#</a></h3>
@@ -131,7 +127,7 @@ NODEAU_VERSION=v0.X.Y-beta.N bash install-nodeau.sh     # pin an exact version</
 <h2 id="if-an-update-stops-partway" class="doc-h">If an update stops partway<a class="doc-anchor" href="#if-an-update-stops-partway" aria-label="Link to this section">#</a></h2>
 <p>The bootstrap installs nothing when the checksum does not match, and says so. If <code>nodeau install</code> stops partway through, run it again: it re-checks everything and carries on, and the ownership ledger means it never re-decides who owns a component.</p>
 <p>For anything you cannot explain:</p>
-<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-10"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-10"><code>nodeau doctor
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#updates-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="updates-code-8"><code>nodeau doctor
 nodeau support bundle</code></pre></div>
       <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/upgrades/"><span>Previous</span>Planning a fleet upgrade</a><a class="doc-next" href="/docs/accounts/"><span>Next</span>Accounts and plans</a></nav>
       <p class="doc-foot">These docs describe the current release,

@@ -314,6 +314,13 @@ section.tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
     border-bottom: 1px solid var(--line);
     padding: 0.75rem clamp(1.15rem, 4vw, 2rem) 1.5rem;
     display: none;
+    /* A FIXED panel cannot be reached by scrolling the page, so it scrolls
+       itself when it is taller than the screen. On a phone held sideways its
+       last links (Install, Sign in) sat below the screen with no way to them. */
+    max-height: calc(100vh - 4rem);
+    max-height: calc(100dvh - 4rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .nav[data-open="true"] { display: block; }
   .nav ul { flex-direction: column; align-items: stretch; gap: 0; }

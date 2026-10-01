@@ -160,6 +160,50 @@ for (const width of widths) {
   }
   await ctx.close();
 }
+
+// A phone held sideways. Both menus are FIXED panels, so scrolling the page
+// cannot bring a lower link into view; only the panel can. Every visible link
+// must be reachable. Found 2026-09-30 by opening the menu at 844x390, not by
+// this audit: Install and Sign in sat below the screen with no way to them.
+for (const vp of [{ width: 844, height: 390 }, { width: 667, height: 375 }]) {
+  const size = `${vp.width}x${vp.height}`;
+  const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: 1 });
+  const page = await ctx.newPage();
+  // REACHABLE MEANS BY SCROLLING, the way a person gets there: a wheel over
+  // the panel, many small steps. scrollIntoView() is not a stand-in — on a
+  // docs page the body is its own scroll container and it moved nothing,
+  // reporting 26 perfectly reachable sidebar links as unreachable.
+  const unreachable = async (sel, x, y) => {
+    const all = await page.evaluate((sel) => [...document.querySelectorAll(sel)]
+      .filter((a) => a.offsetParent !== null).map((a) => a.textContent.trim()), sel);
+    const seen = new Set();
+    for (let i = 0; i < 40; i++) {
+      for (const t of await page.evaluate((sel) => [...document.querySelectorAll(sel)]
+        .filter((a) => a.offsetParent !== null)
+        .filter((a) => { const r = a.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; })
+        .map((a) => a.textContent.trim()), sel)) seen.add(t);
+      await page.mouse.move(x, y);
+      await page.mouse.wheel(0, 120);
+      await page.waitForTimeout(40);
+    }
+    return all.filter((t) => !seen.has(t));
+  };
+  await page.goto(base + '/', { waitUntil: 'networkidle' });
+  if (await page.isVisible('[data-nav-toggle]')) {
+    await page.click('[data-nav-toggle]');
+    for (const t of await unreachable('#site-nav a', vp.width / 2, 120)) note('/', size, 'mobile-nav', `menu link "${t}" cannot be scrolled to`);
+    await page.screenshot({ path: join(out, `mobile-nav-open-${size}.png`) });
+  }
+  await page.goto(base + '/docs/install-linux/', { waitUntil: 'networkidle' });
+  const btn = await page.$('[data-doc-menu]');
+  if (btn && (await btn.isVisible())) {
+    await btn.click();
+    for (const t of (await unreachable('#doc-sidebar a', vp.width / 2, vp.height / 2)).slice(0, 5)) note('/docs/install-linux/', size, 'docs-menu', `sidebar link "${t}" cannot be scrolled to`);
+    await page.screenshot({ path: join(out, `docs-menu-open-${size}.png`) });
+  }
+  await page.close();
+  await ctx.close();
+}
 await browser.close();
 
 writeFileSync(join(out, 'report.json'), JSON.stringify(findings, null, 2));

@@ -281,7 +281,10 @@ def render(slug: str, meta: dict[str, str], body: str, ctx: Context | None = Non
             body_html = inner.html()
             doc.emit(
                 f'<aside class="callout callout-{kind}">'
-                f'<p class="callout-kind">{html.escape(title or CALLOUT_KINDS[kind])}</p>'
+                # A title is inline markup like any other sentence: it was
+                # escaped as plain text, so `code` and *emphasis* in a title
+                # reached the page as literal backticks and asterisks.
+                f'<p class="callout-kind">{inline(title) if title else html.escape(CALLOUT_KINDS[kind])}</p>'
                 f"{body_html}</aside>"
             )
             continue
@@ -382,8 +385,12 @@ def render_list(block: list[str], indent: int) -> str:
             sub_indent = len(nested[0]) - len(nested[0].lstrip())
             out.append(f"<li>{inline(head)}{render_list(nested, sub_indent)}</li>")
         elif nested:
+            # JOINED BEFORE inline(), as a paragraph is. Formatting the first
+            # line and the rest separately split any span that crossed the line
+            # break, and a bold phrase wrapped in the source reached the page as
+            # literal asterisks (/docs/byom/, found 2026-09-30).
             cont = " ".join(x.strip() for x in nested)
-            out.append(f"<li>{inline(head)} {inline(cont)}</li>")
+            out.append(f"<li>{inline(head + ' ' + cont)}</li>")
         else:
             out.append(f"<li>{inline(head)}</li>")
     out.append(f"</{tag}>")
