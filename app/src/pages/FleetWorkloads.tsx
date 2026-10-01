@@ -372,8 +372,9 @@ function WorkloadRow({
  * nothing typed into it reaches this console or Nodeau Cloud.
  *
  * The link only opens on the machine itself (it is that machine's own
- * loopback address), and only where the Playground has been opened before in
- * that browser; the command always works, so it comes first.
+ * loopback address), and signs nothing in: a browser is signed in by the
+ * address `nodeau playground` prints, for as long as that Playground runs. The
+ * command always works, so it comes first.
  */
 function PlaygroundEntry({ name, host }: { name: string; host: string }) {
   const command = `nodeau playground ${name}`;
