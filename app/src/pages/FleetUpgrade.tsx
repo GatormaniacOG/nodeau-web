@@ -12,6 +12,7 @@ import {
 import { hrefFor } from '../lib/router';
 import { useResource } from '../lib/useResource';
 import { Badge, Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
+import { FleetUpdatePolicy } from './FleetUpdatePolicy';
 
 /**
  * Fleet rollouts — Phase 18B.
@@ -63,6 +64,8 @@ export function FleetUpgradePage({ org }: { org: Organization }) {
           Refresh
         </button>
       </div>
+
+      <FleetUpdatePolicy org={org} />
 
       {active ? (
         <RolloutPanel org={org} view={active} mayUpgrade={list.mayUpgrade} onChanged={reload} />

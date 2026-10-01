@@ -150,6 +150,12 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     'LifecycleStep',
     'LifecycleStepRef',
     'LifecycleTarget',
+    // Post-18 — a fleet's maintenance window and release channel. A field the
+    // server sends that this file never mentions is a setting the console
+    // cannot show — for a window, somebody believing their machines are free
+    // to update when the server says they are not.
+    'FleetMaintenanceWindow',
+    'FleetChannelPolicy',
   ];
 
   for (const typeName of responseTypes) {

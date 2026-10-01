@@ -490,6 +490,40 @@ const PAGES: AuditPage[] = [
           WHERE installation_id = '${seeded.installationId}' AND state IN ('authorized', 'in-progress', 'held')`,
       ),
   },
+  // Post-18 — the fleet's maintenance window and release channel: SET (a long
+  // zone name, a held release, a "next opens" sentence in two zones), and the
+  // window's form OPEN, where seven day chips, a time, a length and a zone
+  // select have to share a phone's width.
+  {
+    label: 'upgrade-policy-set',
+    path: () => '/fleet/upgrade',
+    setup: () => {
+      psql(e2e.scopedDSN, `INSERT INTO fleet_maintenance_windows
+          (installation_id, start_minute, duration_minutes, timezone, days_of_week)
+        VALUES ('${seeded.installationId}', 180, 90, 'America/Argentina/ComodRivadavia', '{0,6}')
+        ON CONFLICT (installation_id) DO UPDATE SET start_minute = 180, duration_minutes = 90,
+          timezone = 'America/Argentina/ComodRivadavia', days_of_week = '{0,6}'`);
+      psql(e2e.scopedDSN, `INSERT INTO fleet_channel_policy (installation_id, channel, pinned_version)
+        VALUES ('${seeded.installationId}', 'beta', 'v0.15.0-beta.7')
+        ON CONFLICT (installation_id) DO UPDATE SET channel = 'beta', pinned_version = 'v0.15.0-beta.7'`);
+    },
+    prepare: async (page) => {
+      await page.getByRole('region', { name: 'Maintenance window' }).getByText(/Saturdays and Sundays/).waitFor();
+    },
+  },
+  {
+    label: 'upgrade-policy-edit',
+    path: () => '/fleet/upgrade',
+    prepare: async (page) => {
+      await page.getByRole('button', { name: 'Change window' }).click();
+      await page.getByRole('button', { name: 'Remove window' }).click();
+      await page.getByRole('region', { name: 'Release channel' }).getByRole('button', { name: 'Change' }).click();
+    },
+    teardown: () => {
+      psql(e2e.scopedDSN, `DELETE FROM fleet_maintenance_windows WHERE installation_id = '${seeded.installationId}'`);
+      psql(e2e.scopedDSN, `DELETE FROM fleet_channel_policy WHERE installation_id = '${seeded.installationId}'`);
+    },
+  },
   { label: 'usage', path: () => '/usage' },
   { label: 'organization', path: () => '/organization' },
   {

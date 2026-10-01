@@ -2500,3 +2500,52 @@ button:not([class]):disabled {
 .rollout-head p {
   margin: 0;
 }
+
+/* ---------------------------------------------------------------------------
+   A fleet's maintenance window and release channel, on the Upgrade page
+   (post-18). Two panels side by side where there is room, stacked on a phone.
+   --------------------------------------------------------------------------- */
+.policy-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  margin: 0 0 var(--space-5);
+}
+.policy-grid .panel {
+  margin: 0;
+}
+.policy-grid h2 {
+  margin-top: 0;
+}
+.policy-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.day-picker {
+  margin: var(--space-2) 0;
+}
+.day-picker label {
+  padding: 0.4rem 0.7rem;
+}
+.window-fields {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+}
+.window-fields .field {
+  margin: 0;
+  min-width: 0;
+}
+.window-fields select,
+.window-fields input {
+  width: 100%;
+  max-width: none;
+}
+.inline-confirm {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
