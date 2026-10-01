@@ -20,6 +20,7 @@
   {
     "group": "Use Nodeau",
     "pages": [
+      {"slug": "playground", "nav": "The Playground"},
       {"slug": "api", "nav": "The OpenAI-compatible API"},
       {"slug": "batch", "nav": "Batch inference"},
       {"slug": "multi-gpu", "nav": "Several GPUs in one machine"},
