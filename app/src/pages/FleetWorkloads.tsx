@@ -3,6 +3,7 @@ import {
   api,
   ApiError,
   type FleetLogArtifact,
+  type FleetView,
   type FleetWorkloadView,
   type Operation,
   type OperationState,
@@ -79,6 +80,29 @@ export function stateTone(state: string): StatusTone {
   }
 }
 
+/**
+ * Where a workload's Playground opens, if its installation has one (Phase 19).
+ *
+ * The Playground runs on the customer's own machine, on the control-plane
+ * machine where `nodeau` runs, and talks to the models from there. This console
+ * cannot relay a prompt to it and does not try: it says where to open it.
+ *
+ * Offered only when a machine of that installation DECLARES
+ * `local.playground` — a fleet on an older build is not offered a command it
+ * does not have. The answer is the control-plane machine's name, or null.
+ */
+export const PLAYGROUND_CAPABILITY = 'local.playground';
+export function playgroundHosts(fleet: FleetView | null): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const inst of fleet?.installations ?? []) {
+    const declares = inst.machines.filter((m) => m.capabilities?.includes(PLAYGROUND_CAPABILITY));
+    if (declares.length === 0) continue;
+    const host = declares.find((m) => m.role === 'control-plane') ?? declares[0]!;
+    for (const m of inst.machines) out.set(m.id, host.name);
+  }
+  return out;
+}
+
 export function FleetWorkloadsPage({
   org,
   navigate,
@@ -91,6 +115,10 @@ export function FleetWorkloadsPage({
     [org.id],
   );
   const [pending, setPending] = useState<Operation | null>(null);
+  // A SOFT second request: it only decides whether to offer the Playground, so
+  // if it fails the page loses that offer and nothing else.
+  const [fleetView] = useResource((signal) => api.fleet(org.id, signal), [org.id]);
+  const hosts = playgroundHosts(fleetView.status === 'ready' ? fleetView.data : null);
 
   // Follow an operation until it stops moving. Polling rather than pushing,
   // because the answer arrives on the machine's own cadence and a socket here
@@ -153,6 +181,7 @@ export function FleetWorkloadsPage({
               key={w.name}
               org={org}
               workload={w}
+              playgroundHost={w.machineId ? hosts.get(w.machineId) ?? null : null}
               onOperation={setPending}
             />
           ))}
@@ -165,13 +194,18 @@ export function FleetWorkloadsPage({
 function WorkloadRow({
   org,
   workload,
+  playgroundHost,
   onOperation,
 }: {
   org: Organization;
   workload: FleetWorkloadView;
+  playgroundHost: string | null;
   onOperation: (op: Operation) => void;
 }) {
   const [busy, setBusy] = useState(false);
+  const [playground, setPlayground] = useState(false);
+  const offerPlayground =
+    playgroundHost !== null && workload.state === 'serving' && (workload.type ?? 'service') === 'service';
   const [error, setError] = useState<unknown>(null);
   const [logs, setLogs] = useState<FleetLogArtifact | null>(null);
 
@@ -311,11 +345,69 @@ function WorkloadRow({
         <button className="btn btn-ghost btn-sm" disabled={busy} onClick={fetchLogs}>
           {busy ? 'Working…' : 'Logs'}
         </button>
+        {offerPlayground && (
+          <button
+            className="btn btn-ghost btn-sm"
+            aria-expanded={playground}
+            onClick={() => setPlayground((v) => !v)}
+          >
+            Open in Playground
+          </button>
+        )}
       </div>
+
+      {offerPlayground && playground && (
+        <PlaygroundEntry name={workload.name} host={playgroundHost!} />
+      )}
 
       {error !== null && <ErrorNotice error={error as ApiError} />}
       {logs && <LogView artifact={logs} onClose={() => setLogs(null)} />}
     </li>
+  );
+}
+
+/**
+ * Where to open this workload's Playground. A command and a link, never a
+ * request: the Playground talks to the model on the customer's machine, and
+ * nothing typed into it reaches this console or Nodeau Cloud.
+ *
+ * The link only opens on the machine itself (it is that machine's own
+ * loopback address), and signs nothing in: a browser is signed in by the
+ * address `nodeau playground` prints, for as long as that Playground runs. The
+ * command always works, so it comes first.
+ */
+function PlaygroundEntry({ name, host }: { name: string; host: string }) {
+  const command = `nodeau playground ${name}`;
+  const [copied, setCopied] = useState('');
+  const link = `http://127.0.0.1:7371/playground?workload=${encodeURIComponent(name)}`;
+  return (
+    <div className="playground-entry" role="region" aria-label={`Playground for ${name}`}>
+      <p>
+        The Playground runs on your own machine, so what you type there stays there. On{' '}
+        <strong>{host}</strong>, run:
+      </p>
+      <div className="command-line">
+        <code>{command}</code>
+        <button
+          className="btn btn-ghost btn-sm"
+          onClick={() =>
+            navigator.clipboard
+              .writeText(command)
+              .then(() => setCopied('Copied'))
+              .catch(() => setCopied('Select it and copy'))
+          }
+        >
+          {copied || 'Copy'}
+        </button>
+      </div>
+      <p className="muted small">
+        Sitting at {host}?{' '}
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          Open the Playground on this computer
+        </a>
+        .
+      </p>
+    </div>
   );
 }
 

@@ -135,6 +135,9 @@ test.beforeAll(async ({ request }) => {
     // Phase 18B: a connector that runs rollouts, so the upgrade pages have a
     // plan and a rollout to lay out.
     'fleet.lifecycle',
+    // Phase 19: an installation with the local Playground, so the workloads
+    // page lays out its "Open in Playground" panel.
+    'local.playground',
   ];
   const response = await request.post(`${apiBase()}/v1/fleet/sync`, {
     headers: { Authorization: `Bearer ${seeded.credential}`, 'X-Nodeau-Request': '1' },
@@ -439,6 +442,14 @@ const PAGES: AuditPage[] = [
     teardown: () => fleetLastSync('0 seconds'),
   },
   { label: 'workloads', path: () => '/fleet/workloads' },
+  {
+    label: 'workloads-playground',
+    path: () => '/fleet/workloads',
+    prepare: async (page) => {
+      await page.getByRole('button', { name: 'Open in Playground' }).first().click();
+      await page.getByRole('region', { name: /Playground for/ }).waitFor();
+    },
+  },
   { label: 'run', path: () => '/fleet/run' },
   { label: 'governance', path: () => '/fleet/governance' },
   {

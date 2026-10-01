@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from '../src/App';
 import { operationTone } from '../src/pages/FleetWorkloads';
-import type { FleetView, Me, Operation } from '../src/lib/api';
+import { apiBase, type FleetView, type Me, type Operation } from '../src/lib/api';
 
 /**
  * The fleet pages — Phase 14C.
@@ -527,5 +527,71 @@ describe('taking a machine out of service', () => {
     // A KIND AND A TARGET. No command, no arguments, no script — and the
     // browser cannot invent one, because there is no field for it.
     expect(body).toEqual({ kind: 'machine.drain', machineId: 'm1' });
+  });
+});
+
+describe('Open in Playground (Phase 19)', () => {
+  const withCapability = (caps: string[]) =>
+    fleet({
+      machines: [
+        {
+          id: 'm1', name: 'nodeforge', reportedName: 'nodeforge', presence: 'online', health: 'healthy',
+          schedulingState: 'active', role: 'control-plane', capabilities: caps, gpus: [],
+        },
+        {
+          id: 'm2', name: 'nodeau-c', reportedName: 'nodeau-c', presence: 'online', health: 'healthy',
+          schedulingState: 'active', role: 'worker', capabilities: caps, gpus: [],
+        },
+      ],
+    });
+  const rows = {
+    workloads: [
+      { name: 'qwen-local', state: 'serving', machineId: 'm1', machineName: 'nodeforge', type: 'service' },
+      { name: 'on-worker', state: 'serving', machineId: 'm2', machineName: 'nodeau-c', type: 'service' },
+      { name: 'warming-up', state: 'starting', machineId: 'm1', machineName: 'nodeforge', type: 'service' },
+      { name: 'nightly', state: 'running', machineId: 'm2', machineName: 'nodeau-c', type: 'batch' },
+    ],
+  };
+
+  it('says where to open it, and names the machine that runs the Playground', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCapability(['fleet.report', 'local.playground']));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', rows);
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+
+    await screen.findByText('on-worker');
+    // A workload on the worker opens from the control-plane machine, where
+    // nodeau runs; a starting workload and a batch job are not offered.
+    const offers = await screen.findAllByRole('button', { name: 'Open in Playground' });
+    expect(offers).toHaveLength(2);
+    await userEvent.click(offers[1]!);
+    const panel = screen.getByRole('region', { name: 'Playground for on-worker' });
+    expect(panel).toHaveTextContent('nodeau playground on-worker');
+    expect(panel).toHaveTextContent('On nodeforge, run:');
+    const link = screen.getByRole('link', { name: 'Open the Playground on this computer' });
+    expect(link).toHaveAttribute('href', 'http://127.0.0.1:7371/playground?workload=on-worker');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('is not offered to a fleet whose build has no Playground', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCapability(['fleet.report', 'workload.stop']));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', rows);
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+    await screen.findByText('qwen-local');
+    expect(screen.queryByRole('button', { name: 'Open in Playground' })).not.toBeInTheDocument();
+  });
+
+  it('never asks the machine anything from this page', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCapability(['local.playground']));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', rows);
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Open in Playground' }))[0]!);
+    const calls = (fetch as unknown as ReturnType<typeof vi.fn>).mock.calls.map(([u]) => String(u));
+    // Every request goes to the API; none to the Playground's own address.
+    expect(calls.length).toBeGreaterThan(0);
+    expect(calls.every((u) => u.startsWith(apiBase))).toBe(true);
+    expect(calls.some((u) => /:7371\b|\/playground/.test(u))).toBe(false);
   });
 });
