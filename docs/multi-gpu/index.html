@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+<link rel="stylesheet" href="/assets/nodeau.css?v=6029a5ee">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -106,7 +106,7 @@ nodeau run &lt;model&gt; --gpus 2 --topology layer</code></pre></div>
 <p>For a finite job, that's batch:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#multi-gpu-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="multi-gpu-code-3"><code>nodeau batch submit requests.jsonl --model qwen3.5-4b-q4km --workers 2</code></pre></div>
 <p>Two workers share out the records between them, and Nodeau shows which card ran which worker. Measured on a 24-record job: <strong>47 s against 61 s</strong>.</p>
-<aside class="callout callout-note"><p class="callout-kind">That&#x27;s a floor, not a rate</p><p>A 24-record job is mostly the time it takes to load the model, and both workers pay that. The saving grows with the job, so don't extrapolate a ratio from this one.</p></aside>
+<aside class="callout callout-note"><p class="callout-kind">That's a floor, not a rate</p><p>A 24-record job is mostly the time it takes to load the model, and both workers pay that. The saving grows with the job, so don't extrapolate a ratio from this one.</p></aside>
 <p>For serving, it's simply two workloads:</p>
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#multi-gpu-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="multi-gpu-code-4"><code>nodeau run &lt;model&gt; --name a --port 8080
 nodeau run &lt;model&gt; --name b --port 8081</code></pre></div>

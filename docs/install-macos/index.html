@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/nodeau.css?v=2d597e54">
+<link rel="stylesheet" href="/assets/nodeau.css?v=6029a5ee">
 </head>
 <body class="docs-page">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -122,7 +122,7 @@ Local API
   Only this computer can reach it. It is not on your network.</code></pre></div>
 <p>Below that it prints a <code>curl</code> command you can paste as it is. From here, call it exactly as you would on Linux: see <a href="/docs/api/">the OpenAI-compatible API</a>.</p>
 <p>The endpoint runs as a <strong>launchd user agent</strong> in <code>~/Library/LaunchAgents</code>, so it keeps serving after you close the terminal.</p>
-<aside class="callout callout-note"><p class="callout-kind">On a Mac, `nodeau run` is your quickstart</p><p><code>nodeau quickstart</code> creates a Kubernetes workload, which is the Linux flow. On a Mac, <code>nodeau run &lt;model&gt;</code> does the same job through the native plane.</p></aside>
+<aside class="callout callout-note"><p class="callout-kind">On a Mac, <code>nodeau run</code> is your quickstart</p><p><code>nodeau quickstart</code> creates a Kubernetes workload, which is the Linux flow. On a Mac, <code>nodeau run &lt;model&gt;</code> does the same job through the native plane.</p></aside>
 <h2 id="unified-memory" class="doc-h">Unified memory<a class="doc-anchor" href="#unified-memory" aria-label="Link to this section">#</a></h2>
 <p>This is the one thing about a Mac that surprises people, and it's worth a minute to understand.</p>
 <p>On Apple Silicon the system, your applications and the GPU share <strong>one</strong> pool of memory. So "will this model fit?" isn't a fixed property of the machine. It depends on what else is open.</p>
