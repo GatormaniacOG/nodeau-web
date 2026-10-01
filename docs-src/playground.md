@@ -89,7 +89,7 @@ Under every answer, each figure says who measured it:
 |---|---|
 | Time to first token, total time | the Playground page, in your browser |
 | Prompt processing time, tokens generated, tokens per second, runtime build | the model's runtime, which reports them with the answer |
-| Predicted peak memory | Nodeau's admission check, when the model was placed |
+| Peak memory | Nodeau's admission check, which predicted it when the model was placed |
 
 A figure nobody reported is shown as missing, never as zero.
 
