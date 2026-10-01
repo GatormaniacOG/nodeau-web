@@ -16,8 +16,8 @@ nodeau playground                 # every model running here
 nodeau playground qwen-local      # with that model already chosen
 ```
 
-It prints an address with a one-time sign-in token. Open it in your browser on
-the same machine. The Playground is served by the same local server as
+It prints an address that signs your browser in. Open it in your browser on
+the same machine; the sign-in lasts until the Playground stops. The Playground is served by the same local server as
 `nodeau dashboard`, on loopback only, so if the dashboard is already running,
 `nodeau playground` prints the Playground's address on it and you're done.
 Press Ctrl+C to stop it.
