@@ -229,8 +229,8 @@ next. See [upgrading a fleet](/docs/upgrades/).
 A **maintenance window** is when your organisation lets Nodeau act on your
 machines on its own, in your own time zone. An approved rollout starts a machine
 only inside it. Work you ask for always starts straight away, and nothing
-running is touched when a window opens or closes. Setting one from your account
-is [in progress](/roadmap/); see [updates and release channels](/docs/updates/).
+running is touched when a window opens or closes. You set it in your account,
+under **Fleet, then Upgrade**; see [updates and release channels](/docs/updates/).
 
 ## Control plane
 

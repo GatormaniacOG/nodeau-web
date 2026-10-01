@@ -363,11 +363,18 @@ and leaves the model loaded on its GPU, so starting again is instant.
 |---|---|
 | `--workload` | Stop the model as well, freeing its GPU. Downloaded files stay |
 | `--endpoint-only` | Stop only the endpoint, without asking about the model |
+| `--local` | With `--workload`: stop it on this machine right now without asking your account |
 | `--remove` | Also delete the endpoint's service definition |
 | `--namespace`, `-n` | Namespace |
 | `--yes`, `-y` | Answer every question with yes |
 
 Your downloaded model files stay put whichever you choose.
+
+A model started from your account at app.nodeau.ai is stopped through your
+account: `--workload` asks Nodeau Cloud to stop the copy this machine runs and
+waits until it has, so the next sync doesn't start it again. With `--local`, or
+when this machine can't reach Nodeau Cloud, the model stops here right away and
+your account starts it again at the next sync, and the command says so.
 
 ### `nodeau restart` {#nodeau-restart}
 

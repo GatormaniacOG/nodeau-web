@@ -306,8 +306,13 @@ A plan says which of these it could see, in its notes:
 - An installation that isn't linked to an account has no organisation policy,
   and the plan says that too.
 
-Setting a window or a channel policy from your account is
-[in progress](/roadmap/).
+You set both in your account, under **Fleet, then Upgrade** (see
+[updates and release channels](/docs/updates/#maintenance-windows-and-a-release-for-the-whole-fleet)).
+
+While a rollout waits, `nodeau fleet upgrade status` shows the machine as
+`WAITING` with its reason: `WAITING (MaintenanceWindowShut)` with the time the
+window opens, or `WAITING (PolicyUnknown)` until the fleet connector hears from
+Nodeau Cloud again. `--json` carries the same reason in `waiting`.
 
 ## For scripts {#for-scripts}
 
