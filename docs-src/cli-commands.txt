@@ -6,7 +6,7 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts. This copy is
-# v0.17.0-beta.1, the build the beta channel serves.
+# v0.17.0-beta.3, the build the beta channel will serve (staged; its CLI surface is beta.1's, line for line).
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
