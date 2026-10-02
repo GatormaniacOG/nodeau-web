@@ -123,7 +123,12 @@ network. Nothing moves back on its own.
 
 - **There's a gap.** A request in flight on a machine that stops answering fails,
   and the recovered workload answers new requests once its model has loaded on
-  the new machine. Nothing is replayed.
+  the new machine. Nothing is replayed. Here's one measurement on our own two
+  machines, with the delay set to one minute: Nodeau saw the machine had stopped
+  answering 48 seconds after it went off the network, decided a minute after
+  that, and the workload was serving on the other machine 16 seconds after that
+  machine's card was free, from a copy already there. Your times depend on your
+  machines, your model and the delay you choose.
 - **The control-plane machine is the one that decides.** A workload running on the
   control-plane machine waits for that machine, because the decision is made
   there.
