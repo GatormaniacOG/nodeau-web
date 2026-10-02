@@ -298,6 +298,8 @@ instead.
 | `--topology <mode>` | `auto` | How one model is spread across several GPUs: `auto` or `layer`. Advanced, and you'll rarely need it |
 | `--accept-estimate-risk` | off | Admit a model whose only obstacle is the margin for hardware nobody has measured |
 | `--spend-safety-reserve` | off | Let this workload use the memory Nodeau keeps back for everything else on the card |
+| `--recovery <choice>` | unset (`never`) | `automatic` or `never`: what this workload does if its machine stops answering. See [recovery](/docs/recovery/). Linux fleets, Home Pro and Business |
+| `--recovery-after <d>` | `3m` | With `--recovery automatic`, how long its machine must have stopped answering first, from `1m` to `60m` |
 | `--json` | off | Print the result as JSON |
 | `--yes`, `-y` | off | Answer every question with yes |
 
@@ -599,6 +601,38 @@ and says so, because not knowing whether something is in use is a reason to
 wait. Only that one model's file is touched.
 
 Flags: `--yes`, `--namespace`/`-n`, `--cache-dir`.
+
+### `nodeau model copies` {#nodeau-model-copies}
+
+```bash
+nodeau model copies [MODEL]      # alias: models copies
+```
+
+Every copy of a model a machine in your fleet has been asked to keep: the model,
+the machine, whether that machine has verified every file, its size, and who
+asked, you or a workload's recovery. **Linux fleets.**
+
+Flags: `--json`.
+
+### `nodeau model copy` {#nodeau-model-copy}
+
+```bash
+nodeau model copy MODEL --to MACHINE [flags]      # alias: models copy
+```
+
+Ask a machine to keep a verified copy of a catalog model. That machine fetches
+the files from the model's publisher into its own model cache and checks every
+SHA-256 itself; the copy is ready once it has. **Linux fleets, Home Pro and
+Business.** A model you imported is never fetched: place the same file there
+with `nodeau model import <file> --no-register`. See [model copies](/docs/recovery/#copies).
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--to <machine>` | required | The machine that should keep the copy |
+| `--wait` | off | Wait until the copy is ready, or has failed |
+| `--timeout <d>` | `30m` | How long `--wait` waits |
+| `--remove` | off | Take the request back. The files stay, and a copy a workload's recovery relies on stays for it |
+| `--namespace`, `-n` | `nodeau-dev` | Where an imported model's alias lives |
 
 ### `nodeau model import` {#nodeau-model-import}
 
@@ -959,6 +993,37 @@ nodeau scheduling undrain --node MACHINE
 Stop placing new work on a machine while everything already there keeps
 running, and later put it back into service. **Linux.** Undraining leaves every
 workload where it is now.
+
+### `nodeau recovery set` {#nodeau-recovery-set}
+
+```bash
+nodeau recovery set WORKLOAD automatic|never [flags]
+```
+
+Choose what a workload does when its machine stops answering: `never` (the
+default) waits for that machine; `automatic` starts it on another of your
+machines that can hold it, after the delay you choose, from a verified copy of
+its model kept ready there. Nothing that is running restarts. **Linux fleets,
+Home Pro and Business.** See [recovery](/docs/recovery/).
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--after <d>` | `3m` | How long its machine must have stopped answering first, from `1m` to `60m` |
+| `--copies <n>` | `2` with `automatic` | Machines that keep the model's verified files, counting its own, from 1 to 8 |
+| `--namespace`, `-n` | `nodeau-dev` | Namespace |
+| `--json` | off | Print the result as JSON |
+
+### `nodeau recovery status` {#nodeau-recovery-status}
+
+```bash
+nodeau recovery status [WORKLOAD] [flags]
+```
+
+Each workload's recovery choice, how many machines hold a verified copy of its
+model, and its last recovery: held or recovering, with the machine's own
+sentence about which machine, since when, and what happens next.
+
+Flags: `--namespace`/`-n`, `--json`.
 
 ### `nodeau governance` {#nodeau-governance}
 

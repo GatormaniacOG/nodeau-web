@@ -6,7 +6,7 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts. This copy is
-# v0.16.0-beta.1, the build the beta channel serves.
+# v0.17.0-beta.1, the build the beta channel serves.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
@@ -54,6 +54,8 @@ nodeau join	--cache-dir --dry-run --help --verbose --yes
 nodeau login	--api --help --json --name --no-browser --show --wait
 nodeau logout	--help --json
 nodeau logs	--container --follow --help --namespace --previous --system --tail
+nodeau model copies	--help --json
+nodeau model copy	--help --namespace --remove --timeout --to --wait
 nodeau model	--help
 nodeau model import	--alias --cache-dir --help --json --namespace --no-register --probe --qualify --sha256
 nodeau model info	--cache-dir --help --json --namespace
@@ -76,8 +78,11 @@ nodeau power	--help --json
 nodeau power set	--clear --device --help --limit
 nodeau ps	--all --all-namespaces --help --json --namespace
 nodeau quickstart	--consent --context-size --help --model --name --namespace --parallel --port --timeout --yes
+nodeau recovery	--help
+nodeau recovery set	--after --copies --help --json --namespace
+nodeau recovery status	--help --json --namespace
 nodeau restart	--help --namespace --timeout --wait
-nodeau run	--accept-estimate-risk --batch-tokens --cache-dir --context-size --foreground --gpus --gpus-auto --help --json --max-gpus --mode --name --namespace --parallel --port --pull --spend-safety-reserve --task --timeout --topology --yes
+nodeau run	--accept-estimate-risk --batch-tokens --cache-dir --context-size --foreground --gpus --gpus-auto --help --json --max-gpus --mode --name --namespace --parallel --port --pull --recovery --recovery-after --spend-safety-reserve --task --timeout --topology --yes
 nodeau scheduling constraints	--allow-device --clear --deny-device --help --idle-watts --json --max-accelerators --node --power-budget
 nodeau scheduling drain	--help --node
 nodeau scheduling	--help

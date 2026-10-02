@@ -47,7 +47,7 @@ Cloud never moves anything.
 nodeau recovery set qwen-local automatic             # recover after 3 minutes
 nodeau recovery set qwen-local automatic --after 10m # recover after 10 minutes
 nodeau recovery set qwen-local never                 # wait for its machine (the default)
-nodeau run qwen3-8b-q4km --recovery automatic        # choose it when you start one
+nodeau run qwen3.5-4b-q4km --recovery automatic        # choose it when you start one
 ```
 
 | Flag | Default | Meaning |
@@ -77,10 +77,10 @@ another machine that could run it, so a recovery starts without a download. You
 can also ask a machine to keep a copy of any catalog model yourself:
 
 ```bash
-nodeau models copy qwen3-8b-q4km --to garage          # ask garage to keep one
-nodeau models copy qwen3-8b-q4km --to garage --wait   # and wait until it's verified
+nodeau models copy qwen3.5-4b-q4km --to garage          # ask garage to keep one
+nodeau models copy qwen3.5-4b-q4km --to garage --wait   # and wait until it's verified
 nodeau models copies                                  # every copy, its state, who asked
-nodeau models copy qwen3-8b-q4km --to garage --remove # take the request back
+nodeau models copy qwen3.5-4b-q4km --to garage --remove # take the request back
 ```
 
 The machine that keeps a copy fetches the files from the model's publisher into
