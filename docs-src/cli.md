@@ -430,9 +430,26 @@ the URL and swapped for a session cookie the first time you open it.
 
 The page is compiled into the binary, so there's nothing to install or download,
 and it works with no internet connection at all. It's read-only apart from one
-action: it can stop a batch job.
+action: it can stop a batch job. The same server also serves the
+[Playground](/docs/playground/).
 
 Flags: `--addr` (default `127.0.0.1:7371`, must be loopback), `--cache-dir`.
+
+### `nodeau playground` {#nodeau-playground}
+
+```bash
+nodeau playground [WORKLOAD] [flags]
+```
+
+Open the [Playground](/docs/playground/) in your browser to talk to the models
+running here: streamed chat, questions about an image, embeddings, reranking and
+side by side comparison. **Both.** Name a running workload to open it with that
+model chosen. It's served by the same loopback server as `nodeau dashboard`, so
+if the dashboard is already running it prints the Playground's address on it.
+Your prompts go only to your own models, and Nodeau attaches the API key itself.
+
+Flags: `--addr` (default `127.0.0.1:7371`, must be loopback), `--cache-dir`,
+`--namespace`/`-n` (for a name two running workloads share).
 
 ### `nodeau endpoint serve` {#nodeau-endpoint-serve}
 

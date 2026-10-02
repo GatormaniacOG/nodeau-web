@@ -6,7 +6,7 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts. This copy is
-# v0.15.0-beta.8, the build the beta channel serves.
+# v0.16.0-beta.1, the build the beta channel serves.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
@@ -71,6 +71,7 @@ nodeau plan import	--help --json
 nodeau plan refresh	--help --json
 nodeau plan set	--from-file --help
 nodeau plan show	--help --json
+nodeau playground	--addr --cache-dir --help --namespace
 nodeau power	--help --json
 nodeau power set	--clear --device --help --limit
 nodeau ps	--all --all-namespaces --help --json --namespace

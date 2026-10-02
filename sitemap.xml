@@ -18,6 +18,7 @@
   <url><loc>https://nodeau.ai/docs/models/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/tasks/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/byom/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/playground/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/api/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/batch/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/multi-gpu/</loc><priority>0.7</priority></url>

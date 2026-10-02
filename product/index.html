@@ -192,6 +192,43 @@ curl http://127.0.0.1:8081/v1/embeddings \
     </div>
   </section>
 
+  <!-- ================================================= playground ========= -->
+  <section class="tight divider" id="playground">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Playground</p>
+        <h2>Start a model, then open it and talk to it.</h2>
+        <p>
+          The Playground opens in your browser and talks to the models running on
+          your machine. Chat with answers streaming in, ask about an image, try
+          embeddings and reranking, or put two models side by side with the same
+          question.
+        </p>
+      </div>
+      <div class="tiles tiles-3">
+        <div class="tile"><h3>See where it ran</h3><p>Every answer shows the machine, the GPU and how fast it came, and each figure says who measured it.</p></div>
+        <div class="tile"><h3>Copy the call</h3><p>The exact request and response are a click away, and the same call copies as cURL or Python.</p></div>
+        <div class="tile"><h3>Side by side</h3><p>One question to several models at once, each answer with its own figures. You decide which you like.</p></div>
+      </div>
+      <div class="duo duo-top" style="margin-top:2rem">
+        <div class="code">
+          <div class="code-head"><span>bash</span><button class="copy-btn" data-copy="#p-playground" type="button"><span data-copy-label>Copy</span></button></div>
+<pre id="p-playground"><code>nodeau run qwen3.5-4b-q4km --name assistant
+nodeau playground assistant</code></pre>
+        </div>
+        <div>
+          <p>
+            Everything stays on your machine. The page is served by Nodeau right
+            there, your prompts, answers and images go only to your own models, and
+            Nodeau adds your API key itself, so your browser never holds it.
+            It works on Linux and on a Mac.
+          </p>
+          <p style="margin-top:1rem"><a class="link-arrow" href="/docs/playground/">How the Playground works</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ================================================= your models ======== -->
   <section class="tight divider" id="your-models">
     <div class="wrap">
