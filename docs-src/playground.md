@@ -120,6 +120,10 @@ models together. An image is offered only when every chosen model reads images.
 Each column has its own **Stop**, and stopping one leaves the others to finish.
 The Playground shows what each model did and leaves the judging to you.
 
+Every model you compare has to be running at the same time, so how many you can
+put side by side depends on what your machines can hold at once. On a Mac, that
+is the Mac's unified memory, shared with everything else it's doing.
+
 A **preset** saves the chosen models, the system prompt and the settings in
 this browser, so a comparison you run often is one click away. A preset never
 keeps a prompt or an answer.
