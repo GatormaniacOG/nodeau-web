@@ -24,6 +24,7 @@
   <url><loc>https://nodeau.ai/docs/multi-gpu/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/scheduling/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/fleet/</loc><priority>0.7</priority></url>
+  <url><loc>https://nodeau.ai/docs/recovery/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/health/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/power/</loc><priority>0.7</priority></url>
   <url><loc>https://nodeau.ai/docs/upgrades/</loc><priority>0.7</priority></url>
