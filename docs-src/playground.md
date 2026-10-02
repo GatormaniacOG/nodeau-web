@@ -136,7 +136,8 @@ keeps a prompt or an answer.
   machine, and before it does, it checks that the endpoint really is that
   model's. Your machine's own operating system says which program accepted
   the connection, and on a Mac that must be the runtime Nodeau started for
-  that model.
+  that model. On a Mac, Nodeau asks a model whether it is ready over such a
+  connection too, so a program holding a model's port is sent nothing.
 - Nodeau attaches your API key itself. Your browser never holds it, and it
   never appears in a copied snippet.
 - No conversation is kept: closing the tab ends it.
