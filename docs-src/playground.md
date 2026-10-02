@@ -134,7 +134,10 @@ keeps a prompt or an answer.
   talks to it. The page's content security policy holds it there.
 - Nodeau sends each request to the chosen model's own endpoint on the same
   machine, and before it does, it checks that the endpoint really is that
-  model's.
+  model's. Your machine's own operating system says which program accepted
+  the connection, and on a Mac that must be the runtime Nodeau started for
+  that model. On a Mac, Nodeau asks a model whether it is ready over such a
+  connection too, so a program holding a model's port is sent nothing.
 - Nodeau attaches your API key itself. Your browser never holds it, and it
   never appears in a copied snippet.
 - No conversation is kept: closing the tab ends it.
@@ -155,5 +158,8 @@ stay there.
 | "has no local endpoint on this machine" | The model runs in your fleet but has no endpoint here. `nodeau run <name>` gives it one |
 | "checks an API key Nodeau did not issue" | The model checks a key Nodeau did not publish. See which with `nodeau auth token <name>` |
 | "answers with the identity …, so nothing was sent" | Something else is answering on that model's port. `nodeau status` shows each endpoint |
+| "was taken by a program other than the model runtime Nodeau started" | On a Mac, another program holds the model's port, perhaps since the model stopped. See what's running with `nodeau ps`, and start the model again with `nodeau run` |
+| "belongs to another account on this machine" | A program of another account holds the model's port, so nothing was sent to it. `nodeau ps` shows the model's endpoint |
+| "is no longer running" | The model's runtime has stopped. `nodeau ps` shows its state, and `nodeau run <name>` starts it again |
 | The address doesn't open | Use the address `nodeau playground` printed, on the same machine, and keep it running |
-| Port already in use | Another program has the port. Choose another with `--addr 127.0.0.1:7381` |
+| Port already in use | Another program has the port. Use the address `nodeau playground` suggests, or choose another with `--addr` |

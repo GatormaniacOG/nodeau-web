@@ -140,7 +140,7 @@
             <div class="row"><h4>Scheduling you can steer</h4><span class="pill pill-available">Available</span><p>Efficiency, Balanced or Performance, for the whole fleet or one machine. Balanced is the default.</p></div>
             <div class="row"><h4>Placement you can read</h4><span class="pill pill-available">Available</span><p><code>nodeau placement explain</code> shows why a workload is where it is, and what the alternatives would have cost.</p></div>
             <div class="row"><h4>Power limits and budgets</h4><span class="pill pill-available">Available</span><p>Cap what a card may draw, inside the card's own range, and set a power budget placement has to respect.</p></div>
-            <div class="row"><h4>Workloads that stay put</h4><span class="pill pill-available">Available</span><p>A running workload stays exactly where Nodeau placed it, even when another card scores better. If its machine stops reporting, the work is held in place until the machine is back.</p></div>
+            <div class="row"><h4>Workloads that stay put</h4><span class="pill pill-available">Available</span><p>A running workload stays exactly where Nodeau placed it, even when another card scores better. If its machine stops reporting, the work waits for it, unless you've set that workload to recover automatically.</p></div>
           </div>
         </div>
 
@@ -153,6 +153,9 @@
             <div class="row"><h4>Machine health and alerts</h4><span class="pill pill-available">Available</span><p>Processor, memory, storage, network and GPU for every machine, a day of history, and alerts when something needs you. The readings stay on your hardware.</p></div>
             <div class="row"><h4>Drain for maintenance</h4><span class="pill pill-available">Available</span><p>New work goes elsewhere and everything already running keeps serving until you're done.</p></div>
             <div class="row"><h4>Each machine checks its own models</h4><span class="pill pill-available">Available</span><p>Every machine hashes its own copy of a model before it's offered work that needs it.</p></div>
+            <div class="row"><h4>Automatic recovery</h4><span class="pill pill-available">Available</span><p>Choose, workload by workload, to have Nodeau bring it back up on another of your machines when its machine stops answering, after a delay you set. Its endpoint stays the same. Home Pro and Business, on Linux fleets.</p></div>
+            <div class="row"><h4>Model copies across machines</h4><span class="pill pill-available">Available</span><p>Ask any machine to keep a verified copy of a model. It fetches the files from the model's publisher and checks every one itself, and a workload set to recover keeps one ready on another machine.</p></div>
+            <div class="row"><h4>Model locality</h4><span class="pill pill-available">Available</span><p>Work runs where a verified copy of its model already is, and a copy makes another machine ready for it, so a start or a recovery skips the download.</p></div>
           </div>
         </div>
 
@@ -184,12 +187,7 @@
           <h2>In progress</h2>
         </div>
         <p class="stage-lede">Being built or tested now. Each of these arrives in a future release.</p>
-        <div class="rows-2">
-          <div class="row"><h3>Several people in one organisation</h3><span class="pill pill-next">In progress</span><p>Members with roles, groups from your identity provider, and keys for scripts that can only ever do less than their owner. For Business.</p></div>
-          <div class="row"><h3>Single sign-on</h3><span class="pill pill-next">In progress</span><p>Sign in through your organisation's identity provider. For Business.</p></div>
-          <div class="row"><h3>Automatic recovery</h3><span class="pill pill-next">In progress</span><p>You can recover a workload from a machine that's gone from the console today. Having Nodeau bring it back up on another machine by itself, safely, is being built and tested.</p></div>
-          <div class="row"><h3>More hardware, measured</h3><span class="pill pill-next">In progress</span><p>More cards measured rather than estimated, more model profiles, and more Linux and macOS versions. Tell us about your hardware!</p></div>
-        </div>
+        <p class="stage-lede">Nothing at this moment: everything we've finished is Available above, and the next work comes from the Planned list below.</p>
       </div>
 
       <!-- ===================================================== planned ===== -->
@@ -199,14 +197,15 @@
         </div>
         <p class="stage-lede">Designed for and on the list.</p>
         <div class="rows-2">
-          <div class="row"><h3>Model replication across machines</h3><span class="pill pill-planned">Planned</span><p>Getting a model's weights to the machine that will need them, on purpose.</p></div>
           <div class="row"><h3>Scheduled and recurring batch</h3><span class="pill pill-planned">Planned</span><p>Batch jobs that run overnight or on a schedule you set.</p></div>
           <div class="row"><h3>Alerts that reach you</h3><span class="pill pill-planned">Planned</span><p>Alerts delivered by email or webhook, as well as on the machine.</p></div>
           <div class="row"><h3>Machine history in your account</h3><span class="pill pill-planned">Planned</span><p>A machine's recent readings, visible from your account on the web.</p></div>
-          <div class="row"><h3>Model locality in placement</h3><span class="pill pill-planned">Planned</span><p>Preferring a machine that already holds a model, so a cold start skips the download.</p></div>
           <div class="row"><h3>Fleet capacity planning</h3><span class="pill pill-planned">Planned</span><p>Answering "what could this fleet hold?" as well as "where does this workload go?".</p></div>
           <div class="row"><h3>Priority for waiting work</h3><span class="pill pill-planned">Planned</span><p>Letting an organisation say which queued work matters most.</p></div>
+          <div class="row"><h3>Several people in one organisation</h3><span class="pill pill-planned">Planned</span><p>Members with roles, groups from your identity provider, and keys for scripts that can only ever do less than their owner. For Business.</p></div>
+          <div class="row"><h3>Single sign-on</h3><span class="pill pill-planned">Planned</span><p>Sign in through your organisation's identity provider. For Business.</p></div>
           <div class="row"><h3>Windows through WSL</h3><span class="pill pill-planned">Planned</span><p>Running Nodeau on Windows machines with an NVIDIA GPU through WSL.</p></div>
+          <div class="row"><h3>More hardware, measured</h3><span class="pill pill-planned">Planned</span><p>More cards measured rather than estimated, more model profiles, and more Linux and macOS versions. Tell us about your hardware!</p></div>
         </div>
       </div>
 

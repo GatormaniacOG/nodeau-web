@@ -521,7 +521,9 @@ nodeau doctor --node <machine>
 ```
 
 A workload on a machine that goes offline stops with it, and Nodeau keeps its
-service so it can start again when a placement is possible. See
+service so it can start again when a placement is possible. A workload set to
+[recover automatically](/docs/recovery/) is started on another machine once the
+delay you chose has passed; `nodeau recovery status` says which is happening. See
 [how work stays put](/docs/fleet/).
 
 ### `nodeau fleet remove` asks me to stop workloads first
@@ -545,6 +547,13 @@ Each machine keeps its own model cache. Fetch the model there:
 ```bash
 nodeau model install <model>       # on that machine
 nodeau model status                # which machine holds what, verified or not
+```
+
+On Home Pro and Business you can also ask that machine to keep a verified copy
+from wherever you are:
+
+```bash
+nodeau model copy <model> --to <machine>
 ```
 
 ### The machines are on different versions

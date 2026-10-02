@@ -212,9 +212,11 @@ with:
   that's working.
 - **A machine that goes quiet keeps its work.** If a machine stops reporting,
   what it's running is **held** in place rather than moved, for as long as it
-  takes. Nodeau doesn't give up on a machine after a few minutes and move its
-  work, because moving work it can't see is how a network blip turns into an
-  outage.
+  takes, because moving work it can't see is how a network blip turns into an
+  outage. The one exception is a workload you've set to
+  [recover automatically](/docs/recovery/): once its machine has stopped
+  answering for the delay you chose, with both its Kubernetes agent and Nodeau's
+  own report gone quiet, Nodeau starts it on another machine that can hold it.
 - **A card that has really gone releases its work.** When a machine's fresh
   report says a card is no longer there, Nodeau withdraws the workload that can
   no longer start and keeps the service. The service starts again as soon as
