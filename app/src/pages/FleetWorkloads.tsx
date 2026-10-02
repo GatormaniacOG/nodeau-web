@@ -3,11 +3,14 @@ import {
   api,
   ApiError,
   type FleetLogArtifact,
+  type FleetModelCopyView,
   type FleetView,
   type FleetWorkloadView,
   type Operation,
   type OperationState,
   type Organization,
+  type RecoveryChoiceView,
+  type WorkloadRecovery,
 } from '../lib/api';
 import { hrefFor } from '../lib/router';
 import { Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
@@ -70,12 +73,13 @@ export function stateTone(state: string): StatusTone {
     case 'starting':
     case 'submitted':
     case 'stopping':
+    case 'recovering':
       return 'neutral';
     case 'failed':
       return 'danger';
     default:
-      // "degraded", "refused — too big", "waiting for a GPU", and anything a
-      // newer machine invents.
+      // "degraded", "held" (its machine stopped answering), "refused — too
+      // big", "waiting for a GPU", and anything a newer machine invents.
       return 'warn';
   }
 }
@@ -119,6 +123,7 @@ export function FleetWorkloadsPage({
   // if it fails the page loses that offer and nothing else.
   const [fleetView] = useResource((signal) => api.fleet(org.id, signal), [org.id]);
   const hosts = playgroundHosts(fleetView.status === 'ready' ? fleetView.data : null);
+  const copies = modelCopies(fleetView.status === 'ready' ? fleetView.data : null);
 
   // Follow an operation until it stops moving. Polling rather than pushing,
   // because the answer arrives on the machine's own cadence and a socket here
@@ -148,6 +153,7 @@ export function FleetWorkloadsPage({
   }
 
   const rows = workloads.data.workloads;
+  const choice = workloads.data.recoveryChoice ?? null;
 
   return (
     <section>
@@ -182,12 +188,257 @@ export function FleetWorkloadsPage({
               org={org}
               workload={w}
               playgroundHost={w.machineId ? hosts.get(w.machineId) ?? null : null}
+              recoveryChoice={choice}
+              copies={copies?.filter((c) => c.model === w.model) ?? null}
               onOperation={setPending}
             />
           ))}
         </ul>
       )}
+
+      {copies !== null && <ModelCopies copies={copies} />}
     </section>
+  );
+}
+
+/**
+ * Every copy of a model the fleet's machines were asked to keep (Phase 20), or
+ * null when no fleet reports them. NOT REPORTED IS NOT NONE: a fleet whose
+ * connector predates copies sends null, and this page then says nothing about
+ * copies rather than "none".
+ */
+export function modelCopies(fleet: FleetView | null): FleetModelCopyView[] | null {
+  let reported = false;
+  const out: FleetModelCopyView[] = [];
+  for (const inst of fleet?.installations ?? []) {
+    if (inst.modelCopies === null || inst.modelCopies === undefined) continue;
+    reported = true;
+    out.push(...inst.modelCopies);
+  }
+  return reported ? out : null;
+}
+
+/** How a copy's state reads: the machine's own vocabulary, in a person's words. */
+export function copyStateWord(state: string): string {
+  switch (state) {
+    case 'Pending':
+      return 'waiting';
+    case 'NeedsCustomerCopy':
+      return 'needs your copy';
+    default:
+      return state.toLowerCase();
+  }
+}
+
+/** Who a copy is kept for. */
+export function copyKeptFor(c: FleetModelCopyView): string {
+  if (c.requested && c.workload) return `you, and ${c.workload}'s recovery`;
+  if (c.requested) return 'you';
+  if (c.workload) return `${c.workload}'s recovery`;
+  return 'not recorded';
+}
+
+function ModelCopies({ copies }: { copies: FleetModelCopyView[] }) {
+  return (
+    <section className="panel" data-testid="model-copies">
+      <h2>Model copies</h2>
+      <p className="muted">
+        A machine fetches a curated model from its publisher, or checks the file you placed there, and every file is verified
+        before the copy counts. Keep one with{' '}
+        <code>nodeau models copy &lt;model&gt; --to &lt;machine&gt;</code>.
+      </p>
+      {copies.length === 0 ? (
+        <Empty title="No copies yet">
+          <p className="muted">A workload set to recover automatically keeps one ready on another machine.</p>
+        </Empty>
+      ) : (
+        <div className="table-scroll">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Model</th>
+                <th scope="col">Machine</th>
+                <th scope="col">State</th>
+                <th scope="col">Kept for</th>
+              </tr>
+            </thead>
+            <tbody>
+              {copies.map((c) => (
+                <tr key={`${c.model}@${c.machineName}`}>
+                  <td>{c.model}</td>
+                  <td>{c.machineName}</td>
+                  <td title={c.message}>
+                    <StatusPill tone={c.state === 'Ready' ? 'ok' : c.state === 'Failed' ? 'danger' : 'neutral'}>
+                      {copyStateWord(c.state)}
+                    </StatusPill>
+                  </td>
+                  <td>{copyKeptFor(c)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/** The last recovery's state, in the words `nodeau ps` uses. */
+export function recoveryWord(state?: string): string | null {
+  switch (state) {
+    case 'Held':
+      return 'held';
+    case 'Recovering':
+      return 'recovering';
+    case 'Recovered':
+      return 'recovered';
+    default:
+      return null;
+  }
+}
+
+/** The choice, in one line. */
+export function recoverySummary(r: WorkloadRecovery): string {
+  if (r.policy !== 'automatic') return 'Off. If its machine stops answering, it waits for it to come back.';
+  const minutes = Math.round(r.afterSeconds / 60);
+  const after = minutes === 1 ? '1 minute' : `${minutes} minutes`;
+  const kept = r.copies > 1 ? ` ${r.copies} machines keep a verified copy of its model.` : '';
+  return `Automatic, after its machine has stopped answering for ${after}.${kept}`;
+}
+
+/**
+ * A workload's recovery: what was chosen, the last recovery in the machine's
+ * own sentence and moments, and the choice when the server says this person
+ * may make it.
+ */
+function RecoveryBlock({
+  workload,
+  choice,
+  copies,
+  busy,
+  onChoose,
+}: {
+  workload: FleetWorkloadView;
+  choice: RecoveryChoiceView | null;
+  copies: FleetModelCopyView[] | null;
+  busy: boolean;
+  onChoose: (policy: 'automatic' | 'never', afterSeconds: number) => void;
+}) {
+  const r = workload.recovery;
+  const [editing, setEditing] = useState(false);
+  const [policy, setPolicy] = useState<'automatic' | 'never'>(
+    r?.policy === 'automatic' ? 'automatic' : 'never',
+  );
+  // The field's TEXT, checked on save. Clamping on every keystroke made the
+  // field impossible to clear and retype: "10" became "110" and then 60.
+  const [minutes, setMinutes] = useState(String(r ? Math.max(1, Math.round(r.afterSeconds / 60)) : 3));
+  const [problem, setProblem] = useState('');
+  if (!r) return null;
+  const word = recoveryWord(r.state);
+  const offered = workload.recoveryChoosable === true && choice?.may === true;
+  const automaticAllowed = choice?.automaticIncluded === true;
+  const verified = (copies ?? []).filter((c) => c.state === 'Ready').map((c) => c.machineName);
+
+  return (
+    <div className="recovery" role="group" aria-label={`Recovery for ${workload.name}`}>
+      <p>
+        <strong>Recovery:</strong> {recoverySummary(r)}
+      </p>
+      {verified.length > 0 && <p className="muted small">Verified copies on {verified.join(', ')}.</p>}
+      {word && (
+        <div className="workload-note" data-testid="recovery-last">
+          <p>
+            <strong>{word}</strong>
+            {r.message ? `: ${r.message}` : ''}
+          </p>
+          <ul className="recovery-moments muted small">
+            {r.machineUnreachableSince && (
+              <li title={r.machineUnreachableSince}>
+                {r.from ?? 'Its machine'} stopped answering {relativeTime(r.machineUnreachableSince)}
+              </li>
+            )}
+            {r.decidedAt && <li title={r.decidedAt}>Moving it was decided {relativeTime(r.decidedAt)}</li>}
+            {r.readyAt && r.to && (
+              <li title={r.readyAt}>
+                Serving on {r.to} since {relativeTime(r.readyAt)}
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+      {offered && !editing && (
+        <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => setEditing(true)}>
+          Change recovery
+        </button>
+      )}
+      {offered && editing && (
+        <form
+          className="recovery-choice"
+          // The page's own sentence rather than the browser's bubble, which
+          // differs between browsers and is easy to miss on a phone.
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault();
+            const m = Number(minutes);
+            if (policy === 'automatic' && (!Number.isInteger(m) || m < 1 || m > 60)) {
+              setProblem('Choose a whole number of minutes, from 1 to 60.');
+              return;
+            }
+            setProblem('');
+            onChoose(policy, policy === 'automatic' ? m * 60 : 0);
+            setEditing(false);
+          }}
+        >
+          <label>
+            <input
+              type="radio"
+              name={`recovery-${workload.name}`}
+              checked={policy === 'never'}
+              onChange={() => setPolicy('never')}
+            />{' '}
+            Wait for its machine to come back
+          </label>
+          <label>
+            <input
+              type="radio"
+              name={`recovery-${workload.name}`}
+              checked={policy === 'automatic'}
+              disabled={!automaticAllowed}
+              onChange={() => setPolicy('automatic')}
+            />{' '}
+            Bring it up on another of my machines
+          </label>
+          {!automaticAllowed && choice?.whyNot && <p className="muted small">{choice.whyNot}</p>}
+          {policy === 'automatic' && (
+            <label className="recovery-after">
+              After its machine has stopped answering for{' '}
+              <input
+                type="number"
+                min={1}
+                max={60}
+                value={minutes}
+                aria-label="Minutes before recovering"
+                onChange={(e) => setMinutes(e.target.value)}
+              />{' '}
+              minutes
+            </label>
+          )}
+          {problem && (
+            <p className="muted small" role="alert">
+              {problem}
+            </p>
+          )}
+          <div className="workload-actions">
+            <button className="btn btn-primary btn-sm" type="submit" disabled={busy}>
+              Save
+            </button>
+            <button className="btn btn-ghost btn-sm" type="button" onClick={() => setEditing(false)}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
   );
 }
 
@@ -195,11 +446,15 @@ function WorkloadRow({
   org,
   workload,
   playgroundHost,
+  recoveryChoice,
+  copies,
   onOperation,
 }: {
   org: Organization;
   workload: FleetWorkloadView;
   playgroundHost: string | null;
+  recoveryChoice: RecoveryChoiceView | null;
+  copies: FleetModelCopyView[] | null;
   onOperation: (op: Operation) => void;
 }) {
   const [busy, setBusy] = useState(false);
@@ -324,6 +579,21 @@ function WorkloadRow({
           <p className="placement">{workload.placementSummary}</p>
         </div>
       )}
+
+      <RecoveryBlock
+        workload={workload}
+        choice={recoveryChoice}
+        copies={copies}
+        busy={busy}
+        onChoose={(policy, afterSeconds) =>
+          act({
+            kind: 'workload.recovery.set',
+            workloadName: workload.name,
+            recoveryPolicy: policy,
+            ...(afterSeconds > 0 ? { recoveryAfterSeconds: afterSeconds } : {}),
+          })
+        }
+      />
 
       <div className="workload-actions">
         <button

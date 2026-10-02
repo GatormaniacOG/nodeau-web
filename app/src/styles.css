@@ -2468,6 +2468,33 @@ button:not([class]):disabled {
   line-height: 1.65;
 }
 
+/* Recovery — Phase 20. The choice, the last recovery in the machine's own
+   sentence, and the form to change it, set as one block under "Why here". */
+.recovery {
+  margin-top: var(--space-3);
+  max-width: 68ch;
+  font-size: var(--text-sm);
+  color: var(--text-2);
+}
+.recovery p {
+  margin: 0 0 var(--space-1);
+}
+.recovery-moments {
+  margin: var(--space-1) 0 0;
+  padding-left: var(--space-4);
+}
+.recovery-choice {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.recovery-choice label {
+  display: block;
+}
+.recovery-after input {
+  width: 4.5em;
+}
+
 /* Fleet rollouts — Phase 18B. One row per machine, in the order it goes. */
 .rollout-steps {
   list-style: decimal;

@@ -54,6 +54,21 @@ const CONTRACT_FILES = [
 );
 const CONTRACT = CONTRACT_FILES[0]!;
 
+/**
+ * Phase 20's file, read when the platform checkout has it. Until Phase 20 is on
+ * the line the sibling checkout follows, its types are not checked — and that
+ * is SAID (below), rather than skipping every other check with them.
+ */
+const RECOVERY_FILE = resolve(PLATFORM_REPO, 'pkg/cloudapi', 'recovery.go');
+const recoveryAvailable = existsSync(RECOVERY_FILE);
+if (!recoveryAvailable) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    `contract test: ${RECOVERY_FILE} not found, so Phase 20's recovery types are not checked. ` +
+      'Point NODEAU_PLATFORM_REPO at a checkout that has them.',
+  );
+}
+
 const available = CONTRACT_FILES.every((f) => existsSync(f));
 const describeIfAvailable = available ? describe : describe.skip;
 
@@ -66,7 +81,11 @@ if (!available) {
 }
 
 describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
-  const goSource = available ? CONTRACT_FILES.map((f) => readFileSync(f, 'utf8')).join('\n') : '';
+  const goSource = available
+    ? [...CONTRACT_FILES, ...(recoveryAvailable ? [RECOVERY_FILE] : [])]
+        .map((f) => readFileSync(f, 'utf8'))
+        .join('\n')
+    : '';
   const tsSource = readFileSync(resolve(import.meta.dirname, '../src/lib/api.ts'), 'utf8');
 
   /** goStructFields extracts the json tag names from one Go struct. */
@@ -156,6 +175,13 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     // to update when the server says they are not.
     'FleetMaintenanceWindow',
     'FleetChannelPolicy',
+    // Phase 20 — a workload's recovery, what a person may choose about it, and
+    // where each model's copies are. A field the server sends that this file
+    // never mentions is a recovery the console cannot show — for a held
+    // workload, somebody reading it as serving.
+    ...(recoveryAvailable
+      ? ['FleetWorkloadList', 'WorkloadRecovery', 'RecoveryChoiceView', 'FleetModelCopyView']
+      : []),
   ];
 
   for (const typeName of responseTypes) {

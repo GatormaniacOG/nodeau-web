@@ -138,6 +138,9 @@ test.beforeAll(async ({ request }) => {
     // Phase 19: an installation with the local Playground, so the workloads
     // page lays out its "Open in Playground" panel.
     'local.playground',
+    // Phase 20: a connector that records a recovery choice and reports copies,
+    // so the workloads page lays out a recovery, its form and the copy list.
+    'workload.recovery',
   ];
   const response = await request.post(`${apiBase()}/v1/fleet/sync`, {
     headers: { Authorization: `Bearer ${seeded.credential}`, 'X-Nodeau-Request': '1' },
@@ -214,6 +217,30 @@ test.beforeAll(async ({ request }) => {
             schedulingMode: 'balanced',
             placementSummary:
               'already placed here and still fits; 9,788 MiB of projected headroom on the NVIDIA GeForce RTX 5060 Ti',
+            recovery: { policy: 'automatic', afterSeconds: 180, copies: 2 },
+          },
+          // Phase 20: a workload whose machine stopped answering, held with
+          // the controller's own (long) sentence, the state a layout must
+          // survive.
+          {
+            name: 'qwen-second',
+            machineKey: 'c2014b83e8d6414e8b93b57677e1058b',
+            type: 'service',
+            task: 'chat',
+            model: 'qwen3-8b-q4km',
+            state: 'held',
+            gpuCount: 1,
+            recovery: {
+              policy: 'never',
+              afterSeconds: 180,
+              copies: 1,
+              state: 'Held',
+              reason: 'RecoveryOff',
+              message:
+                'nodeau-c has been unreachable since 2026-10-02T09:00:00Z. Recovery is off for qwen-second, so it waits for nodeau-c to return. Turn it on with: nodeau recovery set qwen-second automatic',
+              from: 'nodeau-c',
+              machineUnreachableSince: new Date(Date.now() - 4 * 60_000).toISOString(),
+            },
           },
           {
             name: 'qwen38',
@@ -225,6 +252,22 @@ test.beforeAll(async ({ request }) => {
             reasonDetail:
               'No machine in this fleet has two cards that can hold qwen3.8-27b-q4km together; it needs about 17,200 MiB across two cards in one machine.',
             gpuCount: 2,
+          },
+        ],
+        modelCopies: [
+          {
+            model: 'qwen3-8b-q4km', machine: 'nodeforge', machineKey: '43d1a889da6943b5b788c6216a0c9cc0',
+            state: 'Ready', workload: 'nodeau-dev/qwen-local', totalBytes: 5027783488,
+            readyAt: new Date(Date.now() - 60 * 60_000).toISOString(),
+          },
+          {
+            model: 'qwen3-8b-q4km', machine: 'nodeau-c', machineKey: 'c2014b83e8d6414e8b93b57677e1058b',
+            state: 'Fetching', requested: true, workload: 'nodeau-dev/qwen-local',
+          },
+          {
+            model: 'finance-model-q4km-2026-09', machine: 'nodeau-c', machineKey: 'c2014b83e8d6414e8b93b57677e1058b',
+            state: 'NeedsCustomerCopy', requested: true, reason: 'CopyImportedModel',
+            message: 'finance-model-q4km-2026-09 is a model you imported, so its files come only from your machines.',
           },
         ],
       },
@@ -448,6 +491,14 @@ const PAGES: AuditPage[] = [
     prepare: async (page) => {
       await page.getByRole('button', { name: 'Open in Playground' }).first().click();
       await page.getByRole('region', { name: /Playground for/ }).waitFor();
+    },
+  },
+  {
+    label: 'workloads-recovery-open',
+    path: () => '/fleet/workloads',
+    prepare: async (page) => {
+      await page.getByRole('button', { name: 'Change recovery' }).first().click();
+      await page.getByLabel('Bring it up on another of my machines').first().check();
     },
   },
   { label: 'run', path: () => '/fleet/run' },

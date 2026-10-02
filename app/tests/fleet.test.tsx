@@ -595,3 +595,213 @@ describe('Open in Playground (Phase 19)', () => {
     expect(calls.some((u) => /:7371\b|\/playground/.test(u))).toBe(false);
   });
 });
+
+describe('recovery and model copies (Phase 20)', () => {
+  const minutesAgo = (m: number) => new Date(Date.now() - m * 60_000).toISOString();
+  const recovered = {
+    name: 'qwen-c',
+    state: 'serving',
+    type: 'service',
+    model: 'qwen3-8b-q4km',
+    machineId: 'm1',
+    machineName: 'nodeforge',
+    recoveryChoosable: true,
+    recovery: {
+      policy: 'automatic',
+      afterSeconds: 180,
+      copies: 2,
+      state: 'Recovered',
+      reason: 'Recovered',
+      message: 'qwen-c serves on nodeforge, brought up there after nodeau-c stopped answering.',
+      from: 'nodeau-c',
+      to: 'nodeforge',
+      machineUnreachableSince: minutesAgo(12),
+      decidedAt: minutesAgo(9),
+      readyAt: minutesAgo(8),
+      generation: 1,
+    },
+  };
+  const choice = { may: true, automaticIncluded: true };
+  const withCopies = (copies: unknown) =>
+    fleet({ modelCopies: copies as FleetView['installations'][0]['modelCopies'] });
+
+  it('shows the choice and the last recovery in the machine’s own words and moments', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCopies([]));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', { workloads: [recovered], recoveryChoice: choice });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+
+    const block = await screen.findByRole('group', { name: 'Recovery for qwen-c' });
+    expect(block).toHaveTextContent('Automatic, after its machine has stopped answering for 3 minutes.');
+    expect(block).toHaveTextContent('2 machines keep a verified copy of its model.');
+    expect(block).toHaveTextContent('recovered: qwen-c serves on nodeforge');
+    expect(block).toHaveTextContent('nodeau-c stopped answering');
+    expect(block).toHaveTextContent('Serving on nodeforge since');
+  });
+
+  it('says held and recovering as the machine does, never serving', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCopies(null));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [
+        {
+          ...recovered,
+          state: 'held',
+          recovery: {
+            policy: 'never',
+            afterSeconds: 180,
+            copies: 1,
+            state: 'Held',
+            message: 'nodeau-c has been unreachable for 4 minutes. Recovery is off for qwen-c, so it waits for nodeau-c to return.',
+            from: 'nodeau-c',
+            machineUnreachableSince: minutesAgo(4),
+          },
+        },
+      ],
+      recoveryChoice: choice,
+    });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+
+    const block = await screen.findByRole('group', { name: 'Recovery for qwen-c' });
+    expect(block).toHaveTextContent('Off. If its machine stops answering, it waits for it to come back.');
+    expect(block).toHaveTextContent('held: nodeau-c has been unreachable');
+    expect(screen.queryByText('serving')).not.toBeInTheDocument();
+  });
+
+  it('sends the typed choice and nothing else', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCopies(null));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [{ ...recovered, recovery: { policy: 'never', afterSeconds: 180, copies: 1 } }],
+      recoveryChoice: choice,
+    });
+    reply('POST', '/v1/organizations/org1/fleet/operations', {
+      id: 'op9',
+      kind: 'workload.recovery.set',
+      state: 'requested',
+      requestedAt: new Date().toISOString(),
+    });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Change recovery' }));
+    await userEvent.click(screen.getByLabelText('Bring it up on another of my machines'));
+    const minutes = screen.getByLabelText('Minutes before recovering');
+    await userEvent.clear(minutes);
+    await userEvent.type(minutes, '10');
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      const call = (fetch as unknown as ReturnType<typeof vi.fn>).mock.calls.find(
+        ([, init]) => (init as RequestInit | undefined)?.method === 'POST',
+      );
+      expect(call).toBeDefined();
+      expect(JSON.parse(String((call?.[1] as RequestInit).body))).toEqual({
+        kind: 'workload.recovery.set',
+        workloadName: 'qwen-c',
+        recoveryPolicy: 'automatic',
+        recoveryAfterSeconds: 600,
+      });
+    });
+    // Not done until the fleet reports it.
+    expect(await screen.findByText(/asked/)).toBeInTheDocument();
+  });
+
+  it('offers no choice the server did not offer', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCopies(null));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [{ ...recovered, recoveryChoosable: false }],
+      recoveryChoice: choice,
+    });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+    await screen.findByRole('group', { name: 'Recovery for qwen-c' });
+    expect(screen.queryByRole('button', { name: 'Change recovery' })).not.toBeInTheDocument();
+  });
+
+  it('holds automatic back, with the server’s sentence, on a plan without it', async () => {
+    const why = 'Automatic recovery across your machines is part of Home Pro and Business.';
+    reply('GET', '/v1/organizations/org1/fleet', withCopies(null));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [{ ...recovered, recovery: { policy: 'never', afterSeconds: 180, copies: 1 } }],
+      recoveryChoice: { may: true, automaticIncluded: false, whyNot: why },
+    });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+    await userEvent.click(await screen.findByRole('button', { name: 'Change recovery' }));
+    expect(screen.getByLabelText('Bring it up on another of my machines')).toBeDisabled();
+    expect(screen.getByText(why)).toBeInTheDocument();
+  });
+
+  it('shows where each model’s copies are, and who they are kept for', async () => {
+    reply(
+      'GET',
+      '/v1/organizations/org1/fleet',
+      withCopies([
+        { model: 'qwen3-8b-q4km', machineName: 'nodeau-c', state: 'Ready', requested: false, workload: 'nodeau-dev/qwen-c' },
+        { model: 'qwen3-8b-q4km', machineName: 'nodeforge', state: 'Fetching', requested: true },
+        { model: 'finance-model', machineName: 'nodeau-c', state: 'NeedsCustomerCopy', requested: true },
+      ]),
+    );
+    reply('GET', '/v1/organizations/org1/fleet/workloads', { workloads: [recovered], recoveryChoice: choice });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+
+    const table = await screen.findByTestId('model-copies');
+    expect(table).toHaveTextContent('nodeau-dev/qwen-c’s recovery'.replace('’', "'"));
+    expect(table).toHaveTextContent('fetching');
+    expect(table).toHaveTextContent('needs your copy');
+    expect(screen.getByRole('group', { name: 'Recovery for qwen-c' })).toHaveTextContent(
+      'Verified copies on nodeau-c.',
+    );
+  });
+
+  it('says nothing about copies a fleet does not report, rather than “none”', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', withCopies(null));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', { workloads: [recovered], recoveryChoice: choice });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+    await screen.findByRole('group', { name: 'Recovery for qwen-c' });
+    expect(screen.queryByTestId('model-copies')).not.toBeInTheDocument();
+    expect(screen.queryByText(/No copies yet/)).not.toBeInTheDocument();
+  });
+
+  it('shows nothing about recovery from an API or a machine that predates it', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', fleet());
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [{ name: 'qwen-local', state: 'serving', machineName: 'nodeforge' }],
+    });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+    await screen.findByText('qwen-local');
+    expect(screen.queryByRole('group', { name: /Recovery for/ })).not.toBeInTheDocument();
+    expect(screen.queryByTestId('model-copies')).not.toBeInTheDocument();
+  });
+});
+
+describe('the recovery delay (Phase 20)', () => {
+  it('refuses a delay outside 1 to 60 minutes, and sends nothing', async () => {
+    reply('GET', '/v1/organizations/org1/fleet', fleet({ modelCopies: null }));
+    reply('GET', '/v1/organizations/org1/fleet/workloads', {
+      workloads: [
+        {
+          name: 'qwen-c', state: 'serving', type: 'service', recoveryChoosable: true,
+          recovery: { policy: 'never', afterSeconds: 180, copies: 1 },
+        },
+      ],
+      recoveryChoice: { may: true, automaticIncluded: true },
+    });
+    window.history.pushState({}, '', '/fleet/workloads');
+    render(<App />);
+    await userEvent.click(await screen.findByRole('button', { name: 'Change recovery' }));
+    await userEvent.click(screen.getByLabelText('Bring it up on another of my machines'));
+    const minutes = screen.getByLabelText('Minutes before recovering');
+    await userEvent.clear(minutes);
+    await userEvent.type(minutes, '90');
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('from 1 to 60');
+    const posts = (fetch as unknown as ReturnType<typeof vi.fn>).mock.calls.filter(
+      ([, init]) => (init as RequestInit | undefined)?.method === 'POST',
+    );
+    expect(posts).toHaveLength(0);
+  });
+});

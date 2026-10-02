@@ -196,6 +196,74 @@ export interface FleetInstallation {
   /** The sentence to show above the machines — the product's own words. */
   headline: string;
   machines: FleetMachineView[];
+  /** Every copy of a model this fleet's machines were asked to keep (Phase 20).
+   *  NULL when no machine of the fleet runs a connector that reports copies,
+   *  which is "not reported" and never "none"; an empty list IS none. Absent
+   *  from an API older than Phase 20. */
+  modelCopies?: FleetModelCopyView[] | null;
+}
+
+/** One copy of a model, as the machine keeping it reported (Phase 20). */
+export interface FleetModelCopyView {
+  model: string;
+  machineId?: string;
+  machineName: string;
+  /** The copy's own state: Pending, Fetching, Verifying, Ready, Failed or
+   *  NeedsCustomerCopy. `message` is the machine's sentence about it. */
+  state: string;
+  reason?: string;
+  message?: string;
+  /** A person asked for it. */
+  requested: boolean;
+  /** The workload whose recovery keeps it, when one does. */
+  workload?: string;
+  totalBytes?: number;
+  readyAt?: string;
+  lastReportedAt?: string;
+}
+
+/** A workload's recovery choice and its last recovery, as its machine reported
+ *  them (Phase 20): the machine's own words and moments, passed through. The
+ *  control-plane machine decides a recovery; this console shows what it
+ *  decided and never infers one. */
+export interface WorkloadRecovery {
+  /** "automatic" or "never". */
+  policy: string;
+  afterSeconds: number;
+  /** How many machines keep the model's verified files, counting its own. */
+  copies: number;
+  /** The last recovery: "Held", "Recovering" or "Recovered". Absent when there
+   *  has been none. */
+  state?: string;
+  reason?: string;
+  /** The machine's own sentence about it. */
+  message?: string;
+  /** The machine that stopped answering, and where it was brought up. */
+  from?: string;
+  to?: string;
+  machineUnreachableSince?: string;
+  decidedAt?: string;
+  oldCopyFencedAt?: string;
+  readyAt?: string;
+  generation?: number;
+}
+
+/** What the person looking may choose about recovery, answered by the server.
+ *  Hiding a control is not authorization: the request is checked again. */
+export interface RecoveryChoiceView {
+  /** The permission, and a plan that includes operating machines from here. */
+  may: boolean;
+  /** The organisation's plan includes automatic recovery. Never is open to
+   *  every plan. */
+  automaticIncluded: boolean;
+  whyNot?: string;
+}
+
+/** What GET …/fleet/workloads returns. */
+export interface FleetWorkloadList {
+  workloads: FleetWorkloadView[];
+  /** Absent from an API older than Phase 20, which offers no choice. */
+  recoveryChoice?: RecoveryChoiceView;
 }
 
 export interface FleetView {
@@ -226,6 +294,12 @@ export interface FleetWorkloadView {
    *  SUBMITTED with a stop, so the stop is about the copy this row showed and
    *  never about a later one that took the same name. */
   incarnation?: string;
+  /** The workload's recovery, as its machine reported it (Phase 20). Absent
+   *  from a connector that does not report it, which is not "never". */
+  recovery?: WorkloadRecovery;
+  /** The server's answer to whether this person may choose this workload's
+   *  recovery from here. */
+  recoveryChoosable?: boolean;
 }
 
 export type OperationState =
@@ -1105,7 +1179,7 @@ export const api = {
     ),
 
   fleetWorkloads: (orgId: string, signal?: AbortSignal) =>
-    request<{ workloads: FleetWorkloadView[] }>(
+    request<FleetWorkloadList>(
       'GET',
       `/v1/organizations/${encodeURIComponent(orgId)}/fleet/workloads`,
       undefined,
