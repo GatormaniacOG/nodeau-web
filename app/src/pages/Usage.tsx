@@ -347,7 +347,12 @@ function AuditSection({ org }: { org: Organization }) {
                 {page.data.events.map((e, i) => (
                   <tr key={`${e.occurredAt}-${e.type}-${i}`}>
                     <td title={e.occurredAt}>{relativeTime(e.occurredAt)}</td>
-                    <td>{e.type}</td>
+                    <td>
+                      {e.type}
+                      {/* WHO, when it was not a person: a fixed label the
+                          server writes (Phase 20's automatic recovery). */}
+                      {e.detail?.actor && <span className="muted small"> by {e.detail.actor}</span>}
+                    </td>
                     <td>
                       {/* THREE STATES, NOT TWO. An event with no result predates
                           the column, and rendering that as success would invent
@@ -364,7 +369,9 @@ function AuditSection({ org }: { org: Organization }) {
                     </td>
                     <td className="mono">
                       {e.target ? (
-                        <span title={e.target}>{e.target.slice(0, 12)}…</span>
+                        <span title={e.target}>
+                          {e.target.length > 12 ? `${e.target.slice(0, 12)}…` : e.target}
+                        </span>
                       ) : (
                         <span className="muted">—</span>
                       )}

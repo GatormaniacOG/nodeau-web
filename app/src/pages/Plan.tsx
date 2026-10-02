@@ -211,6 +211,10 @@ function humaniseFeature(f: string): string {
     PriorityQueues: 'Priority and preemption between workloads',
     RemoteManagement: 'Manage installations from this site',
     ModelReplication: 'Move model weights to the machines that need them',
+    // Phase 20. ModelCopies is what shipped of ModelReplication, under a new
+    // name released binaries do not show as coming soon.
+    ModelCopies: 'Keep verified copies of a model on your other machines',
+    AutomaticRecovery: 'Bring a workload up on another of your machines when its own stops answering',
     TeamRBAC: 'Several people, with different permissions',
     Audit: 'A durable record of who changed what',
     SSO: 'Organisational single sign-on',

@@ -408,6 +408,25 @@ describe('the plan page', () => {
     expect(screen.getByText(/Run batch jobs/i)).toBeInTheDocument();
   });
 
+  it('renders Phase 20’s capabilities as sentences too', async () => {
+    reply('GET', '/v1/me', ME);
+    reply('GET', '/v1/organizations/org1/plan', {
+      ...HOME_PLAN,
+      id: 'home-pro',
+      displayName: 'Nodeau Home Pro',
+      status: 'active',
+      features: ['ModelCopies', 'AutomaticRecovery'],
+    });
+    reply('GET', '/v1/organizations/org1/plans', { plans: [] });
+    window.history.pushState({}, '', '/plan');
+    render(<App />);
+
+    expect(await screen.findByText(/Keep verified copies of a model on your other machines/i)).toBeInTheDocument();
+    expect(screen.getByText(/Bring a workload up on another of your machines/i)).toBeInTheDocument();
+    expect(screen.queryByText('ModelCopies')).not.toBeInTheDocument();
+    expect(screen.queryByText('AutomaticRecovery')).not.toBeInTheDocument();
+  });
+
   it('never shows the per-machine GPU limit as a fleet total', async () => {
     // Home Pro is three machines and two cards IN EACH. The legacy key is
     // issued beside the explicit one, and "GPUs: 2" beside "Machines: 3" read
