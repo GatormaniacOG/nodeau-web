@@ -125,8 +125,8 @@ network. Nothing moves back on its own.
   and the recovered workload answers new requests once its model has loaded on
   the new machine. Nothing is replayed. Here's one measurement on our own two
   machines, with the delay set to one minute: Nodeau saw the machine had stopped
-  answering 51 seconds after it went off the network, decided a minute after
-  that, and the workload was serving on the other machine 14 seconds after that
+  answering 47 seconds after it went off the network, decided a minute after
+  that, and the workload was serving on the other machine 18 seconds after that
   machine's card was free, from a copy already there. Your times depend on your
   machines, your model and the delay you choose.
 - **The control-plane machine is the one that decides.** A workload running on the
