@@ -11,6 +11,13 @@
 [build]
   publish = "."
   command = ""
+  # SKIP A PRODUCTION DEPLOY THAT CHANGES NOTHING THIS SITE SERVES. A production
+  # deploy costs credits (15 on Netlify's credit plans, 2026-10); a push to main
+  # that changes only the account app under app/ (which this site never serves:
+  # /app/* redirects to app.nodeau.ai) would otherwise rebuild nodeau.ai for
+  # nothing. Exit 0 skips, 1 builds. With no previous deploy to compare
+  # (CACHED_COMMIT_REF unset) git fails, and the build runs: the safe direction.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!app'"
 
 # Clean URLs come from directory/index.html, so no redirect rules are needed
 # for the pages themselves. There is deliberately no catch-all redirect: one

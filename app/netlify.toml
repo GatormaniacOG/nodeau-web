@@ -19,6 +19,11 @@
   base = "app"
   publish = "dist"
   command = "npm ci && npm run build"
+  # Skip a production deploy that changes nothing under app/ (run in the base
+  # directory, so "." is app/). Measured in the 2026-09 cycle: 1 of this site's
+  # 13 production deploys changed no file here. Exit 0 skips, 1 builds; no
+  # previous deploy to compare means git fails and the build runs.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- ."
 
 [build.environment]
   # Pinned. A major Node bump arriving silently on a deploy is the classic way a
