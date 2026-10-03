@@ -387,6 +387,15 @@ BUZZWORDS = re.compile(
     re.IGNORECASE,
 )
 DASHES = re.compile("[\u2014\u2013]")
+# THE PRODUCT'S INTERNAL VOCABULARY NEVER REACHES A READER. Phase numbers, issue
+# numbers, record sections and the engineering files are how the project talks
+# to itself; on a public page they read as noise at best and as a leak at worst
+# (CLAUDE.md, website voice). Found missing on 2026-10-03: a planted "Phase 20
+# shipped this, fixing #183" passed every check. An HTML entity (&#169;) is not
+# an issue number, and code is not prose, so neither is matched.
+INTERNAL = re.compile(
+    r"\bPhase \d+(?:\.\d+)?[A-Z]?\b|(?<![&\w])#\d{2,3}\b|§\s?\d+|\bBUILD_STATE\b|\bCLAUDE\.md\b"
+)
 
 
 def prose_of(html: str) -> str:
@@ -771,6 +780,9 @@ def main() -> int:
                           "— rewrite the sentence; em and en dashes read as generated copy")
         for m in BUZZWORDS.finditer(prose):
             errors.append(f"{name}: buzzword {m.group(0)!r} — say what the thing does instead")
+        for m in INTERNAL.finditer(prose):
+            errors.append(f"{name}: internal vocabulary {m.group(0)!r} "
+                          f"(…{prose[max(0, m.start() - 50):m.end() + 50]}…) — say it the way a reader would")
         if route in MARKETING_ROUTES:
             for m in NEGATIVE_FRAMING.finditer(prose):
                 if (route, m.group(0).lower()) in NEGATIVE_ALLOWED:
