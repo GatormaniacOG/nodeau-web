@@ -141,10 +141,11 @@ curl -fsSL https://get.nodeau.ai/install.sh | bash
 nodeau join nodeau-join-eyJ…
 ```
 
-The Mac makes its own key, joins, and keeps one connection to your fleet that it
-opened itself. Nothing Kubernetes, no virtual machine and no container goes on
-it. When your fleet places a model there, the Mac runs it natively on its GPU,
-exactly as `nodeau run` would on that Mac, and the model answers at the **same
+The Mac makes its own key, joins, and keeps two connections to your fleet, both
+opened by the Mac itself: one to learn what to run and report back, one your fleet
+reaches its models through. Nothing Kubernetes, no virtual machine and no container
+goes on it. When your fleet places a model there, the Mac runs it natively on its
+GPU, exactly as `nodeau run` would on that Mac, and the model answers at the **same
 endpoint** as any other workload in your fleet.
 
 `nodeau fleet list` shows it beside your other machines, with its GPU and how
