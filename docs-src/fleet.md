@@ -6,10 +6,11 @@ description: Add a machine with two commands, see the whole fleet, drain one for
 lede: Your fleet is the machines Nodeau can place work on. Adding one takes two commands, and Nodeau handles the cluster membership, the credential and its expiry for you.
 ---
 
-:::linux Fleets are Linux machines with NVIDIA GPUs
-Every machine in a fleet runs Linux with an NVIDIA GPU. A Mac runs Nodeau
-standalone, as its own private endpoint, and is updated and managed on the Mac
-itself.
+:::linux Linux machines and Macs, in one fleet
+A fleet holds Linux machines with NVIDIA GPUs and Macs with Apple silicon, side
+by side. You add either with a code from the machine that runs your fleet, and
+Nodeau places your models on whichever can hold them. A Mac runs them natively,
+with nothing Kubernetes on it.
 :::
 
 :::homepro Several machines come with Home Pro and Business
@@ -117,6 +118,49 @@ MY NODEAU
 
 Then `nodeau doctor`, which checks every machine's agent and whether each GPU
 report is fresh enough to schedule against.
+
+## Adding a Mac
+
+A Mac joins the same way, with a code made for a Mac.
+
+### On the machine that runs your fleet
+
+```bash
+nodeau fleet invite --platform macos
+```
+
+The first time you invite a Mac, this starts Nodeau's **fleet gateway** on that
+machine. It listens on your network for the Macs in your fleet and nobody else:
+each one is known by its own certificate, and each one connects out to it.
+Nothing ever connects into a Mac.
+
+### On the Mac
+
+```bash
+curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau join nodeau-join-eyJ…
+```
+
+The Mac makes its own key, joins, and keeps one connection to your fleet that it
+opened itself. Nothing Kubernetes, no virtual machine and no container goes on
+it. When your fleet places a model there, the Mac runs it natively on its GPU,
+exactly as `nodeau run` would on that Mac, and the model answers at the **same
+endpoint** as any other workload in your fleet.
+
+`nodeau fleet list` shows it beside your other machines, with its GPU and how
+much of its unified memory a model may use. A Mac counts as one machine toward
+your plan.
+
+| On a Mac in your fleet | |
+|---|---|
+| Chat, embeddings, reranking and questions about an image | Runs natively on Apple silicon |
+| Drain, remove, health and placement explanations | From the machine that runs your fleet, as for any machine |
+| Batch jobs, models you imported, several GPUs for one model | Linux-only: they run on your Linux machines |
+| Updating Nodeau | On the Mac itself, with `nodeau update` |
+
+To take a Mac out of the fleet, run `nodeau fleet leave` on it, or
+`nodeau fleet remove <name>` from the machine that runs your fleet. Its own
+models and everything it downloaded stay, and it keeps working on its own.
 
 ## When joining needs another go
 
