@@ -31,6 +31,7 @@
     "group": "Fleet",
     "pages": [
       {"slug": "fleet", "nav": "Add and run machines"},
+      {"slug": "recovery", "nav": "Recovery and model copies"},
       {"slug": "health", "nav": "Health and alerts"},
       {"slug": "power", "nav": "Power limits and budgets"},
       {"slug": "upgrades", "nav": "Upgrading a fleet"},

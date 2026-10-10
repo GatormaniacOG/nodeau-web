@@ -221,9 +221,11 @@ you build on a fleet.
 - **A machine that stops reporting keeps its work.** If the workloads on it are
   still running, Nodeau holds them where they are for as long as it takes, rather
   than guessing.
-- **A machine that goes offline takes its workloads with it until it comes back.**
-  Nodeau keeps each service, and starts it again when a placement is possible.
-  Plan for a machine being offline the way you would for any single computer.
+- **A machine that goes offline takes its workloads with it until it comes back**,
+  unless you've set a workload to [recover automatically](/docs/recovery/): then,
+  after the delay you chose, Nodeau starts it on another machine that can hold it,
+  from a verified copy of its model kept ready there. Nodeau keeps each service
+  either way, and starts it again when a placement is possible.
 - **Each workload runs within one machine.** One model can use several cards in
   the same machine; see [several GPUs in one machine](/docs/multi-gpu/).
 - **Each machine keeps its own model cache**, and verifies its own copy of every

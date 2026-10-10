@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recovery and model copies in a Nodeau fleet</title>
+<meta name="description" content="Keep a verified copy of a model on another of your machines, and have Nodeau bring a workload back up there by itself when its machine stops answering.">
+<link rel="canonical" href="https://nodeau.ai/docs/recovery/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/recovery/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Recovery and model copies in a Nodeau fleet">
+<meta property="og:description" content="Keep a verified copy of a model on another of your machines, and have Nodeau bring a workload back up there by itself when its machine stops answering.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=6029a5ee">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
+    </div>
+  </div>
+</header>
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau"><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/playground/" data-nav-title="The Playground">The Playground</a></li><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li></ul></details><details class="doc-group" id="nav-fleet" open><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/recovery/" aria-current="page" data-nav-title="Recovery and model copies">Recovery and model copies</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Upgrading a fleet">Upgrading a fleet</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Fleet</p>
+      <h1 class="doc-title">Recovery and model copies</h1>
+      <p class="lede doc-lede">When a machine in your fleet stops answering, each workload on it does what you chose for it. Recovery off, it waits for its machine. Recovery on, Nodeau starts it on another of your machines after the delay you set, from a copy of its model that's already there.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#how-it-works">How it works</a></li><li><a href="#choose">Choose a workload&#x27;s recovery</a></li><li><a href="#copies">Copies of a model</a></li><li><a href="#nowhere">When there&#x27;s nowhere to go</a></li><li><a href="#return">When the old machine comes back</a></li><li><a href="#limits">What to know</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ul></nav>
+      <aside class="callout callout-linux"><p class="callout-kind">Recovery is for Linux fleets</p><p>Every machine in a fleet runs Linux with an NVIDIA GPU. A Mac runs Nodeau standalone, so its workloads start and stop with the Mac itself, and the commands on this page say so when you run them there.</p></aside>
+<aside class="callout callout-homepro"><p class="callout-kind">Recovery and copies come with Home Pro and Business</p><p>Both are properties of a fleet, so they're part of Home Pro and Business. The free Home plan is one machine, and everything on it keeps working exactly as it does.</p></aside>
+<h2 id="how-it-works" class="doc-h">How it works<a class="doc-anchor" href="#how-it-works" aria-label="Link to this section">#</a></h2>
+<p>Your control-plane machine watches every machine in the fleet. A machine counts as <strong>stopped answering</strong> only when both of its signals have gone quiet: its Kubernetes agent and Nodeau's own report from that machine. Either one alone is worth a look, and it moves nothing.</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="recovery-code-1"><code>  reporting      both signals fresh                                 nothing to do
+  degraded       one signal quiet (an agent down, or a kubelet)     nothing moves
+  unreachable    both quiet, since a moment Nodeau records          your choice applies
+  upgrading      a fleet upgrade is restarting it on purpose        nothing moves</code></pre></div>
+<p>Once a machine has been unreachable for the delay you chose, each workload on it that's set to recover automatically is placed again, by the same admission and scheduling that placed it the first time: your plan, your organisation's limits and the cards' real memory all apply. It starts on the machine Nodeau chooses, and <strong>its endpoint stays the same</strong>, so a client keeps the address it already has.</p>
+<p>The decision is made on your control-plane machine. It needs no internet connection and no word from Nodeau Cloud, and an outage between you and Nodeau Cloud never moves anything.</p>
+<h2 id="choose" class="doc-h">Choose a workload's recovery<a class="doc-anchor" href="#choose" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#recovery-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="recovery-code-2"><code>nodeau recovery set qwen-local automatic             # recover after 3 minutes
+nodeau recovery set qwen-local automatic --after 10m # recover after 10 minutes
+nodeau recovery set qwen-local never                 # wait for its machine (the default)
+nodeau run qwen3.5-4b-q4km --recovery automatic        # choose it when you start one</code></pre></div>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--after &lt;d&gt;</code></td><td data-label="Default"><code>3m</code></td><td data-label="Meaning">How long its machine must have stopped answering first, from 1m to 60m</td></tr><tr><td data-label="Flag"><code>--copies &lt;n&gt;</code></td><td data-label="Default"><code>2</code> with automatic</td><td data-label="Meaning">How many machines keep the model's verified files, counting the one it runs on, from 1 to 8</td></tr></tbody></table></div>
+<p>Changing a workload's recovery restarts nothing. A machine that's restarting usually comes back well inside three minutes, and moving a workload off it would restart a healthy model for nothing, which is why the delay exists.</p>
+<p>See every workload's choice, its copies and its last recovery:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#recovery-code-3"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="recovery-code-3"><code>nodeau recovery status</code></pre></div>
+<p><code>nodeau ps</code> says <strong>held</strong> for a workload whose machine stopped answering and that is waiting, and <strong>recovering</strong> for one Nodeau is bringing up elsewhere, each with its own sentence saying which machine, since when, and what happens next. The local dashboard and the Playground say the same.</p>
+<h2 id="copies" class="doc-h">Copies of a model<a class="doc-anchor" href="#copies" aria-label="Link to this section">#</a></h2>
+<p>A workload set to recover automatically keeps a verified copy of its model on another machine that could run it, so a recovery starts without a download. You can also ask a machine to keep a copy of any catalog model yourself:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#recovery-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="recovery-code-4"><code>nodeau models copy qwen3.5-4b-q4km --to garage          # ask garage to keep one
+nodeau models copy qwen3.5-4b-q4km --to garage --wait   # and wait until it&#x27;s verified
+nodeau models copies                                  # every copy, its state, who asked
+nodeau models copy qwen3.5-4b-q4km --to garage --remove # take the request back</code></pre></div>
+<p>The machine that keeps a copy fetches the files from the model's publisher into its own model cache and checks every file's SHA-256 itself. A copy is <strong>ready</strong> only once that machine has verified every file; a partial or damaged file never counts. Each machine fetches one model at a time and keeps free disk in reserve.</p>
+<p>Taking a request back deletes no files, and a copy a workload's recovery relies on stays for that workload.</p>
+<h3 id="imported" class="doc-h">A model you imported<a class="doc-anchor" href="#imported" aria-label="Link to this section">#</a></h3>
+<p>A model you imported has no source but your own machines, so Nodeau never fetches it. Place the same file on the other machine, and Nodeau verifies it there by its SHA-256 and counts it as a copy:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#recovery-code-5"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="recovery-code-5"><code>nodeau models import ./my-model.gguf --no-register    # run on the other machine</code></pre></div>
+<h2 id="nowhere" class="doc-h">When there's nowhere to go<a class="doc-anchor" href="#nowhere" aria-label="Link to this section">#</a></h2>
+<p>If no other machine can hold a workload when its machine stops answering, it's <strong>held</strong>, and <code>nodeau recovery status</code> says why. When the reason is the model's files, Nodeau fetches a verified copy to a machine that could run it, and moves the workload once that machine has checked every file. When the reason is capacity, it waits until a card is free. It never retries in a loop.</p>
+<p>A drained machine is never a target, and neither is one your organisation's limits leave out.</p>
+<h2 id="return" class="doc-h">When the old machine comes back<a class="doc-anchor" href="#return" aria-label="Link to this section">#</a></h2>
+<p>The workload stays where Nodeau brought it up. The copy that was running on the old machine is out of the endpoint from the moment that machine stopped answering, and its own Kubernetes agent ends it as soon as the machine is back on your network. Nothing moves back on its own.</p>
+<h2 id="limits" class="doc-h">What to know<a class="doc-anchor" href="#limits" aria-label="Link to this section">#</a></h2>
+<ul class="doc-list"><li><strong>There's a gap.</strong> A request in flight on a machine that stops answering fails, and the recovered workload answers new requests once its model has loaded on the new machine. Nothing is replayed. Here's one measurement on our own two machines, with the delay set to one minute: Nodeau saw the machine had stopped answering 47 seconds after it went off the network, decided a minute after that, and the workload was serving on the other machine 18 seconds after that machine's card was free, from a copy already there. Your times depend on your machines, your model and the delay you choose.</li><li><strong>The control-plane machine is the one that decides.</strong> A workload running on the control-plane machine waits for that machine, because the decision is made there.</li><li><strong>Batch jobs are unchanged.</strong> Recovery applies to served workloads.</li><li><strong>Upgrades are not failures.</strong> A fleet upgrade marks the machine it's restarting, and nothing moves while the mark holds.</li></ul>
+<h2 id="troubleshooting" class="doc-h">Troubleshooting<a class="doc-anchor" href="#troubleshooting" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>You see</th><th>What it means</th><th>What to do</th></tr></thead><tbody><tr><td data-label="You see"><code>RecoveryNotIncluded</code></td><td data-label="What it means">The plan this machine holds doesn't include recovery across machines</td><td data-label="What to do"><code>nodeau plan show</code>; on Home Pro or Business, <code>nodeau plan refresh</code> brings the machine's plan up to date</td></tr><tr><td data-label="You see"><code>RecoveryWaiting</code></td><td data-label="What it means">Its machine stopped answering, and the delay you chose hasn't passed yet</td><td data-label="What to do">Nothing: it moves when the delay ends, unless the machine answers first</td></tr><tr><td data-label="You see"><code>RecoveryNoTarget</code></td><td data-label="What it means">No other machine can hold it yet</td><td data-label="What to do"><code>nodeau recovery status</code> names the reason; a copy is fetched when the model's files are the reason</td></tr><tr><td data-label="You see"><code>CopyInsufficientDisk</code></td><td data-label="What it means">That machine has too little free disk for the copy</td><td data-label="What to do">Free space on that machine, or choose another</td></tr><tr><td data-label="You see"><code>CopyImportedModel</code></td><td data-label="What it means">A model you imported is never fetched</td><td data-label="What to do">Place the same file there with <code>nodeau models import &lt;file&gt; --no-register</code></td></tr></tbody></table></div>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/fleet/"><span>Previous</span>Add and run machines</a><a class="doc-next" href="/docs/health/"><span>Next</span>Health and alerts</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
+      </div>
+      <div>
+        <h2 class="footer-title">Product</h2>
+        <ul>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Docs</h2>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Company</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+<script src="/assets/docs.js?v=1501ca71" defer></script>
+</body>
+</html>
