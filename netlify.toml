@@ -20,7 +20,14 @@
   # a "Retry" with no new commit sets them equal (its staff), so an unguarded diff
   # finds nothing and would CANCEL a real deploy; both refs must be present and
   # different before a skip is possible. An unknown ref makes git fail: builds.
-  ignore = "[ -n \"$CACHED_COMMIT_REF\" ] && [ \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" ] && git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- . ':!app'"
+  #
+  # PREVIEWS ARE OPT-IN (the deploy policy, platform repository
+  # docs/operations/NETLIFY-DEPLOY-POLICY.md): a deploy preview or branch deploy
+  # builds only for a branch named preview/…; any other is skipped. They cost no
+  # credits, but they sit behind the team login, nothing reads them, and local
+  # checks are the default. Only an EXPLICIT preview context can skip this way:
+  # production, or no CONTEXT at all, falls through to the guarded rule above.
+  ignore = "case \"$CONTEXT\" in deploy-preview|branch-deploy) case \"$HEAD\" in preview/*) exit 1 ;; esac; exit 0 ;; esac; [ -n \"$CACHED_COMMIT_REF\" ] && [ \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" ] && git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- . ':!app'"
 
 # Clean URLs come from directory/index.html, so no redirect rules are needed
 # for the pages themselves. There is deliberately no catch-all redirect: one
