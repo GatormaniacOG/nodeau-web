@@ -148,7 +148,7 @@ FORBIDDEN = [
     (r"scales? to (dozens|hundreds|any number)",
      "no scale claim is supportable"),
     (r"automatically (moves?|migrates?|recovers?|reschedules?)",
-     "Nodeau never moves a workload on its own"),
+     "a workload moves only under the recovery its owner chose for it: say who chose it"),
 ]
 
 # Words that are only safe next to a disclaimer. A bare mention reads as a
