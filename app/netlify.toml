@@ -19,6 +19,14 @@
   base = "app"
   publish = "dist"
   command = "npm ci && npm run build"
+  # Skip a production deploy that changes nothing under app/ (run in the base
+  # directory, so "." is app/). Measured in the 2026-09 cycle: 1 of this site's
+  # 13 production deploys changed no file here. Exit 0 skips, anything else
+  # builds. GUARDED as the root's is: an empty or equal CACHED_COMMIT_REF (no
+  # cache, a retry, an environment change redeployed) must build, never skip.
+  # Previews are opt-in, as the root's are: only a branch named preview/… builds
+  # a deploy preview or branch deploy; production falls through to the rule.
+  ignore = "case \"$CONTEXT\" in deploy-preview|branch-deploy) case \"$HEAD\" in preview/*) exit 1 ;; esac; exit 0 ;; esac; [ -n \"$CACHED_COMMIT_REF\" ] && [ \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" ] && git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- ."
 
 [build.environment]
   # Pinned. A major Node bump arriving silently on a deploy is the classic way a
