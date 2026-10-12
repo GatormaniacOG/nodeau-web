@@ -319,7 +319,7 @@ nodeau batch wait overnight &amp;&amp; nodeau batch results overnight</code></pr
           </p>
           <ul class="checks">
             <li>NVIDIA GPUs on Linux, several per machine</li>
-            <li>Apple Silicon Macs through Metal, running standalone</li>
+            <li>Apple Silicon Macs through Metal, on their own or in your fleet</li>
             <li>Power limits for each card, inside the card's own range</li>
           </ul>
           <p style="margin-top:1.25rem"><a class="link-arrow" href="/docs/multi-gpu/">Several GPUs in one machine</a></p>
@@ -382,12 +382,14 @@ nodeau power set --device &lt;gpu-uuid&gt; --limit 180</code></pre>
           <p class="eyebrow">Fleet</p>
           <h2>Several machines, one fleet.</h2>
           <p style="margin-top:1rem">
-            Adding a machine takes two commands. Once it's in, Nodeau considers
-            it for every placement, checks its copy of each model by hash, and
-            keeps an eye on its health.
+            Adding a machine takes two commands, and it can be a Linux machine or
+            an Apple Silicon Mac. Once it's in, Nodeau considers it for the work
+            it can run, checks its copy of each model by hash, and keeps an eye
+            on its health.
           </p>
           <ul class="checks">
-            <li><code>nodeau health</code> shows processor, memory, storage, network and GPU for every machine, keeps a day of history, and raises alerts when something needs you</li>
+            <li>A Mac joins as a machine of its own: Nodeau places models on it by its memory and what's already running there, the Mac runs them natively through Metal, and they answer at the same endpoint as everything else</li>
+            <li><code>nodeau health</code> shows processor, memory, storage, network and GPU for every Linux machine, keeps a day of history, and raises alerts when something needs you</li>
             <li>Drain a machine for maintenance. New work goes elsewhere and what's running keeps serving</li>
             <li>If the control-plane machine is away for a while, the other machines keep serving and report back shortly after it returns</li>
             <li><code>nodeau fleet connect</code> puts your fleet in your account at app.nodeau.ai, so you can see it from any browser</li>

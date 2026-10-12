@@ -112,7 +112,7 @@ nodeau quickstart</code></pre></div><p style="margin-top:0.75rem">On an Apple Si
       </details>
       <details class="qa">
         <summary>Can I use my Mac?</summary>
-        <div class="answer"><p>Yes! On an Apple Silicon Mac, Nodeau runs chat, embedding, reranking and vision models natively on the Mac's GPU through Metal, and several can serve at once, each on its own port. Installing needs no password and no drivers. A Mac runs standalone, as your own private AI endpoint.</p><p>Because a Mac shares one pool of memory between everything, whether a model fits depends on what else you have open. Nodeau checks each time and shows you the numbers. Fleets, batch jobs, structured output, tool calling and your own imported models run on Linux machines with NVIDIA GPUs.</p></div>
+        <div class="answer"><p>Yes! On an Apple Silicon Mac, Nodeau runs chat, embedding, reranking and vision models natively on the Mac's GPU through Metal, and several can serve at once, each on its own port. Installing needs no password and no drivers. Use it as your own private AI endpoint, or add it to your fleet beside your Linux machines.</p><p>Because a Mac shares one pool of memory between everything, whether a model fits depends on what else you have open. Nodeau checks each time and shows you the numbers. Batch jobs, structured output, tool calling and your own imported models run on your Linux machines with NVIDIA GPUs, and the machine that runs a fleet is a Linux machine too.</p></div>
       </details>
       <details class="qa">
         <summary>Does Nodeau install my NVIDIA driver?</summary>
@@ -120,7 +120,7 @@ nodeau quickstart</code></pre></div><p style="margin-top:0.75rem">On an Apple Si
       </details>
       <details class="qa">
         <summary>Can I add more than one computer?</summary>
-        <div class="answer"><p>Yes. Run <code>nodeau fleet invite</code> on the machine you have and <code>nodeau join</code> on the new one, and they're a fleet. Each machine reports what it has and checks its own copy of every model. Home Pro runs up to three machines, and Business as many as you have.</p></div>
+        <div class="answer"><p>Yes. Run <code>nodeau fleet invite</code> on the machine you have and <code>nodeau join</code> on the new one, and they're a fleet. The new one can be a Linux machine with an NVIDIA GPU or an Apple Silicon Mac, which counts as one machine. Each machine reports what it has and checks its own copy of every model. Home Pro runs up to three machines, and Business as many as you have.</p></div>
       </details>
       <details class="qa">
         <summary>What happens when I add another GPU?</summary>

@@ -299,8 +299,9 @@ REQUIRED = [
      "until then it said a Mac runs standalone)"),
     ("docs/requirements/index.html", "One model across several GPUs",
      "the support matrix must keep the row that distinguishes Linux/NVIDIA from Apple on this"),
-    ("install/index.html", "Runs standalone",
-     "the install page must say, where a Mac owner starts, that a Mac runs on its own"),
+    ("install/index.html", "joins a fleet that a Linux machine runs",
+     "the install page must say, where a Mac owner starts, that a Mac joins a fleet a Linux "
+     "machine runs (since v0.18; until then, that a Mac runs on its own)"),
 
     # PHASE 11's CLAIM AND ITS CAVEAT ARE ONE UNIT.
     #
