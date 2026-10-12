@@ -3,12 +3,13 @@ title: Limits and policies for your Nodeau fleet
 heading: Limits and policies
 nav: Limits and policies
 description: Quotas, GPU pools, fleet groups and model policy: the limits your organisation can set on its own fleet, how refusals are worded, and why lowering one never stops running work.
-lede: Your organisation can set its own limits on what its fleet may run, inside what your plan already allows. Set them from any machine in the fleet, or from your account on the web.
+lede: Your organisation can set its own limits on what its fleet may run, inside what your plan already allows. Set them from any Linux machine in the fleet, or from your account on the web.
 ---
 
-:::linux Policies apply to fleets of Linux machines
-Limits and policies travel as settings the fleet's controller reads. A Mac runs
-standalone, so on a Mac `nodeau governance` explains that and exits.
+:::linux Set on a Linux machine, or from your account
+Limits and policies travel as settings the fleet's controller reads, so you set
+them on a Linux machine in your fleet or from your account on the web. On a Mac,
+`nodeau governance` says so and exits.
 :::
 
 ## Three different things

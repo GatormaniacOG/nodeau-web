@@ -106,7 +106,7 @@ nodeau doctor --node nodeau-c # one machine, plus the installation-wide checks</
 <div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#health-code-2"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="health-code-2"><code>nodeau health
 nodeau health --json
 nodeau health history --machine nodeforge --since 6h</code></pre></div>
-<aside class="callout callout-linux"><p class="callout-kind">A fleet command</p><p><code>health</code> and <code>health history</code> read the fleet's datastore, so they run on Linux machines in a fleet. A Mac runs standalone, and <code>nodeau doctor</code> covers it: the codes under <strong>On a Mac</strong> above are the ones it reports.</p></aside>
+<aside class="callout callout-linux"><p class="callout-kind">A fleet command</p><p><code>health</code> and <code>health history</code> read the fleet's datastore, so they run on your Linux machines in a fleet. On a Mac, in a fleet or on its own, <code>nodeau doctor</code> covers it: the codes under <strong>On a Mac</strong> above are the ones it reports.</p></aside>
 <p>The current state of every machine, <strong>processor, memory, storage and network</strong>, next to its GPU readings, together with anything that needs attention.</p>
 <div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="health-code-3"><code>nodeau-c  (worker, ready, reported 6s ago)
     CPU              0 %            16 threads, 0 % stalled

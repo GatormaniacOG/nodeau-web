@@ -27,9 +27,10 @@ its scope:
 | The curated catalog, downloads and SHA-256 verification | Yes |
 | The fit check before anything starts | Yes, against unified memory |
 | `run`, `ps`, `stop`, `logs`, `doctor` and `uninstall` | Yes |
-| Fleets, batch inference and bringing your own model | On your Linux machines with NVIDIA GPUs. A Mac runs standalone |
+| Joining a fleet | Yes, as a machine in a fleet that a Linux machine runs. See [adding a Mac](/docs/fleet/#adding-a-mac) |
+| Batch inference and bringing your own model | On your Linux machines with NVIDIA GPUs |
 | Structured output and tool calling | On your Linux machines with NVIDIA GPUs |
-| Several GPUs, scheduling modes, power limits, health, limits and policies | Part of a Linux fleet. A Mac has one integrated GPU |
+| Several GPUs, scheduling modes, power limits, health, limits and policies | Set and read on your Linux machines. A Mac has one integrated GPU |
 
 ## Requirements
 

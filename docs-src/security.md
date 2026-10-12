@@ -23,7 +23,9 @@ Your prompts go to a model running on **your own GPU**, reached over
 
 In a fleet, a request to a model on another machine you own travels across **your
 own network** to that machine, the way any service on your LAN would, and stays
-within your walls.
+within your walls. A model on a Mac in your fleet is reached through a connection
+the Mac itself opened to the machine that runs your fleet, with mutual TLS and
+both certificates pinned, so nothing ever connects into the Mac.
 
 ## The endpoint binds loopback, and that is fixed
 

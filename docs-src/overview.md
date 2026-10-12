@@ -91,7 +91,7 @@ With more than one machine you can:
   ([limits and policies](/docs/governance/))
 - see what your hardware has been doing, in accelerator-hours, and who changed
   what ([usage and audit](/docs/usage/))
-- update the whole fleet from one place: preview the rollout with
+- update your Linux machines from one place: preview the rollout with
   `nodeau fleet upgrade plan`, then approve it with `nodeau fleet upgrade apply`
   ([upgrading a fleet](/docs/upgrades/))
 
@@ -103,8 +103,10 @@ With more than one machine you can:
   own models, and every task from chat to image input.
 - **Apple Silicon Macs.** Nodeau runs chat, embedding, reranking and vision
   models natively on the Mac's GPU through Metal, several at once, with no
-  containers and no password. A Mac runs standalone, which makes it a lovely
-  private endpoint on a laptop.
+  containers and no password. On its own, a Mac makes a lovely private endpoint
+  on a laptop, and it can also join your fleet beside your Linux machines
+  ([adding a Mac](/docs/fleet/#adding-a-mac)). Batch inference and your own
+  models stay on your Linux machines.
 
 The catalog, the fit checks, entitlements and the CLI are the same on both. The
 full matrix is in [requirements and platforms](/docs/requirements/).

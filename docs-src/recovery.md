@@ -6,10 +6,11 @@ description: Keep a verified copy of a model on another of your machines, and ha
 lede: When a machine in your fleet stops answering, each workload on it does what you chose for it. Recovery off, it waits for its machine. Recovery on, Nodeau starts it on another of your machines after the delay you set, from a copy of its model that's already there.
 ---
 
-:::linux Recovery is for Linux fleets
-Every machine in a fleet runs Linux with an NVIDIA GPU. A Mac runs Nodeau
-standalone, so its workloads start and stop with the Mac itself, and the
-commands on this page say so when you run them there.
+:::linux Recovery across your Linux machines and Macs
+A workload your fleet runs can recover onto another machine in the fleet that can
+hold it, a Linux machine or a Mac, and you choose it on the machine that runs your
+fleet. A model a Mac runs on its own, outside a fleet, starts and stops with that
+Mac, and the commands on this page say so when you run them there.
 :::
 
 :::homepro Recovery and copies come with Home Pro and Business
@@ -21,8 +22,9 @@ Home plan is one machine, and everything on it keeps working exactly as it does.
 
 Your control-plane machine watches every machine in the fleet. A machine counts as
 **stopped answering** only when both of its signals have gone quiet: its Kubernetes
-agent and Nodeau's own report from that machine. Either one alone is worth a look,
-and it moves nothing.
+agent and Nodeau's own report from that machine. A Mac in your fleet has no
+Kubernetes agent: its two signals are the connection it keeps open to your fleet
+and its own report. Either one alone is worth a look, and it moves nothing.
 
 ```text
   reporting      both signals fresh                                 nothing to do

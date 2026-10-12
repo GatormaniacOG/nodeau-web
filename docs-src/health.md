@@ -139,9 +139,9 @@ nodeau health history --machine nodeforge --since 6h
 ```
 
 :::linux A fleet command
-`health` and `health history` read the fleet's datastore, so they run on Linux
-machines in a fleet. A Mac runs standalone, and `nodeau doctor` covers it: the
-codes under **On a Mac** above are the ones it reports.
+`health` and `health history` read the fleet's datastore, so they run on your
+Linux machines in a fleet. On a Mac, in a fleet or on its own, `nodeau doctor` covers
+it: the codes under **On a Mac** above are the ones it reports.
 :::
 
 The current state of every machine, **processor, memory, storage and network**,
