@@ -6,9 +6,8 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts.
-# This copy is v0.18.0-beta.2's STAGED linux binary (sha256 of its archive dcb25d5f, the pin), whose
-# command surface v0.18.0-beta.3 keeps (its one change, #220, is refusal wording on a Mac). Regenerate it
-# from v0.18.0-beta.3's published archive before this page ships, and expect no difference.
+# This copy is v0.18.0-beta.3's PUBLISHED linux binary (sha256 of its archive 9a2c4b8a, the pin), regenerated
+# 2026-10-12 from the staged archive; identical, command for command and flag for flag, to beta.2's.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
