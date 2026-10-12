@@ -5,8 +5,10 @@
 # `nodeau` taken from the published archive (checksum verified first):
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
-# One line per command, then a tab, then every flag it accepts. This copy is
-# v0.17.0-beta.5, the build the beta channel serves (its CLI surface is beta.1's, line for line).
+# One line per command, then a tab, then every flag it accepts.
+# This copy is v0.18.0-beta.2's STAGED linux binary (sha256 of its archive dcb25d5f, the pin), whose
+# command surface v0.18.0-beta.3 keeps (its one change, #220, is refusal wording on a Mac). Regenerate it
+# from v0.18.0-beta.3's published archive before this page ships, and expect no difference.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
@@ -35,8 +37,10 @@ nodeau endpoint serve	--help --model --namespace --port --service --upstream
 nodeau environment	--help --json
 nodeau fleet connect	--help --no-linger --yes
 nodeau fleet disconnect	--help
+nodeau fleet gateway	--help --listen
 nodeau fleet	--help
-nodeau fleet invite	--address --expires-in --help
+nodeau fleet invite	--address --expires-in --help --platform --replace --yes
+nodeau fleet leave	--help
 nodeau fleet list	--help --json
 nodeau fleet remove	--dry-run --force --help --json --yes
 nodeau fleet status	--help --json
@@ -50,7 +54,7 @@ nodeau governance	--allow-device --allow-model --allow-node --clear --help --jso
 nodeau health	--help --json
 nodeau health history	--device --help --json --machine --max-points --metric --resolution --since
 nodeau install	--agent-image --batch-runner-image --cache-dir --channel --controller-image --dry-run --help --lifecycle-prepare --print-manifests --scheduling-mode --scheduling-selection --server-dry-run --skip-k3s --skip-toolkit --state --verbose --yes
-nodeau join	--cache-dir --dry-run --help --verbose --yes
+nodeau join	--cache-dir --dry-run --foreground --help --verbose --yes
 nodeau login	--api --help --json --name --no-browser --show --wait
 nodeau logout	--help --json
 nodeau logs	--container --follow --help --namespace --previous --system --tail

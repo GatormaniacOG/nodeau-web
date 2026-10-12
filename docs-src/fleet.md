@@ -20,7 +20,7 @@ The free Home plan is one machine, and everything on it works on its own.
 
 ## Before you start
 
-On the **new** machine you need:
+On a **new Linux machine** you need (a Mac has [its own section](#adding-a-mac)):
 
 - Ubuntu 24.04 LTS on x86_64
 - An NVIDIA GPU with a **working driver**
@@ -154,9 +154,10 @@ your plan.
 
 | On a Mac in your fleet | |
 |---|---|
-| Chat, embeddings, reranking and questions about an image | Runs natively on Apple silicon |
-| Drain, remove, health and placement explanations | From the machine that runs your fleet, as for any machine |
-| Batch jobs, models you imported, several GPUs for one model | Linux-only: they run on your Linux machines |
+| Chat, embeddings and reranking | Runs natively on Apple silicon, through Metal |
+| Stopping, draining, model copies, removing and placement explanations | From the machine that runs your fleet, as for any machine |
+| Recovery | A workload set to recover can move between a Linux machine and a Mac |
+| Batch jobs, structured output and tool calling, models you imported, several GPUs for one model | Linux-only: they run on your Linux machines |
 | Updating Nodeau | On the Mac itself, with `nodeau update` |
 
 To take a Mac out of the fleet, run `nodeau fleet leave` on it, or
@@ -236,7 +237,10 @@ nodeau fleet remove nodeau-c
 
 For a machine that is gone for good: retired, failed or sold. Nodeau removes its
 cluster membership, the storage and identity it generated for it, and the
-credential that let it reconnect, then frees the plan slot it was using.
+credential that let it reconnect, then frees the plan slot it was using. For a
+Mac, its certificate stops working at once: the next time the Mac connects, it
+stops what it was running for the fleet and forgets its membership, and its
+downloaded models stay.
 
 | Flag | Meaning |
 |---|---|
@@ -335,7 +339,8 @@ They do different things, and mixing them up is easy to put right.
 
 ## Updating the machines in a fleet
 
-`nodeau fleet upgrade apply` updates the whole fleet from one place, one machine
-at a time, workers first and the control-plane machine last, after you've seen the
-plan. [Upgrading a fleet](/docs/upgrades/) walks through it, and
+`nodeau fleet upgrade apply` updates the Linux machines in your fleet from one
+place, one machine at a time, workers first and the control-plane machine last,
+after you've seen the plan. A Mac in your fleet is updated on the Mac itself, with
+`nodeau update`. [Upgrading a fleet](/docs/upgrades/) walks through it, and
 [updates and release channels](/docs/updates/) covers updating a single machine.
