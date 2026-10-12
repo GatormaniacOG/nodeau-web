@@ -11,7 +11,7 @@ lede: Five commands answer five different questions. Pick the right one and a pr
 | Command | Question | Where |
 |---|---|---|
 | `nodeau doctor` | **Is anything wrong, and what do I do about it?** | Linux and Mac |
-| `nodeau health` | **How are my machines doing?** Processor, memory, storage, network | Linux fleets |
+| `nodeau health` | **How are my machines doing?** Processor, memory, storage, network | The Linux machines in a fleet |
 | `nodeau status` | **What is Nodeau running right now**, and does the endpoint answer? | Linux and Mac |
 | `nodeau ps` | **What is holding a GPU?** Services and batch jobs | Linux and Mac |
 | `nodeau logs` | **What is a workload printing?** | Linux and Mac |
