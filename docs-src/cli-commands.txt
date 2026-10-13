@@ -6,8 +6,8 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts.
-# This copy is v0.18.0-beta.3's PUBLISHED linux binary (sha256 of its archive 9a2c4b8a, the pin), regenerated
-# 2026-10-12 from the staged archive; identical, command for command and flag for flag, to beta.2's.
+# This copy is v0.18.0-beta.5's PUBLISHED linux binary (sha256 of its archive 37a75730, the pin), regenerated
+# 2026-10-13 from the staged archive; identical, command for command and flag for flag, to beta.3's and beta.2's.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
