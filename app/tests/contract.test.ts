@@ -69,6 +69,21 @@ if (!recoveryAvailable) {
   );
 }
 
+/**
+ * Phase 20I's files: cloudapi's admission types and pkg/admissionview, the ONE
+ * shape an admission explanation takes on every surface. Checked when the
+ * platform checkout has them, and said when it does not.
+ */
+const ADMISSION_FILE = resolve(PLATFORM_REPO, 'pkg/cloudapi', 'admission.go');
+const ADMISSIONVIEW_FILE = resolve(PLATFORM_REPO, 'pkg/admissionview', 'admissionview.go');
+const admissionAvailable = existsSync(ADMISSION_FILE) && existsSync(ADMISSIONVIEW_FILE);
+if (!admissionAvailable) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    `contract test: ${ADMISSIONVIEW_FILE} not found, so Phase 20I's admission types are not checked.`,
+  );
+}
+
 const available = CONTRACT_FILES.every((f) => existsSync(f));
 const describeIfAvailable = available ? describe : describe.skip;
 
@@ -82,10 +97,15 @@ if (!available) {
 
 describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
   const goSource = available
-    ? [...CONTRACT_FILES, ...(recoveryAvailable ? [RECOVERY_FILE] : [])]
+    ? [
+        ...CONTRACT_FILES,
+        ...(recoveryAvailable ? [RECOVERY_FILE] : []),
+        ...(admissionAvailable ? [ADMISSION_FILE] : []),
+      ]
         .map((f) => readFileSync(f, 'utf8'))
         .join('\n')
     : '';
+  const viewSource = admissionAvailable ? readFileSync(ADMISSIONVIEW_FILE, 'utf8') : '';
   const tsSource = readFileSync(resolve(import.meta.dirname, '../src/lib/api.ts'), 'utf8');
 
   /** goStructFields extracts the json tag names from one Go struct. */
@@ -182,7 +202,31 @@ describeIfAvailable('the TypeScript client matches pkg/cloudapi', () => {
     ...(recoveryAvailable
       ? ['FleetWorkloadList', 'WorkloadRecovery', 'RecoveryChoiceView', 'FleetModelCopyView']
       : []),
+    // Phase 20I — a stored preview and an accelerator's calibration. A field
+    // the server sends that this file never mentions is arithmetic the console
+    // silently cannot show — for a reserve, somebody reading a default as a
+    // calibration.
+    ...(admissionAvailable ? ['FleetAdmissionPreview', 'CalibrationObservation'] : []),
   ];
+
+  // Phase 20I — pkg/admissionview, read from ITS OWN file (its type names,
+  // Machine and Memory among them, are not cloudapi's).
+  const viewTypes = admissionAvailable
+    ? ['Preview', 'Candidate', 'Explanation', 'Machine', 'Memory', 'Reserve', 'CalibrationRef', 'Term',
+        'Override', 'Evidence']
+    : [];
+  for (const typeName of viewTypes) {
+    it(`admissionview.${typeName} has every field the Go type sends`, () => {
+      const start = viewSource.indexOf(`type ${typeName} struct {`);
+      expect(start, `no admissionview type named ${typeName}`).toBeGreaterThanOrEqual(0);
+      const body = viewSource.slice(start, viewSource.indexOf('\n}', start));
+      const fields = [...body.matchAll(/json:"([^"]+)"/g)]
+        .map((m) => m[1]?.split(',')[0])
+        .filter((n): n is string => !!n && n !== '-');
+      const missing = fields.filter((field) => !new RegExp(`\\b${field}\\??:`).test(tsSource));
+      expect(missing, `pkg/admissionview.${typeName} has field(s) src/lib/api.ts does not mention`).toEqual([]);
+    });
+  }
 
   for (const typeName of responseTypes) {
     it(`${typeName} has every field the Go type sends`, () => {

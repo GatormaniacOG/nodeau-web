@@ -8,11 +8,13 @@ import {
   type FleetPresence,
   type FleetWorkloadView,
   type Organization,
+  type CalibrationObservation,
 } from '../lib/api';
 import { hrefFor } from '../lib/router';
 import { Badge, Empty, ErrorNotice, relativeTime, Spinner } from '../components/ui';
 import { CapacityBar, Reading, ReadingRow, StatusPill } from '../components/viz';
 import { useResource } from '../lib/useResource';
+import { gib } from '../components/AdmissionCard';
 
 /**
  * The fleet — Phase 14C.
@@ -434,6 +436,22 @@ function AcceleratorCard({
       </div>
       <p className="gpu-uuid">{g.uuid}</p>
 
+      {g.backend === 'metal' ? (
+        // A Mac's accelerator has NO VRAM: it shares one pool with the
+        // system, and the figure it reports is the ceiling of what the GPU may
+        // use from it — a limit, not memory in hand (Phase 20I).
+        <p className="small">
+          Unified memory
+          {typeof g.unifiedWorkingSetMib === 'number' && g.unifiedWorkingSetMib > 0 ? (
+            <>
+              : the GPU may use up to <strong>{gib(g.unifiedWorkingSetMib)}</strong> of a pool it shares with
+              the rest of the system. How much a model can have depends on what else is running.
+            </>
+          ) : (
+            <>, shared with the rest of the system.</>
+          )}
+        </p>
+      ) : (
       <CapacityBar
         unit="MiB"
         total={g.vramTotalMib}
@@ -454,6 +472,9 @@ function AcceleratorCard({
             : []
         }
       />
+      )}
+
+      {g.calibration && <CalibrationLine c={g.calibration} />}
 
       {/* Absent means UNOBSERVED, not zero — an idle card at 0 % and a card
           whose driver did not answer are different facts, and Reading is where
@@ -702,4 +723,50 @@ function RenameMachine({
       {error !== null && <ErrorNotice error={error as ApiError} />}
     </form>
   );
+}
+
+/**
+ * CalibrationLine says which reserve admission uses on this accelerator, and
+ * where it came from — Phase 20I. The machine resolved it; this only says it.
+ * Measuring and adopting happen on the machine (`nodeau benchmark`), never
+ * from a browser: a memory measurement runs on somebody's computer and a
+ * reserve change is a local act.
+ */
+function CalibrationLine({ c }: { c: CalibrationObservation }) {
+  switch (c.state) {
+    case 'active':
+      return (
+        <p className="small calibration-line">
+          Reserve for the system: <strong>{gib(c.reserveMib)}</strong> <Badge tone="ok">Calibrated</Badge>{' '}
+          <span className="muted">
+            measured on this machine{c.measuredAt ? ` ${c.measuredAt.slice(0, 10)}` : ''}
+            {c.validUntil ? `, used until ${c.validUntil.slice(0, 10)}` : ''}; Nodeau's default is{' '}
+            {gib(c.defaultMib)}.
+          </span>
+        </p>
+      );
+    case 'expired':
+    case 'invalidated':
+      return (
+        <p className="small calibration-line">
+          Reserve for the system: <strong>{gib(c.reserveMib)}</strong> <Badge tone="warn">Default reserve</Badge>{' '}
+          <span className="muted">
+            {c.state === 'expired'
+              ? 'The calibration expired, so the conservative default is back in use.'
+              : 'The calibration no longer matches this machine, so the conservative default is in use.'}{' '}
+            Run <code>nodeau benchmark</code> on it to measure again.
+          </span>
+        </p>
+      );
+    default:
+      return (
+        <p className="small calibration-line">
+          Reserve for the system: <strong>{gib(c.reserveMib)}</strong> <Badge tone="neutral">Default reserve</Badge>{' '}
+          <span className="muted">
+            Nodeau's conservative default. <code>nodeau benchmark</code> on this machine measures it; nothing
+            changes until you adopt the result there.
+          </span>
+        </p>
+      );
+  }
 }

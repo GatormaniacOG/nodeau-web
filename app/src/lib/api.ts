@@ -142,6 +142,152 @@ export interface FleetGPUView {
   schedulable: boolean;
   /** Why not, in the product's own words. */
   note?: string;
+  /** Phase 20I. "cuda" or "metal". A Mac's accelerator has no VRAM: its
+   *  memory is `unifiedWorkingSetMib`, the ceiling of a pool it shares with
+   *  the system. Absent from an API or connector older than 20I. */
+  backend?: string;
+  unifiedWorkingSetMib?: number;
+  /** The reserve admission uses on this accelerator and where it came from. */
+  calibration?: CalibrationObservation;
+}
+
+/** One accelerator's memory calibration, as its machine resolved it (20I). */
+export interface CalibrationObservation {
+  /** "active" | "expired" | "invalidated" | "default" */
+  state: string;
+  reserveMib: number;
+  defaultMib: number;
+  floorMib: number;
+  /** "default" | "calibrated" */
+  source: string;
+  confidence?: string;
+  measuredAt?: string;
+  validUntil?: string;
+  note?: string;
+}
+
+// -- admission previews — Phase 20I ------------------------------------------
+//
+// The shape is pkg/admissionview's, computed on the customer's machine by
+// admission itself. This file mirrors it field for field (tests/contract.test.ts
+// holds the two together) and NOTHING in the console computes a fit, a reserve
+// or a headroom: it renders what the machine said.
+
+export type AdmissionConstraint = 'none' | 'soft' | 'hard';
+export type AdmissionProvenance =
+  | 'measured'
+  | 'estimated'
+  | 'policy-reserve'
+  | 'observed-current'
+  | 'calibrated'
+  | 'default'
+  | 'override';
+
+export interface AdmissionTerm {
+  key: string;
+  label: string;
+  mib: number;
+  provenance: AdmissionProvenance;
+  note?: string;
+  /** Shown for context and already inside another term: never summed. */
+  informational?: boolean;
+}
+
+export interface AdmissionCalibrationRef {
+  id: string;
+  method?: string;
+  confidence?: string;
+  measuredAt?: string;
+  adoptedAt?: string;
+  validUntil?: string;
+  osBuild?: string;
+}
+
+export interface AdmissionReserve {
+  totalMiB: number;
+  hardFloorMiB: number;
+  softMiB: number;
+  source: string;
+  defaultMiB?: number;
+  waivedMiB?: number;
+  calibration?: AdmissionCalibrationRef;
+  note?: string;
+}
+
+export interface AdmissionMemory {
+  kind: string;
+  capacity?: AdmissionTerm[];
+  inUse?: AdmissionTerm[];
+  reserve: AdmissionReserve;
+  availableMiB: number;
+  demand?: AdmissionTerm[];
+  requiredMiB: number;
+  headroomMiB: number;
+  waivedMiB?: number;
+}
+
+export interface AdmissionOverride {
+  available: boolean;
+  needs?: string[];
+  reserveMiB: number;
+  reserveWithOverrideMiB: number;
+  hardFloorMiB: number;
+  estimateMarginMiB?: number;
+  headroomWithOverrideMiB: number;
+  consequences?: string[];
+}
+
+export interface AdmissionExplanation {
+  version: number;
+  outcome: string;
+  reason: string;
+  message?: string;
+  constraint: AdmissionConstraint;
+  retryable?: boolean;
+  machine: {
+    name: string;
+    accelerator?: string;
+    acceleratorId?: string;
+    backend?: string;
+    memoryKind?: string;
+    devices?: string[];
+  };
+  memory?: AdmissionMemory;
+  confidence: string;
+  evidence: { predictionSource?: string; scope?: string; measuredHere?: boolean; profileId?: string };
+  override?: AdmissionOverride;
+  notes?: string[];
+  recommendations?: string[];
+  warnings?: string[];
+}
+
+export interface AdmissionCandidate {
+  machine: string;
+  eligible: boolean;
+  selected?: boolean;
+  summary?: string;
+  explanation: AdmissionExplanation;
+}
+
+export interface AdmissionPreview {
+  version: number;
+  id: string;
+  decidedAt: string;
+  expiresAt: string;
+  outcome: string;
+  reason?: string;
+  message?: string;
+  selected?: string;
+  why?: string;
+  candidates?: AdmissionCandidate[];
+  notes?: string[];
+}
+
+export interface FleetAdmissionPreview {
+  operationId: string;
+  preview: AdmissionPreview;
+  collectedAt: string;
+  expiresAt: string;
 }
 
 export interface FleetMachineView {
@@ -1219,6 +1365,16 @@ export const api = {
       'POST',
       `/v1/organizations/${encodeURIComponent(orgId)}/fleet/operations`,
       body,
+    ),
+
+  /** A fleet's own answer to `admission.preview` (Phase 20I). 404 until the
+   *  machine has answered, and again once the answer expires. */
+  fleetPreview: (orgId: string, opId: string, signal?: AbortSignal) =>
+    request<FleetAdmissionPreview>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/fleet/previews/${encodeURIComponent(opId)}`,
+      undefined,
+      signal,
     ),
 
   // -- usage, audit and fleet policy — Phase 17D -----------------------------
