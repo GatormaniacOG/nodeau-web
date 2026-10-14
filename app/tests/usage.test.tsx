@@ -170,6 +170,28 @@ describe('the audit trail shows refusals', () => {
     expect(await screen.findByTestId('audit-refused')).toBeTruthy();
   });
 
+  // Phase 20I: a one-run override is never hidden among plain runs.
+  it('names which operation was asked for, so an override reads as one', async () => {
+    vi.spyOn(api, 'auditEvents').mockResolvedValue({
+      retentionDays: 365,
+      events: [
+        {
+          type: 'fleet.operation_requested',
+          occurredAt: new Date().toISOString(),
+          result: 'applied',
+          target: 'machine-0123456789',
+          detail: { reason: 'workload.run.override' },
+        },
+        { type: 'user.signed_in', occurredAt: new Date().toISOString(), detail: { reason: 'session' } },
+      ],
+    });
+    render(<UsagePage org={org} />);
+    const table = await screen.findByTestId('audit-events');
+    expect(table.textContent).toContain('workload.run.override');
+    // Only operations carry it: another event's label is not shown here.
+    expect(table.textContent).not.toContain('session');
+  });
+
   // AN EVENT WITH NO RESULT PREDATES THE COLUMN AND IS NOT A SUCCESS.
   it('does not render a missing result as applied', async () => {
     vi.spyOn(api, 'auditEvents').mockResolvedValue({
