@@ -154,7 +154,7 @@ your plan.
 
 | On a Mac in your fleet | |
 |---|---|
-| Chat, embeddings and reranking | Runs natively on Apple silicon, through Metal |
+| Chat with streaming, and embeddings | Runs natively on Apple silicon, through Metal |
 | Stopping, draining, model copies, removing and placement explanations | From the machine that runs your fleet, as for any machine |
 | Recovery | A workload set to recover can move between a Linux machine and a Mac |
 | Batch jobs, structured output and tool calling, models you imported, several GPUs for one model | Linux-only: they run on your Linux machines |
