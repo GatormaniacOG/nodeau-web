@@ -6,10 +6,11 @@ description: Add a machine with two commands, see the whole fleet, drain one for
 lede: Your fleet is the machines Nodeau can place work on. Adding one takes two commands, and Nodeau handles the cluster membership, the credential and its expiry for you.
 ---
 
-:::linux Fleets are Linux machines with NVIDIA GPUs
-Every machine in a fleet runs Linux with an NVIDIA GPU. A Mac runs Nodeau
-standalone, as its own private endpoint, and is updated and managed on the Mac
-itself.
+:::linux Linux machines and Macs, in one fleet
+A fleet holds Linux machines with NVIDIA GPUs and Macs with Apple silicon, side
+by side. You add either with a code from the machine that runs your fleet, and
+Nodeau places your models on whichever can hold them. A Mac runs them natively,
+with nothing Kubernetes on it.
 :::
 
 :::homepro Several machines come with Home Pro and Business
@@ -19,7 +20,7 @@ The free Home plan is one machine, and everything on it works on its own.
 
 ## Before you start
 
-On the **new** machine you need:
+On a **new Linux machine** you need (a Mac has [its own section](#adding-a-mac)):
 
 - Ubuntu 24.04 LTS on x86_64
 - An NVIDIA GPU with a **working driver**
@@ -118,6 +119,51 @@ MY NODEAU
 Then `nodeau doctor`, which checks every machine's agent and whether each GPU
 report is fresh enough to schedule against.
 
+## Adding a Mac
+
+A Mac joins the same way, with a code made for a Mac.
+
+### On the machine that runs your fleet
+
+```bash
+nodeau fleet invite --platform macos
+```
+
+The first time you invite a Mac, this starts Nodeau's **fleet gateway** on that
+machine. It listens on your network for the Macs in your fleet and nobody else:
+each one is known by its own certificate, and each one connects out to it.
+Nothing ever connects into a Mac.
+
+### On the Mac
+
+```bash
+curl -fsSL https://get.nodeau.ai/install.sh | bash
+nodeau join nodeau-join-eyJ…
+```
+
+The Mac makes its own key, joins, and keeps two connections to your fleet, both
+opened by the Mac itself: one to learn what to run and report back, one your fleet
+reaches its models through. Nothing Kubernetes, no virtual machine and no container
+goes on it. When your fleet places a model there, the Mac runs it natively on its
+GPU, exactly as `nodeau run` would on that Mac, and the model answers at the **same
+endpoint** as any other workload in your fleet.
+
+`nodeau fleet list` shows it beside your other machines, with its GPU and how
+much of its unified memory a model may use. A Mac counts as one machine toward
+your plan.
+
+| On a Mac in your fleet | |
+|---|---|
+| Chat with streaming, and embeddings | Runs natively on Apple silicon, through Metal |
+| Stopping, draining, model copies, removing and placement explanations | From the machine that runs your fleet, as for any machine |
+| Recovery | A workload set to recover can move between a Linux machine and a Mac |
+| Batch jobs, structured output and tool calling, models you imported, several GPUs for one model | Linux-only: they run on your Linux machines |
+| Updating Nodeau | On the Mac itself, with `nodeau update` |
+
+To take a Mac out of the fleet, run `nodeau fleet leave` on it, or
+`nodeau fleet remove <name>` from the machine that runs your fleet. Its own
+models and everything it downloaded stay, and it keeps working on its own.
+
 ## When joining needs another go
 
 | What happened | What to do |
@@ -191,7 +237,10 @@ nodeau fleet remove nodeau-c
 
 For a machine that is gone for good: retired, failed or sold. Nodeau removes its
 cluster membership, the storage and identity it generated for it, and the
-credential that let it reconnect, then frees the plan slot it was using.
+credential that let it reconnect, then frees the plan slot it was using. For a
+Mac, its certificate stops working at once: the next time the Mac connects, it
+stops what it was running for the fleet and forgets its membership, and its
+downloaded models stay.
 
 | Flag | Meaning |
 |---|---|
@@ -290,7 +339,8 @@ They do different things, and mixing them up is easy to put right.
 
 ## Updating the machines in a fleet
 
-`nodeau fleet upgrade apply` updates the whole fleet from one place, one machine
-at a time, workers first and the control-plane machine last, after you've seen the
-plan. [Upgrading a fleet](/docs/upgrades/) walks through it, and
+`nodeau fleet upgrade apply` updates the Linux machines in your fleet from one
+place, one machine at a time, workers first and the control-plane machine last,
+after you've seen the plan. A Mac in your fleet is updated on the Mac itself, with
+`nodeau update`. [Upgrading a fleet](/docs/upgrades/) walks through it, and
 [updates and release channels](/docs/updates/) covers updating a single machine.

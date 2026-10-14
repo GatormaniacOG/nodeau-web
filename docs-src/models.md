@@ -29,8 +29,8 @@ model can fit a smaller card than its label suggests.
 | 16 GB | `gpt-oss-20b-mxfp4` | A larger, efficient mixture-of-experts model | chat |
 | 24 GB, or several smaller cards in one machine | `qwen3.8-27b-q4km` | Flagship general | chat, tools, structured output |
 
-Every model runs on Linux machines with NVIDIA GPUs. On a Mac, which runs
-standalone, Nodeau serves the chat models. The tasks beyond chat are covered in
+Every model runs on Linux machines with NVIDIA GPUs. On a Mac, Nodeau serves the
+chat models, and structured output and tool calling stay on your Linux machines. The tasks beyond chat are covered in
 [embeddings, reranking, tools and vision](/docs/tasks/).
 
 Here's the list on a machine that has a few of them already:

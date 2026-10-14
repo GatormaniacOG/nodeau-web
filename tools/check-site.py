@@ -220,8 +220,13 @@ RETIRED_PLATFORM = [
 FORBIDDEN_PLATFORM = [
     (r"(macOS|Apple Silicon) is fully supported|full (macOS|Apple Silicon) support",
      "overclaim: macOS is qualified with named exclusions, not 'fully supported'"),
-    (r"(Mac|macOS|Apple Silicon)[^.]{0,40}can join[^.]{0,30}(fleet|cluster)",
-     "false: a Mac is a native execution plane and is not a Kubernetes node (issue #93)"),
+    # Until v0.18 this forbade "a Mac can join a fleet" outright. The heterogeneous
+    # fleet made that TRUE (a Mac joins as a native fleet machine), so the rule now
+    # forbids only what stays false: a Mac in a Kubernetes cluster, or as a node.
+    (r"(Mac|macOS|Apple Silicon)[^.]{0,40}(can |)joins?[^.]{0,30}(Kubernetes|K3s|cluster)",
+     "false: a Mac joins a fleet as a native machine, never a Kubernetes cluster (issue #93)"),
+    (r"(Mac|macOS|Apple Silicon)[^.]{0,60}\b(is|as|becomes) an? (Kubernetes |K3s )?(node|worker node|cluster member)\b",
+     "false: a Mac in a fleet is a native machine, never a Kubernetes node (issue #93)"),
     (r"multi[- ]GPU on (a )?(Mac|macOS|Apple)",
      "false: multi-GPU per machine is a Linux/NVIDIA capability"),
     (r"batch (inference|jobs?) (works?|runs?|is available) on (a )?(Mac|macOS|Apple)",
@@ -250,9 +255,15 @@ FORBIDDEN_PLATFORM = [
 # and weaker in none that matter, because a page cannot mention the platform
 # and omit the exclusions entirely, which is the failure being guarded.
 PLATFORM_WORDS = r"Apple Silicon|Metal|macOS"
+# Since v0.18 a Mac can join a fleet, so "standalone" stopped being the one
+# exclusion every Mac page carried. What a Mac still does not do is stated in
+# these words instead: what stays "on your Linux machines", its "one integrated
+# GPU", and that a Mac in a fleet is "never a node". Each is an exclusion in its
+# own right; none matches a sentence that only names the platform.
 PLATFORM_EXCLUSIONS = (
     r"standalone|cannot join|not a Kubernetes|Linux-only|Linux only|"
-    r"batch inference is|does not join|unsupported"
+    r"batch inference is|does not join|unsupported|"
+    r"on your Linux machines|one integrated GPU|never a (Kubernetes )?node"
 )
 
 # Content the site must not lose. The roadmap is the one page that carries the
@@ -283,12 +294,14 @@ REQUIRED = [
      "the support matrix must keep the level that means Nodeau refuses rather than half-works"),
     ("docs/requirements/index.html", "Batch inference",
      "the matrix must keep the row naming the one capability a Mac does not have"),
-    ("docs/requirements/index.html", "runs standalone",
-     "the matrix must keep the row saying a Mac does not join a fleet"),
+    ("docs/requirements/index.html", "joined to a fleet whose control-plane machine runs Linux",
+     "the matrix must keep the row saying a Mac joins a fleet and never runs one (since v0.18; "
+     "until then it said a Mac runs standalone)"),
     ("docs/requirements/index.html", "One model across several GPUs",
      "the support matrix must keep the row that distinguishes Linux/NVIDIA from Apple on this"),
-    ("install/index.html", "Runs standalone",
-     "the install page must say, where a Mac owner starts, that a Mac runs on its own"),
+    ("install/index.html", "joins a fleet that a Linux machine runs",
+     "the install page must say, where a Mac owner starts, that a Mac joins a fleet a Linux "
+     "machine runs (since v0.18; until then, that a Mac runs on its own)"),
 
     # PHASE 11's CLAIM AND ITS CAVEAT ARE ONE UNIT.
     #

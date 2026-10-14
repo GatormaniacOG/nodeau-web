@@ -9,8 +9,8 @@ lede: A few of Nodeau's words mean something narrower than they do elsewhere. He
 ## Machine, node, GPU
 
 A **machine** is one physical computer running Nodeau. On Linux it's also a
-Kubernetes **node**, and the CLI uses the two words for the same thing.
-`nodeau fleet list` shows them.
+Kubernetes **node**, and the CLI uses the two words for the same thing. A Mac in
+your fleet is a machine and never a node. `nodeau fleet list` shows them all.
 
 A **GPU** is one physical graphics card, identified by its **UUID**, because an
 index can change when hardware does. A card that moves between machines keeps
@@ -29,8 +29,10 @@ fleet of one, and everything works.
 Adding a machine takes two commands: `nodeau fleet invite` here and
 `nodeau join` there. See [add and run machines](/docs/fleet/).
 
-A **Mac runs standalone**, on its own native execution plane, rather than as a
-member of a fleet.
+A **Mac** runs its models on its own native execution plane, through Metal. It
+works on its own, or it joins your fleet as a machine in its own right, and Nodeau
+places models on it by its memory and what's already running there. See
+[adding a Mac](/docs/fleet/#adding-a-mac).
 
 ## Model, artifact, alias
 
@@ -244,8 +246,14 @@ control plane, so a model that's already serving keeps serving while the control
 plane restarts. New decisions wait until it's back, and batch workers read their
 records through it.
 
-On a Mac, the same decisions are made in-process by Nodeau's native execution
-plane, with no cluster involved.
+A model on a Mac in your fleet is reached through the fleet gateway on the
+machine that runs your fleet, over a connection the Mac opened, so it answers
+while that gateway is running.
+
+On a Mac on its own, the same decisions are made in-process by Nodeau's native
+execution plane, with no cluster involved. A Mac in your fleet takes its work
+from the fleet's control plane, and still checks each model fits before it starts
+it.
 
 ## The local dashboard
 

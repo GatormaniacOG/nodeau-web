@@ -9,7 +9,8 @@ lede: About ten minutes, plus the model download. You won't need a source checko
 :::linux
 This is the Linux path. On an Apple Silicon Mac the flow is different, with no
 Kubernetes, no containers and no password, and it has its own page:
-[Install on a Mac](/docs/install-macos/). A Mac runs standalone.
+[Install on a Mac](/docs/install-macos/). A Mac runs on its own, and it can
+join a fleet that a Linux machine runs, as a machine of its own and never a node.
 :::
 
 ## Before you start

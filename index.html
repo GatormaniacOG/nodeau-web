@@ -259,7 +259,7 @@
           <div class="tile">
             <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></div>
             <h3>Apple Silicon Macs</h3>
-            <p>Chat, embeddings, reranking and vision run natively on the Mac's own GPU through Metal, several models at once. No drivers, no password. A Mac runs standalone as your own private AI endpoint.</p>
+            <p>Chat, embeddings, reranking and vision run natively on the Mac's own GPU through Metal, several models at once. No drivers, no password. Use a Mac as your own private AI endpoint, or add it to your fleet beside your NVIDIA machines. Batch jobs run on your Linux machines.</p>
           </div>
           <div class="tile">
             <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="8" height="18" rx="2"/><rect x="13" y="3" width="8" height="18" rx="2"/></svg></div>
@@ -416,12 +416,13 @@
           <p style="margin-top:1rem">
             Run <code>nodeau fleet invite</code> on the machine you have and
             <code>nodeau join</code> on the new one. That's the whole thing.
-            The new machine shows up in your fleet and Nodeau starts placing
-            work on it.
+            The new machine can be a Linux machine with an NVIDIA GPU or an
+            Apple Silicon Mac, and once it shows up in your fleet Nodeau starts
+            placing work on it.
           </p>
           <ul class="checks">
             <li><strong>See everything in one place.</strong> Every machine, card and model, from any browser.</li>
-            <li><strong>Know how each machine is doing.</strong> Processor, memory, storage, network and GPU, with alerts when something needs you.</li>
+            <li><strong>Know how each Linux machine is doing.</strong> Processor, memory, storage, network and GPU, with alerts when something needs you.</li>
             <li><strong>Set your own guardrails.</strong> Which models, which cards, which machines, and how much can run at once.</li>
             <li><strong>See what your hardware did.</strong> Usage in accelerator-hours, and a record of who changed what.</li>
             <li><strong>Update the fleet from one place.</strong> Preview the rollout first, then Nodeau moves through your machines one at a time and checks each one before the next.</li>

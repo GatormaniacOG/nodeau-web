@@ -12,9 +12,8 @@ usage arrives with a connected fleet, and the audit trail is written by Nodeau
 Cloud as changes happen.
 
 :::linux Usage comes from connected fleets
-Usage travels in a fleet's report, so it describes Linux machines in a fleet. A
-Mac runs Nodeau standalone, so its work stays on the Mac and is not part of a
-fleet report.
+Usage travels in a fleet's report, from the scheduler's own record of what it
+reserved. A Mac on its own keeps its work on the Mac, outside any report.
 :::
 
 ## Usage: what your hardware did for you

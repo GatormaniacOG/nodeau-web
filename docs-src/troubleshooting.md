@@ -227,18 +227,18 @@ Four codes, because each needs a different answer.
 | `RUNTIME_UNVERIFIED` | Installed, and its integrity was **not checked on this run** | Run `nodeau doctor` again. "Not checked" and "intact" are different answers, so this is deliberately not a pass |
 | `RUNTIME_UNMANAGED` | A runtime Nodeau did not install, so it carries no version, backend or digests | Fine for development. `nodeau install --runtime <path>` installs a managed one |
 
-### Using a Mac alongside a fleet
+### A Mac and your fleet
 
-A Mac runs Nodeau **standalone**, as its own private endpoint on the Mac, and
-that is where it shines. Your Linux machines with NVIDIA GPUs form the fleet. The
-two run happily side by side, each with its own endpoint and its own `nodeau`
-commands. See [install on a Mac](/docs/install-macos/).
+A Mac runs Nodeau on its own, as a private endpoint on the Mac, or joins your
+fleet as a machine in its own right, with a code from
+`nodeau fleet invite --platform macos` on the machine that runs your fleet. See
+[adding a Mac](/docs/fleet/#adding-a-mac).
 
 ### `nodeau batch`, `health` or `governance` on a Mac
 
-These are fleet commands, so on a Mac each one explains that and exits. Batch
-jobs, machine health and organisation policies all run on the Linux machines in a
-fleet.
+These run on the machine that runs your fleet, so on a Mac each one says so and
+exits. Batch jobs run on your Linux machines, and machine health and your
+organisation's limits are read and set there.
 
 ### A macOS version we have not tried
 
@@ -608,7 +608,8 @@ code a script can read. Read the reason, then:
 | `MachineUnhealthy` | It reports it is unhealthy | Run `nodeau doctor --node <machine>` and fix what it names |
 | `WouldMoveBackwards` | It already runs a newer build than the target | Choose a newer target, or leave it where it is |
 | `NoArtifactForPlatform` | The target publishes no build for that machine's platform | Choose a release that publishes one |
-| `PlatformCannotJoinFleet` | It is a Mac, which runs standalone | Update it on the Mac itself |
+| `NativeMachineUpgradedOnTheMachine` | It is a Mac whose Nodeau doesn't take part in fleet rollouts | Update it on the Mac itself with `nodeau update`. The rest of the fleet is planned without it |
+| `PlatformCannotJoinFleet` | It is a Mac, planned by a Nodeau from before a Mac could join a fleet | Update it on the Mac itself |
 | `MaintenanceWindowShut` | It's `WAITING`: your maintenance window is shut right now | Nothing. It moves when the window opens, and the plan says when that is. `apply --override-window` lets it go now, recorded as your decision |
 | `ChannelNotPermitted` | Your channel policy doesn't follow the target's channel | Plan against a release from the channel your fleet follows |
 | `PolicyUnknown` | The plan couldn't see your organisation's window or channel policy | See below |

@@ -22,8 +22,9 @@ nodeau run qwen3.5-4b-q4km
 
 It resolves the model, asks before downloading, checks the fit, starts the
 model on the Mac's GPU through Metal and brings up the loopback endpoint. A Mac
-runs standalone and serves chat, embedding, reranking and vision models, several
-at once on ports of their own, and `nodeau model list` shows what you can run.
+serves chat, embedding, reranking and vision models, several at once on ports of
+their own, and `nodeau model list` shows what you can run. Batch inference,
+structured output and tool calling run on your Linux machines.
 :::
 
 ## What you'll see

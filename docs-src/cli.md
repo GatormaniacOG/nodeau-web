@@ -120,14 +120,22 @@ rather than acting unasked.
 nodeau join CODE [flags]
 ```
 
-Add this machine to an existing fleet as a worker. **Linux.**
+Add this machine to an existing fleet. **Linux and Mac.**
 
 Get the code from the machine that already runs Nodeau with
 [`nodeau fleet invite`](#nodeau-fleet-invite), which checks your plan's machine
-limit before it creates one. This machine needs an NVIDIA GPU with a working
-driver, and it has to be able to reach the other machine on your network. If it
-already runs a cluster of its own, Nodeau stops and tells you, and your cluster
-stays as it is.
+limit before it creates one. This machine has to be able to reach that one on
+your network.
+
+A Linux machine joins as a worker, and needs an NVIDIA GPU with a working
+driver. If it already runs a cluster of its own, Nodeau stops and tells you, and
+your cluster stays as it is.
+
+A Mac joins with a code made by `nodeau fleet invite --platform macos`. It makes
+its own key, connects out to the fleet, and runs what the fleet places on it
+natively, with nothing Kubernetes installed: it is a machine in the fleet, not a
+Kubernetes node. Batch jobs, structured output, tool calling and models you
+imported stay on your Linux machines. See [adding a Mac](/docs/fleet/#adding-a-mac).
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -135,9 +143,7 @@ stays as it is.
 | `--verbose` | off | Print every command that would run |
 | `--yes`, `-y` | off | Skip the confirmation |
 | `--cache-dir <path>` | `/var/lib/nodeau/models` | Where this machine keeps model files |
-
-A Mac runs Nodeau standalone, so this one is for Linux machines. See
-[add and run machines](/docs/fleet/).
+| `--foreground` | off | On a Mac: run the fleet member in this terminal instead of as a background service |
 
 ### `nodeau doctor` {#nodeau-doctor}
 
@@ -298,7 +304,7 @@ instead.
 | `--topology <mode>` | `auto` | How one model is spread across several GPUs: `auto` or `layer`. Advanced, and you'll rarely need it |
 | `--accept-estimate-risk` | off | Admit a model whose only obstacle is the margin for hardware nobody has measured |
 | `--spend-safety-reserve` | off | Let this workload use the memory Nodeau keeps back for everything else on the card |
-| `--recovery <choice>` | unset (`never`) | `automatic` or `never`: what this workload does if its machine stops answering. See [recovery](/docs/recovery/). Linux fleets, Home Pro and Business |
+| `--recovery <choice>` | unset (`never`) | `automatic` or `never`: what this workload does if its machine stops answering. See [recovery](/docs/recovery/). Home Pro and Business |
 | `--recovery-after <d>` | `3m` | With `--recovery automatic`, how long its machine must have stopped answering first, from `1m` to `60m` |
 | `--json` | off | Print the result as JSON |
 | `--yes`, `-y` | off | Answer every question with yes |
@@ -610,7 +616,7 @@ nodeau model copies [MODEL]      # alias: models copies
 
 Every copy of a model a machine in your fleet has been asked to keep: the model,
 the machine, whether that machine has verified every file, its size, and who
-asked, you or a workload's recovery. **Linux fleets.**
+asked, you or a workload's recovery. **Fleets.**
 
 Flags: `--json`.
 
@@ -622,8 +628,8 @@ nodeau model copy MODEL --to MACHINE [flags]      # alias: models copy
 
 Ask a machine to keep a verified copy of a catalog model. That machine fetches
 the files from the model's publisher into its own model cache and checks every
-SHA-256 itself; the copy is ready once it has. **Linux fleets, Home Pro and
-Business.** A model you imported is never fetched: place the same file there
+SHA-256 itself; the copy is ready once it has. A Mac in your fleet keeps copies
+too. **Home Pro and Business.** A model you imported is never fetched: place the same file there
 with `nodeau model import <file> --no-register`. See [model copies](/docs/recovery/#copies).
 
 | Flag | Default | Meaning |
@@ -789,8 +795,16 @@ The code is a credential for as long as it lives, so paste it into the other
 machine's terminal rather than a chat log. It expires on its own whether or not
 anyone uses it, and a machine that has joined never needs it again.
 
-Flags: `--expires-in` (default `15m`), `--address` (the address the new machine
-should use to reach this one; defaults to this machine's LAN address).
+| Flag | Default | Meaning |
+|---|---|---|
+| `--expires-in <d>` | `15m` | How long the code stands |
+| `--address <addr>` | this machine's LAN address | The address the new machine should use to reach this one |
+| `--platform <p>` | `any` | Which machines the code can add: `any`, `linux` or `macos` |
+| `--replace <mac>` | unset | A Mac this one takes over. A reinstalled Mac is otherwise a new machine |
+| `--yes` | off | When this starts the fleet gateway, answer its one question (keep it running while you're logged out) with yes |
+
+The first time you invite a Mac, this starts the
+[fleet gateway](#nodeau-fleet-gateway) on this machine.
 
 ### `nodeau fleet list` {#nodeau-fleet-list}
 
@@ -798,7 +812,8 @@ should use to reach this one; defaults to this machine's LAN address).
 nodeau fleet list [--json]         # alias: ls
 ```
 
-Every machine in your fleet and the GPUs in it. **Linux.**
+Every machine in your fleet and the GPUs in it, Macs included. Run it on the
+machine that runs your fleet. **Linux.**
 
 ### `nodeau fleet remove` {#nodeau-fleet-remove}
 
@@ -819,6 +834,36 @@ fresh invitation, and that's deliberate: a removed machine can't reappear on its
 own.
 
 Flags: `--dry-run`, `--force`, `--yes`, `--json`.
+
+### `nodeau fleet leave` {#nodeau-fleet-leave}
+
+```bash
+nodeau fleet leave
+```
+
+Take this Mac out of its fleet. **Mac.** The fleet stops placing work on it, the
+models it was running for the fleet stop, and the Mac forgets its membership.
+Downloaded models are kept, and the Mac keeps working on its own. A Linux
+machine leaves from the machine that runs the fleet, with
+[`nodeau fleet remove`](#nodeau-fleet-remove).
+
+### `nodeau fleet gateway` {#nodeau-fleet-gateway}
+
+```bash
+nodeau fleet gateway [--listen <addr>]
+```
+
+The fleet gateway, on the machine that runs your fleet. **Linux.** A Mac joins
+your fleet through it, keeps it informed, and is reached through it: the models
+a Mac runs answer on this machine's local endpoints, over a connection the Mac
+itself opens. It listens on your network for enrolled machines only, with mutual
+TLS and every certificate pinned, and on loopback for this machine's own
+endpoints. `nodeau fleet invite --platform macos` starts it as a service the first
+time, so you'll rarely run it by hand.
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--listen <addr>` | `:7444` | Where enrolled machines reach the gateway on your network |
 
 ### `nodeau fleet connect` {#nodeau-fleet-connect}
 
@@ -1003,8 +1048,8 @@ nodeau recovery set WORKLOAD automatic|never [flags]
 Choose what a workload does when its machine stops answering: `never` (the
 default) waits for that machine; `automatic` starts it on another of your
 machines that can hold it, after the delay you choose, from a verified copy of
-its model kept ready there. Nothing that is running restarts. **Linux fleets,
-Home Pro and Business.** See [recovery](/docs/recovery/).
+its model kept ready there, a Linux machine or a Mac. Nothing that is running
+restarts. **Home Pro and Business.** See [recovery](/docs/recovery/).
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -1032,7 +1077,8 @@ nodeau governance [flags]
 ```
 
 Show or set your organisation's limits on this fleet. **Linux.** On a Mac it
-explains that limits belong to a fleet and exits `3`. With no flags it shows the
+exits `3`: a Mac in a fleet points you to the machine that runs it, and a Mac on
+its own explains that limits belong to a fleet. With no flags it shows the
 current policy.
 
 | Flag | Meaning |
