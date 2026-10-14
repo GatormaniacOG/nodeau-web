@@ -104,10 +104,11 @@ verification, your plan, stale hardware reports and a card that's already busy
 are always checked, whichever flags you pass. Batch jobs run with the full
 margins.
 
-On `nodeau run`, a reduced reserve is accepted **for the one machine the preview
-showed you**. Nodeau shows the new arithmetic and asks before it starts
-(`--yes` answers for you), and if the run would land on a different machine by
-the time it starts, it's refused rather than moved. When the hardware itself is
+On `nodeau run`, a reduced reserve is accepted **for a new run, on the one
+machine the preview showed you**. Nodeau shows the new arithmetic and asks before
+it starts (`--yes` answers for you). If it can't show you a preview, or the run
+would land on a different machine by the time it starts, it's refused rather
+than applied somewhere you didn't see. When the hardware itself is
 too small, even with the reserve at its floor, there's no override to offer and
 none is accepted. [Set the reserve aside for one run](/docs/fit/#one-run-override)
 walks through it.

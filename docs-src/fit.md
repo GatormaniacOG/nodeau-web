@@ -35,31 +35,31 @@ script.
 | `3` | It would not run as asked, and that stays true until something changes |
 | `4` | Not yet: it's waiting on something that clears by itself, like a fresh report from a machine or a model whose checksum is still being verified |
 
-Here's a preview on a 36 GB Mac with a browser and a handful of other apps open.
-The long explanation line is shortened here:
+Here's an illustration of a preview on a 36 GB Mac with a browser and a handful
+of other apps open, with the long explanation line shortened:
 
 ```text
 Where Nodeau would run qwen3.5-4b-q4km
 
   Nodeau would not run it now: Qwen3.5-4B Q4_K_M at contextSize=4096 parallel=1 is predicted to need 4,406 MiB including the 256 MiB admission margin. …
 
-  Available to Nodeau now                       1,370 MiB
-    Memory free or reclaimable right now          7,120 MiB  observed now
-    − Reserve Nodeau keeps for the system           5,750 MiB  Nodeau's conservative default
+  Available to Nodeau now                                                    1,370 MiB
+    Memory free or reclaimable right now                                     7,120 MiB  observed now
+    − Reserve Nodeau keeps for the system                                    5,750 MiB  Nodeau's conservative default
         (of which 2,048 MiB is a floor that is never given away)
     · Accelerator ceiling: 28,753 MiB (the most the GPU will use for models, a fixed property of this Mac; a limit, not memory in hand)
     · In use by the system and other applications: 29,744 MiB (everything not reclaimable right now; Nodeau does not look at which applications)
 
-  Expected cost                                 4,406 MiB  conservative estimate
-    Model weights                                 2,614 MiB  estimated
+  Expected cost                                                              4,406 MiB  conservative estimate
+    Model weights                                                            2,614 MiB  estimated
     Context (KV cache) for the context size and parallel requests asked for    512 MiB  estimated
-    Runtime overhead (Metal pipelines and compute buffers)    256 MiB  estimated
-    Prediction margin                               256 MiB  Nodeau policy
-    Allowance for hardware nobody has measured this model on    768 MiB  Nodeau policy
+    Runtime overhead (Metal pipelines and compute buffers)                     256 MiB  estimated
+    Prediction margin                                                          256 MiB  Nodeau policy
+    Allowance for hardware nobody has measured this model on                   768 MiB  Nodeau policy
 
-  Remaining headroom                           -3,036 MiB  short
+  Remaining headroom                                                        -3,036 MiB  short
 
-  Admission: NOT NOW — held back by Nodeau's safety margins, not by the hardware
+  Admission: HELD BACK by Nodeau's safety margins, not by the hardware
   Qwen3.5-4B Q4_K_M at contextSize=4096 parallel=1 is predicted to need 4,406 MiB including the 256 MiB admission margin. …
 
   To run it anyway on macbook only, for this run only:
@@ -76,9 +76,9 @@ offers a one-run override, and it exits `3`. On a Mac, what's free moves with
 every app you open or close, so the same preview can say something different in
 ten minutes.
 
-`--explain` is for a run you haven't made yet. For a workload that's already
-running, `nodeau service explain <name>` shows the decision Nodeau recorded
-(on a Mac on its own, `nodeau ps`).
+`--explain` is for a run you haven't made yet. Given a name that's already
+taken, it points you at `nodeau ps` and `nodeau service explain <name>`, which
+show the decision Nodeau recorded (on a Mac on its own, `nodeau ps`).
 
 ### Reading the arithmetic {#reading-the-arithmetic}
 
@@ -184,6 +184,14 @@ Before anything starts, `nodeau run` shows you the new arithmetic and asks once:
   `OVERRIDE_FOR_ANOTHER_MACHINE`: *"The reduced safety reserve was accepted for a
   different machine."* Preview again and decide afresh.
 - **The floor stays.** On a Mac, 2,048 MiB is always kept for the system.
+- **A new run, and one you were shown.** The override is for a workload that
+  doesn't exist yet. For a name that's already taken, `nodeau run` refuses
+  (exit `2`): stop it first with `nodeau stop <name>`, then run it again with the
+  override. And if Nodeau can't show you where the run would go, it starts
+  nothing: exit `4` when the preview didn't come back (try again in a moment),
+  exit `3` when the machine that runs your fleet predates previews (run it
+  without the flag, or update that machine first). A plain run goes on as
+  before in both cases.
 - **Less room for everything else.** Other applications have less room while the
   model runs. On a Mac that can mean memory pressure and swapping; on a card that
   also drives your display, an out-of-memory kill takes the display with it.
@@ -191,6 +199,10 @@ Before anything starts, `nodeau run` shows you the new arithmetic and asks once:
   evidence that the smaller reserve is safe, and it never changes the reserve
   Nodeau uses next time. Only [a measurement you adopt](#measure-your-machine)
   does that.
+
+The preview offers the override only where setting the reserve aside would
+actually free the memory. On a Mac whose GPU working-set ceiling is the limit,
+it wouldn't, so none is offered.
 
 When the hardware itself is too small, so the model wouldn't fit even with the
 reserve at its floor, there's nothing to set aside. The preview offers no
@@ -227,7 +239,9 @@ browser, which comes with Home Pro and Business.
    on that machine with a reduced safety reserve, with a button that names the
    machine. It shows the reserve now, the reserve for this run, the floor that
    stays and the headroom, and nothing starts until you press **Run with the
-   reduced reserve**.
+   reduced reserve**. As in the CLI, that's for a new name: for one the fleet
+   already has, the page asks you to stop it first, then run it again with the
+   override.
 
 A preview isn't a reservation here either: the machine checks the fit again when
 it starts the model. A machine's page under Fleet shows each accelerator's
@@ -269,7 +283,7 @@ floor. A record that doesn't match is refused, and nothing changes.
 |---|---|
 | `--quick` | Record a quick baseline only: watch for a few seconds, use no memory, recommend nothing |
 | `--duration <d>` | Linux: how long to watch each GPU (`10m` by default) |
-| `--machine <name>` | Linux, on the machine that runs your fleet: measure another Linux machine from its own reports |
+| `--machine <name>` | Linux, on the machine that runs your fleet: measure another Linux machine from its own reports. A Mac refuses it |
 | `--json` | Print the evidence record |
 | `--yes`, `-y` | Don't ask before measuring |
 
@@ -286,15 +300,18 @@ below.
 - It uses memory in small steps, in a separate process, and stops at the
   **first** sign of memory pressure macOS reports: a change in the pressure
   level, any swapping out, or the memory compressor growing.
-- It also stops at its cap: it never goes past the 2,048 MiB floor, and it takes
-  about 90 seconds at most.
+- It also stops at its cap: it never takes a step that would leave less than
+  the 2,048 MiB floor, and it takes about 90 seconds at most.
 - Then it gives everything back and waits for the memory to return before it
   records anything.
 - It never closes or touches other applications, and it changes no system
   setting: not swap, not wired memory, not sleep.
 
-Close large applications first for the clearest result. Afterwards, apps may
-need a moment to reload files they had cached.
+Close large applications **before** you start, not during. If the memory
+available moves under the measurement by more than the Mac moves when left
+alone (an app quit or grew while it ran), it stops, recommends nothing and asks
+you to run it again when the machine is quiet. Afterwards, apps may need a
+moment to reload files they had cached.
 
 It only measures when the Mac is quiet enough for the answer to mean something.
 If Nodeau models are running on the Mac, if macOS already reports memory
@@ -322,7 +339,7 @@ minutes unless you choose otherwise with `--duration`, and allocates nothing.
 
 A Linux reserve is adopted with the fleet, so measure and adopt on the machine
 that runs your fleet, naming the machine. `--machine` reads that machine's own
-reports, and it's Linux only:
+reports, and it's Linux only: on a Mac, every benchmark command refuses it.
 
 ```bash
 nodeau benchmark --machine nodeau-c
@@ -332,6 +349,13 @@ nodeau benchmark status --machine nodeau-c
 
 On a machine on its own, that's the machine you're on, and `--machine` isn't
 needed.
+
+With `--machine`, each card needs at least five fresh reports from its machine
+during the window. A machine that stopped reporting repeats its last figure, and
+a repeated figure isn't a quiet card, so that card gets no recommendation and
+the record says why. A card's swing belongs to the machine around it, so
+`adopt` refuses a card's record if the card is now in a different machine from
+the one that measured it; measure it again there.
 
 ### How long a calibration lasts {#how-long-it-lasts}
 
@@ -374,6 +398,11 @@ fit check, so a model that doesn't fit isn't measured. Then it sends one short
 request, records the most memory the model held, and stops it. The model needs
 to be installed first.
 
+It doesn't measure a vision model. A model with an image encoder uses that
+encoder's memory only when it sees an image, and the measurement sends text, so
+it would read low. Nodeau's own figure for it, which includes the encoder, stays
+in use.
+
 The figure is the model process's peak footprint plus the model's files, so it
 can come out **higher than the truth, never lower**, and it may well read higher
 than Nodeau's own prediction. `nodeau benchmark status` shows the two side by
@@ -381,7 +410,9 @@ side.
 
 Adopting it applies to **exactly** that model file, runtime, task, context size
 and parallelism, on this Mac, for 90 days or until macOS is updated. Anything
-else is planned the usual way.
+else is planned the usual way. A Mac keeps at most 16 adopted model
+measurements; adopting another drops the oldest, and `adopt` names what it
+dropped.
 
 | Flag | Default | Meaning |
 |---|---|---|

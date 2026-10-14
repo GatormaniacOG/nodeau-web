@@ -310,7 +310,7 @@ instead.
 | `--topology <mode>` | `auto` | How one model is spread across several GPUs: `auto` or `layer`. Advanced, and you'll rarely need it |
 | `--explain` | off | Show where this would run, what it would cost and why, and start or download nothing. See [before it runs](/docs/fit/) |
 | `--accept-estimate-risk` | off | Admit a model whose only obstacle is the margin for hardware nobody has measured |
-| `--spend-safety-reserve` | off | For this run only, on the one machine the preview shows, let the workload use the part of Nodeau's reserve above its floor: all of it on an NVIDIA card, everything above 2,048 MiB on a Mac. Nodeau shows the new arithmetic and asks first. See [set the reserve aside for one run](/docs/fit/#one-run-override) |
+| `--spend-safety-reserve` | off | For this run only, on the one machine the preview shows, let the workload use the part of Nodeau's reserve above its floor: all of it on an NVIDIA card, everything above 2,048 MiB on a Mac. Nodeau shows the new arithmetic and asks first. It's refused for a name that already exists, and when no preview can be shown. See [set the reserve aside for one run](/docs/fit/#one-run-override) |
 | `--recovery <choice>` | unset (`never`) | `automatic` or `never`: what this workload does if its machine stops answering. See [recovery](/docs/recovery/). Home Pro and Business |
 | `--recovery-after <d>` | `3m` | With `--recovery automatic`, how long its machine must have stopped answering first, from `1m` to `60m` |
 | `--json` | off | Print the result as JSON |
@@ -710,7 +710,8 @@ your cards are busy, admission says so and the run reports it straight away.
 See [before it runs](/docs/fit/#measure-your-machine) for the whole story.
 **Nothing changes until you adopt a result**, and these commands work on every
 plan. Wherever `--machine NAME` appears, it's for Linux, on the machine that runs
-your fleet, and names another Linux machine in it.
+your fleet, and names another Linux machine in it. On a Mac, every one of these
+commands refuses it.
 
 ### `nodeau benchmark` {#nodeau-benchmark}
 
@@ -724,8 +725,11 @@ it found, with a recommendation when it can justify one. **Both.**
 On a Mac it uses memory in small steps in a separate process, stopping at the
 first sign of memory pressure macOS reports or at its cap, about 90 seconds at
 most and never past the 2,048 MiB floor. It closes nothing and changes no system
-setting. On Linux it watches each GPU's memory and allocates nothing, and every
-figure is the card's total, labelled that way.
+setting. If an app quits or grows while it runs, it stops and recommends nothing,
+so close large apps before you start. On Linux it watches each GPU's memory and
+allocates nothing, and every figure is the card's total, labelled that way. With
+`--machine`, a card needs at least five fresh reports from its machine in the
+window to get a recommendation.
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -758,8 +762,10 @@ give no ID, or adopt a measured model profile by its ID. **Both.** Nodeau checks
 the record against the machine as it is now (the same hardware, the same
 operating system build or driver, not expired, not below the floor) and refuses
 one that doesn't match, as it does a lower reserve measured with `low`
-confidence. A refusal exits `3` and changes nothing. On Linux the reserve is
-recorded with the fleet, so adopt on the machine that runs your fleet.
+confidence, and a card's record once the card is in a different machine. A
+refusal exits `3` and changes nothing. On Linux the reserve is recorded with the
+fleet, so adopt on the machine that runs your fleet. A Mac keeps at most 16
+adopted model measurements, and adopting another drops the oldest, by name.
 
 ### `nodeau benchmark reset` {#nodeau-benchmark-reset}
 
@@ -780,7 +786,9 @@ Measure the memory one installed model actually holds at one configuration.
 **macOS.** It starts the model through Nodeau's ordinary fit check, sends it one
 short request, records the most it held, and stops it. Adopted, the measurement
 applies only to exactly that model, runtime, task, context size and parallelism
-on this Mac. On Linux it explains why it doesn't apply and exits `3`.
+on this Mac. It refuses a vision model (exit `3`), because a text request would
+leave out the image encoder's memory. On Linux it explains why it doesn't apply
+and exits `3`.
 
 | Flag | Default | Meaning |
 |---|---|---|

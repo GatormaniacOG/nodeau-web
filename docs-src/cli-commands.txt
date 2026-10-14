@@ -6,12 +6,14 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts.
-# PROVISIONAL, NOT YET A RELEASED BINARY: this copy was generated 2026-10-14 from a
+# PROVISIONAL, NOT YET A RELEASED BINARY: this copy was regenerated 2026-10-14 from a
 # DEVELOPMENT build of the v0.19 release branch (phase-20i-admission-calibration
-# @ 5272dad3, `nodeau dev`). Against v0.18.0-beta.5's published list it adds
-# `nodeau benchmark` (and adopt, model, reset, status) and `nodeau run --explain`,
-# and changes nothing else. It MUST be regenerated from the staged v0.19 candidate's
-# published linux archive (checksum verified) before this change merges.
+# @ 6cff1020, `nodeau dev`); identical, command for command and flag for flag, to
+# the list from the earlier dev build at 5272dad3. Against v0.18.0-beta.5's
+# published list it adds `nodeau benchmark` (and adopt, model, reset, status) and
+# `nodeau run --explain`, and changes nothing else. It MUST be regenerated from the
+# staged v0.19 candidate's published linux archive (checksum verified) before this
+# change merges.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command

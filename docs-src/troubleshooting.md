@@ -284,7 +284,7 @@ the only thing in the way is the extra margin for hardware nobody has measured,
 ### Held back by the safety reserve, not by the hardware {#held-back-by-the-safety-reserve}
 
 **What happens.** A preview ends with
-`Admission: NOT NOW — held back by Nodeau's safety margins, not by the hardware`,
+`Admission: HELD BACK by Nodeau's safety margins, not by the hardware`,
 or a refusal says *"This would leave too little memory in reserve."* The machine
 has the memory; what's in the way is the part of the reserve Nodeau keeps above
 its floor.
@@ -307,6 +307,20 @@ context, fewer parallel requests or a smaller model is the answer.
 
 See [before it runs](/docs/fit/) for the arithmetic and what each choice means.
 
+### `--spend-safety-reserve` refuses before anything starts
+
+**What happens.** A run with `--spend-safety-reserve` or `--accept-estimate-risk`
+stops, and nothing was started. A reduced margin is accepted only for a new run,
+on a machine you were shown, so:
+
+| It says | Fix |
+|---|---|
+| *already exists, and a reduced margin applies only to a new run* (exit `2`) | `nodeau stop <name>`, then run it again with the override. app.nodeau.ai says the same for a name your fleet already has |
+| *could not show where this would run* (exit `4`) | The preview didn't come back, for example because the controller didn't answer. Try again in a moment |
+| *predates admission previews* (exit `3`) | Run it without the flag, or update the machine that runs your fleet first: `nodeau fleet upgrade plan` shows what that takes |
+
+A plain run, with neither flag, goes on as before in all three cases.
+
 ### `OVERRIDE_FOR_ANOTHER_MACHINE`
 
 **What happens.** You accepted a reduced reserve for one machine, and by the
@@ -320,7 +334,9 @@ rather than move the risk you accepted somewhere you never saw.
 **Fix.** Previews in a fleet come from the machine that runs your fleet, so that
 machine needs a Nodeau with previews. `nodeau fleet upgrade plan` shows what that
 takes. Until then, an ordinary `nodeau run` works as it always has, and the
-machine still checks the fit as it starts the model.
+machine still checks the fit as it starts the model. A run with
+`--spend-safety-reserve` or `--accept-estimate-risk` refuses instead, because
+Nodeau accepts a reduced margin only for a machine it has shown you.
 
 ### `nodeau benchmark` says the machine was not measured
 
@@ -329,8 +345,14 @@ for a moment with no Nodeau models running, no memory pressure, no swapping and
 free memory that holds still; on Linux it needs `nvidia-smi` to see the cards. It
 says which condition it met and changes nothing.
 
-**Fix.** Do what it names (stop your models, close something, or wait a few
-minutes) and run it again.
+On a Mac it can also stop part way and recommend nothing, if the memory
+available moved under it by more than the Mac moves when left alone: an app
+quit or grew while it ran. On Linux with `--machine`, a card with fewer than five
+fresh reports from its machine during the window gets no recommendation.
+
+**Fix.** Do what it names (stop your models, close something before you start,
+or wait a few minutes) and run it again. For `--machine`, check that the machine
+is reporting with `nodeau fleet list`.
 
 ### `CALIBRATION_EXPIRED`, `CALIBRATION_INVALIDATED`, `CALIBRATION_RECOMMENDATION_PENDING`
 
