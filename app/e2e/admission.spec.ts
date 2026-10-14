@@ -231,7 +231,9 @@ test.describe('admission previews, signed in', () => {
     const params = JSON.parse(
       psql(e2e.scopedDSN, `SELECT parameters::text FROM remote_operations WHERE id = '${opID}'`),
     );
-    expect(params).toMatchObject({ model: 'qwen3.5-4b-q4km', contextSize: '4096', parallel: '1' });
+    expect(params).toMatchObject({ model: 'qwen3.5-4b-q4km' });
+    // The machine's defaults are left out, not written.
+    expect(params).not.toHaveProperty('contextSize');
 
     // The connector answers.
     await sync(request, {

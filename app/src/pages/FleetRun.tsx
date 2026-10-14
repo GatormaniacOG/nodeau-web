@@ -51,6 +51,9 @@ type PreviewState =
 
 const POLL_MS = 1000;
 const POLL_LIMIT = 60;
+// What a machine applies when a run leaves these out (the GPUService schema).
+const DEFAULT_CONTEXT = 4096;
+const DEFAULT_PARALLEL = 1;
 
 export function FleetRunPage({
   org,
@@ -106,8 +109,11 @@ export function FleetRunPage({
       ...(task ? { task } : {}),
       ...(gpuCount ? { gpuCount: Number(gpuCount) } : {}),
       ...(mode ? { schedulingMode: mode } : {}),
-      ...(contextSize ? { contextSize: Number(contextSize) } : {}),
-      ...(parallel ? { parallel: Number(parallel) } : {}),
+      // The machine's defaults (4096 and 1) are left out rather than written:
+      // they mean the same there, and a Nodeau Cloud older than previews
+      // refuses a field it does not know, so a plain run keeps working on it.
+      ...(contextSize && Number(contextSize) !== DEFAULT_CONTEXT ? { contextSize: Number(contextSize) } : {}),
+      ...(parallel && Number(parallel) !== DEFAULT_PARALLEL ? { parallel: Number(parallel) } : {}),
     }),
     [model, task, gpuCount, mode, contextSize, parallel],
   );
@@ -123,14 +129,27 @@ export function FleetRunPage({
         ...configuration(),
       });
     } catch (err) {
-      // A fleet whose machines predate previews refuses with 409; the plain
-      // run still works, and the machine still checks the fit.
+      // A fleet whose machines predate previews refuses with 409, and a Nodeau
+      // Cloud that predates them with 400 (it does not know the operation's
+      // fields); either way the plain run still works, and the machine still
+      // checks the fit.
       if (err instanceof ApiError && err.status === 409) {
         setPreview({
           kind: 'unavailable',
           why:
             "This fleet's machines run a Nodeau without previews. You can still run it: the machine checks " +
             'whether it fits as it starts it. Updating the fleet adds the preview.',
+        });
+        return;
+      }
+      // A 400 is not assumed to mean anything in particular: the server's own
+      // sentence is shown, and the plain run stays available.
+      if (err instanceof ApiError && err.status === 400) {
+        setPreview({
+          kind: 'unavailable',
+          why:
+            `Nodeau Cloud did not ask the fleet for a preview: ${err.message} You can still run it: the ` +
+            'machine checks whether it fits as it starts it.',
         });
         return;
       }

@@ -259,12 +259,11 @@ describe('the run form previews first', () => {
     await user.click(screen.getByRole('button', { name: 'Preview' }));
 
     const asked = calls.find((c) => c.method === 'POST' && c.url.includes('/fleet/operations'));
-    expect(asked?.body).toMatchObject({
-      kind: 'admission.preview',
-      model: 'qwen3.5-4b-q4km',
-      contextSize: 4096,
-      parallel: 1,
-    });
+    expect(asked?.body).toMatchObject({ kind: 'admission.preview', model: 'qwen3.5-4b-q4km' });
+    // The machine's defaults are left out, not written: they mean the same
+    // there, and an older Nodeau Cloud refuses fields it does not know.
+    expect(asked?.body).not.toHaveProperty('contextSize');
+    expect(asked?.body).not.toHaveProperty('parallel');
 
     const offer = await screen.findByRole(
       'button',
@@ -293,6 +292,32 @@ describe('the run form previews first', () => {
     // Never a number from the browser: the machine computes the reserve.
     expect(screen.queryByRole('button', { name: /run anyway/i })).not.toBeInTheDocument();
     expect(JSON.stringify(run?.body)).not.toMatch(/reserveMiB|2048|headroom/i);
+  });
+
+  it('sends a context size only when it is not the default', async () => {
+    reply('POST', '/v1/organizations/org1/fleet/operations', previewOp, 202);
+    const user = userEvent.setup();
+    await choose(user);
+    const ctx = screen.getByLabelText('Context size');
+    await user.clear(ctx);
+    await user.type(ctx, '32768');
+    await user.click(screen.getByRole('button', { name: 'Preview' }));
+    const asked = calls.find((c) => c.method === 'POST' && c.url.includes('/fleet/operations'));
+    expect(asked?.body).toMatchObject({ kind: 'admission.preview', contextSize: 32768 });
+  });
+
+  it('shows the server’s own sentence when Nodeau Cloud does not ask, and keeps Run', async () => {
+    reply(
+      'POST',
+      '/v1/organizations/org1/fleet/operations',
+      { code: 'INVALID_REQUEST', message: 'The request body could not be read: json: unknown field "contextSize"' },
+      400,
+    );
+    const user = userEvent.setup();
+    await choose(user);
+    await user.click(screen.getByRole('button', { name: 'Preview' }));
+    expect(await screen.findByText(/Nodeau Cloud did not ask the fleet for a preview: The request body/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Run' })).toBeEnabled();
   });
 
   it('runs as before when the fleet predates previews', async () => {
