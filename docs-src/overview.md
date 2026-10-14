@@ -67,12 +67,17 @@ configuration on hardware like yours, it uses the measurement. Where it hasn't,
 it works out a careful figure from the model's own shape, adds a margin, and
 tells you so. See [measured and estimated](/docs/scheduling/#estimated-and-measured).
 
-Every decision is recorded, so you can always ask why:
+You can ask before anything starts, and every decision is recorded, so you can
+always ask why afterwards:
 
 ```bash
+nodeau run qwen3.5-4b-q4km --explain  # where it would run and what it would cost, starting nothing
 nodeau service explain qwen-local     # the memory arithmetic behind the decision
 nodeau placement explain qwen-local   # why this machine and this card
 ```
+
+See [before it runs](/docs/fit/) for previews, the safety reserve, and measuring
+what your own machine needs to keep for itself.
 
 ## One machine, or a fleet
 

@@ -24,7 +24,8 @@
       {"slug": "api", "nav": "The OpenAI-compatible API"},
       {"slug": "batch", "nav": "Batch inference"},
       {"slug": "multi-gpu", "nav": "Several GPUs in one machine"},
-      {"slug": "scheduling", "nav": "How Nodeau decides"}
+      {"slug": "scheduling", "nav": "How Nodeau decides"},
+      {"slug": "fit", "nav": "Previews and calibration"}
     ]
   },
   {

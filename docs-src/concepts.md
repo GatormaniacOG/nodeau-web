@@ -113,11 +113,25 @@ anything is created, from a prediction of peak VRAM, and it's recorded.
 the candidates admission has already accepted.
 
 ```bash
+nodeau run <model> --explain      # both decisions, before anything starts
 nodeau service explain <name>     # the admission arithmetic
 nodeau placement explain <name>   # why this machine and this card
 ```
 
-Both are covered in [how Nodeau decides](/docs/scheduling/).
+Both are covered in [how Nodeau decides](/docs/scheduling/), and previews in
+[before it runs](/docs/fit/).
+
+## Safety reserve and calibration
+
+The **safety reserve** is memory Nodeau keeps back so the rest of the system has
+room to work. It has a **floor** that's never given away (none on an NVIDIA card,
+2,048 MiB on a Mac) and a part above the floor that you can set aside for one run.
+
+A **calibration** is a reserve measured on your own machine with
+`nodeau benchmark` and adopted by you. Until you adopt one, Nodeau uses its
+conservative default. A calibration lasts 30 days, and it's set aside sooner if
+macOS is updated, the NVIDIA driver changes or the hardware does. See
+[before it runs](/docs/fit/#the-safety-reserve).
 
 ## Reservation
 

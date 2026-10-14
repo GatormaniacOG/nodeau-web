@@ -75,6 +75,18 @@ Stable, machine-readable, and identical in `--json` and in the human report.
 | `HOST_CHECK_FAILED` | A host-level precondition failed |
 | `STORAGE_LOW` | The model cache filesystem is running out of room |
 
+**Memory calibration**
+
+Each machine's safety reserve: Nodeau's conservative default, or a calibration
+you measured with `nodeau benchmark` and adopted. See
+[measure your machine](/docs/fit/#measure-your-machine).
+
+| Code | Meaning |
+|---|---|
+| `CALIBRATION_RECOMMENDATION_PENDING` | A measured recommendation is waiting to be adopted, and the default is in use. A warning when it says the machine needs more than the default keeps |
+| `CALIBRATION_EXPIRED` | The adopted calibration reached its 30 days, and the default is back in use |
+| `CALIBRATION_INVALIDATED` | The adopted calibration no longer matches the machine (a new operating system build, driver or hardware), and the default is in use |
+
 **Models**
 
 | Code | Meaning |

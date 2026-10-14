@@ -207,9 +207,12 @@ up as an empty line and exit code 137.
 ### A model that worked yesterday is refused today
 
 **Fix.** Close something memory-hungry, or choose a smaller model or a smaller
-context. To take the risk for one workload yourself,
-`nodeau run --accept-estimate-risk` or `--spend-safety-reserve` do it explicitly,
-and both are recorded.
+context. `nodeau run <model> --explain` shows whether the Mac is short of memory
+or only of Nodeau's reserve. When it's the reserve,
+[`nodeau benchmark`](/docs/fit/#benchmark-on-a-mac) can measure what this Mac
+really needs (adopting the result is your call), or `--spend-safety-reserve`
+sets aside the part above the 2,048 MiB floor for one run. See
+[held back by the safety reserve](#held-back-by-the-safety-reserve).
 
 **Why.** Apple Silicon uses **unified memory**: the system, your applications and
 the GPU share one pool, so what fits depends on what else is running at that
@@ -255,11 +258,14 @@ seen is the most useful thing we get.
 **Fix.** Ask for the reasoning, then change the one thing it names:
 
 ```bash
-nodeau service explain <name>
+nodeau run <model> --explain        # before you run it, or to try again
+nodeau service explain <name>       # the decision recorded for a workload
 ```
 
-It prints the whole calculation: what the card can address, what else is using
-it, the safety reserve and what the model needs, plus a typed code and remedies.
+Both print the whole calculation: what the machine can offer, what else is
+using it, the safety reserve and what the model needs, plus a typed code and
+remedies. `--explain` starts nothing and also lists every other machine in your
+fleet with its reason.
 
 | Code | Try |
 |---|---|
@@ -274,6 +280,67 @@ it, the safety reserve and what the model needs, plus a typed code and remedies.
 model that loads, runs out of memory and crashes. Admission has no bypass. When
 the only thing in the way is the extra margin for hardware nobody has measured,
 `--accept-estimate-risk` removes **that margin alone**, and says so.
+
+### Held back by the safety reserve, not by the hardware {#held-back-by-the-safety-reserve}
+
+**What happens.** A preview ends with
+`Admission: NOT NOW — held back by Nodeau's safety margins, not by the hardware`,
+or a refusal says *"This would leave too little memory in reserve."* The machine
+has the memory; what's in the way is the part of the reserve Nodeau keeps above
+its floor.
+
+**Fix.** Three things, in the order worth trying:
+
+1. **Make room.** Stop another model, or on a Mac close a large app, and preview
+   again.
+2. **Measure the machine.** `nodeau benchmark` measures how much this machine
+   really needs to keep for itself. If it recommends a smaller reserve, adopting
+   it with `nodeau benchmark adopt` changes what Nodeau plans against; nothing
+   changes until you do.
+3. **Set it aside for one run.** `nodeau run <model> --spend-safety-reserve` lets
+   that one workload, on the machine the preview showed, use the part of the
+   reserve above its floor. Nodeau shows the new arithmetic and asks first.
+
+When the preview says *"No override can help"*, the hardware itself is too
+small, even with the reserve at its floor, and no flag changes that. A smaller
+context, fewer parallel requests or a smaller model is the answer.
+
+See [before it runs](/docs/fit/) for the arithmetic and what each choice means.
+
+### `OVERRIDE_FOR_ANOTHER_MACHINE`
+
+**What happens.** You accepted a reduced reserve for one machine, and by the
+time the run started Nodeau would have placed it on another, so it refused
+rather than move the risk you accepted somewhere you never saw.
+
+**Fix.** Preview again with `nodeau run <model> --explain` and decide afresh.
+
+### `--explain` says the control plane predates admission previews
+
+**Fix.** Previews in a fleet come from the machine that runs your fleet, so that
+machine needs a Nodeau with previews. `nodeau fleet upgrade plan` shows what that
+takes. Until then, an ordinary `nodeau run` works as it always has, and the
+machine still checks the fit as it starts the model.
+
+### `nodeau benchmark` says the machine was not measured
+
+**Why.** It measures only when the answer can mean something. On a Mac it waits
+for a moment with no Nodeau models running, no memory pressure, no swapping and
+free memory that holds still; on Linux it needs `nvidia-smi` to see the cards. It
+says which condition it met and changes nothing.
+
+**Fix.** Do what it names (stop your models, close something, or wait a few
+minutes) and run it again.
+
+### `CALIBRATION_EXPIRED`, `CALIBRATION_INVALIDATED`, `CALIBRATION_RECOMMENDATION_PENDING`
+
+Doctor's word on each machine's safety reserve.
+
+| Code | Means | Fix |
+|---|---|---|
+| `CALIBRATION_EXPIRED` | The reserve you adopted reached its 30 days, and Nodeau's conservative default is back in use | `nodeau benchmark`, then adopt again if you want |
+| `CALIBRATION_INVALIDATED` | The reserve you adopted no longer matches the machine: macOS was updated, the NVIDIA driver changed, or the hardware did. The default is in use | `nodeau benchmark` under the system as it is now |
+| `CALIBRATION_RECOMMENDATION_PENDING` | A measured recommendation is waiting, and the default is in use. A warning when it says the machine needs **more** than the default keeps | `nodeau benchmark adopt <ID>`, if you want it |
 
 ### It says there is no validated profile for my GPU
 

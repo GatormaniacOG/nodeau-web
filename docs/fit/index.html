@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before it runs: previews, the safety reserve and calibration</title>
+<meta name="description" content="See where a model would run and what it would cost before anything starts, set the safety reserve aside for one run, and measure what your own machine needs to keep for itself.">
+<link rel="canonical" href="https://nodeau.ai/docs/fit/">
+<meta name="theme-color" content="#08090b">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nodeau.ai/docs/fit/">
+<meta property="og:site_name" content="Nodeau">
+<meta property="og:title" content="Before it runs: previews, the safety reserve and calibration">
+<meta property="og:description" content="See where a model would run and what it would cost before anything starts, set the safety reserve aside for one run, and measure what your own machine needs to keep for itself.">
+<meta property="og:image" content="https://nodeau.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nodeau. Your GPUs. One private AI cloud.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/nodeau.css?v=6029a5ee">
+</head>
+<body class="docs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+      <ul>
+        <li><a href="/product/">Product</a></li>
+        <li><a href="/business/">Business</a></li>
+        <li><a href="/docs/" aria-current="page">Docs</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/roadmap/">Roadmap</a></li>
+        <li class="nav-mobile-only"><a href="/install/">Install</a></li>
+        <li class="nav-signin"><a href="https://app.nodeau.ai/">Sign in</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm" href="https://app.nodeau.ai/">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/install/">Get Nodeau</a>
+    </div>
+  </div>
+</header>
+<div class="doc-shell">
+  <button class="doc-menu-btn" type="button" data-doc-menu aria-expanded="false" aria-controls="doc-sidebar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Docs menu
+  </button>
+  <aside class="doc-sidebar" id="doc-sidebar" data-doc-sidebar>
+    <div class="doc-search">
+      <label class="visually-hidden" for="doc-search-input">Search documentation</label>
+      <input id="doc-search-input" type="search" placeholder="Search docs" autocomplete="off"
+             spellcheck="false" data-doc-search aria-describedby="doc-search-help">
+      <p id="doc-search-help" class="visually-hidden">Results appear below as you type.</p>
+    </div>
+    <div class="doc-results" data-doc-results hidden role="region" aria-live="polite" aria-label="Search results"></div>
+    <div data-doc-tree>
+      <nav class="doc-nav" aria-label="Documentation"><details class="doc-group" id="nav-getting-started"><summary class="doc-group-name">Getting started</summary><ul class="doc-links"><li><a href="/docs/" data-nav-title="What is Nodeau?">What is Nodeau?</a></li><li><a href="/docs/requirements/" data-nav-title="Requirements and platforms">Requirements and platforms</a></li><li><a href="/docs/install-linux/" data-nav-title="Install on Linux">Install on Linux</a></li><li><a href="/docs/install-macos/" data-nav-title="Install on a Mac">Install on a Mac</a></li><li><a href="/docs/quickstart/" data-nav-title="Your first model">Your first model</a></li></ul></details><details class="doc-group" id="nav-models"><summary class="doc-group-name">Models</summary><ul class="doc-links"><li><a href="/docs/models/" data-nav-title="The model catalog">The model catalog</a></li><li><a href="/docs/tasks/" data-nav-title="Embeddings, reranking, tools and vision">Embeddings, reranking, tools and vision</a></li><li><a href="/docs/byom/" data-nav-title="Bring your own model">Bring your own model</a></li></ul></details><details class="doc-group" id="nav-use-nodeau" open><summary class="doc-group-name">Use Nodeau</summary><ul class="doc-links"><li><a href="/docs/playground/" data-nav-title="The Playground">The Playground</a></li><li><a href="/docs/api/" data-nav-title="The OpenAI-compatible API">The OpenAI-compatible API</a></li><li><a href="/docs/batch/" data-nav-title="Batch inference">Batch inference</a></li><li><a href="/docs/multi-gpu/" data-nav-title="Several GPUs in one machine">Several GPUs in one machine</a></li><li><a href="/docs/scheduling/" data-nav-title="How Nodeau decides">How Nodeau decides</a></li><li><a href="/docs/fit/" aria-current="page" data-nav-title="Previews and calibration">Previews and calibration</a></li></ul></details><details class="doc-group" id="nav-fleet"><summary class="doc-group-name">Fleet</summary><ul class="doc-links"><li><a href="/docs/fleet/" data-nav-title="Add and run machines">Add and run machines</a></li><li><a href="/docs/recovery/" data-nav-title="Recovery and model copies">Recovery and model copies</a></li><li><a href="/docs/health/" data-nav-title="Health and alerts">Health and alerts</a></li><li><a href="/docs/power/" data-nav-title="Power limits and budgets">Power limits and budgets</a></li><li><a href="/docs/upgrades/" data-nav-title="Upgrading a fleet">Upgrading a fleet</a></li><li><a href="/docs/updates/" data-nav-title="Updates and release channels">Updates and release channels</a></li></ul></details><details class="doc-group" id="nav-administration"><summary class="doc-group-name">Administration</summary><ul class="doc-links"><li><a href="/docs/accounts/" data-nav-title="Accounts and plans">Accounts and plans</a></li><li><a href="/docs/governance/" data-nav-title="Limits and policies">Limits and policies</a></li><li><a href="/docs/usage/" data-nav-title="Usage and audit">Usage and audit</a></li><li><a href="/docs/security/" data-nav-title="Security and privacy">Security and privacy</a></li></ul></details><details class="doc-group" id="nav-reference"><summary class="doc-group-name">Reference</summary><ul class="doc-links"><li><a href="/docs/cli/" data-nav-title="CLI reference">CLI reference</a></li><li><a href="/docs/concepts/" data-nav-title="Glossary">Glossary</a></li><li><a href="/docs/troubleshooting/" data-nav-title="Troubleshooting">Troubleshooting</a></li><li><a href="/docs/support/" data-nav-title="Support bundles">Support bundles</a></li><li><a href="/docs/uninstall/" data-nav-title="Uninstalling">Uninstalling</a></li></ul></details></nav>
+    </div>
+  </aside>
+
+  <main id="main" class="doc-main">
+    <article class="doc-body">
+      <p class="eyebrow"><a href="/docs/">Docs</a> &#183; Use Nodeau</p>
+      <h1 class="doc-title">Before it runs</h1>
+      <p class="lede doc-lede">Ask Nodeau where a model would run, what it would cost and why, before anything starts. If the answer is that Nodeau's reserve is in the way, you can measure what your machine really needs to keep for itself and decide what to do about it.</p>
+      <nav class="doc-toc" aria-label="On this page"><p class="doc-toc-title">On this page</p><ul><li><a href="#preview-a-run">Preview a run</a></li><li><a href="#the-safety-reserve">The safety reserve</a></li><li><a href="#one-run-override">Set the reserve aside for one run</a></li><li><a href="#measure-your-machine">Measure your machine</a></li><li><a href="#measure-one-model-on-a-mac">Measure one model on a Mac</a></li><li><a href="#on-first-install">On first install</a></li><li><a href="#on-every-plan">On every plan</a></li></ul></nav>
+      <h2 id="preview-a-run" class="doc-h">Preview a run<a class="doc-anchor" href="#preview-a-run" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fit-code-1"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fit-code-1"><code>nodeau run qwen3.5-4b-q4km --explain</code></pre></div>
+<p><code>--explain</code> asks Nodeau the same question a run would ask, and shows you the answer. It <strong>starts nothing and downloads nothing</strong>. You get:</p>
+<ul class="doc-list"><li><strong>where</strong> it would run: the machine and the accelerator Nodeau would choose,</li><li>what the model is <strong>expected to need</strong>,</li><li>what's <strong>available</strong> right now,</li><li>the <strong>reserve</strong> Nodeau keeps for the system, and whether that figure was <em>calibrated on this machine</em> or is <em>Nodeau's conservative default</em>,</li><li>the <strong>headroom</strong> left over, or how short it is,</li><li><strong>the arithmetic</strong>, term by term, with where each figure came from,</li><li>and in a fleet, <strong>every other machine</strong> with its reason.</li></ul>
+<p>It takes the same flags as the run itself (<code>--context-size</code>, <code>--parallel</code>, <code>--task</code>, <code>--gpus</code>, <code>--mode</code> and the two risk flags further down), so what you preview is the run you're about to make. <code>--json</code> prints the whole answer for a script.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Exit code</th><th>Means</th></tr></thead><tbody><tr><td data-label="Exit code"><code>0</code></td><td data-label="Means">It would run</td></tr><tr><td data-label="Exit code"><code>3</code></td><td data-label="Means">It would not run as asked, and that stays true until something changes</td></tr><tr><td data-label="Exit code"><code>4</code></td><td data-label="Means">Not yet: it's waiting on something that clears by itself, like a fresh report from a machine or a model whose checksum is still being verified</td></tr></tbody></table></div>
+<p>Here's a preview on a 36 GB Mac with a browser and a handful of other apps open. The long explanation line is shortened here:</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="fit-code-2"><code>Where Nodeau would run qwen3.5-4b-q4km
+
+  Nodeau would not run it now: Qwen3.5-4B Q4_K_M at contextSize=4096 parallel=1 is predicted to need 4,406 MiB including the 256 MiB admission margin. …
+
+  Available to Nodeau now                       1,370 MiB
+    Memory free or reclaimable right now          7,120 MiB  observed now
+    − Reserve Nodeau keeps for the system           5,750 MiB  Nodeau&#x27;s conservative default
+        (of which 2,048 MiB is a floor that is never given away)
+    · Accelerator ceiling: 28,753 MiB (the most the GPU will use for models, a fixed property of this Mac; a limit, not memory in hand)
+    · In use by the system and other applications: 29,744 MiB (everything not reclaimable right now; Nodeau does not look at which applications)
+
+  Expected cost                                 4,406 MiB  conservative estimate
+    Model weights                                 2,614 MiB  estimated
+    Context (KV cache) for the context size and parallel requests asked for    512 MiB  estimated
+    Runtime overhead (Metal pipelines and compute buffers)    256 MiB  estimated
+    Prediction margin                               256 MiB  Nodeau policy
+    Allowance for hardware nobody has measured this model on    768 MiB  Nodeau policy
+
+  Remaining headroom                           -3,036 MiB  short
+
+  Admission: NOT NOW — held back by Nodeau&#x27;s safety margins, not by the hardware
+  Qwen3.5-4B Q4_K_M at contextSize=4096 parallel=1 is predicted to need 4,406 MiB including the 256 MiB admission margin. …
+
+  To run it anyway on macbook only, for this run only:
+    nodeau run qwen3.5-4b-q4km --spend-safety-reserve
+  The reserve would go from 5,750 MiB to 2,048 MiB (the 2,048 MiB floor stays), leaving 666 MiB.
+
+  This is a preview, not a reservation: running it asks again.</code></pre></div>
+<p>The model needs 4,406 MiB and 1,370 MiB is available, so it's 3,036 MiB short. The Mac has the memory, though: what's in the way is the 5,750 MiB Nodeau keeps for the system, and only the part above its floor. That's why the preview offers a one-run override, and it exits <code>3</code>. On a Mac, what's free moves with every app you open or close, so the same preview can say something different in ten minutes.</p>
+<p><code>--explain</code> is for a run you haven't made yet. For a workload that's already running, <code>nodeau service explain &lt;name&gt;</code> shows the decision Nodeau recorded (on a Mac on its own, <code>nodeau ps</code>).</p>
+<h3 id="reading-the-arithmetic" class="doc-h">Reading the arithmetic<a class="doc-anchor" href="#reading-the-arithmetic" aria-label="Link to this section">#</a></h3>
+<p><strong>Available to Nodeau now</strong> is what the machine can give a model, less what's already in use, less the reserve:</p>
+<ul class="doc-list"><li>On a GPU card, that's the GPU memory the driver can address, minus what the desktop and other programs on the card use, minus what other Nodeau workloads on that card were charged.</li><li>On a Mac, it's the memory free or reclaimable right now, minus anything Nodeau is still loading. The accelerator ceiling is shown as a limit rather than memory in hand, and so is everything else the system and your apps hold.</li></ul>
+<p><strong>Expected cost</strong> is the model's weights, its context (the KV cache for the context size and parallel requests you asked for) and the runtime's own overhead, then Nodeau's margins: a 256 MiB prediction margin, and an allowance for hardware nobody has measured this model on, only when nobody has.</p>
+<p>Every figure carries a label saying where it came from:</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Label</th><th>Means</th></tr></thead><tbody><tr><td data-label="Label"><code>measured</code></td><td data-label="Means">Observed running this model in this configuration, on the same kind of hardware in Nodeau's catalog, or on this very machine if you adopted a <a href="#measure-one-model-on-a-mac">model measurement</a></td></tr><tr><td data-label="Label"><code>estimated</code></td><td data-label="Means">Worked out from the model's architecture and file size</td></tr><tr><td data-label="Label"><code>observed now</code></td><td data-label="Means">Read from the machine just now. It moves</td></tr><tr><td data-label="Label"><code>Nodeau policy</code></td><td data-label="Means">A margin Nodeau keeps on purpose</td></tr><tr><td data-label="Label"><code>calibrated on this machine</code></td><td data-label="Means">A reserve you measured with <code>nodeau benchmark</code> and adopted</td></tr><tr><td data-label="Label"><code>Nodeau&#x27;s conservative default</code></td><td data-label="Means">The reserve Nodeau uses until you adopt one of your own</td></tr></tbody></table></div>
+<p>The word beside the expected cost says how much evidence stands behind it: <code>high</code> (measured on this machine, for exactly this configuration, and adopted), <code>medium</code> (measured on the same kind of hardware) or <code>conservative estimate</code>. It's always a word, never a percentage, because none of this evidence supports a number like that.</p>
+<h3 id="every-run-says-where" class="doc-h">Every run says where it's going<a class="doc-anchor" href="#every-run-says-where" aria-label="Link to this section">#</a></h3>
+<p>An ordinary <code>nodeau run</code> now prints one line before it starts the model:</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="fit-code-3"><code>  Will run on nodeau-c · NVIDIA GeForce RTX 3080 — expected cost 4.3 GiB of 9.1 GiB GPU memory available, 4.8 GiB left (conservative estimate)</code></pre></div>
+<p><strong>A preview isn't a reservation.</strong> Another workload can start in between, so when the run starts, the machine checks the fit again from what's true at that moment, and that answer is the one that counts.</p>
+<p>In a fleet, previews come from the machine that runs your fleet, so they need that machine to be on a Nodeau with previews. Until it is, <code>--explain</code> says so and stops, and an ordinary run starts without the line.</p>
+<h2 id="the-safety-reserve" class="doc-h">The safety reserve<a class="doc-anchor" href="#the-safety-reserve" aria-label="Link to this section">#</a></h2>
+<p>Nodeau keeps some memory back so the rest of your system has room to work: a spike in some other program shouldn't turn into an out-of-memory kill of your model, or of your desktop. The reserve has two parts:</p>
+<ul class="doc-list"><li>a <strong>floor</strong>, which is never given away,</li><li>and the part <strong>above the floor</strong>, which you can set aside for one run.</li></ul>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th></th><th>The reserve</th><th>Its floor</th><th>Above the floor</th></tr></thead><tbody><tr><td data-label="">An NVIDIA card</td><td data-label="The reserve">512 MiB</td><td data-label="Its floor">None: the card's own memory and what's already on it are the hard limit</td><td data-label="Above the floor">All 512 MiB</td></tr><tr><td data-label="">A Mac</td><td data-label="The reserve">The larger of 2,048 MiB and 20% of the Mac's GPU working-set ceiling</td><td data-label="Its floor">2,048 MiB</td><td data-label="Above the floor">Everything above 2,048 MiB</td></tr></tbody></table></div>
+<p>On the Mac above, the ceiling is 28,753 MiB, so the reserve is 5,750 MiB: a 2,048 MiB floor and 3,702 MiB above it.</p>
+<p>Those are Nodeau's conservative defaults. If you <a href="#measure-your-machine">measure your machine</a> and adopt the result, the reserve is the measured figure instead. On a Mac it never goes below the 2,048 MiB floor, and nothing you do lowers the floor itself.</p>
+<h2 id="one-run-override" class="doc-h">Set the reserve aside for one run<a class="doc-anchor" href="#one-run-override" aria-label="Link to this section">#</a></h2>
+<p>When the reserve is the only thing in the way, the preview says so and gives you the command:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fit-code-4"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fit-code-4"><code>nodeau run qwen3.5-4b-q4km --spend-safety-reserve</code></pre></div>
+<p><code>--spend-safety-reserve</code> means: <strong>for this run only, on the one machine the preview showed</strong>, let the workload use the part of the reserve above its floor. All of it on an NVIDIA card. Everything above 2,048 MiB on a Mac.</p>
+<p>Before anything starts, <code>nodeau run</code> shows you the new arithmetic and asks once:</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="fit-code-5"><code>  This run uses a reduced safety margin on macbook (Apple M3 Pro):
+    reserve              5,750 MiB → 2,048 MiB (the 2,048 MiB floor stays)
+    expected headroom    666 MiB
+  It applies to this workload on macbook only and changes no setting. Other applications have less room while it runs; if memory turns out tighter than predicted the model may fail to load or be stopped.</code></pre></div>
+<p><code>--yes</code> answers for you. Here's exactly what you're agreeing to:</p>
+<ul class="doc-list"><li><strong>One workload, one machine.</strong> The override lasts as long as that workload runs. No setting on the machine changes, and stopping the workload leaves nothing behind.</li><li><strong>The machine you saw.</strong> If, by the time the run starts, Nodeau would place it somewhere else, the run is refused rather than moved, with <code>OVERRIDE_FOR_ANOTHER_MACHINE</code>: <em>"The reduced safety reserve was accepted for a different machine."</em> Preview again and decide afresh.</li><li><strong>The floor stays.</strong> On a Mac, 2,048 MiB is always kept for the system.</li><li><strong>Less room for everything else.</strong> Other applications have less room while the model runs. On a Mac that can mean memory pressure and swapping; on a card that also drives your display, an out-of-memory kill takes the display with it.</li><li><strong>A risk, not a measurement.</strong> A run under an override never counts as evidence that the smaller reserve is safe, and it never changes the reserve Nodeau uses next time. Only <a href="#measure-your-machine">a measurement you adopt</a> does that.</li></ul>
+<p>When the hardware itself is too small, so the model wouldn't fit even with the reserve at its floor, there's nothing to set aside. The preview offers no override, Nodeau accepts none, and it says why:</p>
+<div class="code doc-code"><div class="code-head"><span>Output</span></div><pre id="fit-code-6"><code>  No override can help: the hardware does not have enough safely usable memory for this, even with Nodeau&#x27;s reserve at its floor.</code></pre></div>
+<p>A smaller context, fewer parallel requests or a smaller model is the way forward then.</p>
+<p>The other risk flag, <code>--accept-estimate-risk</code>, means what it always has: drop only the extra allowance Nodeau adds for hardware nobody has measured this model on. The preview's suggested command includes whichever of the two the gap needs. Batch jobs always run with the full margins. See <a href="/docs/scheduling/#accepting-the-risk-yourself">accepting the risk yourself</a>.</p>
+<h3 id="from-app-nodeau-ai" class="doc-h">From app.nodeau.ai<a class="doc-anchor" href="#from-app-nodeau-ai" aria-label="Link to this section">#</a></h3>
+<p>The Run page in app.nodeau.ai previews too, as part of running models from the browser, which comes with Home Pro and Business.</p>
+<ol class="doc-list"><li>Choose the model and the task. Set <strong>Context size</strong> and <strong>Parallel requests</strong> if you want something other than the defaults; both change what the model needs.</li><li>Press <strong>Preview</strong>. The answer shows <strong>Will run on</strong> with the machine and accelerator (or the <strong>Closest candidate</strong>, when nothing would run as asked), the expected cost, what's available, the reserve with a <strong>Calibrated</strong> or <strong>Default reserve</strong> badge, and what's left over or how short it is. <strong>Show the arithmetic</strong> opens the terms, and <strong>Other machines</strong> lists every other machine with its reason.</li><li>Where the reserve is the only thing in the way, the answer offers to run it on that machine with a reduced safety reserve, with a button that names the machine. It shows the reserve now, the reserve for this run, the floor that stays and the headroom, and nothing starts until you press <strong>Run with the reduced reserve</strong>.</li></ol>
+<p>A preview isn't a reservation here either: the machine checks the fit again when it starts the model. A machine's page under Fleet shows each accelerator's reserve and whether it's calibrated, and a Mac's unified memory. Measuring and adopting happen on the machine itself, with the commands below, never from the browser.</p>
+<p>If your fleet's machines run a Nodeau without previews, the page says so and <strong>Run</strong> works the way it always has.</p>
+<h2 id="measure-your-machine" class="doc-h">Measure your machine<a class="doc-anchor" href="#measure-your-machine" aria-label="Link to this section">#</a></h2>
+<p>Nodeau's default reserve is conservative because it was set without knowing your machine. <code>nodeau benchmark</code> measures it.</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fit-code-7"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fit-code-7"><code>nodeau benchmark            # measure, and record what it found
+nodeau benchmark status     # what&#x27;s measured, what&#x27;s in use, and until when
+nodeau benchmark adopt      # use the newest recommendation, or name one by its ID
+nodeau benchmark reset      # back to Nodeau&#x27;s conservative default</code></pre></div>
+<p><strong>Nothing changes until you adopt.</strong> A benchmark records what it found, with a recommendation when it can justify one, and the reserve Nodeau uses stays exactly as it was until you run <code>nodeau benchmark adopt</code>. <code>reset</code> puts the default back whenever you like, and the records stay for <code>status</code> to show.</p>
+<p>A recommendation's confidence is a word: <code>high</code>, <code>medium</code> or <code>low</code>. A <code>low</code> result comes from a machine that was too busy for a clear answer, and it can't lower the reserve below the default; run it again when things are quieter. A measurement can also say your machine needs <strong>more</strong> than the default keeps. Adopting it then raises the reserve, and <code>nodeau doctor</code> points it out.</p>
+<p><code>adopt</code> checks the record against the machine as it is now: the same hardware, the same operating system build or driver, not expired, and never below the floor. A record that doesn't match is refused, and nothing changes.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--quick</code></td><td data-label="Meaning">Record a quick baseline only: watch for a few seconds, use no memory, recommend nothing</td></tr><tr><td data-label="Flag"><code>--duration &lt;d&gt;</code></td><td data-label="Meaning">Linux: how long to watch each GPU (<code>10m</code> by default)</td></tr><tr><td data-label="Flag"><code>--machine &lt;name&gt;</code></td><td data-label="Meaning">Linux, on the machine that runs your fleet: measure another Linux machine from its own reports</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Meaning">Print the evidence record</td></tr><tr><td data-label="Flag"><code>--yes</code>, <code>-y</code></td><td data-label="Meaning">Don't ask before measuring</td></tr></tbody></table></div>
+<p>A measurement describes your machine at the moment it was taken. It helps Nodeau decide, and what fits on a Mac still depends on what else is open when you ask.</p>
+<h3 id="benchmark-on-a-mac" class="doc-h">On a Mac<a class="doc-anchor" href="#benchmark-on-a-mac" aria-label="Link to this section">#</a></h3>
+<p>On a Mac, <code>nodeau benchmark</code> finds out how much memory the Mac needs left alone before macOS starts to feel the pressure, by approaching that point gently from below.</p>
+<ul class="doc-list"><li>It uses memory in small steps, in a separate process, and stops at the <strong>first</strong> sign of memory pressure macOS reports: a change in the pressure level, any swapping out, or the memory compressor growing.</li><li>It also stops at its cap: it never goes past the 2,048 MiB floor, and it takes about 90 seconds at most.</li><li>Then it gives everything back and waits for the memory to return before it records anything.</li><li>It never closes or touches other applications, and it changes no system setting: not swap, not wired memory, not sleep.</li></ul>
+<p>Close large applications first for the clearest result. Afterwards, apps may need a moment to reload files they had cached.</p>
+<p>It only measures when the Mac is quiet enough for the answer to mean something. If Nodeau models are running on the Mac, if macOS already reports memory pressure, if the system was swapping while left alone, if free memory moved too much on its own, or if too little is free to measure, it says which, changes nothing and exits <code>4</code>. Stop your models or close something, and try again. Ctrl-C stops it at any point and hands everything back, with nothing recorded.</p>
+<p>In a fleet, a Mac's adopted reserve travels with its own report, so the machine that runs your fleet plans against the same figure the Mac does.</p>
+<h3 id="benchmark-on-linux" class="doc-h">On Linux<a class="doc-anchor" href="#benchmark-on-linux" aria-label="Link to this section">#</a></h3>
+<p>On Linux, <code>nodeau benchmark</code> <strong>watches</strong> each GPU's memory for a while, ten minutes unless you choose otherwise with <code>--duration</code>, and allocates nothing.</p>
+<ul class="doc-list"><li><strong>Every GPU figure is the card's total</strong>: every program on the card is in it, and it's labelled that way. Nodeau's agent runs without access to the host's processes, by design, so neither admission nor the benchmark attributes a card's memory to individual programs.</li><li>A card that something was computing on during the window, a Nodeau model included, is reported busy and gets no recommendation.</li><li>Host memory is recorded and shown, and that's all: admission on Linux plans GPU memory.</li></ul>
+<p>A Linux reserve is adopted with the fleet, so measure and adopt on the machine that runs your fleet, naming the machine. <code>--machine</code> reads that machine's own reports, and it's Linux only:</p>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fit-code-8"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fit-code-8"><code>nodeau benchmark --machine nodeau-c
+nodeau benchmark adopt
+nodeau benchmark status --machine nodeau-c</code></pre></div>
+<p>On a machine on its own, that's the machine you're on, and <code>--machine</code> isn't needed.</p>
+<h3 id="how-long-it-lasts" class="doc-h">How long a calibration lasts<a class="doc-anchor" href="#how-long-it-lasts" aria-label="Link to this section">#</a></h3>
+<p>An adopted calibration lasts <strong>30 days</strong>. Before then it's set aside by itself, and Nodeau goes back to its conservative default and says why, if:</p>
+<ul class="doc-list"><li>macOS is updated, on a Mac,</li><li>the NVIDIA driver changes, on Linux,</li><li>the hardware changes,</li><li>or the Mac's GPU working-set ceiling changes.</li></ul>
+<p>A calibration belongs to the hardware it measured. It's never used for another machine, even an identical one, and two identical machines can calibrate differently.</p>
+<h3 id="doctor" class="doc-h">What doctor says<a class="doc-anchor" href="#doctor" aria-label="Link to this section">#</a></h3>
+<p><code>nodeau doctor</code> reports each machine's calibration: the reserve in use, whether it's calibrated or the default, and until when.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Code</th><th>Means</th><th>Do</th></tr></thead><tbody><tr><td data-label="Code"><code>CALIBRATION_RECOMMENDATION_PENDING</code></td><td data-label="Means">A measured recommendation is waiting and the default is in use. A warning when the measurement says the machine needs more than the default keeps</td><td data-label="Do"><code>nodeau benchmark adopt &lt;ID&gt;</code>, if you want it</td></tr><tr><td data-label="Code"><code>CALIBRATION_EXPIRED</code></td><td data-label="Means">The adopted calibration reached its 30 days, and the default is back in use</td><td data-label="Do"><code>nodeau benchmark</code> to measure again</td></tr><tr><td data-label="Code"><code>CALIBRATION_INVALIDATED</code></td><td data-label="Means">The adopted calibration no longer matches the machine (a new operating system build, driver or hardware), and the default is in use</td><td data-label="Do"><code>nodeau benchmark</code> to measure again</td></tr></tbody></table></div>
+<p><code>nodeau service explain &lt;name&gt;</code> also says where a running workload's reserve came from, and so does the <a href="/docs/playground/#where-the-answer-came-from">Playground</a>.</p>
+<h2 id="measure-one-model-on-a-mac" class="doc-h">Measure one model on a Mac<a class="doc-anchor" href="#measure-one-model-on-a-mac" aria-label="Link to this section">#</a></h2>
+<div class="code doc-code"><div class="code-head"><span>Terminal</span><button class="copy-btn" type="button" data-copy="#fit-code-9"><span data-copy-label>Copy</span><span class="visually-hidden"> Terminal block</span></button></div><pre id="fit-code-9"><code>nodeau benchmark model qwen3.5-4b-q4km --context-size 4096 --parallel 1
+nodeau benchmark adopt &lt;ID&gt;</code></pre></div>
+<p>On a Mac, <code>nodeau benchmark model</code> measures the memory one model actually holds, at one configuration. It starts the model the ordinary way, through Nodeau's own fit check, so a model that doesn't fit isn't measured. Then it sends one short request, records the most memory the model held, and stops it. The model needs to be installed first.</p>
+<p>The figure is the model process's peak footprint plus the model's files, so it can come out <strong>higher than the truth, never lower</strong>, and it may well read higher than Nodeau's own prediction. <code>nodeau benchmark status</code> shows the two side by side.</p>
+<p>Adopting it applies to <strong>exactly</strong> that model file, runtime, task, context size and parallelism, on this Mac, for 90 days or until macOS is updated. Anything else is planned the usual way.</p>
+<div class="table-wrap"><table class="doc-table"><thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td data-label="Flag"><code>--context-size &lt;n&gt;</code></td><td data-label="Default"><code>4096</code></td><td data-label="Meaning">Context window to measure at</td></tr><tr><td data-label="Flag"><code>--parallel &lt;n&gt;</code></td><td data-label="Default"><code>1</code></td><td data-label="Meaning">Concurrent sequences to measure at</td></tr><tr><td data-label="Flag"><code>--task &lt;task&gt;</code></td><td data-label="Default">the model's own</td><td data-label="Meaning"><code>chat</code>, <code>embed</code> or <code>rerank</code></td></tr><tr><td data-label="Flag"><code>--timeout &lt;n&gt;</code></td><td data-label="Default"><code>300</code></td><td data-label="Meaning">Seconds to wait for the model to start serving</td></tr><tr><td data-label="Flag"><code>--json</code></td><td data-label="Default">off</td><td data-label="Meaning">Print the evidence record</td></tr><tr><td data-label="Flag"><code>--yes</code>, <code>-y</code></td><td data-label="Default">off</td><td data-label="Meaning">Don't ask before starting the model</td></tr></tbody></table></div>
+<p>On Linux it explains why it doesn't apply and stops: a card's only figure is its total, and Nodeau's catalog already carries measured rows for the cards they were measured on. <code>nodeau benchmark</code> still calibrates each card's reserve.</p>
+<h2 id="on-first-install" class="doc-h">On first install<a class="doc-anchor" href="#on-first-install" aria-label="Link to this section">#</a></h2>
+<p>The first <code>nodeau install</code> on a machine records a quick baseline of its memory. It only watches, uses no memory and changes nothing, and an install never fails because of it. When the machine is quiet, <code>nodeau benchmark</code> takes the full measurement.</p>
+<h2 id="on-every-plan" class="doc-h">On every plan<a class="doc-anchor" href="#on-every-plan" aria-label="Link to this section">#</a></h2>
+<p><code>--explain</code>, <code>nodeau benchmark</code> and <code>nodeau doctor</code> work on every plan, Home included. Previewing in app.nodeau.ai comes with running models from there, which is Home Pro and Business.</p>
+      <nav class="doc-pager" aria-label="Pagination"><a class="doc-prev" href="/docs/scheduling/"><span>Previous</span>How Nodeau decides</a><a class="doc-next" href="/docs/fleet/"><span>Next</span>Add and run machines</a></nav>
+      <p class="doc-foot">These docs describe the current release,
+      <span data-release>the beta channel</span>. Spotted something wrong or missing?
+      <a href="/contact/?type=install">Tell us</a>. A report from a machine we have
+      never seen is the most useful thing we get.</p>
+    </article>
+  </main>
+</div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Nodeau home"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="#b8ff5a" stroke-width="1.6"/><rect x="8" y="8" width="8" height="8" rx="2" fill="#b8ff5a"/></svg><span>Nodeau</span></a>
+        <p>Your GPUs. One private AI cloud.</p>
+      </div>
+      <div>
+        <h2 class="footer-title">Product</h2>
+        <ul>
+          <li><a href="/product/">What Nodeau does</a></li>
+          <li><a href="/business/">For business</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/install/">Get Nodeau</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Docs</h2>
+        <ul>
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/docs/install-linux/">Install on Linux</a></li>
+          <li><a href="/docs/install-macos/">Install on a Mac</a></li>
+          <li><a href="/docs/api/">The API</a></li>
+          <li><a href="/docs/cli/">CLI reference</a></li>
+          <li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-title">Company</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/docs/security/">Security and privacy</a></li>
+          <li><a href="mailto:founders@nodeau.ai">founders@nodeau.ai</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; <span data-year>2026</span> Nodeau</span>
+      <span><span data-release-note hidden>Current release <span data-release></span> &#183; </span>Runs on hardware you own</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<script src="/assets/nodeau.js?v=260192e5" defer></script>
+<script src="/assets/docs.js?v=1501ca71" defer></script>
+</body>
+</html>

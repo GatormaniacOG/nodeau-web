@@ -86,6 +86,10 @@ they are.
 Running it again is safe. It re-checks everything, skips what's done, keeps your
 API key, and never re-decides who owns a component.
 
+The first install on a machine also records a quick baseline of its memory. It
+only watches, uses no memory and changes nothing, and the install never fails
+because of it. See [`nodeau benchmark`](#nodeau-benchmark).
+
 | Flag | Platform | Default | Meaning |
 |---|---|---|---|
 | `--dry-run` | Both | off | Show the plan, including every command, and stop |
@@ -159,7 +163,9 @@ It looks at two things. The **host**: can this machine run Nodeau at all? And
 the **installation**: is Nodeau itself working? That covers its control plane,
 the agent on each machine, whether each machine's GPU report is fresh enough to
 schedule against, whether the models on disk still verify, and what your
-services and batch jobs are doing.
+services and batch jobs are doing. It also says which safety reserve each
+machine is using: Nodeau's conservative default, or a calibration you adopted,
+and whether that calibration has expired or no longer matches the machine.
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -302,8 +308,9 @@ instead.
 | `--gpus-auto` | off | Has no effect yet: the workload uses the number of GPUs `--gpus` asks for |
 | `--max-gpus <n>` | unset | Has no effect yet: it bounds `--gpus-auto` |
 | `--topology <mode>` | `auto` | How one model is spread across several GPUs: `auto` or `layer`. Advanced, and you'll rarely need it |
+| `--explain` | off | Show where this would run, what it would cost and why, and start or download nothing. See [before it runs](/docs/fit/) |
 | `--accept-estimate-risk` | off | Admit a model whose only obstacle is the margin for hardware nobody has measured |
-| `--spend-safety-reserve` | off | Let this workload use the memory Nodeau keeps back for everything else on the card |
+| `--spend-safety-reserve` | off | For this run only, on the one machine the preview shows, let the workload use the part of Nodeau's reserve above its floor: all of it on an NVIDIA card, everything above 2,048 MiB on a Mac. Nodeau shows the new arithmetic and asks first. See [set the reserve aside for one run](/docs/fit/#one-run-override) |
 | `--recovery <choice>` | unset (`never`) | `automatic` or `never`: what this workload does if its machine stops answering. See [recovery](/docs/recovery/). Home Pro and Business |
 | `--recovery-after <d>` | `3m` | With `--recovery automatic`, how long its machine must have stopped answering first, from `1m` to `60m` |
 | `--json` | off | Print the result as JSON |
@@ -311,13 +318,20 @@ instead.
 
 ```bash
 nodeau run qwen3.5-4b-q4km                       # a catalog model
+nodeau run qwen3.5-4b-q4km --explain             # where it would run and why, starting nothing
 nodeau run qwen-local                            # bring an existing one's endpoint back
 nodeau run my-model --task embed --port 8081     # an imported model, as an embedder
 ```
 
+Before it starts a model, `run` prints one line saying where it will run and
+what it's expected to cost. That's a preview, not a reservation: the machine
+checks the fit again as the model starts.
+
 **Exit codes.** `0` running, with an endpoint. `2` the model or service name
 wasn't recognised. `3` refused, and the answer stays the same until something
-changes. `4` still starting, and ran out of time to wait.
+changes. `4` still starting, and ran out of time to wait. With `--explain`: `0`
+it would run, `3` it would not run as asked, `4` not yet, because it's waiting
+on something that clears by itself.
 
 :::note Asking for several GPUs
 Use `--gpus N` to give one model N cards in one machine. `--gpus-auto` and
@@ -492,10 +506,11 @@ API with your kubeconfig and your permissions.
 
 - **`get`** lists services, or shows one. Flags: `--all-namespaces`/`-A`,
   `--namespace`/`-n`, `--json`.
-- **`explain`** shows the reasoning behind Nodeau's decision, including the VRAM
-  arithmetic. Everything it prints comes from the object's status, written by the
-  controller at the moment it decided. It reads that record rather than redoing
-  the sums, so there's only ever one answer.
+- **`explain`** shows the reasoning behind Nodeau's decision, including the
+  memory arithmetic and where the safety reserve came from (calibrated on that
+  machine, or Nodeau's conservative default). Everything it prints comes from the
+  object's status, written by the controller at the moment it decided. It reads
+  that record rather than redoing the sums, so there's only ever one answer.
 - **`apply`** creates or updates a service from a YAML manifest (`-f -` reads
   stdin). The controller admits the workload a moment later and records its
   decision in status, so follow it with `get` or `explain`.
@@ -681,12 +696,100 @@ Find out, on your own hardware, what a custom model can really do. **Linux.**
 | `--ready-timeout <d>` | `8m` | How long the runtime may take to start |
 | `--timeout <d>` | `20m` | How long the whole run may take |
 | `--accept-estimate-risk` | off | See [accepting the risk yourself](/docs/scheduling/#accepting-the-risk-yourself) |
-| `--spend-safety-reserve` | off | The same page explains this one too |
+| `--spend-safety-reserve` | off | Let this workload use the reserve Nodeau keeps back on the card, all of it, since a card's reserve has no floor. The same page explains it |
 | `--namespace`, `-n` | `nodeau-dev` | Namespace the qualification workload runs in |
 | `--json` | off | Machine-readable |
 
 Qualification uses **free capacity** and leaves healthy workloads running. If
 your cards are busy, admission says so and the run reports it straight away.
+
+---
+
+## Measuring your machine {#measuring-your-machine}
+
+See [before it runs](/docs/fit/#measure-your-machine) for the whole story.
+**Nothing changes until you adopt a result**, and these commands work on every
+plan. Wherever `--machine NAME` appears, it's for Linux, on the machine that runs
+your fleet, and names another Linux machine in it.
+
+### `nodeau benchmark` {#nodeau-benchmark}
+
+```bash
+nodeau benchmark [flags]
+```
+
+Measure how much memory this machine needs to keep for itself, and record what
+it found, with a recommendation when it can justify one. **Both.**
+
+On a Mac it uses memory in small steps in a separate process, stopping at the
+first sign of memory pressure macOS reports or at its cap, about 90 seconds at
+most and never past the 2,048 MiB floor. It closes nothing and changes no system
+setting. On Linux it watches each GPU's memory and allocates nothing, and every
+figure is the card's total, labelled that way.
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--quick` | off | A quick baseline only: watch for a few seconds, use no memory, recommend nothing |
+| `--duration <d>` | `10m` | Linux: how long to watch each GPU |
+| `--machine <name>` | this machine | Linux, on the machine that runs your fleet: measure another Linux machine from its own reports |
+| `--json` | off | Print the evidence record |
+| `--yes`, `-y` | off | Don't ask before measuring |
+
+Exit `0` with a record. `4` when the machine wasn't measured because it's too busy
+for a clear answer right now (it says which), with nothing changed.
+
+### `nodeau benchmark status` {#nodeau-benchmark-status}
+
+```bash
+nodeau benchmark status [--machine NAME] [--json]
+```
+
+What's measured, which reserve is in use, and until when, for each accelerator,
+plus any measured model profiles. **Both.**
+
+### `nodeau benchmark adopt` {#nodeau-benchmark-adopt}
+
+```bash
+nodeau benchmark adopt [ID] [--machine NAME]
+```
+
+Use a measured recommendation as this machine's reserve, the newest when you
+give no ID, or adopt a measured model profile by its ID. **Both.** Nodeau checks
+the record against the machine as it is now (the same hardware, the same
+operating system build or driver, not expired, not below the floor) and refuses
+one that doesn't match, as it does a lower reserve measured with `low`
+confidence. A refusal exits `3` and changes nothing. On Linux the reserve is
+recorded with the fleet, so adopt on the machine that runs your fleet.
+
+### `nodeau benchmark reset` {#nodeau-benchmark-reset}
+
+```bash
+nodeau benchmark reset [--machine NAME]
+```
+
+Go back to Nodeau's conservative default reserve, removing every adoption on the
+machine, measured model profiles included. **Both.** The evidence records stay.
+
+### `nodeau benchmark model` {#nodeau-benchmark-model}
+
+```bash
+nodeau benchmark model MODEL [flags]
+```
+
+Measure the memory one installed model actually holds at one configuration.
+**macOS.** It starts the model through Nodeau's ordinary fit check, sends it one
+short request, records the most it held, and stops it. Adopted, the measurement
+applies only to exactly that model, runtime, task, context size and parallelism
+on this Mac. On Linux it explains why it doesn't apply and exits `3`.
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--context-size <n>` | `4096` | Context window to measure at |
+| `--parallel <n>` | `1` | Concurrent sequences to measure at |
+| `--task <task>` | the model's own | `chat`, `embed` or `rerank` |
+| `--timeout <n>` | `300` | Seconds to wait for the model to start serving |
+| `--json` | off | Print the evidence record |
+| `--yes`, `-y` | off | Don't ask before starting the model |
 
 ---
 

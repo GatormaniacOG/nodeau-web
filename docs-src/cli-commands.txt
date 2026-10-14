@@ -6,8 +6,12 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts.
-# This copy is v0.18.0-beta.5's PUBLISHED linux binary (sha256 of its archive 37a75730, the pin), regenerated
-# 2026-10-13 from the staged archive; identical, command for command and flag for flag, to beta.3's and beta.2's.
+# PROVISIONAL, NOT YET A RELEASED BINARY: this copy was generated 2026-10-14 from a
+# DEVELOPMENT build of the v0.19 release branch (phase-20i-admission-calibration
+# @ 5272dad3, `nodeau dev`). Against v0.18.0-beta.5's published list it adds
+# `nodeau benchmark` (and adopt, model, reset, status) and `nodeau run --explain`,
+# and changes nothing else. It MUST be regenerated from the staged v0.19 candidate's
+# published linux archive (checksum verified) before this change merges.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command
@@ -29,6 +33,11 @@ nodeau batch results	--help --namespace --output --stdout
 nodeau batch status	--help --json --namespace
 nodeau batch submit	--context-size --gpus --help --max-attempts --model --name --namespace --parallel --task --workers
 nodeau batch wait	--help --namespace --timeout
+nodeau benchmark adopt	--help --machine
+nodeau benchmark	--duration --help --json --machine --quick --yes
+nodeau benchmark model	--context-size --help --json --parallel --task --timeout --yes
+nodeau benchmark reset	--help --machine
+nodeau benchmark status	--help --json --machine
 nodeau dashboard	--addr --cache-dir --help
 nodeau doctor	--help --host-only --json --namespace --node
 nodeau endpoint	--help
@@ -85,7 +94,7 @@ nodeau recovery	--help
 nodeau recovery set	--after --copies --help --json --namespace
 nodeau recovery status	--help --json --namespace
 nodeau restart	--help --namespace --timeout --wait
-nodeau run	--accept-estimate-risk --batch-tokens --cache-dir --context-size --foreground --gpus --gpus-auto --help --json --max-gpus --mode --name --namespace --parallel --port --pull --recovery --recovery-after --spend-safety-reserve --task --timeout --topology --yes
+nodeau run	--accept-estimate-risk --batch-tokens --cache-dir --context-size --explain --foreground --gpus --gpus-auto --help --json --max-gpus --mode --name --namespace --parallel --port --pull --recovery --recovery-after --spend-safety-reserve --task --timeout --topology --yes
 nodeau scheduling constraints	--allow-device --clear --deny-device --help --idle-watts --json --max-accelerators --node --power-budget
 nodeau scheduling drain	--help --node
 nodeau scheduling	--help

@@ -79,7 +79,10 @@ Batch jobs run from the command line; see [batch inference](/docs/batch/).
 ## Where the answer came from
 
 Beside every model the Playground shows where it runs: the machine, the GPU,
-and on Linux the memory Nodeau predicted for it when it admitted it. **Why
+and on Linux the memory Nodeau predicted for it when it admitted it, plus the
+memory it kept back for the system there and whether that reserve was
+calibrated on the machine or is Nodeau's default, wherever the decision
+recorded it. **Why
 this GPU?** shows the placement Nodeau recorded: the machine and card it chose,
 the rule that decided, the scheduling mode, and the speed it predicted.
 

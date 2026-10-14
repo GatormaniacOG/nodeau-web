@@ -310,7 +310,8 @@ disconnect, your models keep serving and your scheduler keeps scheduling.
 **Seeing** your machines from the browser is part of every plan. **Operating**
 them from there comes with Home Pro and Business:
 
-- run and stop workloads,
+- preview where a model would run and what it would cost, then
+  [run it](/docs/fit/#from-app-nodeau-ai), and stop workloads,
 - set scheduling policy,
 - drain a machine for maintenance,
 - read bounded logs,
