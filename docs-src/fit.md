@@ -282,7 +282,7 @@ floor. A record that doesn't match is refused, and nothing changes.
 | Flag | Meaning |
 |---|---|
 | `--quick` | Record a quick baseline only: watch for a few seconds, use no memory, recommend nothing |
-| `--duration <d>` | Linux: how long to watch each GPU (`10m` by default) |
+| `--duration <d>` | Linux: how long to watch each GPU (`10m` by default, `11m` with `--machine`) |
 | `--machine <name>` | Linux, on the machine that runs your fleet: measure another Linux machine from its own reports. A Mac refuses it |
 | `--json` | Print the evidence record |
 | `--yes`, `-y` | Don't ask before measuring |
@@ -326,7 +326,9 @@ that runs your fleet plans against the same figure the Mac does.
 ### On Linux {#benchmark-on-linux}
 
 On Linux, `nodeau benchmark` **watches** each GPU's memory for a while, ten
-minutes unless you choose otherwise with `--duration`, and allocates nothing.
+minutes unless you choose otherwise with `--duration` (eleven with `--machine`,
+because another machine's reports arrive about every 30 seconds and they have
+to cover ten minutes), and allocates nothing.
 
 - **Every GPU figure is the card's total**: every program on the card is in it,
   and it's labelled that way. Nodeau's agent runs without access to the host's

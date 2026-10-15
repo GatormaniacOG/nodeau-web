@@ -734,7 +734,7 @@ window to get a recommendation.
 | Flag | Default | Meaning |
 |---|---|---|
 | `--quick` | off | A quick baseline only: watch for a few seconds, use no memory, recommend nothing |
-| `--duration <d>` | `10m` | Linux: how long to watch each GPU |
+| `--duration <d>` | `10m` (`11m` with `--machine`) | Linux: how long to watch each GPU |
 | `--machine <name>` | this machine | Linux, on the machine that runs your fleet: measure another Linux machine from its own reports |
 | `--json` | off | Print the evidence record |
 | `--yes`, `-y` | off | Don't ask before measuring |
