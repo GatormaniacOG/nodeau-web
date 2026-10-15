@@ -307,10 +307,10 @@ below.
 - It never closes or touches other applications, and it changes no system
   setting: not swap, not wired memory, not sleep.
 
-Close large applications **before** you start, not during. If the memory
-available moves under the measurement by more than the Mac moves when left
-alone (an app quit or grew while it ran), it stops, recommends nothing and asks
-you to run it again when the machine is quiet. Afterwards, apps may need a
+Close large applications **before** you start, not during. If the memory your
+other apps use changes during the measurement by more than the Mac moves when
+left alone (an app opened, quit or grew while it ran), it stops, recommends
+nothing and asks you to run it again when the machine is quiet. Afterwards, apps may need a
 moment to reload files they had cached.
 
 It only measures when the Mac is quiet enough for the answer to mean something.
