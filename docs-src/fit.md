@@ -299,7 +299,10 @@ below.
 
 - It uses memory in small steps, in a separate process, and stops at the
   **first** sign of memory pressure macOS reports: a change in the pressure
-  level, any swapping out, or the memory compressor growing.
+  level, any swapping out, the memory compressor growing, or macOS starting to
+  take memory back from your other apps once it has run out of free memory and
+  cache to give. That last point is usually the one it finds, and it's exactly
+  the line a model shouldn't cross.
 - It also stops at its cap: it never takes a step that would leave less than
   the 2,048 MiB floor, and it takes about 90 seconds at most.
 - Then it gives everything back and waits for the memory to return before it
@@ -308,8 +311,8 @@ below.
   setting: not swap, not wired memory, not sleep.
 
 Close large applications **before** you start, not during. If the memory your
-other apps use changes during the measurement by more than the Mac moves when
-left alone (an app opened, quit or grew while it ran), it stops, recommends
+other apps use grows during the measurement by more than the Mac moves when
+left alone, or an app quits and frees memory while it runs, it stops, recommends
 nothing and asks you to run it again when the machine is quiet. Afterwards, apps may need a
 moment to reload files they had cached.
 

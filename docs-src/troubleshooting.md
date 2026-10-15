@@ -346,8 +346,10 @@ free memory that holds still; on Linux it needs `nvidia-smi` to see the cards. I
 says which condition it met and changes nothing.
 
 On a Mac it can also stop part way and recommend nothing, if the memory your
-other apps use changed by more than the Mac moves when left alone: an app
-opened, quit or grew while it ran. On Linux with `--machine`, a card with fewer than five
+other apps use grew by more than the Mac moves when left alone, or an app quit
+and freed memory while it ran. (Stopping because macOS began taking memory back
+from your other apps is different: that's the point it was looking for, and it
+recommends from just before it.) On Linux with `--machine`, a card with fewer than five
 fresh reports from its machine during the window gets no recommendation.
 
 **Fix.** Do what it names (stop your models, close something before you start,
