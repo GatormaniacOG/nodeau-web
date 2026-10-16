@@ -27,9 +27,10 @@ its scope:
 | The curated catalog, downloads and SHA-256 verification | Yes |
 | The fit check before anything starts | Yes, against unified memory |
 | `run`, `ps`, `stop`, `logs`, `doctor` and `uninstall` | Yes |
-| Fleets, batch inference and bringing your own model | On your Linux machines with NVIDIA GPUs. A Mac runs standalone |
+| Joining a fleet | Yes, as a machine in a fleet that a Linux machine runs. See [adding a Mac](/docs/fleet/#adding-a-mac) |
+| Batch inference and bringing your own model | On your Linux machines with NVIDIA GPUs |
 | Structured output and tool calling | On your Linux machines with NVIDIA GPUs |
-| Several GPUs, scheduling modes, power limits, health, limits and policies | Part of a Linux fleet. A Mac has one integrated GPU |
+| Several GPUs, scheduling modes, power limits, health, limits and policies | Set and read on your Linux machines. A Mac has one integrated GPU |
 
 ## Requirements
 
@@ -220,10 +221,29 @@ That's Nodeau reading the machine honestly. It keeps its safety margin whole,
 because an out-of-memory kill on a machine whose display runs on the same GPU
 is much worse than a clear "not right now".
 
-If you want to accept that risk for one workload, `nodeau run` takes
-`--accept-estimate-risk` and `--spend-safety-reserve`. Both are explicit, both
-apply to one workload, and both are recorded. See
-[accepting the risk yourself](/docs/scheduling/#accepting-the-risk-yourself).
+The reserve on a Mac is the larger of 2,048 MiB and 20% of the static ceiling,
+and it has two parts: a **2,048 MiB floor** that's always kept for the system,
+and the part above it. To see exactly what's in the way before anything starts,
+and whether it's the reserve or the Mac itself:
+
+```bash
+nodeau run qwen3.5-4b-q4km --explain
+```
+
+When it's the reserve, you have two choices, and both are yours to make:
+
+- **Measure this Mac.** `nodeau benchmark` finds out how much memory this Mac
+  really needs left alone, stopping at the first sign of memory pressure macOS
+  reports and never going past the floor. Nothing changes until you
+  `nodeau benchmark adopt` the result, and `nodeau benchmark reset` goes back to
+  the default.
+- **Set it aside for one run.** `nodeau run` with `--spend-safety-reserve` lets
+  that one workload use the part of the reserve above the floor. It shows you the
+  new arithmetic and asks first, and the floor stays.
+
+`--accept-estimate-risk` drops only the extra allowance for hardware nobody has
+measured the model on. All of this is explained in
+[before it runs](/docs/fit/).
 
 ## Where things live
 
@@ -233,6 +253,7 @@ apply to one workload, and both are recorded. See
 | `~/Library/Application Support/Nodeau/` | Nodeau's own directory |
 | `~/Library/Application Support/Nodeau/state/models/` | Model cache |
 | `~/Library/Application Support/Nodeau/state/runtimes/` | The Metal model runtime |
+| `~/Library/Application Support/Nodeau/state/calibration/` | `nodeau benchmark` records, and what you adopted |
 | `~/Library/Application Support/Nodeau/api-key` | Your local API key, mode `0600` |
 | `~/Library/LaunchAgents/` | The endpoint's user agent |
 

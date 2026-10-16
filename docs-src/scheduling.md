@@ -19,7 +19,16 @@ nodeau service explain qwen-local
 
 That prints the decision exactly as the controller recorded it. It reads the
 record rather than redoing the sums, so there's only ever one answer: the one
-the platform acted on.
+the platform acted on. It also says where the safety reserve came from:
+calibrated on that machine, or Nodeau's conservative default.
+
+To ask the same question **before** anything starts, add `--explain` to a run.
+It shows where the model would go, what it would cost and why, and starts
+nothing; see [before it runs](/docs/fit/).
+
+```bash
+nodeau run qwen3.5-4b-q4km --explain
+```
 
 ### The arithmetic
 
@@ -46,7 +55,7 @@ What the workload needs:
 
 | Margin | Size | When |
 |---|---|---|
-| Safety reserve | 512 MiB | Always, on every card. The room Nodeau keeps for whatever else is on it |
+| Safety reserve | 512 MiB on an NVIDIA card | Always. The room Nodeau keeps for whatever else is on the card. A Mac keeps a larger one with a 2,048 MiB floor, and either can be [measured and adopted](/docs/fit/#the-safety-reserve) instead |
 | Prediction margin | 256 MiB | Always. The error bar on the prediction |
 | Estimate margin | 768 MiB | Only when the configuration hasn't been measured on hardware like yours |
 | Multi-device allowance | 128 MiB per device | Only for a workload spanning several cards |
@@ -75,6 +84,11 @@ model is worked out from its shape rather than observed. Each row also says
 whether its figure counted the whole device or one process, because those are
 different quantities.
 
+On a Mac you can also measure one model yourself, at one configuration, with
+`nodeau benchmark model`. Once you adopt it, that exact configuration on that
+Mac is planned from the measurement. See
+[measure one model on a Mac](/docs/fit/#measure-one-model-on-a-mac).
+
 ### Accepting the risk yourself {#accepting-the-risk-yourself}
 
 Two flags, on `nodeau run` and `nodeau model qualify`. Both are explicit, both
@@ -83,12 +97,21 @@ apply to one workload, and both are recorded permanently.
 | Flag | What you're accepting |
 |---|---|
 | `--accept-estimate-risk` | Drop only the extra margin for hardware nobody has measured this on. You accept that it might not fit |
-| `--spend-safety-reserve` | Let this workload use the memory Nodeau keeps back for everything else on the card. If that GPU also drives your display, an out-of-memory kill takes the display with it |
+| `--spend-safety-reserve` | For this run only, let the workload use the part of the safety reserve above its floor: all of it on an NVIDIA card, everything above 2,048 MiB on a Mac. If that GPU also drives your display, an out-of-memory kill takes the display with it |
 
 That's the whole list, and each one is a margin rather than a check. Model
 verification, your plan, stale hardware reports and a card that's already busy
 are always checked, whichever flags you pass. Batch jobs run with the full
 margins.
+
+On `nodeau run`, a reduced reserve is accepted **for a new run, on the one
+machine the preview showed you**. Nodeau shows the new arithmetic and asks before
+it starts (`--yes` answers for you). If it can't show you a preview, or the run
+would land on a different machine by the time it starts, it's refused rather
+than applied somewhere you didn't see. When the hardware itself is
+too small, even with the reserve at its floor, there's no override to offer and
+none is accepted. [Set the reserve aside for one run](/docs/fit/#one-run-override)
+walks through it.
 
 Nodeau spends a margin only when you ask it to. A qualifier that quietly shrank
 the margin until a model fit would always succeed and prove nothing, so the
@@ -266,12 +289,13 @@ and in the dashboard.
 
 | Code | Meaning | Usually |
 |---|---|---|
-| `GPU_TOO_SMALL` | The arithmetic says it won't fit | A smaller context, or a smaller model |
+| `GPU_TOO_SMALL` | The arithmetic says it won't fit. That includes a model held back only by the safety reserve | `nodeau run <model> --explain` says which; then a smaller context, or a smaller model |
 | `GPU_ALREADY_ALLOCATED` | Another workload holds the whole GPU | `nodeau ps`, then wait or stop something |
 | `GPU_UNAVAILABLE` | No healthy GPU was reported | `nodeau doctor` |
 | `ACCELERATOR_SET_UNSUPPORTED` | The **shape** of the request can't be run, which is different from a memory problem | Ask for a different set of cards |
 | `HARDWARE_STALE` | A GPU report is too old to count as evidence about the card now | Check the machine is reporting |
 | `MACHINE_DRAINING` | The machine is deliberately not taking new work | `nodeau scheduling undrain` |
+| `OVERRIDE_FOR_ANOTHER_MACHINE` | A reduced safety reserve was accepted for a different machine, so this one won't take the workload | `nodeau run <model> --explain`, then decide again |
 
 ### The task
 

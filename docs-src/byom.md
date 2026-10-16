@@ -8,8 +8,8 @@ lede: Got a GGUF you already like? Give it to Nodeau. It reads the header to wor
 
 :::linux
 Bring your own model runs on Linux machines with NVIDIA GPUs. A custom model is
-registered in your cluster and qualified on one of its cards, so on a Mac,
-which runs Nodeau standalone, you pick from the curated catalog.
+registered in your cluster and qualified on one of its cards, so on a Mac, on
+its own or in your fleet, you pick from the curated catalog.
 :::
 
 ## The whole flow

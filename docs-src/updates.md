@@ -111,7 +111,9 @@ nodeau update                                        # do the machines now agree
 `nodeau install` there updates the command line, the controller and the Nodeau
 agent on **every** machine in the fleet. The other machines' Nodeau runs as pods
 that the control plane manages, and Kubernetes replaces them one machine at a
-time, so there's nothing to run on the other machines themselves.
+time, so there's nothing to run on the other machines themselves. A Mac in your
+fleet is the exception: its Nodeau runs on the Mac, so update it there with
+`nodeau update`.
 
 :::important Run `nodeau install` on the control-plane machine only
 On a machine that joined a fleet, `nodeau install` doesn't recognise the fleet it

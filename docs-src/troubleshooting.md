@@ -207,9 +207,12 @@ up as an empty line and exit code 137.
 ### A model that worked yesterday is refused today
 
 **Fix.** Close something memory-hungry, or choose a smaller model or a smaller
-context. To take the risk for one workload yourself,
-`nodeau run --accept-estimate-risk` or `--spend-safety-reserve` do it explicitly,
-and both are recorded.
+context. `nodeau run <model> --explain` shows whether the Mac is short of memory
+or only of Nodeau's reserve. When it's the reserve,
+[`nodeau benchmark`](/docs/fit/#benchmark-on-a-mac) can measure what this Mac
+really needs (adopting the result is your call), or `--spend-safety-reserve`
+sets aside the part above the 2,048 MiB floor for one run. See
+[held back by the safety reserve](#held-back-by-the-safety-reserve).
 
 **Why.** Apple Silicon uses **unified memory**: the system, your applications and
 the GPU share one pool, so what fits depends on what else is running at that
@@ -227,18 +230,18 @@ Four codes, because each needs a different answer.
 | `RUNTIME_UNVERIFIED` | Installed, and its integrity was **not checked on this run** | Run `nodeau doctor` again. "Not checked" and "intact" are different answers, so this is deliberately not a pass |
 | `RUNTIME_UNMANAGED` | A runtime Nodeau did not install, so it carries no version, backend or digests | Fine for development. `nodeau install --runtime <path>` installs a managed one |
 
-### Using a Mac alongside a fleet
+### A Mac and your fleet
 
-A Mac runs Nodeau **standalone**, as its own private endpoint on the Mac, and
-that is where it shines. Your Linux machines with NVIDIA GPUs form the fleet. The
-two run happily side by side, each with its own endpoint and its own `nodeau`
-commands. See [install on a Mac](/docs/install-macos/).
+A Mac runs Nodeau on its own, as a private endpoint on the Mac, or joins your
+fleet as a machine in its own right, with a code from
+`nodeau fleet invite --platform macos` on the machine that runs your fleet. See
+[adding a Mac](/docs/fleet/#adding-a-mac).
 
 ### `nodeau batch`, `health` or `governance` on a Mac
 
-These are fleet commands, so on a Mac each one explains that and exits. Batch
-jobs, machine health and organisation policies all run on the Linux machines in a
-fleet.
+These run on the machine that runs your fleet, so on a Mac each one says so and
+exits. Batch jobs run on your Linux machines, and machine health and your
+organisation's limits are read and set there.
 
 ### A macOS version we have not tried
 
@@ -255,11 +258,14 @@ seen is the most useful thing we get.
 **Fix.** Ask for the reasoning, then change the one thing it names:
 
 ```bash
-nodeau service explain <name>
+nodeau run <model> --explain        # before you run it, or to try again
+nodeau service explain <name>       # the decision recorded for a workload
 ```
 
-It prints the whole calculation: what the card can address, what else is using
-it, the safety reserve and what the model needs, plus a typed code and remedies.
+Both print the whole calculation: what the machine can offer, what else is
+using it, the safety reserve and what the model needs, plus a typed code and
+remedies. `--explain` starts nothing and also lists every other machine in your
+fleet with its reason.
 
 | Code | Try |
 |---|---|
@@ -274,6 +280,94 @@ it, the safety reserve and what the model needs, plus a typed code and remedies.
 model that loads, runs out of memory and crashes. Admission has no bypass. When
 the only thing in the way is the extra margin for hardware nobody has measured,
 `--accept-estimate-risk` removes **that margin alone**, and says so.
+
+### Held back by the safety reserve, not by the hardware {#held-back-by-the-safety-reserve}
+
+**What happens.** A preview ends with
+`Admission: HELD BACK by Nodeau's safety margins, not by the hardware`,
+or a refusal says *"This would leave too little memory in reserve."* The machine
+has the memory; what's in the way is the part of the reserve Nodeau keeps above
+its floor.
+
+**Fix.** Three things, in the order worth trying:
+
+1. **Make room.** Stop another model, or on a Mac close a large app, and preview
+   again.
+2. **Measure the machine.** `nodeau benchmark` measures how much this machine
+   really needs to keep for itself. If it recommends a smaller reserve, adopting
+   it with `nodeau benchmark adopt` changes what Nodeau plans against; nothing
+   changes until you do.
+3. **Set it aside for one run.** `nodeau run <model> --spend-safety-reserve` lets
+   that one workload, on the machine the preview showed, use the part of the
+   reserve above its floor. Nodeau shows the new arithmetic and asks first.
+
+When the preview says *"No override can help"*, the hardware itself is too
+small, even with the reserve at its floor, and no flag changes that. A smaller
+context, fewer parallel requests or a smaller model is the answer. In a fleet,
+first check **Other machines** for one marked *(soft)*: the command line can say
+it about a card listed earlier while another could still take the run
+([why](/docs/fit/#one-run-override)).
+
+See [before it runs](/docs/fit/) for the arithmetic and what each choice means.
+
+### `--spend-safety-reserve` refuses before anything starts
+
+**What happens.** A run with `--spend-safety-reserve` or `--accept-estimate-risk`
+stops, and nothing was started. A reduced margin is accepted only for a new run,
+on a machine you were shown, so:
+
+| It says | Fix |
+|---|---|
+| *already exists, and a reduced margin applies only to a new run* (exit `2`) | `nodeau stop <name>`, then run it again with the override. app.nodeau.ai says the same for a name your fleet already has |
+| *could not show where this would run* (exit `4`) | The preview didn't come back, for example because the controller didn't answer. Try again in a moment |
+| *predates admission previews* (exit `3`) | Run it without the flag, or update the machine that runs your fleet first: `nodeau fleet upgrade plan` shows what that takes |
+
+A plain run, with neither flag, goes on as before in all three cases.
+
+### `OVERRIDE_FOR_ANOTHER_MACHINE`
+
+**What happens.** You accepted a reduced reserve for one machine, and by the
+time the run started Nodeau would have placed it on another, so it refused
+rather than move the risk you accepted somewhere you never saw.
+
+**Fix.** Preview again with `nodeau run <model> --explain` and decide afresh.
+
+### `--explain` says the control plane predates admission previews
+
+**Fix.** Previews in a fleet come from the machine that runs your fleet, so that
+machine needs a Nodeau with previews. `nodeau fleet upgrade plan` shows what that
+takes. Until then, an ordinary `nodeau run` works as it always has, and the
+machine still checks the fit as it starts the model. A run with
+`--spend-safety-reserve` or `--accept-estimate-risk` refuses instead, because
+Nodeau accepts a reduced margin only for a machine it has shown you.
+
+### `nodeau benchmark` says the machine was not measured
+
+**Why.** It measures only when the answer can mean something. On a Mac it waits
+for a moment with no Nodeau models running, no memory pressure, no swapping and
+free memory that holds still; on Linux it needs `nvidia-smi` to see the cards. It
+says which condition it met and changes nothing.
+
+On a Mac it can also stop part way and recommend nothing, if the memory your
+other apps use grew by more than the Mac moves when left alone, or an app quit
+and freed memory while it ran. (Stopping because macOS began taking memory back
+from your other apps is different: that's the point it was looking for, and it
+recommends from just before it.) On Linux with `--machine`, a card with fewer than five
+fresh reports from its machine during the window gets no recommendation.
+
+**Fix.** Do what it names (stop your models, close something before you start,
+or wait a few minutes) and run it again. For `--machine`, check that the machine
+is reporting with `nodeau fleet list`.
+
+### `CALIBRATION_EXPIRED`, `CALIBRATION_INVALIDATED`, `CALIBRATION_RECOMMENDATION_PENDING`
+
+Doctor's word on each machine's safety reserve.
+
+| Code | Means | Fix |
+|---|---|---|
+| `CALIBRATION_EXPIRED` | The reserve you adopted reached its 30 days, and Nodeau's conservative default is back in use | `nodeau benchmark`, then adopt again if you want (doctor prints the exact command, with `--machine NAME` for a Linux machine) |
+| `CALIBRATION_INVALIDATED` | The reserve you adopted no longer matches the machine: macOS was updated, the NVIDIA driver changed, or the hardware did. The default is in use | `nodeau benchmark` under the system as it is now (doctor prints the exact command, with `--machine NAME` for a Linux machine) |
+| `CALIBRATION_RECOMMENDATION_PENDING` | A measured recommendation is waiting, and the default is in use. A warning when it says the machine needs **more** than the default keeps | `nodeau benchmark adopt <ID>`, if you want it |
 
 ### It says there is no validated profile for my GPU
 
@@ -608,7 +702,8 @@ code a script can read. Read the reason, then:
 | `MachineUnhealthy` | It reports it is unhealthy | Run `nodeau doctor --node <machine>` and fix what it names |
 | `WouldMoveBackwards` | It already runs a newer build than the target | Choose a newer target, or leave it where it is |
 | `NoArtifactForPlatform` | The target publishes no build for that machine's platform | Choose a release that publishes one |
-| `PlatformCannotJoinFleet` | It is a Mac, which runs standalone | Update it on the Mac itself |
+| `NativeMachineUpgradedOnTheMachine` | It is a Mac whose Nodeau doesn't take part in fleet rollouts | Update it on the Mac itself with `nodeau update`. The rest of the fleet is planned without it |
+| `PlatformCannotJoinFleet` | It is a Mac, planned by a Nodeau from before a Mac could join a fleet | Update it on the Mac itself |
 | `MaintenanceWindowShut` | It's `WAITING`: your maintenance window is shut right now | Nothing. It moves when the window opens, and the plan says when that is. `apply --override-window` lets it go now, recorded as your decision |
 | `ChannelNotPermitted` | Your channel policy doesn't follow the target's channel | Plan against a release from the channel your fleet follows |
 | `PolicyUnknown` | The plan couldn't see your organisation's window or channel policy | See below |

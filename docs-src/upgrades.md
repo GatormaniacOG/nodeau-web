@@ -20,8 +20,9 @@ right there so you can take a look.
 
 ## Before you start {#before-you-start}
 
-- **A Linux fleet.** A Mac runs Nodeau standalone, so you update it on the Mac
-  itself with `nodeau update`. A plan names it and says so.
+- **Linux machines.** A rollout moves the Linux machines in your fleet. You can
+  always update a Mac, on its own or in your fleet, on the Mac itself with
+  `nodeau update`.
 - **Home Pro or Business.** Rollouts are part of remote management. On Home, a
   plan still shows you everything, and you update the machine with the
   installer.
@@ -123,7 +124,8 @@ can read:
 | It reports that it isn't healthy | `MachineUnhealthy` | See what's wrong with `nodeau doctor --node <machine>`. Nodeau upgrades a machine it can check again afterwards |
 | Its last report is too old to act on | `MachineStale` | Check the machine is up and reporting |
 | Nodeau Cloud can't yet accept the connector this release ships | `ServerFloorTooHigh` | Wait for Nodeau Cloud to be updated. It always moves before the machines that talk to it |
-| It's a Mac | `PlatformCannotJoinFleet` | A Mac runs Nodeau standalone, so you update it on the Mac itself. See [install on a Mac](/docs/install-macos/) |
+| It's a Mac whose Nodeau doesn't take part in fleet rollouts | `NativeMachineUpgradedOnTheMachine` | Update it on the Mac itself with `nodeau update`. The rest of the fleet is planned without it |
+| It's a Mac, planned by a Nodeau from before a Mac could join a fleet | `PlatformCannotJoinFleet` | Update it on the Mac itself. See [install on a Mac](/docs/install-macos/) |
 
 "Too old" is measured against the freshest report anywhere in the fleet, not
 against the clock on your wall, so the same inputs always give the same plan.

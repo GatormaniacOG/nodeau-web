@@ -91,8 +91,9 @@ print them.
 
 ## macOS
 
-A Mac runs standalone, so there is no fleet membership to remove and no other
-machine to tell.
+If the Mac is in your fleet, take it out first with `nodeau fleet leave` on the
+Mac, or `nodeau fleet remove <name>` from the machine that runs your fleet. A
+standalone Mac has no fleet membership to remove and no other machine to tell.
 
 ```bash
 nodeau uninstall --dry-run
@@ -127,7 +128,8 @@ nodeau fleet remove <machine>       # from the machine that runs the control pla
 - **Unlinking** from your account: `nodeau logout` here, and remove the
   installation in your account at app.nodeau.ai to free its slot.
 - **Leaving a fleet**: `nodeau fleet remove`, run from another machine, because a
-  machine that is gone cannot remove itself. See
+  machine that is gone cannot remove itself. A Mac can also leave by itself, with
+  `nodeau fleet leave`. See
   [removing a machine](/docs/fleet/#removing-a-machine).
 - **Your subscription**: managed from your account at app.nodeau.ai.
 

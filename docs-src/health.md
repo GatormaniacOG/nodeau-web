@@ -11,7 +11,7 @@ lede: Five commands answer five different questions. Pick the right one and a pr
 | Command | Question | Where |
 |---|---|---|
 | `nodeau doctor` | **Is anything wrong, and what do I do about it?** | Linux and Mac |
-| `nodeau health` | **How are my machines doing?** Processor, memory, storage, network | Linux fleets |
+| `nodeau health` | **How are my machines doing?** Processor, memory, storage, network | The Linux machines in a fleet |
 | `nodeau status` | **What is Nodeau running right now**, and does the endpoint answer? | Linux and Mac |
 | `nodeau ps` | **What is holding a GPU?** Services and batch jobs | Linux and Mac |
 | `nodeau logs` | **What is a workload printing?** | Linux and Mac |
@@ -74,6 +74,18 @@ Stable, machine-readable, and identical in `--json` and in the human report.
 | `DEVICE_ALLOCATORS_OVERLAP` | A machine is serving GPU work through **both** allocators at once. Fix this one promptly: two allocators over the same cards can hand out the same card twice |
 | `HOST_CHECK_FAILED` | A host-level precondition failed |
 | `STORAGE_LOW` | The model cache filesystem is running out of room |
+
+**Memory calibration**
+
+Each machine's safety reserve: Nodeau's conservative default, or a calibration
+you measured with `nodeau benchmark` and adopted. See
+[measure your machine](/docs/fit/#measure-your-machine).
+
+| Code | Meaning |
+|---|---|
+| `CALIBRATION_RECOMMENDATION_PENDING` | A measured recommendation is waiting to be adopted, and the default is in use. A warning when it says the machine needs more than the default keeps |
+| `CALIBRATION_EXPIRED` | The adopted calibration reached its 30 days, and the default is back in use |
+| `CALIBRATION_INVALIDATED` | The adopted calibration no longer matches the machine (a new operating system build, driver or hardware), and the default is in use |
 
 **Models**
 
@@ -139,9 +151,9 @@ nodeau health history --machine nodeforge --since 6h
 ```
 
 :::linux A fleet command
-`health` and `health history` read the fleet's datastore, so they run on Linux
-machines in a fleet. A Mac runs standalone, and `nodeau doctor` covers it: the
-codes under **On a Mac** above are the ones it reports.
+`health` and `health history` read the fleet's datastore, so they run on your
+Linux machines in a fleet. On a Mac, in a fleet or on its own, `nodeau doctor` covers
+it: the codes under **On a Mac** above are the ones it reports.
 :::
 
 The current state of every machine, **processor, memory, storage and network**,

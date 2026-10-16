@@ -22,8 +22,9 @@ nodeau run qwen3.5-4b-q4km
 
 It resolves the model, asks before downloading, checks the fit, starts the
 model on the Mac's GPU through Metal and brings up the loopback endpoint. A Mac
-runs standalone and serves chat, embedding, reranking and vision models, several
-at once on ports of their own, and `nodeau model list` shows what you can run.
+serves chat, embedding, reranking and vision models, several at once on ports of
+their own, and `nodeau model list` shows what you can run. Batch inference,
+structured output and tool calling run on your Linux machines.
 :::
 
 ## What you'll see
@@ -173,6 +174,9 @@ That shows the arithmetic the controller used when it decided: what the card can
 address, what else is on it, the safety reserve and what the model needs, plus a
 typed reason code and what to try next. It reads the recorded decision rather
 than recalculating it, so it always agrees with what the platform actually did.
+To try other settings without starting anything,
+`nodeau run qwen3.5-4b-q4km --context-size 2048 --explain` shows what that run
+would get. See [before it runs](/docs/fit/).
 
 The usual answers:
 

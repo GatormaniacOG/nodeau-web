@@ -9,8 +9,8 @@ lede: A few of Nodeau's words mean something narrower than they do elsewhere. He
 ## Machine, node, GPU
 
 A **machine** is one physical computer running Nodeau. On Linux it's also a
-Kubernetes **node**, and the CLI uses the two words for the same thing.
-`nodeau fleet list` shows them.
+Kubernetes **node**, and the CLI uses the two words for the same thing. A Mac in
+your fleet is a machine and never a node. `nodeau fleet list` shows them all.
 
 A **GPU** is one physical graphics card, identified by its **UUID**, because an
 index can change when hardware does. A card that moves between machines keeps
@@ -29,8 +29,10 @@ fleet of one, and everything works.
 Adding a machine takes two commands: `nodeau fleet invite` here and
 `nodeau join` there. See [add and run machines](/docs/fleet/).
 
-A **Mac runs standalone**, on its own native execution plane, rather than as a
-member of a fleet.
+A **Mac** runs its models on its own native execution plane, through Metal. It
+works on its own, or it joins your fleet as a machine in its own right, and Nodeau
+places models on it by its memory and what's already running there. See
+[adding a Mac](/docs/fleet/#adding-a-mac).
 
 ## Model, artifact, alias
 
@@ -111,11 +113,25 @@ anything is created, from a prediction of peak VRAM, and it's recorded.
 the candidates admission has already accepted.
 
 ```bash
+nodeau run <model> --explain      # both decisions, before anything starts
 nodeau service explain <name>     # the admission arithmetic
 nodeau placement explain <name>   # why this machine and this card
 ```
 
-Both are covered in [how Nodeau decides](/docs/scheduling/).
+Both are covered in [how Nodeau decides](/docs/scheduling/), and previews in
+[before it runs](/docs/fit/).
+
+## Safety reserve and calibration
+
+The **safety reserve** is memory Nodeau keeps back so the rest of the system has
+room to work. It has a **floor** that's never given away (none on an NVIDIA card,
+2,048 MiB on a Mac) and a part above the floor that you can set aside for one run.
+
+A **calibration** is a reserve measured on your own machine with
+`nodeau benchmark` and adopted by you. Until you adopt one, Nodeau uses its
+conservative default. A calibration lasts 30 days, and it's set aside sooner if
+macOS is updated, the NVIDIA driver changes or the hardware does. See
+[before it runs](/docs/fit/#the-safety-reserve).
 
 ## Reservation
 
@@ -244,8 +260,14 @@ control plane, so a model that's already serving keeps serving while the control
 plane restarts. New decisions wait until it's back, and batch workers read their
 records through it.
 
-On a Mac, the same decisions are made in-process by Nodeau's native execution
-plane, with no cluster involved.
+A model on a Mac in your fleet is reached through the fleet gateway on the
+machine that runs your fleet, over a connection the Mac opened, so it answers
+while that gateway is running.
+
+On a Mac on its own, the same decisions are made in-process by Nodeau's native
+execution plane, with no cluster involved. A Mac in your fleet takes its work
+from the fleet's control plane, and still checks each model fits before it starts
+it.
 
 ## The local dashboard
 

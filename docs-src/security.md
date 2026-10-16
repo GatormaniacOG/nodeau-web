@@ -23,7 +23,9 @@ Your prompts go to a model running on **your own GPU**, reached over
 
 In a fleet, a request to a model on another machine you own travels across **your
 own network** to that machine, the way any service on your LAN would, and stays
-within your walls.
+within your walls. A model on a Mac in your fleet is reached through a connection
+the Mac itself opened to the machine that runs your fleet, with mutual TLS and
+both certificates pinned, so nothing ever connects into the Mac.
 
 ## The endpoint binds loopback, and that is fixed
 
@@ -85,6 +87,7 @@ keeps scheduling.
 | `nodeau update`, `nodeau fleet upgrade plan` | Requests for the published release channel and manifest from `get.nodeau.ai`, plus the new archive when you pass `--download` to `update` |
 | `nodeau model install` | A request for the weights, from the model's publisher |
 | `nodeau model import`, `nodeau model qualify` | **Nothing**: both happen entirely on your machines |
+| `nodeau run --explain`, `nodeau benchmark` | **Nothing**: both happen entirely on your machines. Once you're connected, the fleet report says which reserve each machine uses, as described below |
 | `nodeau login` | An account association and this installation's name, in return for an installation credential |
 | `nodeau plan refresh` | A request for a freshly signed entitlement |
 | `nodeau fleet connect` | The fleet report, described below |
@@ -93,8 +96,12 @@ keeps scheduling.
 
 After `nodeau fleet connect`, your fleet reports:
 
-- machine and GPU inventory,
+- machine and GPU inventory, with each accelerator's safety reserve and
+  whether it's Nodeau's default or a calibration you adopted (the figure, its
+  confidence and its dates, never the measurement behind it),
 - workload names, phases and placements,
+- when you ask for a preview from the browser, the machine's answer: where the
+  model would run and the memory arithmetic behind it,
 - how long each workload held its accelerators, which becomes your
   [usage](/docs/usage/),
 - plan and version,
