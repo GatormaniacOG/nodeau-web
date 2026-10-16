@@ -362,8 +362,8 @@ Doctor's word on each machine's safety reserve.
 
 | Code | Means | Fix |
 |---|---|---|
-| `CALIBRATION_EXPIRED` | The reserve you adopted reached its 30 days, and Nodeau's conservative default is back in use | `nodeau benchmark`, then adopt again if you want |
-| `CALIBRATION_INVALIDATED` | The reserve you adopted no longer matches the machine: macOS was updated, the NVIDIA driver changed, or the hardware did. The default is in use | `nodeau benchmark` under the system as it is now |
+| `CALIBRATION_EXPIRED` | The reserve you adopted reached its 30 days, and Nodeau's conservative default is back in use | `nodeau benchmark`, then adopt again if you want (doctor prints the exact command, with `--machine NAME` for a Linux machine) |
+| `CALIBRATION_INVALIDATED` | The reserve you adopted no longer matches the machine: macOS was updated, the NVIDIA driver changed, or the hardware did. The default is in use | `nodeau benchmark` under the system as it is now (doctor prints the exact command, with `--machine NAME` for a Linux machine) |
 | `CALIBRATION_RECOMMENDATION_PENDING` | A measured recommendation is waiting, and the default is in use. A warning when it says the machine needs **more** than the default keeps | `nodeau benchmark adopt <ID>`, if you want it |
 
 ### It says there is no validated profile for my GPU

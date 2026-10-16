@@ -384,8 +384,8 @@ it's calibrated or the default, and until when.
 | Code | Means | Do |
 |---|---|---|
 | `CALIBRATION_RECOMMENDATION_PENDING` | A measured recommendation is waiting and the default is in use. A warning when the measurement says the machine needs more than the default keeps | `nodeau benchmark adopt <ID>`, if you want it |
-| `CALIBRATION_EXPIRED` | The adopted calibration reached its 30 days, and the default is back in use | `nodeau benchmark` to measure again |
-| `CALIBRATION_INVALIDATED` | The adopted calibration no longer matches the machine (a new operating system build, driver or hardware), and the default is in use | `nodeau benchmark` to measure again |
+| `CALIBRATION_EXPIRED` | The adopted calibration reached its 30 days, and the default is back in use | `nodeau benchmark` to measure again (doctor prints the exact command, with `--machine NAME` for a Linux machine) |
+| `CALIBRATION_INVALIDATED` | The adopted calibration no longer matches the machine (a new operating system build, driver or hardware), and the default is in use | `nodeau benchmark` to measure again (doctor prints the exact command, with `--machine NAME` for a Linux machine) |
 
 `nodeau service explain <name>` also says where a running workload's reserve
 came from, and so does the [Playground](/docs/playground/#where-the-answer-came-from).
