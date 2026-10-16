@@ -349,6 +349,13 @@ function AuditSection({ org }: { org: Organization }) {
                     <td title={e.occurredAt}>{relativeTime(e.occurredAt)}</td>
                     <td>
                       {e.type}
+                      {/* WHICH operation, for an operation (a fixed label the
+                          server writes, never user input): a one-run override
+                          reads workload.run.override, so it is never hidden
+                          among plain runs (Phase 20I). */}
+                      {e.type === 'fleet.operation_requested' && e.detail?.reason && (
+                        <span className="muted small"> {e.detail.reason}</span>
+                      )}
                       {/* WHO, when it was not a person: a fixed label the
                           server writes (Phase 20's automatic recovery). */}
                       {e.detail?.actor && <span className="muted small"> by {e.detail.actor}</span>}

@@ -48,7 +48,7 @@ const VIEWPORTS = [
   { name: '390', width: 390, height: 844 },
 ];
 
-const seeded = { orgId: '', ownerId: '', installationId: '', credential: '', machineId: '' };
+const seeded = { orgId: '', ownerId: '', installationId: '', credential: '', machineId: '', macId: '' };
 
 function sessionFor(label: string): { token: string; sha: string } {
   const token = `e2e-visual-${label}-token`;
@@ -141,6 +141,9 @@ test.beforeAll(async ({ request }) => {
     // Phase 20: a connector that records a recovery choice and reports copies,
     // so the workloads page lays out a recovery, its form and the copy list.
     'workload.recovery',
+    // Phase 20I: a connector that answers admission previews, so the run page
+    // lays out the admission card and an override's confirmation.
+    'admission.preview',
   ];
   const response = await request.post(`${apiBase()}/v1/fleet/sync`, {
     headers: { Authorization: `Bearer ${seeded.credential}`, 'X-Nodeau-Request': '1' },
@@ -200,6 +203,36 @@ test.beforeAll(async ({ request }) => {
                 temperatureC: 38,
                 healthy: true,
                 schedulable: true,
+              },
+            ],
+          },
+          // Phase 20I: a Mac member, so the machine page lays out unified
+          // memory and a calibrated reserve with its dates.
+          {
+            machineKey: '9a1f0c3e5b7d4e2f8a6c1b3d5e7f9a0b',
+            name: 'pranavs-macbook-pro-2.local',
+            platform: 'darwin/arm64',
+            osVersion: 'macOS 27.0.1 (26A434)',
+            role: 'member',
+            executionPlane: 'native',
+            nodeauVersion: 'v0.14.0-beta.3',
+            capabilities: caps,
+            schedulingState: 'active',
+            health: 'healthy',
+            localOnline: true,
+            gpus: [
+              {
+                uuid: 'apple-m3pro-36gib-0001',
+                ordinal: 1,
+                model: 'Apple M3 Pro',
+                healthy: true,
+                schedulable: true,
+                backend: 'metal',
+                unifiedWorkingSetMib: 28753,
+                calibration: {
+                  state: 'active', reserveMib: 2560, defaultMib: 5750, floorMib: 2048, source: 'calibrated',
+                  confidence: 'high', measuredAt: '2026-10-05T12:00:00Z', validUntil: '2026-11-04T12:00:00Z',
+                },
               },
             ],
           },
@@ -277,6 +310,10 @@ test.beforeAll(async ({ request }) => {
   seeded.machineId = psql(
     dsn,
     `SELECT id FROM fleet_machines WHERE installation_id = '${seeded.installationId}' AND reported_name = 'nodeau-c'`,
+  );
+  seeded.macId = psql(
+    dsn,
+    `SELECT id FROM fleet_machines WHERE installation_id = '${seeded.installationId}' AND reported_name = 'pranavs-macbook-pro-2.local'`,
   );
 
   // Usage and an audit trail, so those pages have rows to lay out.
@@ -466,6 +503,92 @@ function fleetLastSync(ago: string) {
   );
 }
 
+/** Asks for a preview from the run page and answers it as the fleet would. */
+async function askAndAnswerPreview(page: Page) {
+  await page.getByLabel('Name').fill('qwen-on-the-macbook-with-a-long-name');
+  await page.getByRole('combobox', { name: 'Model' }).click();
+  await page.getByRole('listbox').getByRole('option').filter({ hasText: 'Qwen3.5-4B Q4_K_M' }).click();
+  const asked = page.waitForResponse(
+    (r) => r.request().method() === 'POST' && r.url().endsWith(`/organizations/${seeded.orgId}/fleet/operations`),
+  );
+  await page.getByRole('button', { name: 'Preview' }).click();
+  const id: string = (await (await asked).json()).id;
+  const mac = 'pranavs-macbook-pro-2.local';
+  const response = await page.request.post(`${apiBase()}/v1/fleet/sync`, {
+    headers: { Authorization: `Bearer ${seeded.credential}`, 'X-Nodeau-Request': '1' },
+    data: {
+      protocolVersion: 1,
+      observedHash: 'visual-1',
+      operationResults: [
+        {
+          id,
+          state: 'observed',
+          preview: {
+            version: 1, id: 'visual-preview', decidedAt: new Date().toISOString(),
+            expiresAt: new Date(Date.now() + 300_000).toISOString(),
+            outcome: 'Reject', reason: 'SafetyReserveViolation', message: 'No machine can run it as asked.',
+            candidates: [
+              {
+                machine: mac, eligible: false, summary: 'would need the safety reserve: short by 2,834 MiB',
+                explanation: {
+                  version: 1, outcome: 'Reject', reason: 'SafetyReserveViolation', constraint: 'soft',
+                  message: "qwen3.5-4b-q4km would fit only inside Nodeau's 5,750 MiB safety reserve on pranavs-macbook-pro-2.local.",
+                  machine: { name: mac, accelerator: 'Apple M3 Pro', backend: 'metal', memoryKind: 'unified-memory' },
+                  confidence: 'conservative-estimate',
+                  evidence: { predictionSource: 'estimated-from-architecture', scope: 'derived' },
+                  memory: {
+                    kind: 'unified-memory',
+                    capacity: [
+                      { key: 'reclaimable-now', label: 'Memory free or reclaimable right now', mib: 7322, provenance: 'observed-current' },
+                      { key: 'accelerator-ceiling', label: 'Most the accelerator may use (recommendedMaxWorkingSetSize)', mib: 28753, provenance: 'observed-current', informational: true },
+                    ],
+                    inUse: [],
+                    reserve: { totalMiB: 5750, hardFloorMiB: 2048, softMiB: 3702, source: 'default', defaultMiB: 5750 },
+                    availableMiB: 1572,
+                    demand: [
+                      { key: 'weights', label: 'Model weights', mib: 2614, provenance: 'estimated' },
+                      { key: 'kv-cache', label: 'Context (KV cache) for 4,096 tokens', mib: 512, provenance: 'estimated' },
+                      { key: 'runtime-overhead', label: 'Runtime overhead', mib: 256, provenance: 'estimated' },
+                      { key: 'prediction-margin', label: 'Prediction margin', mib: 256, provenance: 'policy-reserve' },
+                      { key: 'estimate-margin', label: 'Allowance for hardware this model was never measured on', mib: 768, provenance: 'policy-reserve' },
+                    ],
+                    requiredMiB: 4406,
+                    headroomMiB: -2834,
+                  },
+                  override: {
+                    available: true, needs: ['soft-reserve'], reserveMiB: 5750, reserveWithOverrideMiB: 2048,
+                    hardFloorMiB: 2048, headroomWithOverrideMiB: 868,
+                    consequences: ['Other applications on this Mac will have less memory to work with while this model runs.'],
+                  },
+                },
+              },
+              {
+                machine: 'nodeforge', eligible: false,
+                summary: 'GPU already allocated: qwen-local holds the NVIDIA GeForce RTX 5060 Ti',
+                explanation: {
+                  version: 1, outcome: 'Reject', reason: 'GPUAlreadyAllocated', constraint: 'hard',
+                  machine: { name: 'nodeforge', accelerator: 'NVIDIA GeForce RTX 5060 Ti', memoryKind: 'gpu-memory' },
+                  confidence: 'unknown', evidence: {},
+                },
+              },
+              {
+                machine: 'nodeau-c', eligible: false, summary: 'not enough GPU memory: needs 4.3 GiB, 3.1 GiB free',
+                explanation: {
+                  version: 1, outcome: 'Reject', reason: 'InsufficientVRAM', constraint: 'hard',
+                  machine: { name: 'nodeau-c', accelerator: 'NVIDIA GeForce RTX 3080', memoryKind: 'gpu-memory' },
+                  confidence: 'medium', evidence: {},
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  });
+  expect(response.status(), await response.text()).toBe(200);
+  await page.getByText('Closest candidate').waitFor({ timeout: 10_000 });
+}
+
 const PAGES: AuditPage[] = [
   { label: 'dashboard', path: () => '/' },
   { label: 'installations', path: () => '/installations' },
@@ -521,6 +644,29 @@ const PAGES: AuditPage[] = [
     prepare: async (page) => {
       await page.locator('#run-model').click();
       await page.waitForTimeout(300);
+    },
+  },
+  // Phase 20I — a Mac's machine page, and the run page with the fleet's
+  // answer on it: the soft refusal with its override offer and the arithmetic
+  // and other machines OPEN (the longest state), then the override's
+  // confirmation. Long names on purpose.
+  { label: 'machine-mac', path: () => `/fleet/machines/${seeded.macId}` },
+  {
+    label: 'run-preview',
+    path: () => '/fleet/run',
+    prepare: async (page) => {
+      await askAndAnswerPreview(page);
+      await page.getByText('Show the arithmetic').click();
+      await page.getByText(/^Other machines/).click();
+    },
+  },
+  {
+    label: 'run-override-confirm',
+    path: () => '/fleet/run',
+    prepare: async (page) => {
+      await askAndAnswerPreview(page);
+      await page.getByRole('button', { name: /with a reduced safety reserve/ }).click();
+      await page.getByRole('group', { name: /reduced safety reserve\?/ }).waitFor();
     },
   },
   // Phase 18B — a plan on the page, and a rollout in progress. The rollout is

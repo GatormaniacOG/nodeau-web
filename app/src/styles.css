@@ -2596,3 +2596,131 @@ button:not([class]):disabled {
   align-items: center;
   gap: var(--space-2);
 }
+
+/* ===================================================== admission — Phase 20I */
+
+/* The card that says where a model would run, what it would cost and why. It
+   renders the machine's own answer; nothing here computes a figure. */
+.admission-card {
+  margin-top: var(--space-5);
+}
+.admission-where {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-2);
+  overflow-wrap: anywhere;
+}
+.admission-where-label {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: var(--space-1);
+}
+/* Verdicts carry words and a symbol; the colour only repeats them. */
+.verdict {
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+.verdict-ok {
+  color: var(--accent-text);
+}
+.verdict-soft {
+  color: var(--warn);
+}
+.verdict-hard {
+  color: var(--danger);
+}
+.admission-facts dd .badge {
+  margin-left: var(--space-1);
+}
+.arithmetic {
+  margin: var(--space-4) 0;
+}
+.arithmetic summary,
+.other-machines summary {
+  cursor: pointer;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  padding: var(--space-1) 0;
+}
+.arithmetic summary:focus-visible,
+.other-machines summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+/* Row labels are sentences, not column headings: they wrap and keep their
+   case, or a long label runs into its figure. */
+.admission-terms th {
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.admission-terms .num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.term-note {
+  display: block;
+  color: var(--text-3);
+  font-size: var(--text-xs);
+}
+.term-info th,
+.term-info td {
+  color: var(--text-3);
+}
+.term-total th,
+.term-total td {
+  font-weight: 600;
+  border-top: 1px solid var(--line-strong);
+}
+.override-offer button,
+.override-confirm button {
+  margin-top: var(--space-2);
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.override-offer p {
+  overflow-wrap: anywhere;
+}
+.override-confirm {
+  border-color: var(--warn-line);
+  overflow-wrap: anywhere;
+}
+.other-machines ul {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.1rem;
+}
+.other-machines li {
+  margin-bottom: var(--space-1);
+  overflow-wrap: anywhere;
+}
+.calibration-line {
+  margin: var(--space-2) 0;
+}
+.calibration-line code {
+  font-size: var(--text-xs);
+}
+/* At phone widths the provenance badge wraps under its figure rather than
+   disappearing: which numbers are measured is the point of the card. */
+@media (max-width: 480px) {
+  .admission-terms td:last-child {
+    display: block;
+    padding-top: 0;
+  }
+  .admission-terms tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .admission-terms td:last-child {
+    grid-column: 1 / -1;
+  }
+}

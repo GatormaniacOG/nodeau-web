@@ -54,7 +54,19 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
 
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  // WebKit is opt-in (NODEAU_E2E_WEBKIT=1): on Linux it needs five host
+  // libraries Playwright would install with sudo. Phase 20I runs it with those
+  // libraries unpacked user-locally (`apt-get download` + `dpkg -x`) on
+  // LD_LIBRARY_PATH, so Safari's engine is exercised without touching the host.
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    ...(process.env.NODEAU_E2E_WEBKIT === '1'
+      ? [
+          { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+          { name: 'mobile-webkit', use: { ...devices['iPhone 13'] } },
+        ]
+      : []),
+  ],
 
   webServer: [
     {
