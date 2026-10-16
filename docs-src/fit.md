@@ -215,6 +215,15 @@ override, Nodeau accepts none, and it says why:
 A smaller context, fewer parallel requests or a smaller model is the way
 forward then.
 
+In a fleet, look under **Other machines** before you take that as the answer.
+When nothing would run as asked, the command line describes the first card it
+lists, so if a card listed earlier (on another machine, or in the same one) is
+refused outright, it can print *No override can help* and offer no command
+while a card further down is marked *(soft)*: held back only by Nodeau's
+margins. Add `--spend-safety-reserve` or `--accept-estimate-risk` to the same
+command with `--explain`, and the preview shows that card with the override
+applied before anything starts. Preview in app.nodeau.ai offers it either way.
+
 The other risk flag, `--accept-estimate-risk`, means what it always has: drop
 only the extra allowance Nodeau adds for hardware nobody has measured this model
 on. The preview's suggested command includes whichever of the two the gap needs.

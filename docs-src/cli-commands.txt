@@ -6,12 +6,12 @@
 #     ./scripts/docs/dump-cli-commands.sh <path-to-released-nodeau> > ../nodeau-web/docs-src/cli-commands.txt
 #
 # One line per command, then a tab, then every flag it accepts.
-# This copy: from the STAGED v0.19.0-beta.2 linux archive (sha256 8f551c6a561662e9…,
-# verified against its release pin; the binary says v0.19.0-beta.2, commit 9aa7d92d9),
-# regenerated 2026-10-15. Identical, command for command and flag for flag, to the list
-# from the development builds before it. Against v0.18.0-beta.5's published list it
-# adds `nodeau benchmark` (and adopt, model, reset, status) and `nodeau run --explain`.
-# If the candidate that is promoted is not beta.2, regenerate from that one.
+# This copy: from the PROMOTED v0.19.0-beta.7 linux archive, fetched anonymously from
+# get.nodeau.ai/releases/v0.19.0-beta.7/ (sha256 136312bb7e7f7269…, equal to its release pin;
+# the binary says v0.19.0-beta.7, commit 49dc1bc68), regenerated 2026-10-16. Identical, command
+# for command and flag for flag, to the list from the staged v0.19.0-beta.2 archive before it.
+# Against v0.18.0-beta.5's published list it adds `nodeau benchmark` (and adopt, model, reset,
+# status) and `nodeau run --explain`.
 #
 # tools/check-cli-coverage.py fails when a command here is not documented in
 # docs-src/cli.md. The failure this prevents is the ordinary one: a command

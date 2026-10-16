@@ -303,7 +303,10 @@ its floor.
 
 When the preview says *"No override can help"*, the hardware itself is too
 small, even with the reserve at its floor, and no flag changes that. A smaller
-context, fewer parallel requests or a smaller model is the answer.
+context, fewer parallel requests or a smaller model is the answer. In a fleet,
+first check **Other machines** for one marked *(soft)*: the command line can say
+it about a card listed earlier while another could still take the run
+([why](/docs/fit/#one-run-override)).
 
 See [before it runs](/docs/fit/) for the arithmetic and what each choice means.
 
