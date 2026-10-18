@@ -149,12 +149,18 @@
 
 # The version every page shows is read from the channel a visitor would install
 # from. A 200 here is a PROXY, not a redirect: the browser sees a same-origin
-# response, so the site needs no cross-origin permission from get.nodeau.ai and
-# the installer's own configuration is untouched. Nothing else of get.nodeau.ai
-# is exposed here.
+# response, so the site needs no cross-origin permission and the installer's own
+# configuration is untouched.
+#
+# It proxies to the channel's ORIGIN, the public release repository's Pages site,
+# not to get.nodeau.ai: since 2026-10-18 get.nodeau.ai's /channel/* is itself a
+# proxy to that origin, and Netlify follows one proxy hop, so a proxy to
+# get.nodeau.ai is answered from get.nodeau.ai's own files, which hold no channel
+# (a 404, and every version slot stays empty). Same bytes either way: the file
+# get.nodeau.ai/channel/beta.json serves is this one.
 [[redirects]]
   from = "/channel/beta.json"
-  to = "https://get.nodeau.ai/channel/beta.json"
+  to = "https://gatormaniacog.github.io/nodeau-releases/channel/beta.json"
   status = 200
   force = true
 

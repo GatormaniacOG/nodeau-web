@@ -6,7 +6,7 @@
 
 Three behaviours `python3 -m http.server` lacks, each of which a page depends on:
 
-  - /channel/beta.json is PROXIED to get.nodeau.ai, as netlify.toml does, so
+  - /channel/beta.json is PROXIED to the channel's origin, as netlify.toml does, so
     every [data-release] slot fills with the live version locally too;
   - a missing path is answered with /404.html and status 404;
   - the repository files netlify.toml hides (README.md, tools/, docs-src/) 404.
@@ -23,6 +23,8 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+# The channel's origin, as netlify.toml proxies it (not get.nodeau.ai: see there).
+CHANNEL_ORIGIN = "https://gatormaniacog.github.io/nodeau-releases/channel/beta.json"
 HIDDEN = ("/README.md", "/tools/", "/docs-src/", "/netlify.toml", "/.gitignore", "/.git/")
 
 
@@ -45,7 +47,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         path = self.path.split("?", 1)[0]
         if path == "/channel/beta.json":
             try:
-                with urllib.request.urlopen("https://get.nodeau.ai/channel/beta.json", timeout=10) as r:
+                with urllib.request.urlopen(CHANNEL_ORIGIN, timeout=10) as r:
                     body = r.read()
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")

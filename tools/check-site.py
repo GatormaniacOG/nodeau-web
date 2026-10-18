@@ -857,8 +857,11 @@ def main() -> int:
     if "/channel/beta.json" not in js:
         errors.append("assets/nodeau.js: [data-release] is not filled from /channel/beta.json")
     toml = (ROOT / "netlify.toml").read_text()
-    if not re.search(r'from = "/channel/beta\.json"\s*\n\s*to = "https://get\.nodeau\.ai/channel/beta\.json"\s*\n\s*status = 200', toml):
-        errors.append("netlify.toml: /channel/beta.json is not proxied to get.nodeau.ai, "
+    # The channel's ORIGIN, not get.nodeau.ai: Netlify follows one proxy hop, and
+    # get.nodeau.ai's /channel/* is itself a proxy to this origin (R1, 2026-10-18).
+    if not re.search(r'from = "/channel/beta\.json"\s*\n\s*to = "https://gatormaniacog\.github\.io/nodeau-releases/channel/beta\.json"\s*\n\s*status = 200', toml):
+        errors.append("netlify.toml: /channel/beta.json is not proxied to the channel's origin "
+                      "(https://gatormaniacog.github.io/nodeau-releases/channel/beta.json), "
                       "so every page's version would stay empty")
 
     # ------------------------------------------------------------------ /docs
