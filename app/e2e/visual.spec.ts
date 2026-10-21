@@ -96,7 +96,7 @@ test.beforeAll(async ({ request }) => {
     psql(
       dsn,
       `INSERT INTO subscriptions (organization_id, plan_id, status, current_period_end)
-       VALUES ('${seeded.orgId}', 'home-pro', 'active', now() + interval '90 days')`,
+       VALUES ('${seeded.orgId}', 'business', 'active', now() + interval '90 days')`,
     );
     seeded.ownerId = owner;
   }
@@ -733,32 +733,31 @@ const PAGES: AuditPage[] = [
     },
   },
   { label: 'usage', path: () => '/usage' },
+  // Phase 21: each section of the organisation is its own address.
   { label: 'organization', path: () => '/organization' },
   {
     label: 'organization-teams',
-    path: () => '/organization',
+    path: () => '/organization/teams',
     prepare: async (page) => {
-      await page.getByRole('button', { name: 'Teams' }).click();
       await page.getByText('Platform engineering').waitFor();
     },
   },
   {
     label: 'organization-accounts',
-    path: () => '/organization',
+    path: () => '/organization/service-accounts',
     prepare: async (page) => {
-      await page.getByRole('button', { name: 'Service accounts' }).click();
       await page.getByRole('button', { name: /manage keys/i }).click();
       await page.getByText('deploy pipeline').waitFor();
     },
   },
   {
     label: 'organization-sso',
-    path: () => '/organization',
+    path: () => '/organization/sign-in',
     prepare: async (page) => {
-      await page.getByRole('button', { name: 'Single sign-on' }).click();
-      await page.getByText('Directory sync').waitFor();
+      await page.getByTestId('sso-states').waitFor();
     },
   },
+  { label: 'organization-settings', path: () => '/organization/settings' },
   { label: 'plan', path: () => '/plan' },
   { label: 'billing', path: () => '/billing' },
   { label: 'settings', path: () => '/settings' },

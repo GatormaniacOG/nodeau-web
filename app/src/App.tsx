@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { api, ApiError, NetworkError, signInURL, type Me, type Organization } from './lib/api';
+import {
+  api,
+  ApiError,
+  FEATURE_TEAMS,
+  includes,
+  NetworkError,
+  signInURL,
+  type Me,
+  type Organization,
+} from './lib/api';
 import { hrefFor, useRoute, type Route } from './lib/router';
 import { ErrorNotice, Spinner } from './components/ui';
 import { InstallationDetailPage, InstallationsPage } from './pages/Installations';
@@ -10,6 +19,7 @@ import { DashboardPage } from './pages/Dashboard';
 import { SettingsPage } from './pages/Settings';
 import { OrganizationPage } from './pages/Organization';
 import { SignInPage } from './pages/SignIn';
+import { InvitePage } from './pages/Invite';
 import { FleetMachinePage, FleetPage } from './pages/Fleet';
 import { FleetWorkloadsPage } from './pages/FleetWorkloads';
 import { FleetRunPage } from './pages/FleetRun';
@@ -107,18 +117,34 @@ export function App() {
   }
 
   if (session.status === 'anonymous') {
+    // An invitation's holder may read it before they have an account.
     return (
       <Shell>
-        <SignInPage route={route} />
+        {route.name === 'invite' ? <InvitePage signedIn={false} /> : <SignInPage route={route} />}
       </Shell>
     );
   }
 
   const { me } = session;
-  // The personal organisation first; Business multi-org selection is Phase 13,
-  // and picking the first membership is correct until then.
-  const org: Organization | undefined =
-    me.organizations.find((o) => o.kind === 'personal') ?? me.organizations[0];
+  const org = chooseOrganization(me);
+
+  // An invitation is accepted by a PERSON, whatever organisations they are in
+  // yet — including none.
+  if (route.name === 'invite') {
+    return (
+      <Shell me={me} org={org} navigate={navigate} route={route} onSwitch={reload}>
+        <InvitePage
+          signedIn
+          email={me.user.email}
+          navigate={navigate}
+          onJoined={(joined) => {
+            rememberOrganization(joined.id);
+            reload();
+          }}
+        />
+      </Shell>
+    );
+  }
 
   if (!org) {
     return (
@@ -138,10 +164,44 @@ export function App() {
   }
 
   return (
-    <Shell me={me} org={org} navigate={navigate} route={route}>
-      <Page route={route} me={me} org={org} navigate={navigate} />
+    <Shell me={me} org={org} navigate={navigate} route={route} onSwitch={reload}>
+      <Page route={route} me={me} org={org} navigate={navigate} reload={reload} />
     </Shell>
   );
+}
+
+/**
+ * chooseOrganization is which organisation the console is looking at.
+ *
+ * Phase 21: a person may belong to several. The choice is remembered in THIS
+ * browser only, as a convenience — it is never authority: every request names
+ * the organisation in its path and the server judges the person's membership
+ * there, so a stale or edited choice can show nothing it would not show anyway.
+ * A remembered organisation the person is no longer in is simply not found, and
+ * the personal one is shown instead.
+ */
+const SELECTED_ORG = 'nodeau.organization';
+
+function chooseOrganization(me: Me): Organization | undefined {
+  let remembered: string | null = null;
+  try {
+    remembered = window.localStorage.getItem(SELECTED_ORG);
+  } catch {
+    remembered = null;
+  }
+  return (
+    me.organizations.find((o) => o.id === remembered) ??
+    me.organizations.find((o) => o.kind === 'personal') ??
+    me.organizations[0]
+  );
+}
+
+function rememberOrganization(id: string) {
+  try {
+    window.localStorage.setItem(SELECTED_ORG, id);
+  } catch {
+    /* a convenience only */
+  }
 }
 
 function Page({
@@ -149,11 +209,13 @@ function Page({
   me,
   org,
   navigate,
+  reload,
 }: {
   route: Route;
   me: Me;
   org: Organization;
   navigate: (to: string) => void;
+  reload: () => void;
 }) {
   switch (route.name) {
     case 'dashboard':
@@ -173,7 +235,21 @@ function Page({
     case 'plan':
       return <PlanPage org={org} />;
     case 'organization':
-      return <OrganizationPage me={me} org={org} />;
+      return (
+        <OrganizationPage me={me} org={org} section={route.section} navigate={navigate} onChanged={reload} />
+      );
+    case 'invite':
+      return (
+        <InvitePage
+          signedIn
+          email={me.user.email}
+          navigate={navigate}
+          onJoined={(joined) => {
+            rememberOrganization(joined.id);
+            reload();
+          }}
+        />
+      );
     case 'billing':
       return <BillingPage org={org} complete={route.complete} navigate={navigate} />;
     case 'fleet':
@@ -220,12 +296,14 @@ function Shell({
   org,
   navigate,
   route,
+  onSwitch,
 }: {
   children: React.ReactNode;
   me?: Me;
   org?: Organization;
   navigate?: (to: string) => void;
   route?: Route;
+  onSwitch?: () => void;
 }) {
   const go = (to: string) => (e: React.MouseEvent) => {
     if (!navigate) return;
@@ -327,18 +405,23 @@ function Shell({
               >
                 Usage
               </a>
-              {/* Organisation — Phase 17B. Shown to everybody, because seeing
-                  who is in your organisation is `organization.view`, which
-                  every role has. What the page OFFERS depends on what the
-                  server says the caller may do; what it ALLOWS is decided
-                  there, not here. */}
-              <a
-                href={hrefFor.organization()}
-                onClick={go(hrefFor.organization())}
-                aria-current={route?.name === 'organization' ? 'page' : undefined}
-              >
-                Organisation
-              </a>
+              {/* Organisation — Phase 17B, Phase 21. Shown where there IS an
+                  organisation to manage: a team organisation, or a plan that
+                  includes several people. Home and Home Pro are one person's
+                  Nodeau and are not handed a team ceremony (owner decision Q6);
+                  the route still answers them, with a plain sentence about
+                  Business, so an old bookmark never meets a 404. What the
+                  page OFFERS depends on what the server says the caller may
+                  do; what it ALLOWS is decided there, not here. */}
+              {org && (org.kind === 'team' || includes(org, FEATURE_TEAMS)) && (
+                <a
+                  href={hrefFor.organization()}
+                  onClick={go(hrefFor.organization())}
+                  aria-current={route?.name === 'organization' ? 'page' : undefined}
+                >
+                  Organisation
+                </a>
+              )}
               <a
                 href={hrefFor.plan()}
                 onClick={go(hrefFor.plan())}
@@ -358,7 +441,25 @@ function Shell({
 
           {me && (
             <div className="app-user" title={org ? `${me.user.email} · ${org.name}` : me.user.email}>
-              {org && <span className="org-name">{org.name}</span>}
+              {org && me.organizations.length > 1 ? (
+                <select
+                  className="org-switcher"
+                  aria-label="Organisation"
+                  value={org.id}
+                  onChange={(e) => {
+                    rememberOrganization(e.currentTarget.value);
+                    onSwitch?.();
+                  }}
+                >
+                  {me.organizations.map((o) => (
+                    <option key={o.id} value={o.id}>
+                      {o.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                org && <span className="org-name">{org.name}</span>
+              )}
               {org && <span aria-hidden="true"> · </span>}
               <span>{me.user.email}</span>
             </div>

@@ -25,7 +25,14 @@ export type Route =
   // Organisation administration — Phase 17B. Members, teams, service accounts
   // and where people come from. One route with tabs rather than four routes:
   // they are one job, and four entries in a six-item nav would bury the fleet.
-  | { name: 'organization' }
+  //
+  // Phase 21: its sections are paths (/organization/teams, …) so each is a
+  // link that can be shared and the back button works. `/organization` is the
+  // People section, so every bookmark made before Phase 21 still lands.
+  | { name: 'organization'; section: OrganizationSection }
+  // Accepting an invitation. The token is in the FRAGMENT of the link, which
+  // a browser never sends to a server; the page reads it from there.
+  | { name: 'invite' }
   // Where the billing provider sends the customer back. `complete` is the
   // success return and `/billing` the cancel return — both are the provider's
   // redirect targets, set by the API in handleStartCheckout, so they must exist
@@ -56,6 +63,10 @@ export type Route =
   | { name: 'signin'; error?: string }
   | { name: 'notfound'; path: string };
 
+export type OrganizationSection = 'members' | 'teams' | 'service-accounts' | 'sign-in' | 'settings';
+
+const SECTIONS: OrganizationSection[] = ['members', 'teams', 'service-accounts', 'sign-in', 'settings'];
+
 export function parseRoute(pathname: string, search: string): Route {
   const params = new URLSearchParams(search);
   // Trailing slashes are stripped so /installations and /installations/ are one
@@ -71,7 +82,14 @@ export function parseRoute(pathname: string, search: string): Route {
   if (path === '/activate') return { name: 'activate', code: params.get('code') ?? undefined };
   if (path === '/plan') return { name: 'plan' };
   if (path === '/settings') return { name: 'settings' };
-  if (path === '/organization') return { name: 'organization' };
+  if (path === '/organization') return { name: 'organization', section: 'members' };
+  if (path.startsWith('/organization/')) {
+    const section = path.slice('/organization/'.length) as OrganizationSection;
+    return SECTIONS.includes(section)
+      ? { name: 'organization', section }
+      : { name: 'organization', section: 'members' };
+  }
+  if (path === '/invite') return { name: 'invite' };
   if (path === '/billing') return { name: 'billing', complete: false };
   if (path === '/billing/complete') return { name: 'billing', complete: true };
   if (path === '/fleet') return { name: 'fleet' };
@@ -116,7 +134,9 @@ export const hrefFor = {
   activate: (code?: string) => (code ? `/activate?code=${encodeURIComponent(code)}` : '/activate'),
   plan: () => '/plan',
   settings: () => '/settings',
-  organization: () => '/organization',
+  organization: (section?: OrganizationSection) =>
+    section && section !== 'members' ? `/organization/${section}` : '/organization',
+  invite: () => '/invite',
   signin: () => '/signin',
   fleet: () => '/fleet',
   fleetMachine: (id: string) => `/fleet/machines/${encodeURIComponent(id)}`,

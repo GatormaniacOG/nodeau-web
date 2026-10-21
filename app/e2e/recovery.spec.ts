@@ -184,7 +184,10 @@ test.describe('recovery and copies, signed in', () => {
     await page.goto('/usage');
     const audit = page.getByTestId('audit-events');
     await expect(audit).toContainText('workload.recovery.ready');
-    await expect(audit).toContainText('by Nodeau (automatic recovery)');
+    // WHO, in its own column since Phase 21: the fixed label of the part of
+    // Nodeau that acted, on the recovery's own row.
+    await expect(audit.locator('tr', { hasText: 'workload.recovery.ready' }).first().getByTestId('audit-who'))
+      .toHaveText('Nodeau (automatic recovery)');
     const ready = psql(
       e2e.scopedDSN,
       `SELECT count(*) FROM security_audit_events
