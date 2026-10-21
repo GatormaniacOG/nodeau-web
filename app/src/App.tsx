@@ -227,7 +227,13 @@ function Page({
     case 'activate':
       return (
         <ActivatePage
-          organizations={me.organizations}
+          // Only the organisations this person may bind a machine into
+          // (machine.manage, Phase 21's #187). An older API sends no
+          // capabilities, and then every membership is offered as before; the
+          // server refuses the rest either way.
+          organizations={me.organizations.filter(
+            (o) => !o.capabilities || o.capabilities.includes('machine.manage'),
+          )}
           initialCode={route.code}
           navigate={navigate}
         />

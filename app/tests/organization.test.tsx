@@ -422,3 +422,25 @@ describe('a refusal that has a way back', () => {
     expect(link.getAttribute('href')).toMatch(/\/v1\/auth\/login\?sso=org1&returnTo=%2Forganization$/);
   });
 });
+
+describe('approving a machine', () => {
+  it('offers only the organisations where this person may bind a machine', async () => {
+    const two: Me = {
+      ...ME,
+      organizations: [
+        ...ME.organizations,
+        { id: 'org2', name: 'Viewer Co', slug: 'viewer-co', kind: 'team', role: 'viewer', capabilities: ['fleet.view', 'organization.view'], features: BUSINESS },
+      ],
+    };
+    reply('GET', '/v1/me', two);
+    reply('GET', '/v1/activation/pending/ABCD-EFGH', {
+      userCode: 'ABCD-EFGH', requestedName: 'box', nodeauVersion: '0.20.0', expiresAt: '2030-01-01T00:00:00Z',
+    });
+    window.history.pushState({}, '', '/activate?code=ABCD-EFGH');
+    render(<App />);
+    await screen.findByText('ABCD-EFGH');
+    // Two memberships, ONE of which may bind a machine: no choice is offered,
+    // and the one offered is Acme (the header's own switcher still lists both).
+    expect(screen.queryByText('Add to')).toBeNull();
+  });
+});
