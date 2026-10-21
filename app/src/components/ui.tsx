@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ApiError, NetworkError } from '../lib/api';
+import { apiBase, ApiError, NetworkError } from '../lib/api';
 
 /**
  * The small set of shared pieces.
@@ -75,6 +75,18 @@ export function ErrorNotice({ error, onRetry }: { error: unknown; onRetry?: () =
             </a>
           </p>
         )}
+        {error.code === 'SSO_REQUIRED' && error.signInUrl?.startsWith('/v1/auth/login') && (
+          // A path on the API's OWN origin, from the server; the return is a
+          // path on this application. Never an address from anywhere else.
+          <p>
+            <a
+              className="btn btn-primary btn-sm"
+              href={`${apiBase}${error.signInUrl}&returnTo=${encodeURIComponent(window.location.pathname)}`}
+            >
+              Sign in with single sign-on
+            </a>
+          </p>
+        )}
         {onRetry && error.code !== 'AUTH_REQUIRED' && (
           <button className="btn btn-ghost btn-sm" onClick={onRetry}>
             Try again
@@ -114,6 +126,30 @@ function headingFor(code: string): string {
       return 'That code has expired';
     case 'CONFLICT':
       return 'That conflicts with something that already exists';
+    case 'PLAN_REQUIRED':
+      return 'Part of Nodeau Business';
+    case 'SEAT_LIMIT':
+      return 'No room for more people';
+    case 'LAST_OWNER':
+      return 'An organisation needs an owner';
+    case 'SSO_REQUIRED':
+      return 'Sign in with single sign-on';
+    case 'CREDENTIAL_REVOKED':
+      return 'That key no longer works';
+    case 'INVITATION_EXPIRED':
+      return 'This invitation has expired';
+    case 'INVITATION_USED':
+      return 'This invitation was already used';
+    case 'INVITATION_REVOKED':
+      return 'This invitation was cancelled';
+    case 'INVITATION_WRONG_RECIPIENT':
+      return 'This invitation is for a different address';
+    case 'EMAIL_NOT_VERIFIED':
+      return 'Your email address is not verified yet';
+    case 'ALREADY_MEMBER':
+      return 'Already a member';
+    case 'RATE_LIMITED':
+      return 'Too many attempts';
     default:
       return 'Something went wrong';
   }

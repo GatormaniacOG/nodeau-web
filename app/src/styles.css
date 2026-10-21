@@ -1998,6 +1998,39 @@ button:not([class]):disabled {
   cursor: pointer;
 }
 
+/* Phase 21 — the audit trail's "who" filter sits beside the refusals one and
+   wraps under it on a phone. */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  align-items: center;
+}
+.filter-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 var(--space-4);
+}
+
+/* A section heading inside a page's panel area (People, Invitations, …). */
+.section-title {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--text-lg);
+}
+
+/* The organisation switcher in the header, for a person in several. Sized as
+   text, so the header line keeps its height; it never decides anything. */
+.org-switcher {
+  max-width: 14rem;
+  padding: 0.15rem 0.4rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--control-bg);
+  border: 1px solid var(--control-line);
+  border-radius: 6px;
+}
+
 /* ============================================================== narrow views */
 
 @media (max-width: 640px) {

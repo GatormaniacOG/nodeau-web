@@ -221,7 +221,10 @@ test('the audit trail shows a refusal, in the browser', async ({ page, context }
   await signIn(context, 'owner');
   await page.goto('/usage');
 
-  await expect(page.getByTestId('audit')).toContainText(/365 days/);
+  // Stated as it is ENFORCED (Phase 21, #190): nothing is deleted by default,
+  // and the page no longer claims a period nothing kept to.
+  await expect(page.getByTestId('audit-retention')).toContainText('Kept indefinitely');
+  await expect(page.getByTestId('audit')).not.toContainText(/365 days/);
   await page.getByLabel(/only things that were refused/i).check();
   await expect(page.getByTestId('audit-refused').first()).toBeVisible();
 });

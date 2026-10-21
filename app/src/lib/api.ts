@@ -39,7 +39,19 @@ export type ErrorCode =
   | 'ENTITLEMENT_REFRESH_DENIED'
   | 'ENTITLEMENT_UNAVAILABLE'
   | 'RATE_LIMITED'
-  | 'INTERNAL_ERROR';
+  | 'INTERNAL_ERROR'
+  // Teams & Identity — Phase 21.
+  | 'PLAN_REQUIRED'
+  | 'SEAT_LIMIT'
+  | 'LAST_OWNER'
+  | 'SSO_REQUIRED'
+  | 'CREDENTIAL_REVOKED'
+  | 'INVITATION_EXPIRED'
+  | 'INVITATION_USED'
+  | 'INVITATION_REVOKED'
+  | 'INVITATION_WRONG_RECIPIENT'
+  | 'EMAIL_NOT_VERIFIED'
+  | 'ALREADY_MEMBER';
 
 export interface WireError {
   code: ErrorCode;
@@ -53,6 +65,9 @@ export interface WireError {
    *  be a second implementation of a rule it does not own, and it would
    *  disagree the day a bound changes. */
   fields?: Record<string, string>;
+  /** Where to sign in again to satisfy the refusal — SSO_REQUIRED. A path on
+   *  the API's own origin; the console prefixes it with apiBase. Phase 21. */
+  signInUrl?: string;
 }
 
 export interface User {
@@ -66,7 +81,29 @@ export interface Organization {
   name: string;
   slug: string;
   kind: 'personal' | 'team';
-  role: 'owner' | 'admin' | 'member';
+  role: 'owner' | 'admin' | 'member' | 'viewer';
+  /** What the signed-in person may do in it — the server's answer (Phase 21).
+   *  Absent from an older API; never recomputed here. */
+  capabilities?: Capability[];
+  /** What its plan includes, by name — so a page shows a plan boundary rather
+   *  than a control that will be refused. */
+  features?: string[];
+}
+
+/** The Phase 21 plan features, by their wire names. */
+export const FEATURE_TEAMS = 'Teams';
+export const FEATURE_SERVICE_ACCOUNTS = 'ServiceAccounts';
+export const FEATURE_SINGLE_SIGN_ON = 'SingleSignOn';
+
+/** may reports whether the server said this person may do something in an
+ *  organisation. Courtesy, never security: the server refuses regardless. */
+export function may(org: Organization, capability: Capability): boolean {
+  return Boolean(org.capabilities?.includes(capability));
+}
+
+/** includes reports whether the organisation's plan includes a feature. */
+export function includes(org: Organization, feature: string): boolean {
+  return Boolean(org.features?.includes(feature));
 }
 
 export interface Me {
@@ -543,7 +580,10 @@ export class ApiError extends Error {
     this.requestId = body.requestId;
     this.retryAfterSeconds = body.retryAfterSeconds;
     this.fields = body.fields;
+    this.signInUrl = body.signInUrl;
   }
+  /** SSO_REQUIRED's way back, as a path on the API. */
+  readonly signInUrl?: string;
 }
 
 /**
@@ -658,6 +698,11 @@ export interface AuditEvent {
   occurredAt: string;
   actorUserId?: string;
   actorServiceAccountId?: string;
+  /** person | service_account | installation | system — or ABSENT for a row
+   *  that predates it and proved none: "not recorded", never guessed. */
+  actorKind?: 'person' | 'service_account' | 'installation' | 'system';
+  /** The server's display name for the actor. */
+  actor?: string;
   installationId?: string;
   target?: string;
   /** "applied" or "refused". ABSENT for events written before the column
@@ -669,9 +714,12 @@ export interface AuditEvent {
 
 export interface AuditPage {
   events: AuditEvent[];
-  /** Stated WITH the data, so a reader who sees the oldest record can tell
-   *  "this is all there was" from "this is all that is kept". */
-  retentionDays: number;
+  /** Stated WITH the data, AS IT IS ENFORCED (Phase 21): "indefinite" (nothing
+   *  is deleted, the public-beta default) or a number of days. */
+  retention?: { policy: 'indefinite' | 'days'; days?: number };
+  /** The 17D field: present only when a number of days is enforced. */
+  retentionDays?: number;
+  nextCursor?: string;
 }
 
 /** When Nodeau may act on a fleet's machines on its own — the maintenance
@@ -814,6 +862,64 @@ export interface Member {
 export interface MemberList {
   members: Member[];
   roles: RoleDescription[];
+  /** How many people the organisation holds and may hold (Phase 21); limit
+   *  -1 is no limit. */
+  seats?: { used: number; pending: number; limit: number };
+  nextCursor?: string;
+}
+
+export interface Invitation {
+  id: string;
+  email: string;
+  role: string;
+  state: 'pending' | 'accepted' | 'revoked' | 'expired';
+  createdAt: string;
+  expiresAt: string;
+  acceptedAt?: string;
+  revokedAt?: string;
+  invitedBy?: string;
+}
+
+export interface CreatedInvitation {
+  invitation: Invitation;
+  /** Shown once. The link carries it in its fragment. */
+  token: string;
+  link: string;
+  delivery: 'link';
+  notice: string;
+}
+
+export interface InvitationPreview {
+  organizationName: string;
+  role: string;
+  invitedBy?: string;
+  expiresAt: string;
+  state: Invitation['state'];
+  email: string;
+}
+
+export interface IdentityDomain {
+  id: string;
+  domain: string;
+  verified: boolean;
+  state?: string;
+  verificationPrefix?: string;
+  verificationToken?: string;
+}
+
+export interface SSOSetup {
+  configured: boolean;
+  connectionActive: boolean;
+  connections: { id: string; type: string; state: string; active: boolean }[];
+  lastSignInAt?: string;
+  required: boolean;
+  requiredSince?: string;
+  domains: IdentityDomain[];
+  canRequire: boolean;
+  requireBlockers?: string[];
+  recentRecoveryAccess: number;
+  providerReachable: boolean;
+  pendingDirectoryPeople?: number;
 }
 
 export interface Team {
@@ -871,6 +977,9 @@ export interface IdentityStatus {
   provider?: string;
   lastDirectoryEventAt?: string;
   notice?: string;
+  /** Phase 21: configured, connection active, tested and required — four
+   *  facts, never one switch. */
+  setup?: SSOSetup;
 }
 
 // ---------------------------------------------------------------------------
@@ -1231,11 +1340,17 @@ export const api = {
 
   /** Mint one key. The response is the ONLY time the plaintext exists outside
    *  the caller's own memory, and there is no endpoint that reads it back. */
-  createApiKey: (orgId: string, accountId: string, name: string, scope: Capability[]) =>
+  createApiKey: (
+    orgId: string,
+    accountId: string,
+    name: string,
+    scope: Capability[],
+    expiresAt?: string,
+  ) =>
     request<CreatedApiKey>(
       'POST',
       `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts/${encodeURIComponent(accountId)}/keys`,
-      { name, scope },
+      expiresAt ? { name, scope, expiresAt } : { name, scope },
     ),
 
   revokeApiKey: (orgId: string, accountId: string, keyId: string) =>
@@ -1243,6 +1358,72 @@ export const api = {
       'DELETE',
       `/v1/organizations/${encodeURIComponent(orgId)}/service-accounts/${encodeURIComponent(accountId)}/keys/${encodeURIComponent(keyId)}`,
     ),
+
+  // -- Teams & Identity — Phase 21 -------------------------------------------
+
+  createOrganization: (name: string) =>
+    request<Organization>('POST', '/v1/organizations', { name }),
+  renameOrganization: (orgId: string, name: string) =>
+    request<Organization>('PATCH', `/v1/organizations/${encodeURIComponent(orgId)}`, { name }),
+  reactivateMember: (orgId: string, userId: string) =>
+    request<MemberList>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/members/${encodeURIComponent(userId)}/reactivate`,
+    ),
+  invitations: (orgId: string, signal?: AbortSignal) =>
+    request<{ invitations: Invitation[] }>(
+      'GET',
+      `/v1/organizations/${encodeURIComponent(orgId)}/invitations`,
+      undefined,
+      signal,
+    ),
+  createInvitation: (orgId: string, email: string, role: string) =>
+    request<CreatedInvitation>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/invitations`, {
+      email,
+      role,
+    }),
+  revokeInvitation: (orgId: string, invitationId: string) =>
+    request<Invitation>(
+      'DELETE',
+      `/v1/organizations/${encodeURIComponent(orgId)}/invitations/${encodeURIComponent(invitationId)}`,
+    ),
+  /** The token travels in a BODY, never a path or a query string. */
+  previewInvitation: (token: string, signal?: AbortSignal) =>
+    request<InvitationPreview>('POST', '/v1/invitations/preview', { token }, signal),
+  acceptInvitation: (token: string) =>
+    request<{ organization: Organization }>('POST', '/v1/invitations/accept', { token }),
+  setTeamRole: (orgId: string, teamId: string, role: string) =>
+    request<Team>(
+      'PATCH',
+      `/v1/organizations/${encodeURIComponent(orgId)}/teams/${encodeURIComponent(teamId)}`,
+      { role },
+    ),
+  enableSSO: (orgId: string) =>
+    request<IdentityStatus>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/identity/sso`, {}),
+  addDomain: (orgId: string, domain: string) =>
+    request<IdentityStatus>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/identity/domains`, {
+      domain,
+    }),
+  verifyDomain: (orgId: string, domainId: string) =>
+    request<IdentityStatus>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/identity/domains/${encodeURIComponent(domainId)}/verify`,
+    ),
+  removeDomain: (orgId: string, domainId: string) =>
+    request<IdentityStatus>(
+      'DELETE',
+      `/v1/organizations/${encodeURIComponent(orgId)}/identity/domains/${encodeURIComponent(domainId)}`,
+    ),
+  setupLink: (orgId: string, intent: 'sso' | 'dsync' | 'domain_verification') =>
+    request<{ url: string; notice: string }>(
+      'POST',
+      `/v1/organizations/${encodeURIComponent(orgId)}/identity/setup-link`,
+      { intent },
+    ),
+  setSSORequired: (orgId: string, ssoRequired: boolean) =>
+    request<IdentityStatus>('PATCH', `/v1/organizations/${encodeURIComponent(orgId)}/identity`, {
+      ssoRequired,
+    }),
 
   identityStatus: (orgId: string, signal?: AbortSignal) =>
     request<IdentityStatus>(
@@ -1255,12 +1436,6 @@ export const api = {
   /** Record WHICH identity-provider organisation and directory govern this
    *  one. Nodeau records a correspondence and creates nothing: the connection
    *  itself is made in the provider's own dashboard. */
-  linkIdentity: (orgId: string, workosOrganizationId: string, directoryId: string) =>
-    request<IdentityStatus>('PUT', `/v1/organizations/${encodeURIComponent(orgId)}/identity`, {
-      workosOrganizationId,
-      directoryId,
-    }),
-
   startCheckout: (orgId: string, planId: string) =>
     request<{ url: string }>('POST', `/v1/organizations/${encodeURIComponent(orgId)}/checkout`, {
       planId,
@@ -1455,7 +1630,14 @@ export const api = {
    *  what succeeded. */
   auditEvents: (
     orgId: string,
-    params?: { type?: string; result?: string; target?: string; limit?: number },
+    params?: {
+      type?: string;
+      result?: string;
+      target?: string;
+      limit?: number;
+      actorKind?: string;
+      before?: string;
+    },
     signal?: AbortSignal,
   ) =>
     request<AuditPage>(

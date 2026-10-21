@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
   api,
+  type AuditEvent,
   type AuditPage,
   type Organization,
   type UsageRate,
@@ -297,29 +298,60 @@ function RateForm({ org }: { org: Organization }) {
 
 function AuditSection({ org }: { org: Organization }) {
   const [onlyRefusals, setOnlyRefusals] = useState(false);
+  const [actorKind, setActorKind] = useState('');
   const [page, reload] = useResource<AuditPage>(
     (signal) =>
-      api.auditEvents(org.id, { result: onlyRefusals ? 'refused' : undefined, limit: 50 }, signal),
-    [org.id, onlyRefusals],
+      api.auditEvents(
+        org.id,
+        { result: onlyRefusals ? 'refused' : undefined, actorKind: actorKind || undefined, limit: 50 },
+        signal,
+      ),
+    [org.id, onlyRefusals, actorKind],
   );
+  // Older pages, appended in order. The cursor is the server's; the console
+  // never builds one.
+  const [more, setMore] = useState<{ key: string; events: AuditEvent[]; next?: string }>({ key: '', events: [] });
+  const key = `${org.id}|${onlyRefusals}|${actorKind}`;
+  const extra = more.key === key ? more.events : [];
+  const next = more.key === key && more.events.length > 0 ? more.next : page.status === 'ready' ? page.data.nextCursor : undefined;
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [moreError, setMoreError] = useState<unknown>(null);
 
   return (
     <section className="panel" data-testid="audit">
       <h2>What changed</h2>
       {page.status === 'ready' && (
-        <p className="muted">
-          Who changed what, and whether it happened. Kept for{' '}
-          {page.data.retentionDays} days.
+        <p className="muted" data-testid="audit-retention">
+          Who changed what, and whether it happened.{' '}
+          {page.data.retention?.policy === 'days' && page.data.retention.days
+            ? `Kept for ${page.data.retention.days} days.`
+            : page.data.retention
+              ? 'Kept indefinitely: nothing here is deleted.'
+              : page.data.retentionDays
+                ? `Kept for ${page.data.retentionDays} days.`
+                : ''}
         </p>
       )}
-      <label className="filter-check">
-        <input
-          type="checkbox"
-          checked={onlyRefusals}
-          onChange={(e) => setOnlyRefusals(e.target.checked)}
-        />
-        Only things that were refused
-      </label>
+      <div className="filter-row">
+        <label className="filter-check">
+          <input
+            type="checkbox"
+            checked={onlyRefusals}
+            onChange={(e) => setOnlyRefusals(e.target.checked)}
+          />
+          Only things that were refused
+        </label>
+        <label className="filter-select">
+          Who{' '}
+          <select value={actorKind} onChange={(e) => setActorKind(e.currentTarget.value)} aria-label="Who did it">
+            <option value="">anybody</option>
+            <option value="person">a person</option>
+            <option value="service_account">a service account</option>
+            <option value="installation">a machine</option>
+            <option value="system">Nodeau</option>
+          </select>
+        </label>
+      </div>
 
       {page.status === 'loading' && <Spinner label="Reading the audit trail" />}
       {page.status === 'error' && <ErrorNotice error={page.error} onRetry={reload} />}
@@ -338,15 +370,19 @@ function AuditSection({ org }: { org: Organization }) {
               <thead>
                 <tr>
                   <th scope="col">When</th>
+                  <th scope="col">Who</th>
                   <th scope="col">What</th>
                   <th scope="col">Result</th>
                   <th scope="col">Subject</th>
                 </tr>
               </thead>
               <tbody>
-                {page.data.events.map((e, i) => (
+                {[...page.data.events, ...extra].map((e, i) => (
                   <tr key={`${e.occurredAt}-${e.type}-${i}`}>
                     <td title={e.occurredAt}>{relativeTime(e.occurredAt)}</td>
+                    <td data-testid="audit-who">
+                      <Who event={e} />
+                    </td>
                     <td>
                       {e.type}
                       {/* WHICH operation, for an operation (a fixed label the
@@ -356,9 +392,12 @@ function AuditSection({ org }: { org: Organization }) {
                       {e.type === 'fleet.operation_requested' && e.detail?.reason && (
                         <span className="muted small"> {e.detail.reason}</span>
                       )}
-                      {/* WHO, when it was not a person: a fixed label the
-                          server writes (Phase 20's automatic recovery). */}
-                      {e.detail?.actor && <span className="muted small"> by {e.detail.actor}</span>}
+                      {e.detail?.previousRole && e.detail?.role && (
+                        <span className="muted small">
+                          {' '}
+                          {e.detail.previousRole} → {e.detail.role}
+                        </span>
+                      )}
                     </td>
                     <td>
                       {/* THREE STATES, NOT TWO. An event with no result predates
@@ -389,6 +428,64 @@ function AuditSection({ org }: { org: Organization }) {
             </table>
           </div>
         ))}
+      {moreError != null && <ErrorNotice error={moreError} />}
+      {page.status === 'ready' && next && (
+        <p>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            disabled={loadingMore}
+            onClick={() => {
+              setLoadingMore(true);
+              setMoreError(null);
+              api
+                .auditEvents(org.id, {
+                  result: onlyRefusals ? 'refused' : undefined,
+                  actorKind: actorKind || undefined,
+                  limit: 50,
+                  before: next,
+                })
+                .then((older) =>
+                  setMore({ key, events: [...extra, ...older.events], next: older.nextCursor }),
+                )
+                .catch((e: unknown) => setMoreError(e))
+                .finally(() => setLoadingMore(false));
+            }}
+          >
+            Older
+          </button>
+        </p>
+      )}
     </section>
   );
+}
+
+/** Who did it, by the KIND the server recorded and the name it resolved. A row
+ *  that proved no actor (written before Phase 21's actor kinds) says so rather
+ *  than guessing. */
+function Who({ event: e }: { event: AuditEvent }) {
+  switch (e.actorKind) {
+    case 'person':
+      return <span>{e.actor || 'a person'}</span>;
+    case 'service_account':
+      return (
+        <span>
+          {e.actor || 'a service account'} <span className="muted small">service account</span>
+        </span>
+      );
+    case 'installation':
+      return (
+        <span>
+          {e.actor || 'a machine'} <span className="muted small">machine</span>
+        </span>
+      );
+    case 'system':
+      return <span>{e.actor || 'Nodeau'}</span>;
+    default:
+      return (
+        <span className="muted" title="This event predates who-did-it records">
+          not recorded
+        </span>
+      );
+  }
 }

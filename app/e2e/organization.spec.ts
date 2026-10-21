@@ -4,7 +4,8 @@ import { e2e } from '../playwright.config';
 import { psql } from './prepare';
 
 /**
- * Phase 17B's organisation administration, in a real browser.
+ * Phase 17B's organisation administration, made Phase 21's Teams & Identity,
+ * in a real browser.
  *
  * # What this closes
  *
@@ -36,8 +37,9 @@ import { psql } from './prepare';
 const seeded = {
   ownerId: '',
   viewerId: '',
+  danaId: '',
   orgId: '',
-  viewerSession: '',
+  homeOrgId: '',
 };
 
 /**
@@ -48,63 +50,63 @@ const seeded = {
  * compute the digest the same way `store.CreateSession` does.
  */
 function sessionFor(label: string): { token: string; sha: string } {
-  const token = `e2e-17b-${label}-token`;
+  const token = `e2e-21-${label}-token`;
   return { token, sha: createHash('sha256').update(token).digest('hex') };
 }
 
 test.beforeAll(() => {
   const dsn = e2e.scopedDSN;
-
-  // Idempotent: Playwright re-runs beforeAll when a worker restarts after a
-  // failure, and a non-idempotent seed turns one real failure into a cascade of
-  // duplicate-key errors that buries it.
-  const existing = psql(dsn, `SELECT id FROM organizations WHERE slug = 'seventeen-b'`);
+  // Idempotent: Playwright re-runs beforeAll when a worker restarts.
+  const existing = psql(dsn, `SELECT id FROM organizations WHERE slug = 'phase-21-ltd'`);
   if (existing) {
     seeded.orgId = existing;
-    seeded.ownerId = psql(dsn, `SELECT id FROM users WHERE email = 'owner-17b@example.com'`);
-    seeded.viewerId = psql(dsn, `SELECT id FROM users WHERE email = 'viewer-17b@example.com'`);
-    seeded.viewerSession = sessionFor('viewer').token;
+    seeded.ownerId = psql(dsn, `SELECT id FROM users WHERE email = 'owner-21@example.com'`);
+    seeded.viewerId = psql(dsn, `SELECT id FROM users WHERE email = 'viewer-21@example.com'`);
+    seeded.danaId = psql(dsn, `SELECT id FROM users WHERE email = 'dana-21@example.com'`);
+    seeded.homeOrgId = psql(dsn, `SELECT id FROM organizations WHERE slug = 'home-21'`);
     return;
   }
-
-  seeded.orgId = psql(
-    dsn,
-    `INSERT INTO organizations (kind, name, slug)
-     VALUES ('team', 'Seventeen B Ltd', 'seventeen-b') RETURNING id`,
-  );
-  seeded.ownerId = psql(
-    dsn,
-    `INSERT INTO users (email, auth_provider, auth_subject, display_name)
-     VALUES ('owner-17b@example.com', 'test', 'owner-17b', 'Ada Owner') RETURNING id`,
-  );
-  seeded.viewerId = psql(
-    dsn,
-    `INSERT INTO users (email, auth_provider, auth_subject, display_name)
-     VALUES ('viewer-17b@example.com', 'test', 'viewer-17b', 'Vic Viewer') RETURNING id`,
-  );
+  seeded.orgId = psql(dsn, `INSERT INTO organizations (kind, name, slug) VALUES ('team', 'Phase 21 Ltd', 'phase-21-ltd') RETURNING id`);
+  seeded.homeOrgId = psql(dsn, `INSERT INTO organizations (kind, name, slug) VALUES ('personal', 'Solo Home', 'home-21') RETURNING id`);
+  // Business, through the same administrative row SetAdminSubscription writes.
+  psql(dsn, `INSERT INTO subscriptions (organization_id, plan_id, status) VALUES ('${seeded.orgId}', 'business', 'active')`);
+  const user = (email: string, subject: string, name: string) =>
+    psql(
+      dsn,
+      `INSERT INTO users (email, auth_provider, auth_subject, display_name, email_verified_at)
+       VALUES ('${email}', 'test', '${subject}', '${name}', now()) RETURNING id`,
+    );
+  seeded.ownerId = user('owner-21@example.com', 'owner-21', 'Ada Owner');
+  seeded.viewerId = user('viewer-21@example.com', 'viewer-21', 'Vic Viewer');
+  seeded.danaId = user('dana-21@example.com', 'dana-21', 'Dana Scully');
+  const solo = user('solo-21@example.com', 'solo-21', 'Solo Person');
   psql(
     dsn,
     `INSERT INTO organization_memberships (organization_id, user_id, role)
      VALUES ('${seeded.orgId}', '${seeded.ownerId}', 'owner'),
-            ('${seeded.orgId}', '${seeded.viewerId}', 'viewer')`,
+            ('${seeded.orgId}', '${seeded.viewerId}', 'viewer'),
+            ('${seeded.homeOrgId}', '${solo}', 'owner')`,
   );
-
-  // The owner reuses the config's session so the existing sign-in helper works;
-  // the viewer gets their own, because the whole point is two principals.
-  psql(
-    dsn,
-    `INSERT INTO auth_sessions (user_id, session_token_sha256, expires_at)
-     VALUES ('${seeded.ownerId}', '${sessionFor('owner').sha}', now() + interval '1 hour'),
-            ('${seeded.viewerId}', '${sessionFor('viewer').sha}', now() + interval '1 hour')`,
-  );
-  seeded.viewerSession = sessionFor('viewer').token;
+  const sessions = [
+    [seeded.ownerId, 'owner'],
+    [seeded.viewerId, 'viewer'],
+    [seeded.danaId, 'dana'],
+    [solo, 'solo'],
+  ] as const;
+  for (const [id, label] of sessions) {
+    psql(
+      dsn,
+      `INSERT INTO auth_sessions (user_id, session_token_sha256, expires_at)
+       VALUES ('${id}', '${sessionFor(label).sha}', now() + interval '1 hour')`,
+    );
+  }
 });
 
-async function signInAs(context: BrowserContext, token: string) {
+async function signInAs(context: BrowserContext, label: string) {
   await context.addCookies([
     {
       name: 'nodeau_session',
-      value: token,
+      value: sessionFor(label).token,
       // Host, not port: a cookie is scoped by host, which is why one set here
       // reaches the API on another port — and why app.nodeau.ai and
       // api.nodeau.ai work in production, sharing a registrable domain.
@@ -117,152 +119,193 @@ async function signInAs(context: BrowserContext, token: string) {
   ]);
 }
 
-// Resolved the same way hosted.spec.ts does: the port is a config-level
-// constant rather than part of the shared state object, so both specs read the
-// environment variable and its default from one place — here and there.
+// Resolved the same way hosted.spec.ts does.
 function apiBase(): string {
   return `http://127.0.0.1:${process.env.NODEAU_E2E_API_PORT ?? '8099'}`;
 }
 
+async function choose(page: import('@playwright/test').Page, orgId: string) {
+  // The organisation the console looks at is remembered per browser; a test
+  // sets it the way the switcher does.
+  await page.addInitScript((id) => window.localStorage.setItem('nodeau.organization', id), orgId);
+}
+
 // ---------------------------------------------------------------------------
-// An owner sees the whole surface, rendered from the real API
+// An owner, through every section, rendered from the real API
 // ---------------------------------------------------------------------------
 
-test('an owner reaches organisation administration and every tab renders', async ({
-  page,
-  context,
-}) => {
-  await signInAs(context, sessionFor('owner').token);
+test('an owner reaches every section of a Business organisation', async ({ page, context }) => {
+  await signInAs(context, 'owner');
+  await choose(page, seeded.orgId);
   await page.goto('/organization');
-
-  await expect(page.getByRole('heading', { name: 'Organisation', level: 1 })).toBeVisible();
-
-  // Members is the default tab, and both seeded people are really there —
-  // which is the part a mocked fetch cannot establish, because the rows come
-  // from PostgreSQL through the server's own tenancy scoping.
-  //
-  // Scoped to the TABLE. Unscoped, the owner's address matches twice: once in
-  // the header banner naming who is signed in, once in the row. Playwright's
-  // strict mode caught that rather than silently taking the first, which is the
-  // behaviour worth having.
-  const members = page.getByRole('table').first();
-  await expect(members.getByText('owner-17b@example.com')).toBeVisible();
-  await expect(members.getByText('viewer-17b@example.com')).toBeVisible();
-
-  // THE ROLE IS A SET OF PERMISSIONS AND THE PAGE SAYS SO. The column is
-  // headed "May", and the server computes what it lists — a client that
-  // recomputed permissions from the role name would be a second implementation
-  // of the model that disagrees the day a role changes.
+  await expect(page.getByRole('heading', { name: 'Phase 21 Ltd', level: 1 })).toBeVisible();
+  const members = page.getByTestId('members');
+  await expect(members.getByText('owner-21@example.com')).toBeVisible();
+  await expect(members.getByText('viewer-21@example.com')).toBeVisible();
   await expect(page.getByRole('columnheader', { name: 'May' })).toBeVisible();
-
-  for (const tab of ['Teams', 'Service accounts', 'Single sign-on']) {
-    await page.getByRole('button', { name: tab }).click();
-    await expect(page.getByRole('button', { name: tab })).toHaveAttribute('aria-current', 'page');
+  const sections = page.getByRole('navigation', { name: 'Organisation sections' });
+  for (const tab of ['Teams', 'Service accounts', 'Single sign-on', 'Settings', 'People']) {
+    await sections.getByRole('link', { name: tab, exact: true }).click();
+    await expect(sections.getByRole('link', { name: tab, exact: true })).toHaveAttribute('aria-current', 'page');
   }
+  // Every section is a real address: a reload lands on it.
+  await sections.getByRole('link', { name: 'Single sign-on', exact: true }).click();
+  await page.reload();
+  await expect(page.getByTestId('sso-states')).toBeVisible();
+  // The body never claims SCIM: Nodeau receives what a provider forwards.
+  expect((await page.textContent('body'))!.toUpperCase()).not.toContain('SCIM');
 });
 
-test("single sign-on reports a state rather than a boolean", async ({ page, context }) => {
-  await signInAs(context, sessionFor('owner').token);
+// ---------------------------------------------------------------------------
+// G2 in a browser: invite, share the link, accept once
+// ---------------------------------------------------------------------------
+
+test('an owner invites somebody and they join through the link, once', async ({ page, context, browser }) => {
+  await signInAs(context, 'owner');
+  await choose(page, seeded.orgId);
   await page.goto('/organization');
-  await page.getByRole('button', { name: 'Single sign-on' }).click();
+  await page.getByLabel('Email address').fill('dana-21@example.com');
+  await page.getByLabel('as').selectOption('member');
+  await page.getByRole('button', { name: 'Create invitation' }).click();
+  const shown = page.getByTestId('invite-link');
+  await expect(shown).toContainText('/invite#nodeau-inv-v1.');
+  const link = (await shown.locator('code').textContent())!.trim();
+  // The address bar never holds it.
+  expect(page.url()).not.toContain('nodeau-inv-v1');
 
-  // WAIT FOR THE FETCH. The first version of this read `body` immediately and
-  // matched against "loading…" — an assertion racing the thing it asserts
-  // about, which fails on correct code and would have passed on a page that
-  // rendered nothing at all.
-  await expect(page.getByText(/loading/i)).toHaveCount(0, { timeout: 10_000 });
-
-  // The status is three- and four-valued on purpose: "we have never asked" and
-  // "we asked and there is none" send different people to do different things.
-  // Whatever this deployment reports, it must not render as a bare yes/no.
-  const body = await page.textContent('body');
-  expect(body).toBeTruthy();
-  expect(body!.toLowerCase()).toMatch(/unconfigured|not configured|active|unknown/);
-
-  // AND IT MUST NOT CLAIM SCIM. Nodeau receives what a provider forwards; it
-  // runs no SCIM server, and saying otherwise describes software that does not
-  // exist. Asserted against the rendered page because this is the surface a
-  // customer reads.
-  expect(body!.toUpperCase()).not.toContain('SCIM');
+  const danaContext = await browser.newContext();
+  try {
+    await signInAs(danaContext, 'dana');
+    const dana = await danaContext.newPage();
+    await dana.goto(link.replace(/^https?:\/\/[^/]+/, ''));
+    await expect(dana.getByRole('heading', { name: 'Join Phase 21 Ltd' })).toBeVisible();
+    // The fragment is gone from the address bar once read.
+    await expect.poll(() => dana.url()).not.toContain('nodeau-inv-v1');
+    await dana.getByRole('button', { name: 'Accept and join' }).click();
+    await expect(dana.getByTestId('invite-joined')).toContainText('as Operator');
+    // Once: the same link again, in a fresh page load, is refused plainly.
+    await dana.goto('about:blank');
+    await dana.goto(link.replace(/^https?:\/\/[^/]+/, ''));
+    await expect(dana.getByRole('alert')).toContainText(/already been used/);
+  } finally {
+    await danaContext.close();
+  }
+  await page.reload();
+  await expect(page.getByTestId('members').getByText('dana-21@example.com')).toBeVisible();
+  await expect(page.getByTestId('invitations')).toContainText('accepted');
 });
 
 // ---------------------------------------------------------------------------
 // A viewer: the interface AND the server both refuse
 // ---------------------------------------------------------------------------
 
-test('a viewer is not offered controls they do not hold', async ({ page, context }) => {
-  await signInAs(context, seeded.viewerSession);
+test('a viewer is offered no controls and is refused past the interface', async ({ page, context, browser }) => {
+  await signInAs(context, 'viewer');
+  await choose(page, seeded.orgId);
   await page.goto('/organization');
+  await expect(page.getByTestId('members').getByText('owner-21@example.com')).toBeVisible();
+  await expect(page.getByLabel('Role for owner-21@example.com')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Create invitation' })).toHaveCount(0);
 
-  await expect(page.getByRole('heading', { name: 'Organisation', level: 1 })).toBeVisible();
-  // A viewer holds organization.view, so they can see the members list.
-  await expect(page.getByText('owner-17b@example.com')).toBeVisible();
+  const smuggled = await page.request.post(`${apiBase()}/v1/organizations/${seeded.orgId}/invitations`, {
+    headers: { 'Content-Type': 'application/json', 'X-Nodeau-Request': 'e2e', 'X-Nodeau-Role': 'owner' },
+    data: { email: 'smuggled@example.com', role: 'viewer' },
+  });
+  expect(smuggled.status()).toBe(403);
+  expect((await smuggled.json()).message).toContain('members.manage');
 
-  // They hold neither members.manage nor credentials.manage, so the role
-  // control for another person must not be offered to them.
-  await expect(page.getByLabel('Role for owner-17b@example.com')).toHaveCount(0);
-
-  // THE CONTROL, and without it `toHaveCount(0)` is satisfied by a page that
-  // rendered no controls at all — for any reason, including a crash. An OWNER
-  // must be offered that same control, so the absence above is about the
-  // capability rather than about the selector.
-  const ownerContext = await page.context().browser()!.newContext();
+  // THE CONTROL: the owner is offered the control and the same request works.
+  const ownerContext = await browser.newContext();
   try {
-    await signInAs(ownerContext, sessionFor('owner').token);
+    await signInAs(ownerContext, 'owner');
     const ownerPage = await ownerContext.newPage();
+    await choose(ownerPage, seeded.orgId);
     await ownerPage.goto('/organization');
-    await expect(ownerPage.getByLabel('Role for viewer-17b@example.com')).toHaveCount(1);
+    await expect(ownerPage.getByLabel('Role for viewer-21@example.com')).toHaveCount(1);
+    const legit = await ownerContext.request.post(`${apiBase()}/v1/organizations/${seeded.orgId}/invitations`, {
+      headers: { 'Content-Type': 'application/json', 'X-Nodeau-Request': 'e2e' },
+      data: { email: 'legit-21@example.com', role: 'viewer' },
+    });
+    expect(legit.status()).toBe(201);
   } finally {
     await ownerContext.close();
   }
 });
 
-test('a viewer who reaches PAST the interface is still refused', async ({ page, context }) => {
-  await signInAs(context, seeded.viewerSession);
+// ---------------------------------------------------------------------------
+// Home: one person, no team ceremony, a plan boundary and never a 404
+// ---------------------------------------------------------------------------
+
+test('Home sees its own Nodeau and a sentence about Business, and the server agrees', async ({ page, context }) => {
+  await signInAs(context, 'solo');
+  await page.goto('/');
+  await expect(page.getByRole('link', { name: 'Fleet' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Organisation' })).toHaveCount(0);
   await page.goto('/organization');
-  await expect(page.getByRole('heading', { name: 'Organisation', level: 1 })).toBeVisible();
+  await expect(page.getByTestId('plan-boundary')).toContainText('part of Nodeau Business');
+  const refused = await page.request.post(`${apiBase()}/v1/organizations/${seeded.homeOrgId}/invitations`, {
+    headers: { 'Content-Type': 'application/json', 'X-Nodeau-Request': 'e2e' },
+    data: { email: 'friend@example.com', role: 'viewer' },
+  });
+  expect(refused.status()).toBe(403);
+  expect((await refused.json()).code).toBe('PLAN_REQUIRED');
+});
 
-  // No DOM involved. The real session cookie, the real API, the request a
-  // person would make with curl. UI hiding is not authorization, and this is
-  // the assertion that says so.
-  const response = await page.request.post(
-    `${apiBase()}/v1/organizations/${seeded.orgId}/service-accounts`,
-    {
-      headers: { 'Content-Type': 'application/json', 'X-Nodeau-Request': 'e2e' },
-      data: { name: 'smuggled', role: 'viewer' },
-    },
-  );
-  expect(response.status()).toBe(403);
-  const refusal = await response.json();
-  expect(refusal.code).toBe('FORBIDDEN');
-  // The refusal NAMES the capability, so the person reading it knows what to
-  // ask an administrator for.
-  expect(refusal.message).toContain('credentials.manage');
+// ---------------------------------------------------------------------------
+// Single sign-on and the audit trail, from the real binary
+// ---------------------------------------------------------------------------
 
-  // THE CONTROL. The same request as the owner succeeds — without it, the 403
-  // above is equally consistent with a broken route.
-  const ownerContext = await page.context().browser()!.newContext();
-  await signInAs(ownerContext, sessionFor('owner').token);
-  const asOwner = await ownerContext.request.post(
-    `${apiBase()}/v1/organizations/${seeded.orgId}/service-accounts`,
-    {
-      headers: { 'Content-Type': 'application/json', 'X-Nodeau-Request': 'e2e' },
-      data: { name: 'legitimate', role: 'viewer' },
-    },
-  );
-  expect([200, 201]).toContain(asOwner.status());
-  await ownerContext.close();
+test('single sign-on keeps its states apart and says when it cannot be set up here', async ({ page, context }) => {
+  await signInAs(context, 'owner');
+  await choose(page, seeded.orgId);
+  await page.goto('/organization/sign-in');
+  const states = page.getByTestId('sso-states');
+  await expect(states).toContainText('not yet');
+  await expect(states).toContainText('optional');
+  // This development server holds no provider credentials, so setting up is
+  // refused by the server in words — not by a broken button.
+  await page.getByRole('button', { name: 'Set up single sign-on' }).click();
+  await expect(page.getByRole('alert')).toContainText(/no identity provider configured/i);
+  await expect(page.getByLabel(/identity provider organisation/i)).toHaveCount(0);
+});
+
+test('the audit trail names who did it', async ({ page, context }) => {
+  await signInAs(context, 'owner');
+  await choose(page, seeded.orgId);
+  // Something attributable, made through the API.
+  const made = await page.request.post(`${apiBase()}/v1/organizations/${seeded.orgId}/invitations`, {
+    headers: { 'Content-Type': 'application/json', 'X-Nodeau-Request': 'e2e' },
+    data: { email: 'audited-21@example.com', role: 'viewer' },
+  });
+  expect(made.status()).toBe(201);
+  await page.goto('/usage');
+  const audit = page.getByTestId('audit-events');
+  await expect(audit.getByRole('columnheader', { name: 'Who' })).toBeVisible();
+  await expect(audit.locator('tr', { hasText: 'invitation.created' }).first()).toContainText('Ada Owner');
+  await expect(page.getByTestId('audit-retention')).toContainText('Kept indefinitely');
+});
+
+// ---------------------------------------------------------------------------
+// Phone width: every Phase 21 surface fits
+// ---------------------------------------------------------------------------
+
+test('every organisation section fits a phone without sideways scrolling', async ({ page, context }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await signInAs(context, 'owner');
+  await choose(page, seeded.orgId);
+  for (const path of ['/organization', '/organization/teams', '/organization/service-accounts',
+    '/organization/sign-in', '/organization/settings', '/usage']) {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByText(/loading/i)).toHaveCount(0, { timeout: 10_000 });
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow, `${path} scrolls sideways by ${overflow}px`).toBeLessThanOrEqual(0);
+  }
 });
 
 test('a member of no organisation cannot read this one', async ({ page, context }) => {
-  await signInAs(context, sessionFor('owner').token);
-  await page.goto('/organization');
-
-  // A well-formed uuid that is not an organisation this person belongs to must
-  // be 404, never 403: a 403 confirms the id exists, which makes the status
-  // code an enumeration oracle.
-  const response = await page.request.get(
-    `${apiBase()}/v1/organizations/00000000-0000-0000-0000-000000000000/members`,
-  );
+  await signInAs(context, 'solo');
+  await page.goto('/');
+  const response = await page.request.get(`${apiBase()}/v1/organizations/${seeded.orgId}/members`);
   expect(response.status()).toBe(404);
 });
